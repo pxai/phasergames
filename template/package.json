@@ -1,0 +1,46 @@
+{
+  "name": "phaser-template",
+  "version": "0.0.1",
+  "description": "Phaser template project",
+  "scripts": {
+    "start": "gulp",
+    "test": "npx mocha test"
+  },
+  "dependencies": {
+    "phaser": "^3.52.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
+    "babelify": "^10.0.0",
+    "browser-sync": "^2.26.13",
+    "browserify": "^17.0.0",
+    "del": "^6.0.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-connect": "^5.7.0",
+    "gulp-live-server": "0.0.31",
+    "gulp-livereload": "^4.0.2",
+    "gulp-open": "^3.0.1",
+    "gulp-rename": "^2.0.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-terser-js": "^5.2.2",
+    "gulp-uglify": "^3.0.2",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
+  },
+  "engines": {
+    "node": "6.10.x"
+  },
+  "repository": {
+    "url": "https://github.com/pxai/phaserbook"
+  },
+  "license": "MIT",
+  "keywords": [
+    "phaser",
+    "games",
+    "book",
+    "pello"
+  ]
+}
