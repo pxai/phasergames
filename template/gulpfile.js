@@ -52,12 +52,11 @@ function browserSync(done) {
       },
       port: 3000
     });
-     // watch(["./src/assets/**/*.*","./src/game/**/*.js","gulpfile.js"], browsersync.reload);
     done();
 }
 
 function watchIt(done) {
-    watch(["./src/assets/**/*.*","./src/game/**/*.js","gulpfile.js"], series(html, assets, build));
+    watch(["./src/assets/**/*.*","./src/game/**/*.js","gulpfile.js"], parallel(html, assets, build));
     done();
 }
 
