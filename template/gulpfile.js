@@ -52,13 +52,12 @@ function browserSync(done) {
       },
       port: 3000
     });
-    watch(["./src/assets/**/*.*","./src/game/**/*.js","gulpfile.js"], browsersync.reload);
+     // watch(["./src/assets/**/*.*","./src/game/**/*.js","gulpfile.js"], browsersync.reload);
     done();
 }
 
-
 function watchIt(done) {
-    watch(["./src/assets/**/*.*","./src/game/**/*.js","gulpfile.js"], series(clean, html, assets, build));
+    watch(["./src/assets/**/*.*","./src/game/**/*.js","gulpfile.js"], series(html, assets, build));
     done();
 }
 
@@ -67,5 +66,5 @@ if (process.env.NODE_ENV === 'production') {
   exports.default = series(clean, html, assets, build);
 } else {
   exports.build = build;
-  exports.default = parallel(browserSync, watchIt);
+  exports.default = series(clean, parallel(html, assets, build), parallel(browserSync, watchIt));
 }
