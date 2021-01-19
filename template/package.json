@@ -6,7 +6,7 @@
     "start": "gulp",
     "test": "npm run-script lint && npm run-script unit",
     "lint": "npx eslint src/game/**/*.js --fix",
-    "unit": "npx mocha test"
+    "unit": "npx mocha test --require @babel/register"
   },
   "dependencies": {
     "phaser": "^3.52.0"
@@ -15,6 +15,7 @@
     "@babel/core": "^7.12.3",
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/preset-env": "^7.12.7",
+    "@babel/register": "^7.12.10",
     "babelify": "^10.0.0",
     "browser-sync": "^2.26.13",
     "browserify": "^17.0.0",
