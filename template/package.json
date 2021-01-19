@@ -4,7 +4,9 @@
   "description": "Phaser template project",
   "scripts": {
     "start": "gulp",
-    "test": "npx mocha test"
+    "test": "npm run-script lint && npm run-script unit",
+    "lint": "npx eslint src/game/**/*.js --fix",
+    "unit": "npx mocha test"
   },
   "dependencies": {
     "phaser": "^3.52.0"
@@ -17,6 +19,11 @@
     "browser-sync": "^2.26.13",
     "browserify": "^17.0.0",
     "del": "^6.0.0",
+    "eslint": "^7.18.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-connect": "^5.7.0",
@@ -27,6 +34,7 @@
     "gulp-sourcemaps": "^3.0.0",
     "gulp-terser-js": "^5.2.2",
     "gulp-uglify": "^3.0.2",
+    "mocha": "^8.2.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   },
