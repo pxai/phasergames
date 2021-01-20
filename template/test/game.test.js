@@ -2,7 +2,7 @@ import Game from "../src/game/game";
 
 describe("Game class", () => {
     it("should exist", () => {
-        expect(Game).toExist;
+        expect(Game).exist;
     });
 
     it("should have constructor", () => {

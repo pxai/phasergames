@@ -6,7 +6,7 @@
     "start": "gulp",
     "test": "npm run-script lint && npm run-script unit",
     "lint": "npx eslint src/game/**/*.js --fix",
-    "unit": "npx mocha test --require @babel/register"
+    "unit": "npx mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js"
   },
   "dependencies": {
     "phaser": "^3.52.0"
@@ -19,6 +19,7 @@
     "babelify": "^10.0.0",
     "browser-sync": "^2.26.13",
     "browserify": "^17.0.0",
+    "canvas": "^2.6.1",
     "del": "^6.0.0",
     "eslint": "^7.18.0",
     "eslint-config-standard": "^16.0.2",
@@ -35,6 +36,8 @@
     "gulp-sourcemaps": "^3.0.0",
     "gulp-terser-js": "^5.2.2",
     "gulp-uglify": "^3.0.2",
+    "jsdom": "^16.4.0",
+    "jsdom-global": "^3.0.2",
     "mocha": "^8.2.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
