@@ -15,3 +15,9 @@ Or just:
 ```shell
 npm init -y && npm i --save phaser
 ```
+
+# Liveserver extension
+Install this extension. Everytime you change your code, your html page will be reloaded.
+Once the extension is installed, just click on the GoLive icon at the bottombar.
+
+ritwickdey.liveserver
