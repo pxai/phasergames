@@ -1,4 +1,4 @@
-export default class GameScene extends Phaser.Scene {
+class GameScene extends Phaser.Scene {
     constructor () {
         super({ key: "GameScene"});
     }
@@ -11,7 +11,7 @@ export default class GameScene extends Phaser.Scene {
         console.log("Create");
     }
 
-    update (a, b) {
-        console.log("Update", a, b);
+    update (time, delta) {
+        //console.log("Update", time, delta);
     }
 }

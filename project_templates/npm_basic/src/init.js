@@ -4,4 +4,5 @@ const config = {
     container: "container",
     scene: [GameScene]
 };
+
 new Phaser.Game(config);
