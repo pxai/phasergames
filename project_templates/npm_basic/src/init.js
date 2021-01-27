@@ -1,7 +1,8 @@
 const config = {
-    width: 800,
-    height: 600,
-    container: "container",
+    width: 400,
+    height: 300,
+    parent: "container",
+    type: Phaser.CANVAS,
     scene: [GameScene]
 };
 
