@@ -18,13 +18,13 @@ function clean () {
 }
 
 function html() {
-    return src("./src/assets/html/*.html")
+    return src("./assets/html/*.html")
         .pipe(dest("./dist"))
         .pipe(browsersync.stream());
 }
 
 function assets () {
-    return src(["./src/assets/**/*","!./src/assets/html/*.html"])
+    return src(["./assets/**/*","!./assets/html/*.html"])
         .pipe(dest("./dist/assets", {force:true}))
         .pipe(browsersync.stream());
 }
@@ -56,7 +56,7 @@ function browserSync(done) {
 }
 
 function watchIt(done) {
-    watch(["./src/assets/**/*.*","./src/game/**/*.js","gulpfile.js"], parallel(html, assets, build));
+    watch(["./assets/**/*.*","./src/game/**/*.js","gulpfile.js"], parallel(html, assets, build));
     done();
 }
 
