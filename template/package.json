@@ -5,7 +5,7 @@
   "scripts": {
     "start": "gulp",
     "test": "npm run-script lint && npm run-script unit",
-    "lint": "npx eslint src/game/**/*.js --fix",
+    "lint": "npx eslint src/**/*.js test/**/*.js --fix",
     "unit": "npx mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js"
   },
   "dependencies": {

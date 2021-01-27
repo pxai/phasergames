@@ -11,8 +11,6 @@ const sourcemaps = require('gulp-sourcemaps');
 const terser = require('gulp-terser-js');
 const buffer = require('vinyl-buffer');
 
-const GAMEDIR = "game";
-
 function clean () {
     return del(["dist"]);
 }
@@ -30,7 +28,7 @@ function assets () {
 }
 
 function build() {
-  return browserify('./src/game/index.js', {debug:true})
+  return browserify('./src/index.js', {debug:true})
     .transform('babelify', {
       presets: ['@babel/preset-env'],
       plugins: ['@babel/plugin-transform-runtime']
@@ -38,7 +36,7 @@ function build() {
     .bundle()
     .pipe(source('index.min.js'))
     .pipe(buffer())
-    .pipe(sourcemaps.init({loadMaps: true}))
+    //.pipe(sourcemaps.init({loadMaps: true}))
     .pipe(terser())
     .pipe(sourcemaps.write('.'))
     .pipe(dest("dist"))
@@ -56,7 +54,7 @@ function browserSync(done) {
 }
 
 function watchIt(done) {
-    watch(["./assets/**/*.*","./src/game/**/*.js","gulpfile.js"], parallel(html, assets, build));
+    watch(["./assets/**/*.*","./src/**/*.js","gulpfile.js"], parallel(html, assets, build));
     done();
 }
 
