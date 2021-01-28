@@ -36,7 +36,7 @@ function build() {
     .bundle()
     .pipe(source('index.min.js'))
     .pipe(buffer())
-    //.pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(terser())
     .pipe(sourcemaps.write('.'))
     .pipe(dest("dist"))
