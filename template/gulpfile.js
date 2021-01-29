@@ -43,6 +43,19 @@ function build() {
     .pipe(browsersync.stream());
 }
 
+function buildprod() {
+  return browserify('./src/index.js', {debug:true})
+    .transform('babelify', {
+      presets: ['@babel/preset-env'],
+      plugins: ['@babel/plugin-transform-runtime']
+    })
+    .bundle()
+    .pipe(source('index.min.js'))
+    .pipe(buffer())
+    .pipe(terser())
+    .pipe(dest("dist"));
+}
+
 function browserSync(done) {
     browsersync.init({
       server: {
@@ -58,10 +71,6 @@ function watchIt(done) {
     done();
 }
 
-if (process.env.NODE_ENV === 'production') {
-  exports.build = build;
-  exports.default = series(clean, html, assets, build);
-} else {
-  exports.build = build;
-  exports.default = series(clean, parallel(html, assets, build), parallel(browserSync, watchIt));
-}
+exports.build = build;
+exports.default = series(clean, parallel(html, assets, build), parallel(browserSync, watchIt));
+exports.production = series(clean, html, assets, buildprod);
