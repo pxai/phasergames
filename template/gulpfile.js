@@ -1,4 +1,4 @@
-const { src, dest, watch, pipe, series, parallel } = require('gulp');
+const { src, dest, watch, pipe, series, parallel, lastRun } = require('gulp');
 const del = require('del');
 const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
@@ -11,11 +11,13 @@ const sourcemaps = require('gulp-sourcemaps');
 const terser = require('gulp-terser-js');
 const buffer = require('vinyl-buffer');
 
+const PHASERLIB = "node_modules/phaser/dist/phaser.min.js";
+
 function clean () {
     return del(["dist"]);
 }
 
-function html() {
+function html(param) {
     return src("./assets/html/*.html")
         .pipe(dest("./dist"))
         .pipe(browsersync.stream());
@@ -27,11 +29,20 @@ function assets () {
         .pipe(browsersync.stream());
 }
 
+function vendor() {
+  return src([`${PHASERLIB}`])
+      .pipe(dest("./dist"))
+}
+
+
 function build() {
-  return browserify('./src/index.js', {debug:true})
+  return browserify({
+        entries: ["src/index.js"],
+        debug: true,
+    })
     .transform('babelify', {
-      presets: ['@babel/preset-env'],
-      plugins: ['@babel/plugin-transform-runtime']
+        presets: ['@babel/preset-env'],
+        plugins: ['@babel/plugin-transform-runtime']
     })
     .bundle()
     .pipe(source('index.min.js'))
@@ -43,11 +54,14 @@ function build() {
     .pipe(browsersync.stream());
 }
 
-function buildprod() {
-  return browserify('./src/index.js', {debug:true})
+function buildProd() {
+  return browserify({
+        entries: ["src/index.js"],
+        debug: false,
+    })
     .transform('babelify', {
-      presets: ['@babel/preset-env'],
-      plugins: ['@babel/plugin-transform-runtime']
+        presets: ['@babel/preset-env'],
+        plugins: ['@babel/plugin-transform-runtime']
     })
     .bundle()
     .pipe(source('index.min.js'))
@@ -67,10 +81,10 @@ function browserSync(done) {
 }
 
 function watchIt(done) {
-    watch(["./assets/**/*.*","./src/**/*.js","gulpfile.js"], parallel(html, assets, build));
+    watch(["./assets/**/*.*","./src/**/*.js","gulpfile.js"], parallel(html, vendor, assets, build));
     done();
 }
 
 exports.build = build;
-exports.default = series(clean, parallel(html, assets, build), parallel(browserSync, watchIt));
-exports.production = series(clean, html, assets, buildprod);
+exports.production = series(clean, html, vendor, assets, buildProd);
+exports.default = series(clean, parallel(html, vendor, assets, build), parallel(browserSync, watchIt));
