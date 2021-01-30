@@ -21,7 +21,6 @@
     "browserify": "^17.0.0",
     "canvas": "^2.6.1",
     "chai": "^4.2.0",
-    "concat": "^1.0.3",
     "del": "^6.0.0",
     "eslint": "^7.18.0",
     "eslint-config-standard": "^16.0.2",
