@@ -1,7 +1,8 @@
 const webpack = require("webpack");
 const path = require("path");
 const htmlWebpackPlugin = require("html-webpack-plugin");
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const vendors = ["phaser"];
 
@@ -13,7 +14,8 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
     port: 8080,
-    open: true
+    open: true,
+    writeToDisk: true
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -33,7 +35,8 @@ module.exports = {
       template: "assets/html/index.html",
       filename: "index.html"
     }),
-    new CleanWebpackPlugin({options: "dist/*.*"})
+    new CleanWebpackPlugin({options: "dist/*.*"}),
+    new CopyWebpackPlugin({ patterns: [{ from: './assets', to: './assets' }] }),
   ],
   optimization: {
     splitChunks: {
