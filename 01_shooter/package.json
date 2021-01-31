@@ -1,0 +1,15 @@
+{
+  "name": "npm_basic",
+  "version": "1.0.0",
+  "description": "on terminal init and npm based project: ```shell npm init ``` You'll have to write preferences like name, description, etc.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "phaser": "^3.52.0"
+  }
+}
