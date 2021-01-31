@@ -4,7 +4,8 @@
   "description": "Phaser template project",
   "scripts": {
     "start": "gulp",
-    "test": "npm run-script lint && npm run-script unit",
+    "build": "gulp production",
+    "test": "npm run lint && npm run unit",
     "lint": "npx eslint src/**/*.js test/**/*.js --fix",
     "unit": "npx mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js"
   },

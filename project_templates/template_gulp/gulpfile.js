@@ -37,7 +37,7 @@ function vendor() {
 
 function build() {
   return browserify({
-        entries: ["src/index.js"],
+        entries: ["src/init.js"],
         debug: true,
     })
     .transform('babelify', {
@@ -56,7 +56,7 @@ function build() {
 
 function buildProd() {
   return browserify({
-        entries: ["src/index.js"],
+        entries: ["src/init.js"],
         debug: false,
     })
     .transform('babelify', {
