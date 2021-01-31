@@ -1,15 +1,35 @@
 {
-  "name": "npm_basic",
+  "name": "01_shooter",
+  "author": "Pello Xabier Altadill Izura",
   "version": "1.0.0",
-  "description": "on terminal init and npm based project: ```shell npm init ``` You'll have to write preferences like name, description, etc.",
-  "main": "index.js",
+  "description": "",
+  "main": "init.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run lint && npm run unit",
+    "lint": "npx eslint src/**/*.js test/**/*.js --fix",
+    "unit": "npx mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "phaser": "^3.52.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/register": "^7.12.10",
+    "babelify": "^10.0.0",
+    "canvas": "^2.6.1",
+    "chai": "^4.2.0",
+    "eslint": "^7.18.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "jsdom": "^16.4.0",
+    "jsdom-global": "^3.0.2",
+    "mocha": "^8.2.1"
   }
 }
