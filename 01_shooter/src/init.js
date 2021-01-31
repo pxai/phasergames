@@ -13,4 +13,5 @@ const config = {
     }
 };
 
-new Phaser.Game(config);
+const p = new Phaser.Game(config);
+console.log(p.scene.game);

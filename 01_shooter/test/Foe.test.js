@@ -21,9 +21,9 @@ describe("Foe class", () => {
                 }
             }
         };
-        console.log(document);
-        const game = new Phaser.Game(config);
-        const foe = new Foe(game.scene[0], 0, 0);
+        new Phaser.Game(config);
+
+        new Foe(new Game(), 0, 0);
         // expect(foe).not.to.equal(null);
     });
 });

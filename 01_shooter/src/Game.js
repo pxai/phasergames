@@ -28,8 +28,7 @@ export default class Game extends Phaser.Scene {
     }
 
     create () {
-        console.log("Yea");
-        this.background = this.add.tileSprite(0, 0, Phaser.sys.game.canvas.width, Phaser.sys.game.canvas.height, "starfield");
+        this.background = this.add.tileSprite(0, 0, this.game.config.width, this.game.config.height, "starfield");
         this.background.setOrigin(0, 0);
         this.anims.create({ key: "laser_anim", frames: this.anims.generateFrameNumbers("laser"), frameRate: 20, repeat: -1 });
         this.player = new Player(this);
@@ -79,7 +78,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addFoe () {
-        new Foe(this, this.sys.game.canvas.width, this.sys.game.canvas.height);
+        new Foe(this, this.game.config.width, this.game.config.height);
     }
 
     hitFoe (bullet, foe) {
