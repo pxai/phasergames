@@ -3,10 +3,11 @@
   "version": "0.0.1",
   "description": "Phaser template project webpack",
   "scripts": {
-    "start": "npx webpack-cli serve -c webpack.js -w --mode development",
-    "test": "npm run-script lint && npm run-script unit",
-    "lint": "npx eslint src/**/*.js test/**/*.js --fix",
-    "unit": "npx mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js"
+    "start": "npx webpack-cli serve -c webpack.dev.js -w --mode development",
+    "build": "webpack --config webpack.prod.js",
+    "test": "npm run lint && npm run unit",
+    "lint": "eslint src/**/*.js test/**/*.js --fix",
+    "unit": "mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js"
   },
   "dependencies": {
     "phaser": "^3.52.0"
@@ -34,6 +35,7 @@
     "webpack": "^5.19.0",
     "webpack-cli": "^4.4.0",
     "webpack-dev-server": "^3.11.2",
+    "webpack-merge": "^5.7.3",
     "write-file-webpack-plugin": "^4.5.1"
   },
   "engines": {
