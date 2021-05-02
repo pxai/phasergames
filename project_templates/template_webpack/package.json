@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Phaser template project webpack",
   "scripts": {
-    "start": "npx webpack-cli serve -c webpack.dev.js -w --mode development",
+    "start": "npx webpack-cli serve -c webpack.dev.js --mode development",
     "build": "webpack --config webpack.prod.js",
     "test": "npm run lint && npm run unit",
     "lint": "eslint src/**/*.js test/**/*.js --fix",
@@ -37,9 +37,6 @@
     "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.7.3",
     "write-file-webpack-plugin": "^4.5.1"
-  },
-  "engines": {
-    "node": "6.10.x"
   },
   "repository": {
     "url": "https://github.com/pxai/phaserbook"
