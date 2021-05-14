@@ -1,4 +1,4 @@
-import { LEVELS, FONTS, PLAYER, OBJECTS } from './constants';
+import { LEVELS, FONTS, PLAYER, OBJECTS, ENEMIES } from './constants';
 
 export default class Load extends Phaser.Scene {
     constructor(config) {
@@ -41,11 +41,11 @@ export default class Load extends Phaser.Scene {
         );
         this.load.image('logo', 'assets/phaser3-logo.png');
 
-        this.load.spritesheet(Constantes.ENEMIGOS.BUNNY.ID, 'assets/images/enemies/bunny.png', { frameWidth: 34, frameHeight: 44 });
-        this.load.spritesheet(Constantes.ENEMIGOS.CHICKEN.ID, 'assets/images/enemies/chicken.png', { frameWidth: 32, frameHeight: 34 });
-        this.load.spritesheet(Constantes.ENEMIGOS.MUSHROOM.ID, 'assets/images/enemies/mushroom.png', { frameWidth: 32, frameHeight: 32 });
-        this.load.spritesheet(Constantes.ENEMIGOS.RADISH.ID, 'assets/images/enemies/radish.png', { frameWidth: 30, frameHeight: 38 });
-        
+        this.load.spritesheet(ENEMIES.BUNNY.ID, 'assets/images/enemies/bunny.png', { frameWidth: 34, frameHeight: 44 });
+        this.load.spritesheet(ENEMIES.CHICKEN.ID, 'assets/images/enemies/chicken.png', { frameWidth: 32, frameHeight: 34 });
+        this.load.spritesheet(ENEMIES.MUSHROOM.ID, 'assets/images/enemies/mushroom.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet(ENEMIES.RADISH.ID, 'assets/images/enemies/radish.png', { frameWidth: 30, frameHeight: 38 });
+
         this.load.bitmapFont("pixelFont", "assets/fonts/font.png", "assets/fonts/font.xml");
         this.load.image(OBJECTS.BOX, 'assets/images/box.png');
         this.load.atlas(PLAYER.ID, 'assets/images/player/ninjafrog.png', 'assets/images/player/ninjafrog.json');
