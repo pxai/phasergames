@@ -9,7 +9,8 @@ const LEVELS = {
     SCENE1: {
         TILEMAPJSON: "scene1",
         LAYER: "Scene1Layer",
-        BACKGROUND: "scene1Background"
+        BACKGROUND: "scene1Background",
+        ENEMIES: "enemies"
     },
     TILESET: "tileset"
 };
@@ -39,7 +40,27 @@ const OBJECTS = {
 };
 
 const ENEMIES = {
-    STRAWBERRY: "strawberry"
+    STRAWBERRY: "strawberry",
+    BUNNY:{
+        ID:'bunny',
+        ANIM:'bunny-run',
+        SPEED: 75            
+    },
+    CHICKEN:{
+        ID:'chicken',
+        ANIM:'chicken-run',
+        SPEED: 100
+    },
+    MUSHROOM:{
+        ID:'mushroom',
+        ANIM:'mushroom-run',
+        SPEED: 100
+    },
+    RADISH:{
+        ID:'radish',
+        ANIM:'radish-run',
+        SPEED: 100
+    }
 };
 
 export { SCENES, LEVELS, EVENTS, FONTS, PLAYER, OBJECTS, ENEMIES };
