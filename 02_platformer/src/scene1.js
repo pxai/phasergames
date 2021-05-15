@@ -1,4 +1,4 @@
-import { LEVELS, SCENES, OBJECTS, PLAYER } from './constants';
+import { LEVELS, SCENES, OBJECTS, PLAYER, ENEMIES } from './constants';
 import Player from './player';
 import Enemies from './enemies';
 
@@ -83,7 +83,7 @@ export default class Scene1 extends Phaser.Scene
 
         this.enemyGroup  = new Enemies(this, LEVELS.SCENE1.ENEMIES, ENEMIES.BUNNY.ID, ENEMIES.BUNNY.ANIM, ENEMIES.BUNNY.VELOCIDAD);
 
-        this.physics.add.collider(this.enemyGroup, this.tileMapLayer); 
+        this.physics.add.collider(this.enemyGroup, this.tileMapLayer);
     }
 
      update () {
