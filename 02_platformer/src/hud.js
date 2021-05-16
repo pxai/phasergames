@@ -9,12 +9,12 @@ export default class Hud extends Phaser.Scene {
 
     create() {
         const scene1 = this.scene.get(SCENES.SCENE1);
-        scene1.events.on(EVENTS.UPDATE_POINTS, this.updatePoints, this);
+        scene1.events.on(EVENTS.UPDATE_POINTS, this.#updatePoints, this);
 
         this.pointsTxt = this.add.text(20,20, '0', {fontSize:'32px', color:'#FFFFFF'});
     }
 
-    updatePoints() {
+    #updatePoints() {
         this.pointsTxt.text = Phaser.Utils.String.Pad(this.registry.get('points'), 5, '0', 1);
     }
 
