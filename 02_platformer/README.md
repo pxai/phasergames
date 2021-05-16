@@ -1,26 +1,25 @@
-# NPM Basic
+# 02_platformer
 
-on terminal init and npm based project:
+Install dependencies
 ```shell
-npm init
+npm install
 ```
-You'll have to write preferences like name, description, etc.
+Run it in dev mode
 
-And then install phaser dependency.
 ```shell
-npm install --save phaser
-```
-
-Or just:
-```shell
-npm init -y && npm i --save phaser
+npm start
 ```
 
-# Liveserver extension
-Install this extension. Everytime you change your code, your html page will be reloaded.
-Once the extension is installed, just click on the GoLive icon at the bottombar.
+# Linter
+To pass the linter:
 
-ritwickdey.liveserver
+```shell
+npm run lint
+```
 
-# atom-live-Liveserver
-jas-chen plugin for atom
+# Testing
+Run the testing
+
+```shell
+npm run test
+```
