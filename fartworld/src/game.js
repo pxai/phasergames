@@ -167,6 +167,7 @@ var cursors = this.cursors;
 
         if (cursors.up.isDown && player.body.touching.down)
         {
+            console.log("Jump!!");
              player.anims.play('jump', true);
             player.setVelocityY(-330);
         }

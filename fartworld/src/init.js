@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import Game from "./game";
 
 const config = {
