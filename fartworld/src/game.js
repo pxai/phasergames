@@ -1,6 +1,6 @@
 export default class Game extends Phaser.Scene {
-  constructor() {
-      super("gameScene");
+  constructor({key}) {
+      super({key});
         this.player = null;
         this.cursors = null;
         this.score = 0;
@@ -8,13 +8,7 @@ export default class Game extends Phaser.Scene {
   }
 
   preload(){
-        this.load.image('sky', 'assets/images/starfield.png');
-        this.load.image('ground', 'assets/images/platform.png');
-        this.load.image('star', 'assets/images/star.png');
-        this.load.image('bomb', 'assets/images/bomb.png');
-        this.load.spritesheet('grogu', 'assets/images/grogu.png', { frameWidth: 64, frameHeight: 64 });
-        this.load.spritesheet('fullscreen', 'assets/ui/sky.png', { frameWidth: 64, frameHeight: 64 });
-        this.load.audio("music", "assets/sounds/muzik.mp3");
+      console.log("preload")
   }
 
   create () {
@@ -126,14 +120,14 @@ export default class Game extends Phaser.Scene {
 
         }, this);
     this.sound.add("music", {
-    mute: false,
-    volume: 1,
-    rate: 1,
-    detune: 0,
-    seek: 0,
-    loop: true,
-    delay: 0
-});
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+        });
         this.sound.play("music");
   }
 
@@ -169,7 +163,7 @@ var cursors = this.cursors;
         {
             console.log("Jump!!");
              player.anims.play('jump', true);
-            player.setVelocityY(-330);
+            player.setVelocityY(-400);
         }
   }
 

@@ -1,23 +1,30 @@
-import Phaser from "phaser";
-import Game from "./game";
+import Phaser from 'phaser'
+import Bootloader from './bootloader'
+import Splash from './splash'
+import Stage1 from './scenes/stage1'
+
 
 const config = {
-    type: Phaser.AUTO,
+    width: 800,
+    height: 600,
     scale: {
-        mode: Phaser.Scale.FIT,
-        parent: 'phaser-example',
-        autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: 800,
-        height: 600
+      mode: Phaser.Scale.FIT,
+      autoCenter: Phaser.Scale.CENTER_BOTH
     },
+    autoRound: false,
+    parent: 'contenedor',
     physics: {
         default: 'arcade',
         arcade: {
             gravity: { y: 300 },
-            debug: false
+            debug: true
         }
     },
-    scene: [Game]
+    scene: [
+        Bootloader,
+        Splash,
+        Stage1
+    ]
 }
 
 const game = new Phaser.Game(config);
