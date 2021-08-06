@@ -1,4 +1,5 @@
-import Game from '../game';
+import Game from '../../game';
+import config from './config';
 
 export default class Stage1 extends Game {
     constructor() {
@@ -11,6 +12,7 @@ export default class Stage1 extends Game {
   
     create () {
         super.create();
+        this.beanGenerator.generate(config.beans);
     }
   
   

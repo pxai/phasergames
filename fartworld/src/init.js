@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import Bootloader from './bootloader'
 import Splash from './splash'
-import Stage1 from './scenes/stage1'
+import Stage1 from './scenes/stage1/'
 
 
 const config = {

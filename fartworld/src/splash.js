@@ -1,3 +1,5 @@
+import configScene1 from './scenes/stage1/config';
+
 export default class Splash extends Phaser.Scene {
   constructor() {
       super({key: "splash"})

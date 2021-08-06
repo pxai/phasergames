@@ -1,4 +1,3 @@
-const webpack = require("webpack");
 const path = require("path");
 const htmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
@@ -27,9 +26,9 @@ module.exports = {
       filename: "index.html"
     }),
     new CleanWebpackPlugin({options: "dist/*.*"}),
-    new CopyWebpackPlugin({ patterns: [{ from: './assets', to: './assets' }] }),
+    new CopyWebpackPlugin({ patterns: [{ from: './assets', to: './assets' }, { from: './assets/html/main.js', to: './' }] }),
   ],
   stats: {
     colors: true
   }
-}
+};
