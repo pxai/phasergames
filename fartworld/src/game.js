@@ -1,5 +1,6 @@
 import Player from './player';
 import BeanGenerator from './objects/bean _generator';
+import FoeGenerator from './objects/foe_generator';
 
 export default class Game extends Phaser.Scene {
   constructor({key}) {
@@ -15,8 +16,13 @@ export default class Game extends Phaser.Scene {
   }
 
   create () {
+        this.width = this.sys.game.config.width
+        this.height = this.sys.game.config.height
         // this.add.image(400, 300, 'sky');
+       /* this.background = this.add.tileSprite(0, 0, this.width, this.height, "scene1");
+        this.background.setOrigin(0, 0);*/
         this.beanGenerator = new BeanGenerator(this);
+        this.foeGenerator = new FoeGenerator(this)
         this.player = new Player(this, 100, 400, 'grogu'); //this.physics.add.sprite(100, 450, 'dude');
         this.physics.world.setBoundsCollision(false, false, true, true)
         this.cursors = this.input.keyboard.createCursorKeys();

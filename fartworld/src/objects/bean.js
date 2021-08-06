@@ -16,7 +16,7 @@ class Bean extends Phaser.GameObjects.Sprite {
     }
 
     touch (player, bean) {
-        console.log("Touched!! ", player, bean);
+        // console.log("Touched!! ", player, bean);
     }
   }
   

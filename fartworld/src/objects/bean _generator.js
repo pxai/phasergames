@@ -7,9 +7,7 @@ export default class BeanGenerator {
     }
 
     generate (beans) {
-        console.log("Bean to generate: ", beans);
         const scene = this.scene;
-        this.beans = beans.map(bean => new Bean({ scene, ...bean }));
-        
+        this.beans = beans.map(bean => new Bean({ scene, ...bean }));   
     }
 }
