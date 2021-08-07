@@ -35,7 +35,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("music", "assets/sounds/muzik.mp3");
 
 
-        this.load.tilemapTiledJSON("scene1_map", 'assets/scenes/scene1/scene1.json');
+        this.load.tilemapTiledJSON("scene1_map", 'assets/scenes/scene1/leafs.json');
         this.load.image("scene1_tileset", 'assets/scenes/scene1/leafs.png');
   }
 
