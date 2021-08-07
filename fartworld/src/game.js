@@ -11,10 +11,6 @@ export default class Game extends Phaser.Scene {
         this.scoreText = null;
     }
 
-    preload () {
-        console.log("preload");
-    }
-
     create () {
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
@@ -23,20 +19,20 @@ export default class Game extends Phaser.Scene {
         // this.add.image(400, 300, 'sky');
         /* this.background = this.add.tileSprite(0, 0, this.width, this.height, "scene1");
         this.background.setOrigin(0, 0); */
+        const greenBeans = +this.registry.get("green");
+        const redBeans = +this.registry.get("red");
+        this.player = new Player(this, 100, this.height - 32, "aki", greenBeans, redBeans); // this.physics.add.sprite(100, 450, 'dude');
 
         this.platformsLayer = this.add.layer();
         this.beanGenerator = new BeanGenerator(this);
         this.foeGenerator = new FoeGenerator(this);
-        this.player = new Player(this, 100, 400, "grogu"); // this.physics.add.sprite(100, 450, 'dude');
+
         this.physics.world.setBoundsCollision(false, false, true, true);
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.scoreText = this.add.text(this.center_width, 16, "SCORE", { font: '"Press Start 2P"', fontSize: "30px" }).setOrigin(0.5);
-        this.greenText = this.add.text(this.center_width - 200, 16, this.registry.get("green"), { font: '"Press Start 2P"', fontSize: "30px" }).setOrigin(0.5);
-        this.redText = this.add.text(this.center_width + 200, 16, this.registry.get("red"), { font: '"Press Start 2P"', fontSize: "30px" }).setOrigin(0.5);
+        this.scoreText = this.add.bitmapText(this.center_width, 16, "pixelFont", "SCORE", 20).setOrigin(0.5)
+        this.greenText = this.add.bitmapText(this.center_width - 200, 16, "pixelFont", this.registry.get("green"), 20).setOrigin(0.5);
+        this.redText = this.add.bitmapText(this.center_width + 200, 16, "pixelFont", this.registry.get("red"), 20).setOrigin(0.5);
         this.updateScore();
-       // this.scoreText = this.add.text(16, 16, "score:" + this.registry.get("points"), { fontSize: "32px", fill: "#000" });
-       // this.greenBeansText = this.add.text();
-       // this.redBeansText = this.add.text();
       }
 
       update() {
@@ -47,12 +43,16 @@ export default class Game extends Phaser.Scene {
     updateScore (points = 0) {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
-        this.scoreText.text = "SCORE " +  String(score).padStart(6, '0');
+        this.scoreText.setText("SCORE " +  String(score).padStart(6, '0'));
     }
 
-    updateGreenBeans (amount = 1) {
-        const green = +this.registry.get("green") + amount;
-        this.registry.set("green", green);
-        this.greenText.text = green;
+    updateGreenBeans (amount) {
+        this.registry.set("green", amount);
+        this.greenText.setText(amount);
+    }
+
+    updateRedBeans (amount = 1) {
+      this.registry.set("red", amount);
+      this.redText.setText(amount);
     }
 }

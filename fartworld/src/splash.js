@@ -10,6 +10,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     create () {
+        this.scene.start("stage1")
         this.input.keyboard.on("keydown-ENTER", () => this.scene.start("stage1"), this);
     }
 }

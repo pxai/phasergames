@@ -12,7 +12,6 @@ export default class Stage1 extends Game {
 
     create () {
         super.create();
-        console.log(this.width, this.height);
 
         // this.platforms.create(400, 568, 'ground').refreshBody();
         this.platforms = this.physics.add.staticGroup();
@@ -23,17 +22,15 @@ export default class Stage1 extends Game {
 
         this.playerCollider = this.physics.add.collider(this.player, this.platforms);
 
-        this.beanGenerator.generate(config.beans);
+        this.beanGenerator.generate(config.beans, config.redBeans);
         this.foeGenerator.generate(config.foes);
     }
 
     setPlayerCollider (player) {
-        console.log("Set player collider again");
         this.playerCollider.active = true;
     }
 
     removePlayerCollider () {
-        console.log("Player collider destroyed");
         this.playerCollider.active = false;
     }
 

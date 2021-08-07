@@ -10,10 +10,6 @@ export default class Game extends Phaser.Scene {
         this.scoreText = null;
     }
 
-    preload () {
-        console.log("preload");
-    }
-
     create () {
         // this.add.image(400, 300, 'sky');
         this.beanGenerator = new BeanGenerator(this);
@@ -145,7 +141,6 @@ export default class Game extends Phaser.Scene {
         }
 
         if (cursors.up.isDown && player.body.touching.down) {
-            console.log("Jump!!");
             player.anims.play("jump", true);
             player.setVelocityY(-400);
         }
