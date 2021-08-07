@@ -98,6 +98,16 @@ export default class Player extends Phaser.GameObjects.Sprite {
         }
     }
 
+    finish () {
+        this.anims.play("turn", true);
+        this.body.stop();
+        console.log("Player was finished!");
+    }
+
+    restart () {
+        this.anims.play("turn", true)
+    }
+
      addGreenBean () {
         this.greenBeans++;
         this.scene.updateGreenBeans(this.greenBeans);

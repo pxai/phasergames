@@ -24,7 +24,9 @@ export default class Stage1 extends Game {
 
         this.beanGenerator.generate(config.beans, config.redBeans);
         this.foeGenerator.generate(config.foes);
-    }
+        this.createDoor(config.door.x, config.door.y)
+        this.nextScene = config.nextScene;
+     }
 
     setPlayerCollider (player) {
         this.playerCollider.active = true;

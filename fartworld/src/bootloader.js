@@ -22,13 +22,11 @@ export default class Bootloader extends Phaser.Scene {
         );
         this.load.on("complete", () => {
             this.scene.start("splash");
-        },
-        this
-        );
+        },this);
         // http://www.stripegenerator.com/
         this.load.image("ground", "assets/images/platform.png");
-
-        this.load.image("bomb", "assets/images/bomb.png");
+        this.load.image("star", "assets/images/star.png");
+        this.load.image("door", "assets/images/door.png");
         this.load.spritesheet("scene1", "assets/images/scene1.png", { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet("aki", "assets/images/grogu.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("fart", "assets/images/fart.png", { frameWidth: 32, frameHeight: 32 });

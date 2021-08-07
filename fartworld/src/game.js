@@ -9,16 +9,24 @@ export default class Game extends Phaser.Scene {
         this.cursors = null;
         this.score = 0;
         this.scoreText = null;
+
+        console.log("Game constructor");
+    }
+
+    preload () {
+
+      console.log("Game preload!", this.finished)
+
     }
 
     create () {
+      this.finished = false;
+      console.log("Game create: ", this.finished)
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2
-        // this.add.image(400, 300, 'sky');
-        /* this.background = this.add.tileSprite(0, 0, this.width, this.height, "scene1");
-        this.background.setOrigin(0, 0); */
+
         const greenBeans = +this.registry.get("green");
         const redBeans = +this.registry.get("red");
         this.player = new Player(this, 100, this.height - 32, "aki", greenBeans, redBeans); // this.physics.add.sprite(100, 450, 'dude');
@@ -33,12 +41,57 @@ export default class Game extends Phaser.Scene {
         this.greenText = this.add.bitmapText(this.center_width - 200, 16, "pixelFont", this.registry.get("green"), 20).setOrigin(0.5);
         this.redText = this.add.bitmapText(this.center_width + 200, 16, "pixelFont", this.registry.get("red"), 20).setOrigin(0.5);
         this.updateScore();
+
+        // this.createDeath(300, 450);
       }
 
-      update() {
+    update() {
+      if (!this.finished)
         this.player.update();
-            
-       }
+    }
+
+    createDoor(x, y) {
+      this.door = this.add.sprite(x, y, "door");
+      this.physics.add.existing(this.door)
+      this.door.body.immovable = true;
+      this.door.body.moves = false;
+      this.doorOverlap = this.physics.add.overlap(this.player, this.door, this.finishScene, null, this);
+    }
+
+    createDeath(x, y) {
+      this.star = this.add.sprite(x, y, "star");
+      this.physics.add.existing(this.star)
+      this.star.body.immovable = true;
+      this.star.body.moves = false;
+      this.starOVerlap = this.physics.add.overlap(this.player, this.star, this.playerDeath, null, this);
+    }
+
+    playerDeath (player, star) {
+      this.finished = true;
+      console.log("Death!!", player, star);
+      this.starOVerlap.active = false;
+      player.finish();
+      //this.nextScene = "stage1";
+      this.playerRestartId = setTimeout(() => this.playerRestart(), 3000);
+  }
+
+    playerRestart () {
+      this.finished = false;
+      this.player.restart();
+      console.log("Come from death: ", this.player.body.y, this.player.body.y + 100 < this.height);
+      if (this.player.body.y + 100 < this.height) {
+        this.player.y += 100;
+      }
+    }
+
+    finishScene (player, door) {
+        this.finished = true;
+        console.log("Finished!!", player, door);
+        this.doorOverlap.active = false;
+        player.finish();
+        this.nextScene = "stage1";
+        this.nextSceneId = setTimeout(() => this.scene.start("transition", {name: this.nextScene, nextScene: this.nextScene}), 3000);
+    }
 
     updateScore (points = 0) {
         const score = +this.registry.get("score") + points;
