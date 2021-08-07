@@ -1,4 +1,4 @@
-import Bean from './bean';
+import Bean from "./bean";
 
 export default class BeanGenerator {
     constructor (scene) {
@@ -8,6 +8,6 @@ export default class BeanGenerator {
 
     generate (beans) {
         const scene = this.scene;
-        this.beans = beans.map(bean => new Bean({ scene, ...bean }));   
+        this.beans = beans.map(bean => new Bean({ scene, ...bean }));
     }
 }

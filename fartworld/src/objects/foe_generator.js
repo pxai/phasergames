@@ -1,4 +1,4 @@
-import Bean from './bean';
+import Bean from "./bean";
 
 export default class FoeGenerator {
     constructor (scene) {
