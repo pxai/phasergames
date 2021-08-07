@@ -79,7 +79,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
             {
     
                 this.scene.removePlayerCollider();
-                this.anims.play('jump', true);
+                this.anims.stop();
                 this.body.setVelocityY(-this.defaultJumpVelocity);
             }
     }
