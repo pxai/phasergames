@@ -5,11 +5,12 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.scene = scene;
         scene.add.existing(this)
         scene.physics.add.existing(this)
+        this.defaultJumpVelocity = 200;
         this.init();
     }
 
     init () {
-        this.body.setBounce(0.2);
+        //this.body.setBounce(0.2);
         this.body.setCollideWorldBounds(true);
 
         this.scene.anims.create({
@@ -46,6 +47,12 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
     update() {
+        if (this.body.velocity.y < 0 )
+        console.log("Goind", this.body.velocity.y);
+        if (this.body.velocity.y > 0 && !this.body.onFloor()) {
+            console.log("Goind down", this.body.velocity.y);
+            this.scene.setPlayerCollider();
+        }
         if (this.scene.cursors.left.isDown)
         { 
             this.body.setVelocityX(-160);
@@ -64,14 +71,16 @@ export default class Player extends Phaser.GameObjects.Sprite {
         {
             this.body.setVelocityX(0);
     
-            this.anims.play('turn');
+            // this.anims.play('turn');
+            this.anims.stop();
         }
     
         if (this.scene.cursors.up.isDown && this.body.blocked.down)
             {
     
+                this.scene.removePlayerCollider();
                 this.anims.play('jump', true);
-                this.body.setVelocityY(-400);
+                this.body.setVelocityY(-this.defaultJumpVelocity);
             }
     }
 }

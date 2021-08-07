@@ -21,6 +21,8 @@ export default class Game extends Phaser.Scene {
         // this.add.image(400, 300, 'sky');
        /* this.background = this.add.tileSprite(0, 0, this.width, this.height, "scene1");
         this.background.setOrigin(0, 0);*/
+
+        this.platformsLayer = this.add.layer();
         this.beanGenerator = new BeanGenerator(this);
         this.foeGenerator = new FoeGenerator(this)
         this.player = new Player(this, 100, 400, 'grogu'); //this.physics.add.sprite(100, 450, 'dude');
