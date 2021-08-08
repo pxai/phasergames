@@ -37,19 +37,20 @@ export default class Foe extends Phaser.GameObjects.Sprite {
             frames: this.scene.anims.generateFrameNumbers(this.name, { start: 3, end: 5 }),
             frameRate: 5,
         });
-        this.animation = this.play({ key: "walk", repeat: -1 });
+        //this.animation = this.play({ key: "walk", repeat: -1 });
         if (this.right) { this.flipX = true; }
         this.body.setVelocityX(100);
     }
 
     update () {
-        if (this.body.onFloor()) {
-            this.anims.play("walk", true);
-        } else {
-            this.anims.play("fall", true);
+        if (this.body) {
+            if (this.body.onFloor()) {
+                this.anims.play("walk", true);
+            } else {
+                this.anims.play("fall", true);
+            }
+            this.flipX = (this.body.velocity.x > 0);
         }
-        this.flipX = (this.body.velocity.x > 0);
-
     }
 
     setTween () {
@@ -71,6 +72,16 @@ export default class Foe extends Phaser.GameObjects.Sprite {
         fart.body.destroy();
         foe.body.setVelocityY(-100);
         foe.body.setVelocityX(-foe.body.velocity.x);
+    }
+
+    death() {
+        console.log("Im dead ", this, this.name);
+        //foe.play({ key: "death", repeat: -1 });
+
+        this.disable();
+       // fart.destroy();
+
+        // this.destroy();
     }
 
     limitTouch(foe, limit) {

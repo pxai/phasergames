@@ -81,15 +81,17 @@ export default class Player extends Phaser.GameObjects.Sprite {
             let fart;
             if (this.redBeans > 0) {
                 console.log("Fartack ", this.right,this.body.x, x)
-                fart = new FartAttack(this.scene, x, this.body.y + 40, 1.5, this.right);
+                fart = new FartAttack(this.scene, x, this.body.y + 40, 1.8, this.right,0x964b00);
                 this.useRedBean();
                 this.scene.playFart(1.5);
+                this.scene.setCollidersWithFoes(fart, "red");
             } else {
                 console.log("Fartack ", this.right,this.body.x, x)
                 fart = new FartAttack(this.scene, x, this.body.y + 40, 1, this.right);
+                this.scene.setCollidersWithFoes(fart, "normal");
                 this.scene.playFart();
             }
-            this.scene.setCollidersWithFoes(fart);
+
             setTimeout(() => this.afterCrouch(), 300)
 
         } else {

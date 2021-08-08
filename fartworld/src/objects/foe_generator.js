@@ -22,7 +22,7 @@ export default class FoeGenerator {
        }
 
        update () {
-           this.foes.forEach(foe => { foe.update() });
+           this.foes.forEach(foe => { if (foe) foe.update() });
        }
 
        destroy () {
@@ -35,4 +35,13 @@ export default class FoeGenerator {
                 foe.setFartCollider(fartCollider);
             });
        }
+
+       setRedFartCollider (fart) {
+        this.foes.forEach(foe => { 
+            let fartCollider = this.scene.physics.add.overlap(fart, foe, () => { 
+               //foe.anims.play("death"); 
+                foe.destroy();
+            }, null, this.scene);
+        });
+   }
 }

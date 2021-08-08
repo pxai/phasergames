@@ -7,6 +7,7 @@ class FartAttack extends Phaser.GameObjects.Sprite {
         this.scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
         this.body.velocity.x = 100 * -this.right;
+        this.name = color;
 
         this.setOrigin(0.5)
 

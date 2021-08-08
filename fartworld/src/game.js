@@ -109,8 +109,11 @@ export default class Game extends Phaser.Scene {
       this.redText.setText(amount);
     }
 
-    setCollidersWithFoes (fart) {
-      this.foeGenerator.setFartCollider(fart);
+    setCollidersWithFoes (fart, type) {
+      if (type === "normal")
+        this.foeGenerator.setFartCollider(fart);
+      else
+        this.foeGenerator.setRedFartCollider(fart);
     }
 
     playFart(volume = 0.7) {
