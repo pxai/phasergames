@@ -1,4 +1,5 @@
 import Fart from "./objects/fart";
+import FartAttack from "./objects/fart_attack";
 
 export default class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, name, green, red) {
@@ -74,11 +75,19 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.right = 1;
         } else if (this.scene.cursors.down.isDown) {
             this.anims.play("crouch", true);
+            let x = this.right > 0 ? this.body.x - 5 : this.body.x + 60;
+            let fart;
             if (this.redBeans > 0) {
-                console.log("Fartack ", this.right)
-                new Fart(this.scene, this.body.x - (20 * this.right), this.body.y + 40);
+                console.log("Fartack ", this.right,this.body.x, x)
+                fart = new FartAttack(this.scene, x, this.body.y + 40, 1.5, this.right);
                 this.useRedBean();
+                this.scene.playFart(1.5);
+            } else {
+                console.log("Fartack ", this.right,this.body.x, x)
+                fart = new FartAttack(this.scene, x, this.body.y + 40, 1, this.right);
+                this.scene.playFart();
             }
+            this.scene.setCollidersWithFoes(fart);
             setTimeout(() => this.anims.play(this.right > 0 ? "right" : "left", true), 500)
 
         } else {
@@ -90,12 +99,14 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.scene.removePlayerCollider();
             this.anims.stop();
             if (this.greenBeans > 0) {
-                new Fart(this.scene, this.body.x + 25, this.body.y + 50);
+                new Fart(this.scene, this.body.x + 25, this.body.y + 50, 2);
                 this.body.setVelocityY(-this.defaultJumpVelocity - 100);
                 this.useGreenBean();
+                this.scene.playFart(1);
             } else {
                 new Fart(this.scene, this.body.x + 25, this.body.y + 50);
                 this.body.setVelocityY(-this.defaultJumpVelocity);
+                this.scene.playFart();
             }
         }
     }

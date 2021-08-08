@@ -11,6 +11,7 @@ export default class Foe extends Phaser.GameObjects.Sprite {
         this.platformLimitsCollider = this.scene.physics.add.overlap(this.scene.platformLimits, this,this.limitTouch, null, this.scene );
         this.overlap = this.scene.physics.add.overlap(this.scene.player, this, this.touch, null, this.scene);
         this.init();
+        this.fartCollider = 0;
     }
 
     init () {
@@ -58,6 +59,18 @@ export default class Foe extends Phaser.GameObjects.Sprite {
         console.log("Touched, player DEATH ", player, foe);
         foe.overlap.active = false;
         player.scene.playerDeath(player);
+    }
+
+    setFartCollider(collider) {
+        this.fartCollider = collider;
+    }
+
+    farted(fart, foe, x) {
+        console.log("Farted ", fart, foe, fart.tint);
+        foe.fartCollider.active = false;
+        fart.body.destroy();
+        foe.body.setVelocityY(-100);
+        foe.body.setVelocityX(-foe.body.velocity.x);
     }
 
     limitTouch(foe, limit) {

@@ -29,7 +29,7 @@ export default class Game extends Phaser.Scene {
 
         const greenBeans = +this.registry.get("green");
         const redBeans = +this.registry.get("red");
-        this.player = new Player(this, 100, this.height - 32, "aki", greenBeans, redBeans); // this.physics.add.sprite(100, 450, 'dude');
+        this.player = new Player(this, 100, this.height - 32, "aki", greenBeans, redBeans).setOrigin(0.5); // this.physics.add.sprite(100, 450, 'dude');
 
         this.platformsLayer = this.add.layer();
         this.beanGenerator = new BeanGenerator(this);
@@ -107,5 +107,14 @@ export default class Game extends Phaser.Scene {
     updateRedBeans (amount = 1) {
       this.registry.set("red", amount);
       this.redText.setText(amount);
+    }
+
+    setCollidersWithFoes (fart) {
+      this.foeGenerator.setFartCollider(fart);
+    }
+
+    playFart(volume = 0.7) {
+      this.fart = this.sound.add(`fart${Phaser.Math.Between(1,9)}`, {volume});
+      this.fart.play();;
     }
 }
