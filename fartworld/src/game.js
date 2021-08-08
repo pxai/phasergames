@@ -34,8 +34,7 @@ export default class Game extends Phaser.Scene {
         this.platformsLayer = this.add.layer();
         this.beanGenerator = new BeanGenerator(this);
         this.foeGenerator = new FoeGenerator(this);
-
-        this.physics.world.setBoundsCollision(false, false, true, true);
+        this.physics.world.setBoundsCollision(true, true, true, true);
         this.cursors = this.input.keyboard.createCursorKeys();
         this.scoreText = this.add.bitmapText(this.center_width, 16, "pixelFont", "SCORE", 20).setOrigin(0.5)
         this.greenText = this.add.bitmapText(this.center_width - 200, 16, "pixelFont", this.registry.get("green"), 20).setOrigin(0.5);
@@ -46,8 +45,10 @@ export default class Game extends Phaser.Scene {
       }
 
     update() {
-      if (!this.finished)
+      if (!this.finished) {
         this.player.update();
+        // this.foeGenerator.update();
+      }
     }
 
     createDoor(x, y) {
@@ -68,12 +69,11 @@ export default class Game extends Phaser.Scene {
 
     playerDeath (player, star) {
       this.finished = true;
-      console.log("Death!!", player, star);
-      this.starOVerlap.active = false;
+      console.log("Death!!", player);
       player.finish();
-      //this.nextScene = "stage1";
+
       this.playerRestartId = setTimeout(() => this.playerRestart(), 3000);
-  }
+    }
 
     playerRestart () {
       this.finished = false;

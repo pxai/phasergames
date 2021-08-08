@@ -3,6 +3,8 @@ import Fart from "./objects/fart";
 export default class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, name, green, red) {
         super(scene, x, y, name);
+        this.startX = x;
+        this.startY = y;
         this.scene = scene;
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -76,7 +78,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
                 console.log("Fartack ", this.right)
                 new Fart(this.scene, this.body.x - (20 * this.right), this.body.y + 40);
                 this.useRedBean();
-            } 
+            }
             setTimeout(() => this.anims.play(this.right > 0 ? "right" : "left", true), 500)
 
         } else {
@@ -105,26 +107,28 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
     restart () {
+      this.x = this.startX;
+      this.y = this.startY;
         this.anims.play("turn", true)
     }
 
      addGreenBean () {
         this.greenBeans++;
         this.scene.updateGreenBeans(this.greenBeans);
-      } 
-  
+      }
+
       useGreenBean () {
         this.greenBeans--;
         this.scene.updateGreenBeans(this.greenBeans);
-      } 
-  
+      }
+
       addRedBean () {
         this.redBeans++;
         this.scene.updateRedBeans(this.redBeans);
-      } 
-  
+      }
+
       useRedBean () {
         this.redBeans--;
         this.scene.updateRedBeans(this.redBeans);
-      } 
+      }
 }
