@@ -1,5 +1,5 @@
 export default {
-    door: { x: 200, y: 50 },
+    door: { x: 200, y: 450 },
     start: { x: 60, y: 400 },
     beans: [
         { x: 100, y: 100, color: 0x00ff00 },

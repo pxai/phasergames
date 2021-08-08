@@ -92,7 +92,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
                 this.scene.playFart();
             }
 
-            setTimeout(() => this.afterCrouch(), 300)
+            setTimeout(() => this.afterCrouch(), 500)
 
         } else {
             this.body.setVelocityX(0);

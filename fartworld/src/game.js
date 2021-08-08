@@ -20,6 +20,7 @@ export default class Game extends Phaser.Scene {
     }
 
     create () {
+      this.add.tileSprite(0, 0, 800, 600, 'background1').setOrigin(0,0);
       this.finished = false;
       console.log("Game create: ", this.finished)
         this.width = this.sys.game.config.width;
@@ -40,8 +41,6 @@ export default class Game extends Phaser.Scene {
         this.greenText = this.add.bitmapText(this.center_width - 200, 16, "pixelFont", this.registry.get("green"), 20).setOrigin(0.5);
         this.redText = this.add.bitmapText(this.center_width + 200, 16, "pixelFont", this.registry.get("red"), 20).setOrigin(0.5);
         this.updateScore();
-
-        // this.createDeath(300, 450);
       }
 
     update() {
@@ -51,7 +50,7 @@ export default class Game extends Phaser.Scene {
       }
 
       if (this.foeGenerator.areAllDead()) {
-        this.finishScene(this.player, this.door);
+        this.door.setTexture("door");
       }
     }
 
@@ -64,19 +63,11 @@ export default class Game extends Phaser.Scene {
     }
 
     createDoor(x, y) {
-      this.door = this.add.sprite(x, y, "door");
+      this.door = this.add.sprite(x, y, "closed_door");
       this.physics.add.existing(this.door)
       this.door.body.immovable = true;
       this.door.body.moves = false;
       this.doorOverlap = this.physics.add.overlap(this.player, this.door, this.finishScene, null, this);
-    }
-
-    createDeath(x, y) {
-      this.star = this.add.sprite(x, y, "star");
-      this.physics.add.existing(this.star)
-      this.star.body.immovable = true;
-      this.star.body.moves = false;
-      this.starOVerlap = this.physics.add.overlap(this.player, this.star, this.playerDeath, null, this);
     }
 
     playerDeath (player, star) {
@@ -97,12 +88,13 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene (player, door) {
+      if (this.foeGenerator.areAllDead()) {
         this.finished = true;
         console.log("Finished!!", player, door);
         this.doorOverlap.active = false;
         player.finish();
-        // this.nextScene = "stage1";
         this.nextSceneId = setTimeout(() => this.scene.start("transition", {name: this.nextScene, nextScene: this.nextScene}), 3000);
+      }
     }
 
     updateScore (points = 0) {
