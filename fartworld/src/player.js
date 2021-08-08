@@ -14,6 +14,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.redBeans = red;
         this.init();
         this.right = 1;
+        this.enableAttackFart = true;
     }
 
     init () {
@@ -73,7 +74,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.body.setVelocityX(160);
             this.anims.play("right", true);
             this.right = 1;
-        } else if (this.scene.cursors.down.isDown) {
+        } else if (this.scene.cursors.down.isDown && this.enableAttackFart) {
+            this.enableAttackFart = false;
             this.anims.play("crouch", true);
             let x = this.right > 0 ? this.body.x - 5 : this.body.x + 60;
             let fart;
@@ -88,7 +90,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
                 this.scene.playFart();
             }
             this.scene.setCollidersWithFoes(fart);
-            setTimeout(() => this.anims.play(this.right > 0 ? "right" : "left", true), 500)
+            setTimeout(() => this.afterCrouch(), 300)
 
         } else {
             this.body.setVelocityX(0);
@@ -109,6 +111,11 @@ export default class Player extends Phaser.GameObjects.Sprite {
                 this.scene.playFart();
             }
         }
+    }
+
+    afterCrouch () {
+        this.anims.play(this.right > 0 ? "right" : "left", true)
+        this.enableAttackFart = true;
     }
 
     finish () {
