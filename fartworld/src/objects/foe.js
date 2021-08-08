@@ -31,15 +31,16 @@ export default class Foe extends Phaser.GameObjects.Sprite {
         });
         this.animation = this.play({ key: "walk", repeat: -1 });
         if (this.right) { this.flipX = true; }
+        this.body.setVelocityX(100);
     }
 
     update () {
 
-        if (this.right) {
+        /*if (this.right) {
             this.body.setVelocityX(120);
         } else {
             this.body.setVelocityX(-120);
-        }
+        }*/
     }
 
     setTween () {

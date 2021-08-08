@@ -47,7 +47,7 @@ export default class Game extends Phaser.Scene {
     update() {
       if (!this.finished) {
         this.player.update();
-        // this.foeGenerator.update();
+        this.foeGenerator.update();
       }
     }
 
