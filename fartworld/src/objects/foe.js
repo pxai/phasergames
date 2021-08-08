@@ -8,6 +8,7 @@ export default class Foe extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.platformCollider = this.scene.physics.add.collider(this, this.scene.platforms);
+        this.platformLimitsCollider = this.scene.physics.add.overlap(this.scene.platformLimits, this,this.limitTouch, null, this.scene );
         this.overlap = this.scene.physics.add.overlap(this.scene.player, this, this.touch, null, this.scene);
         this.init();
     }
@@ -16,6 +17,12 @@ export default class Foe extends Phaser.GameObjects.Sprite {
         this.body.setCollideWorldBounds(true);
         this.body.onWorldBounds = true;
         this.setOrigin(0.5);
+
+        this.scene.anims.create({
+            key: "fall",
+            frames: [{ key: this.name, frame: 0 }],
+            frameRate: 5,
+        });
 
         this.scene.anims.create({
             key: "walk",
@@ -35,12 +42,13 @@ export default class Foe extends Phaser.GameObjects.Sprite {
     }
 
     update () {
-
-        /*if (this.right) {
-            this.body.setVelocityX(120);
+        if (this.body.onFloor()) {
+            this.anims.play("walk", true);
         } else {
-            this.body.setVelocityX(-120);
-        }*/
+            this.anims.play("fall", true);
+        }
+        this.flipX = (this.body.velocity.x > 0);
+
     }
 
     setTween () {
@@ -50,7 +58,10 @@ export default class Foe extends Phaser.GameObjects.Sprite {
         console.log("Touched, player DEATH ", player, foe);
         foe.overlap.active = false;
         player.scene.playerDeath(player);
+    }
 
+    limitTouch(foe, limit) {
+        foe.body.setVelocityX(-foe.body.velocity.x);
     }
 
     disable () {

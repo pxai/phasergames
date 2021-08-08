@@ -15,14 +15,10 @@ export default class FoeGenerator {
                    if (right) {
                      console.log("Right!!");
                       foe.setVelocityX(-100);
-                     //foe.x -= 5;
                    } else if (left) {
                       console.log("Left!");
                       foe.setVelocityX(100);
-                     //foe.x += 5;
                    }
-
-                   // console.log("New velocity",foe.velocity.x);
                });
            });
        }
