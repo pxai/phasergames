@@ -29,11 +29,12 @@ export default class Game extends Phaser.Scene {
 
         const greenBeans = +this.registry.get("green");
         const redBeans = +this.registry.get("red");
-        this.player = new Player(this, 100, this.height - 32, "aki", greenBeans, redBeans).setOrigin(0.5); // this.physics.add.sprite(100, 450, 'dude');
+        this.player = new Player(this, 100, this.height - 32, "aki", greenBeans, redBeans); // this.physics.add.sprite(100, 450, 'dude');
 
         this.platformsLayer = this.add.layer();
         this.beanGenerator = new BeanGenerator(this);
         this.foeGenerator = new FoeGenerator(this);
+
         this.physics.world.setBoundsCollision(true, true, true, true);
         this.cursors = this.input.keyboard.createCursorKeys();
         this.scoreText = this.add.bitmapText(this.center_width, 16, "pixelFont", "SCORE", 20).setOrigin(0.5)
@@ -50,17 +51,6 @@ export default class Game extends Phaser.Scene {
         this.foeGenerator.update();
       }
 
-      if (this.foeGenerator.areAllDead()) {
-        this.finishScene(this.player, this.door);
-      }
-    }
-
-    setPlayerCollider (player) {
-      this.playerCollider.active = true;
-    }
-
-    removePlayerCollider () {
-        this.playerCollider.active = false;
     }
 
     createDoor(x, y) {
@@ -71,21 +61,21 @@ export default class Game extends Phaser.Scene {
       this.doorOverlap = this.physics.add.overlap(this.player, this.door, this.finishScene, null, this);
     }
 
-    createDeath(x, y) {
+    /*createDeath(x, y) {
       this.star = this.add.sprite(x, y, "star");
       this.physics.add.existing(this.star)
       this.star.body.immovable = true;
       this.star.body.moves = false;
-      this.starOVerlap = this.physics.add.overlap(this.player, this.star, this.playerDeath, null, this);
-    }
+      this.starOerlap = this.physics.add.overlap(this.player, this.star, this.playerDeath, null, this);
+    }*/
 
-    playerDeath (player, star) {
+    playerDeath (player) {
       this.finished = true;
       console.log("Death!!", player);
       player.finish();
 
       this.playerRestartId = setTimeout(() => this.playerRestart(), 3000);
-    }
+  }
 
     playerRestart () {
       this.finished = false;
@@ -101,7 +91,7 @@ export default class Game extends Phaser.Scene {
         console.log("Finished!!", player, door);
         this.doorOverlap.active = false;
         player.finish();
-        // this.nextScene = "stage1";
+        this.nextScene = "stage1";
         this.nextSceneId = setTimeout(() => this.scene.start("transition", {name: this.nextScene, nextScene: this.nextScene}), 3000);
     }
 
@@ -119,17 +109,5 @@ export default class Game extends Phaser.Scene {
     updateRedBeans (amount = 1) {
       this.registry.set("red", amount);
       this.redText.setText(amount);
-    }
-
-    setCollidersWithFoes (fart, type) {
-      if (type === "normal")
-        this.foeGenerator.setFartCollider(fart);
-      else
-        this.foeGenerator.setRedFartCollider(fart);
-    }
-
-    playFart(volume = 0.7) {
-      this.fart = this.sound.add(`fart${Phaser.Math.Between(1,9)}`, {volume});
-      this.fart.play();;
     }
 }

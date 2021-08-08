@@ -1,6 +1,6 @@
-class Bean extends Phaser.GameObjects.Sprite {
+class RedBean extends Phaser.GameObjects.Sprite {
     constructor ({ scene, x, y, color }) {
-        super(scene, x, y, "bean");
+        super(scene, x, y, "redbean");
         this.scene = scene;
         this.setTween();
         scene.add.existing(this);
@@ -10,13 +10,12 @@ class Bean extends Phaser.GameObjects.Sprite {
         this.body.moves = false;
     
         const beanAnimation = this.scene.anims.create({
-            key: "spin",
-            frames: this.scene.anims.generateFrameNumbers("bean"),
+            key: "redspin",
+            frames: this.scene.anims.generateFrameNumbers("redbean"),
             frameRate: 5
         });
-        this.play({ key: "spin", repeat: -1 });
+        this.play({ key: "redspin", repeat: -1 });
 
-        this.tint = color;
         this.overlap = this.scene.physics.add.overlap(this.scene.player, this, this.touch, null, this.scene);
     }
 
@@ -31,7 +30,8 @@ class Bean extends Phaser.GameObjects.Sprite {
     }
 
     touch (player, bean) {
-        player.addGreenBean();
+        console.log("Touched!! ", player, bean);
+        player.addRedBean();
         bean.disable();
         this.regenerateId = setTimeout(() => {bean.enableAgain()}, 5000);
     }
@@ -52,4 +52,4 @@ class Bean extends Phaser.GameObjects.Sprite {
     }
 }
 
-export default Bean;
+export default RedBean;

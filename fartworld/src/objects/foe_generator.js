@@ -9,7 +9,6 @@ export default class FoeGenerator {
     generate (foes) {
            const scene = this.scene;
            this.foes = foes.map(foe => new Foe({ scene, ...foe }));
-
            this.foes.forEach(foe => {
                 this.scene.physics.world.on('worldbounds', (foe, up, down, left, right) => {
                    if (right) {
@@ -22,7 +21,13 @@ export default class FoeGenerator {
        }
 
        update () {
-           this.foes.forEach(foe => { if (foe) foe.update() });
+           this.foes.forEach(foe => { 
+               if (foe) foe.update() 
+            });
+       }
+
+       areAllDead () {
+            return this.foes.every(foe => !foe.active);
        }
 
        destroy () {
@@ -39,7 +44,8 @@ export default class FoeGenerator {
        setRedFartCollider (fart) {
         this.foes.forEach(foe => { 
             let fartCollider = this.scene.physics.add.overlap(fart, foe, () => { 
-               //foe.anims.play("death"); 
+               //foe.anims.play("death");
+                this.scene.updateScore(500); 
                 foe.destroy();
             }, null, this.scene);
         });

@@ -31,6 +31,7 @@ class Bean extends Phaser.GameObjects.Sprite {
     }
 
     touch (player, bean) {
+        console.log("Touched!! ", player, bean);
         player.addGreenBean();
         bean.disable();
         this.regenerateId = setTimeout(() => {bean.enableAgain()}, 5000);

@@ -15,17 +15,10 @@ export default class Stage1 extends Game {
 
         // this.platforms.create(400, 568, 'ground').refreshBody();
         this.platforms = this.physics.add.staticGroup();
-        this.platformLimits = this.physics.add.staticGroup();
-        this.platformsLayer.add(this.platformLimits.create(200, 492, "limit"));
+
         this.platformsLayer.add(this.platforms.create(400, 500, "ground"));
-        this.platformsLayer.add(this.platformLimits.create(600, 492, "limit"));
-
         this.platformsLayer.add(this.platforms.create(50, 250, "ground"));
-        this.platformsLayer.add(this.platformLimits.create(250, 242, "limit"));
-
-        this.platformsLayer.add(this.platformLimits.create(550, 212, "limit"));
         this.platformsLayer.add(this.platforms.create(750, 220, "ground"));
-        this.platformsLayer.add(this.platformLimits.create(950, 212, "limit"));
 
         this.playerCollider = this.physics.add.collider(this.player, this.platforms);
 
@@ -35,11 +28,15 @@ export default class Stage1 extends Game {
         this.nextScene = config.nextScene;
      }
 
-    update () {
-        super.update();
+    setPlayerCollider (player) {
+        this.playerCollider.active = true;
     }
 
-    touch (a,b) {
-        console.log("touched",a,b);
+    removePlayerCollider () {
+        this.playerCollider.active = false;
+    }
+
+    update () {
+        super.update();
     }
 }

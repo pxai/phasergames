@@ -16,8 +16,10 @@ export default {
         { x: 480, y: 550, color: 0x00ff00 }
     ],
     foes: [
-        { x: 400, y: 350, name: "tomato" },
+        { x: 100, y: 100, name: "tomato" },
+        { x: 340, y: 100, name: "tomato" },
+        { x: 200, y: 300, name: "tomato" },
         { x: 400, y: 400, name: "tomato" }
     ],
-    nextScene: "stage1"
+    nextScene: "stage2"
 };

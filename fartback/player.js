@@ -1,5 +1,4 @@
 import Fart from "./objects/fart";
-import FartAttack from "./objects/fart_attack";
 
 export default class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, name, green, red) {
@@ -14,7 +13,6 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.redBeans = red;
         this.init();
         this.right = 1;
-        this.enableAttackFart = true;
     }
 
     init () {
@@ -74,25 +72,14 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.body.setVelocityX(160);
             this.anims.play("right", true);
             this.right = 1;
-        } else if (this.scene.cursors.down.isDown && this.enableAttackFart) {
-            this.enableAttackFart = false;
+        } else if (this.scene.cursors.down.isDown) {
             this.anims.play("crouch", true);
-            let x = this.right > 0 ? this.body.x - 5 : this.body.x + 60;
-            let fart;
             if (this.redBeans > 0) {
-                console.log("Fartack ", this.right,this.body.x, x)
-                fart = new FartAttack(this.scene, x, this.body.y + 40, 1.8, this.right,0x964b00);
+                console.log("Fartack ", this.right)
+                new Fart(this.scene, this.body.x - (20 * this.right), this.body.y + 40);
                 this.useRedBean();
-                this.scene.playFart(1.5);
-                this.scene.setCollidersWithFoes(fart, "red");
-            } else {
-                console.log("Fartack ", this.right,this.body.x, x)
-                fart = new FartAttack(this.scene, x, this.body.y + 40, 1, this.right);
-                this.scene.setCollidersWithFoes(fart, "normal");
-                this.scene.playFart();
-            }
-
-            setTimeout(() => this.afterCrouch(), 300)
+            } 
+            setTimeout(() => this.anims.play(this.right > 0 ? "right" : "left", true), 500)
 
         } else {
             this.body.setVelocityX(0);
@@ -103,21 +90,14 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.scene.removePlayerCollider();
             this.anims.stop();
             if (this.greenBeans > 0) {
-                new Fart(this.scene, this.body.x + 25, this.body.y + 50, 2);
+                new Fart(this.scene, this.body.x + 25, this.body.y + 50);
                 this.body.setVelocityY(-this.defaultJumpVelocity - 100);
                 this.useGreenBean();
-                this.scene.playFart(1);
             } else {
                 new Fart(this.scene, this.body.x + 25, this.body.y + 50);
                 this.body.setVelocityY(-this.defaultJumpVelocity);
-                this.scene.playFart();
             }
         }
-    }
-
-    afterCrouch () {
-        this.anims.play(this.right > 0 ? "right" : "left", true)
-        this.enableAttackFart = true;
     }
 
     finish () {
@@ -127,30 +107,28 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
     restart () {
-      this.x = this.startX;
-      this.y = this.startY;
+        this.x = this.startX;
+        this.y = this.startY;
         this.anims.play("turn", true)
     }
 
      addGreenBean () {
         this.greenBeans++;
-        this.scene.updateScore(20);
         this.scene.updateGreenBeans(this.greenBeans);
-      }
-
+      } 
+  
       useGreenBean () {
         this.greenBeans--;
         this.scene.updateGreenBeans(this.greenBeans);
-      }
-
+      } 
+  
       addRedBean () {
         this.redBeans++;
-        this.scene.updateScore(50);
         this.scene.updateRedBeans(this.redBeans);
-      }
-
+      } 
+  
       useRedBean () {
         this.redBeans--;
         this.scene.updateRedBeans(this.redBeans);
-      }
+      } 
 }
