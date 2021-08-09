@@ -10,11 +10,13 @@ export default class GreenPepper extends Foe {
             if (this.body.onFloor()) {
                 this.play("walk" + this.name, true);
                 this.platformLimitsCollider.active = true;
+                this.platformCollider.active = true; 
                 if (Phaser.Math.Between(1,101) > 100)
-                    this.body.setVelocityY(-350);
+                    this.body.setVelocityY(-300);
             } else {
                 this.play("fall" + this.name, true);
                 this.platformLimitsCollider.active = false;
+                this.platformCollider.active = this.body.velocity.y > 0;
             }
             this.flipX = (this.body.velocity.x > 0);
         }
