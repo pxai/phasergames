@@ -116,12 +116,12 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.scene.removePlayerCollider();
             this.anims.play("jump", true);
             if (this.greenBeans > 0) {
-                new Fart(this.scene, this.body.x + 25, this.body.y + 20, 2);
+                new Fart(this.scene, this.body.x + 15, this.body.y + 20, 2);
                 this.body.setVelocityY(-this.defaultJumpVelocity - 100);
                 this.useGreenBean();
                 this.scene.playFart(1);
             } else {
-                new Fart(this.scene, this.body.x + 25, this.body.y + 20);
+                new Fart(this.scene, this.body.x + 15, this.body.y + 20);
                 this.body.setVelocityY(-this.defaultJumpVelocity);
                 this.scene.playFart();
             }

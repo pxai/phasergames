@@ -45,7 +45,7 @@ export default class Bootloader extends Phaser.Scene {
         this.registry.set("score", 0);
         this.registry.set("green", 0);
         this.registry.set("red", 0);
-        this.load.bitmapFont("pixelFont", "assets/fonts/square.png", "assets/fonts/square.xml");
+        this.load.bitmapFont("pixelFont", "assets/fonts/arcade.png", "assets/fonts/arcade.xml");
     }
 
     create () {
