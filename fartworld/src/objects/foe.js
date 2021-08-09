@@ -1,9 +1,9 @@
 export default class Foe extends Phaser.GameObjects.Sprite {
     constructor ({ scene, x, y, name }) {
-        super(scene, x, y, "bean");
+        super(scene, x, y, name);
+        console.log("Name passed: ", name);
         this.scene = scene;
-        this.name = "tomato"; // name;
-        this.setTween();
+        this.name = name;
         this.right = Phaser.Math.Between(-1, 1) > 0;
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -18,22 +18,22 @@ export default class Foe extends Phaser.GameObjects.Sprite {
         this.body.setCollideWorldBounds(true);
         this.body.onWorldBounds = true;
         this.setOrigin(0.5);
-
+        console.log("About to create animations", this.name);
         this.scene.anims.create({
-            key: "fall",
+            key: "fall" + this.name,
             frames: [{ key: this.name, frame: 0 }],
             frameRate: 5,
         });
 
         this.scene.anims.create({
-            key: "walk",
+            key: "walk" + this.name,
             frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 2 }),
             frameRate: 5,
             repeat: -1
         });
 
         this.scene.anims.create({
-            key: "death",
+            key: "death" + this.name,
             frames: this.scene.anims.generateFrameNumbers(this.name, { start: 3, end: 5 }),
             frameRate: 5,
         });
@@ -45,10 +45,10 @@ export default class Foe extends Phaser.GameObjects.Sprite {
     update () {
         if (this.body) {
             if (this.body.onFloor()) {
-                this.anims.play("walk", true);
+                this.play("walk" + this.name, true);
                 this.platformLimitsCollider.active = true;
             } else {
-                this.anims.play("fall", true);
+                this.play("fall" + this.name, true);
                 this.platformLimitsCollider.active = false;
             }
             this.flipX = (this.body.velocity.x > 0);
@@ -79,12 +79,7 @@ export default class Foe extends Phaser.GameObjects.Sprite {
 
     death() {
         console.log("Im dead ", this, this.name);
-        //foe.play({ key: "death", repeat: -1 });
-
         this.disable();
-       // fart.destroy();
-
-        // this.destroy();
     }
 
     limitTouch(foe, limit) {

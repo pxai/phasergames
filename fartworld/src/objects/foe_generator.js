@@ -1,4 +1,5 @@
-import Foe from "./foe";
+import GreenPepper from "./green_pepper";
+import Tomato from "./tomato";
 
 export default class FoeGenerator {
     constructor (scene) {
@@ -8,8 +9,15 @@ export default class FoeGenerator {
 
     generate (foes) {
            const scene = this.scene;
-           this.foes = foes.map(foe => new Foe({ scene, ...foe }));
+           this.foes = foes.map(foe => {
+               switch(foe.name) {
+                   case "tomato": return new Tomato({ scene, ...foe })
+                   case "greenpepper": return new GreenPepper({ scene, ...foe })
+               }
+            });
+
            this.foes.forEach(foe => {
+                console.log("Created: ", foe);
                 this.scene.physics.world.on('worldbounds', (foe, up, down, left, right) => {
                    if (right) {
                       foe.setVelocityX(-100);
@@ -21,7 +29,7 @@ export default class FoeGenerator {
        }
 
        update () {
-           this.foes.forEach(foe => { 
+           this.foes.forEach(foe => {
                if (foe) foe.update() 
             });
        }

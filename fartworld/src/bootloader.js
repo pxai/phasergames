@@ -35,6 +35,7 @@ export default class Bootloader extends Phaser.Scene {
             this.load.audio(`fart${i+1}`,`assets/sounds/farts/fart${i+1}.mp3`)
         });
         this.load.spritesheet("tomato", "assets/images/tomato.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("greenpepper", "assets/images/greenpepper.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("scene1", "assets/images/scene1.png", { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet("aki", "assets/images/aki.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("fart", "assets/images/fart.png", { frameWidth: 32, frameHeight: 32 });
