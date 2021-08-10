@@ -35,7 +35,7 @@ export default class FoeGenerator {
        }
 
        areAllDead () {
-            return this.foes.every(foe => !foe.active);
+            return this.foes.every(foe => foe.dead);
        }
 
        destroy () {

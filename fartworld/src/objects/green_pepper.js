@@ -6,7 +6,7 @@ export default class GreenPepper extends Foe {
     }
 
     update () {
-        if (this.body) {
+        if (this.body && !this.dead) {
             if (this.body.onFloor()) {
                 this.play("walk" + this.name, true);
                 this.platformLimitsCollider.active = true;
