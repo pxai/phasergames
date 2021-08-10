@@ -1,7 +1,7 @@
 export default class Foe extends Phaser.GameObjects.Sprite {
     constructor ({ scene, x, y, name }) {
         super(scene, x, y, name);
-        console.log("Name passed: ", name);
+
         this.scene = scene;
         this.name = name;
         this.right = Phaser.Math.Between(-1, 1) > 0;
@@ -10,15 +10,17 @@ export default class Foe extends Phaser.GameObjects.Sprite {
         this.platformCollider = this.scene.physics.add.collider(this, this.scene.platforms);
         this.platformLimitsCollider = this.scene.physics.add.overlap(this.scene.platformLimits, this,this.limitTouch, null, this.scene );
         this.overlap = this.scene.physics.add.overlap(this.scene.player, this, this.touch, null, this.scene);
+        this.groundCollider = this.scene.physics.add.overlap(this.scene.ground, this, this.hitGround, null, this );
         this.init();
         this.fartCollider = 0;
+        this.dead = false;
     }
 
     init () {
         this.body.setCollideWorldBounds(true);
         this.body.onWorldBounds = true;
         this.setOrigin(0.5);
-        console.log("About to create animations", this.name);
+
         this.scene.anims.create({
             key: "fall" + this.name,
             frames: [{ key: this.name, frame: 0 }],
@@ -32,30 +34,40 @@ export default class Foe extends Phaser.GameObjects.Sprite {
             repeat: -1
         });
 
-        this.scene.anims.create({
+        this.deathAnimation = this.scene.anims.create({
             key: "death" + this.name,
             frames: this.scene.anims.generateFrameNumbers(this.name, { start: 3, end: 5 }),
             frameRate: 5,
         });
-        //this.animation = this.play({ key: "walk", repeat: -1 });
+
+        this.on('animationcomplete', this.animationComplete, this);
+
         if (this.right) { this.flipX = true; }
         this.body.setVelocityX(100);
     }
 
     update () {
-        if (this.body) {
+        if (this.body && !this.dead) {
             if (this.body.onFloor()) {
-                this.play("walk" + this.name, true);
+                this.animate("walk")
                 this.platformLimitsCollider.active = true;
             } else {
-                this.play("fall" + this.name, true);
+                this.animate("fall");
                 this.platformLimitsCollider.active = false;
             }
             this.flipX = (this.body.velocity.x > 0);
         }
     }
 
-    setTween () {
+    animate (animation) {
+        this.play(animation + this.name, true)
+    }
+
+    animationComplete(animation, frame) {
+        if (animation.key === "deathtomato") {
+            console.log("Animation complete")
+            this.death();
+        }
     }
 
     touch (player, foe) {
@@ -69,7 +81,7 @@ export default class Foe extends Phaser.GameObjects.Sprite {
     }
 
     farted(fart, foe, x) {
-        console.log("Farted ", fart, foe, fart.tint);
+        console.log("Farted ", fart, foe, fart.tint, foe.body.speed);
         foe.fartCollider.active = false;
         fart.body.destroy();
         foe.body.setVelocityY(-100);
@@ -77,12 +89,25 @@ export default class Foe extends Phaser.GameObjects.Sprite {
         foe.scene.updateScore(100);
     }
 
+    redFarted (fart, foe) {   
+        console.log("Red farted!! ", this);
+        this.animate("death");
+        this.dead = true;
+        this.body.enable = false; 
+        this.scene.updateScore(500); 
+    }
+
+    hitGround(ground, foe) {
+    }
+
     death() {
         console.log("Im dead ", this, this.name);
-        this.disable();
+        this.dead = true;
+        this.destroy();
     }
 
     limitTouch(foe, limit) {
+        foe.body.setVelocityY(-30);
         foe.body.setVelocityX(-foe.body.velocity.x);
     }
 

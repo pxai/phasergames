@@ -37,6 +37,8 @@ export default class Game extends Phaser.Scene {
         this.foeGenerator = new FoeGenerator(this);
         this.physics.world.setBoundsCollision(true, true, true, true);
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.ground = this.add.rectangle(this.center_width, this.height, this.width, 1, 0x000000, 0);
+        this.physics.world.enable(this.ground, 1);
         this.scoreText = this.add.bitmapText(this.center_width, 16, "pixelFont", "SCORE", 20).setOrigin(0.5)
         this.greenText = this.add.bitmapText(this.center_width - 200, 16, "pixelFont", this.registry.get("green"), 20).setOrigin(0.5);
         this.redText = this.add.bitmapText(this.center_width + 200, 16, "pixelFont", this.registry.get("red"), 20).setOrigin(0.5);

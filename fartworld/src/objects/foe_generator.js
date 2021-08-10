@@ -50,12 +50,8 @@ export default class FoeGenerator {
        }
 
        setRedFartCollider (fart) {
-        this.foes.forEach(foe => { 
-            let fartCollider = this.scene.physics.add.overlap(fart, foe, () => { 
-               //foe.anims.play("death");
-                this.scene.updateScore(500); 
-                foe.destroy();
-            }, null, this.scene);
-        });
-   }
+            this.foes.forEach(foe => {
+                this.scene.physics.add.overlap(fart, foe, foe.redFarted, null, foe);
+            });
+        }
 }
