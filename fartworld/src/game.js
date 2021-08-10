@@ -1,6 +1,7 @@
 import Player from "./player";
 import BeanGenerator from "./objects/bean _generator";
 import FoeGenerator from "./objects/foe_generator";
+import Bullet from "./objects/bullet";
 
 export default class Game extends Phaser.Scene {
     constructor ({ key }) {
@@ -97,6 +98,10 @@ export default class Game extends Phaser.Scene {
         player.finish();
         this.nextSceneId = setTimeout(() => this.scene.start("transition", {name: this.nextScene, nextScene: this.nextScene}), 3000);
       }
+    }
+
+    shoot (avocado, direction) {
+      new Bullet(this, avocado.x, avocado.y, direction);
     }
 
     updateScore (points = 0) {

@@ -1,5 +1,6 @@
 import GreenPepper from "./green_pepper";
 import Tomato from "./tomato";
+import Avocado from "./avocado";
 
 export default class FoeGenerator {
     constructor (scene) {
@@ -13,6 +14,7 @@ export default class FoeGenerator {
                switch(foe.name) {
                    case "tomato": return new Tomato({ scene, ...foe })
                    case "greenpepper": return new GreenPepper({ scene, ...foe })
+                   case "avocado": return new Avocado({ scene, ...foe })
                }
             });
 
