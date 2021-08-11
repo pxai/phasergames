@@ -40,7 +40,6 @@ export default class Avocado extends Foe {
     }
 
     hitGround(ground, foe) {
-        console.log("Oh I hit the ground a avocado!! ", this);
         this.dead = true;
         this.body.enable = false; 
         this.scene.updateScore(1000);
@@ -49,8 +48,6 @@ export default class Avocado extends Foe {
     animationComplete(animation, frame) {
         super.animationComplete(animation, frame)
         if (animation.key === "shootavocado") {
-            console.log("Shoot Animation complete")
-
             this.shooting = false;
             this.body.setVelocityX(100);
         }
@@ -59,9 +56,6 @@ export default class Avocado extends Foe {
     shootInTime(animation, frame, avocado) {
         // super.animationUpdate(animation, frame, avocado)
         if(animation.key === "shootavocado" && frame.index === 3) {
-            console.log("FIRE!!, avocado: ", avocado);	
-
-            console.log("Shooting time")
             this.scene.shoot(this, this.direction);
         }
     }

@@ -21,5 +21,10 @@ export default {
         { x: 100, y: 50, name: "carrot" },
         { x: 330, y: 200, name: "avocado" },
     ],
+    platforms: [
+        {x: 400, y: 500, type: "ground", mode: "horizontal"},
+        {x: 50, y: 250, type: "ground", mode: "horizontal"},
+        {x: 750, y: 220, type: "ground", mode: "horizontal"},
+    ],
     nextScene: "stage1"
 };

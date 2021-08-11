@@ -1,39 +1,32 @@
 import Foe from './foe';
 
 export default class Carrot extends Foe {
-    constructor ({ scene, x, y, name }) {
+    constructor ({ scene, platforms, x, y, name }) {
         super({scene, x, y, name: "carrot"});
-        this.shooting = false;
+        this.platforms = platforms;
+        this.hiding = false;
+        this.appearing = false;
     }
 
     init() {
         super.init();
-        /*this.scene.anims.create({
+        this.scene.anims.create({
             key: "hide" + this.name,
-            frames: this.scene.anims.generateFrameNumbers(this.name, { start: 6, end: 9 }),
+            frames: this.scene.anims.generateFrameNumbers(this.name, { start: 5, end: 14 }),
             frameRate: 10,
         });
-
-        this.scene.anims.create({
-            key: "appear" + this.name,
-            frames: this.scene.anims.generateFrameNumbers(this.name, { start: 6, end: 9 }),
-            frameRate: 10,
-        });*/
     }
 
     update () {
-        if (this.body && !this.dead && !this.shooting) {
+        if (this.body && !this.dead && !this.hiding && !this.appearing) {
             if (this.body.onFloor()) {
                 this.play("walk" + this.name, true);
                 this.platformLimitsCollider.active = true;
                 this.platformCollider.active = true; 
                 if (Phaser.Math.Between(1,101) > 100) {
-                   /* let direction = this.body.velocity.x > 0 ? 1 : -1;
-                    this.shooting = true;
+                    this.hiding = true;
                     this.body.setVelocityX(0);
-                    this.play("shoot" + this.name, true );
-                    this.flipX = (this.body.velocity.x > 0);
-                    this.scene.shoot(this, direction);*/
+                    this.play("hide" + this.name, true );
                 }
             } else {
                 this.play("fall" + this.name, true);
@@ -54,15 +47,22 @@ export default class Carrot extends Foe {
 
     animationComplete(animation, frame) {
         super.animationComplete(animation, frame)
-        switch (animation.key) {
-            case "hidecarrot":
-                console.log("Animation complete")
-                this.shooting = false;
+        if (animation.key ===  "hidecarrot") {
+            if (this.hiding) {
+                console.log("Animation complete: ", this.scene)
+                this.hiding = false;
+                this.appearing = true;
+                this.scene.time.delayedCall(Phaser.Math.Between(2000, 4000), this.reappear, null, this); 
+             } else if (this.appearing) {
+                this.appearing = false;
                 this.body.setVelocityX(100);
-                break;
-            case "showcarrot":
-                break;
-            default: break;
+            }
         }
+    }
+
+    reappear () {
+        const platform = this.platforms[Phaser.Math.Between(0, this.platforms.length-1)];
+        this.setPosition(platform.x + 10, platform.y - 32);
+        this.playReverse("hide" + this.name, true );
     }
 }

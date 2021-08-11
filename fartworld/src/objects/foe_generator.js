@@ -9,14 +9,14 @@ export default class FoeGenerator {
         this.foes = [];
     }
 
-    generate (foes) {
+    generate (foes, platforms) {
            const scene = this.scene;
            this.foes = foes.map(foe => {
                switch(foe.name) {
                    case "tomato": return new Tomato({ scene, ...foe })
                    case "greenpepper": return new GreenPepper({ scene, ...foe })
                    case "avocado": return new Avocado({ scene, ...foe })
-                   case "carrot": return new Carrot({ scene, ...foe })
+                   case "carrot": return new Carrot({ scene, platforms,  ...foe })
                }
             });
 
