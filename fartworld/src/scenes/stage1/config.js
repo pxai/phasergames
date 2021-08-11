@@ -18,7 +18,7 @@ export default {
     foes: [
         { x: 400, y: 350, name: "tomato" },
         { x: 230, y: 400, name: "tomato" },
-        { x: 100, y: 50, name: "greenpepper" },
+        { x: 100, y: 50, name: "carrot" },
         { x: 330, y: 200, name: "avocado" },
     ],
     nextScene: "stage1"
