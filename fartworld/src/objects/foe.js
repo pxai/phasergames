@@ -64,7 +64,7 @@ export default class Foe extends Phaser.GameObjects.Sprite {
     }
 
     animationComplete(animation, frame) {
-        if (animation.key === "deathtomato") {
+        if (animation.key.startsWith("death")) {
             console.log("Animation complete")
             this.death();
         }

@@ -57,7 +57,7 @@ export default class Carrot extends Foe {
                 this.appearing = false;
                 this.body.setVelocityX(100);
             }
-        }
+        } 
     }
 
     reappear () {
