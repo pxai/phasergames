@@ -101,6 +101,7 @@ export default class Game extends Phaser.Scene {
     }
 
     shoot (avocado, direction) {
+      console.log("SHOOOOOOOOOOOOOOOOOT", avocado);
       new Bullet(this, avocado.x, avocado.y, direction);
     }
 
