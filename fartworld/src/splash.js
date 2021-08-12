@@ -40,7 +40,8 @@ export default class Splash extends Phaser.Scene {
     showHelp() {
         console.log("Show help");
         this.add.bitmapText(this.center_width, 420, "pixelFont", "A FARTASTIC ADVENTURE!!", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 460, "pixelFont", "By PELLO", 15).setOrigin(0.5);
+        this.add.sprite(this.center_width -40, 460, "pello").setOrigin(0.5).setScale(0.3)
+        this.add.bitmapText(this.center_width + 40, 460, "pixelFont", "By PELLO", 15).setOrigin(0.5);
         this.player = this.add.sprite(this.center_width, 360, "aki").setOrigin(0.5).setScale(2);
         this.anims.create({
             key: "idlesplash",
