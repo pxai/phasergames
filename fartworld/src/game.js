@@ -42,8 +42,24 @@ export default class Game extends Phaser.Scene {
         this.physics.world.enable(this.ground, 1);
         this.scoreText = this.add.bitmapText(this.center_width, 16, "pixelFont", "SCORE", 20).setOrigin(0.5)
         this.greenText = this.add.bitmapText(this.center_width - 200, 16, "pixelFont", this.registry.get("green"), 20).setOrigin(0.5);
+        this.add.sprite(this.center_width - 200 + 22, 16, "single-bean").setScale(0.8).setAngle(25);
         this.redText = this.add.bitmapText(this.center_width + 200, 16, "pixelFont", this.registry.get("red"), 20).setOrigin(0.5);
+        this.add.sprite(this.center_width + 200 + 22, 16, "single-redbean").setScale(0.8).setAngle(25);
         this.updateScore();
+        this.playMusic();
+      }
+
+      playMusic (theme="music") {
+        this.sound.add(theme);
+        this.sound.play(theme,{
+          mute: false,
+          volume: 1,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+      })
       }
 
     update() {

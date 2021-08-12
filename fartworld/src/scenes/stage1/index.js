@@ -1,5 +1,6 @@
 import Game from "../../game";
 import config from "./config";
+import Albat from "../../objects/albat";
 
 export default class Stage1 extends Game {
     constructor () {
@@ -33,6 +34,7 @@ export default class Stage1 extends Game {
         this.foeGenerator.generate(config.foes, config.platforms);
         this.createDoor(config.door.x, config.door.y)
         this.nextScene = config.nextScene;
+        this.albat = new Albat(this, 450, 300);
      }
 
     update () {

@@ -31,6 +31,8 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image("door", "assets/images/door.png");
         this.load.image("limit", "assets/images/limit.png");
         this.load.image("bullet", "assets/images/bullet.png");
+        this.load.image("single-bean", "assets/images/single-bean.png");
+        this.load.image("single-redbean", "assets/images/single-redbean.png");
         Array(9).fill(0).forEach((_,i) => {
             this.load.audio(`fart${i+1}`,`assets/sounds/farts/fart${i+1}.mp3`)
         });
@@ -44,6 +46,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("fart", "assets/images/fart.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("bean", "assets/images/bean.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("redbean", "assets/images/redbean.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("albat", "assets/images/albat.png", { frameWidth: 32, frameHeight: 32 });
         this.load.audio("music", "assets/sounds/muzik.mp3");
 
         this.registry.set("score", 0);
