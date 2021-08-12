@@ -145,7 +145,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.body.stop();
         console.log("Player was finished!");
         this.dead = true;
-        this.rotateTween = this.scene.tweens.add({
+        this.deathTween = this.scene.tweens.add({
             targets: this,
             duration: 100,
             alpha: 0,
@@ -156,8 +156,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
     restart () {
       this.x = this.startX;
       this.y = this.startY;
-      this.rotateTween.stop();
-      this.body.rotation = 0;
+      this.deathTween.stop();
+
       this.anims.play("reappear", true);
     }
 

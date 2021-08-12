@@ -2,6 +2,7 @@ import Player from "./player";
 import BeanGenerator from "./objects/bean _generator";
 import FoeGenerator from "./objects/foe_generator";
 import Bullet from "./objects/bullet";
+import Albat from "./objects/albat";
 
 export default class Game extends Phaser.Scene {
     constructor ({ key }) {
@@ -15,9 +16,7 @@ export default class Game extends Phaser.Scene {
     }
 
     preload () {
-
       console.log("Game preload!", this.finished)
-
     }
 
     create () {
@@ -67,7 +66,7 @@ export default class Game extends Phaser.Scene {
         this.player.update();
         this.foeGenerator.update();
       }
-
+      if (this.albat) this.albat.update();
       if (this.foeGenerator.areAllDead()) {
         this.door.setTexture("door");
       }
@@ -94,7 +93,7 @@ export default class Game extends Phaser.Scene {
       console.log("Death!!", player);
       player.finish();
 
-      this.playerRestartId = setTimeout(() => this.playerRestart(), 3000);
+      this.playerRestartId = setTimeout(() => this.playerRestart(), 2000);
     }
 
     playerRestart () {
@@ -116,7 +115,6 @@ export default class Game extends Phaser.Scene {
     }
 
     shoot (avocado, direction) {
-      console.log("SHOOOOOOOOOOOOOOOOOT", avocado);
       new Bullet(this, avocado.x, avocado.y, direction);
     }
 
@@ -137,14 +135,26 @@ export default class Game extends Phaser.Scene {
     }
 
     setCollidersWithFoes (fart, type) {
-      if (type === "normal")
+      if (type === "normal") {
         this.foeGenerator.setFartCollider(fart);
-      else
+        if (this.albat) this.albat.setFartCollider(fart);
+      } else {
         this.foeGenerator.setRedFartCollider(fart);
+        if (this.albat) this.albat.setRedFartCollider(fart);
+      }
     }
 
     playFart(volume = 0.7) {
       this.fart = this.sound.add(`fart${Phaser.Math.Between(1,9)}`, {volume});
       this.fart.play();
+    }
+
+    addAlbat () {
+      this.albat = new Albat(this, 450, 580);
+      this.albatText = this.add.bitmapText(this.center_width, 36, "pixelFont", `ALBAT ${this.albat.life}`, 20).setOrigin(0.5)
+    }
+
+    updateAlbatLife (points) {
+        this.albatText.setText(`ALBAT ${points}`);
     }
 }
