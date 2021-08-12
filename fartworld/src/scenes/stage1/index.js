@@ -39,6 +39,7 @@ export default class Stage1 extends Game {
 
     update () {
         super.update();
+        if (this.albat) this.albat.update();
     }
 
     touch (a,b) {

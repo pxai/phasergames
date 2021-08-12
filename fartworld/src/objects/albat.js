@@ -1,3 +1,5 @@
+import Marble from "./marble";
+
 export default class Albat extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y) {
         super(scene, x, y, "albat");
@@ -13,6 +15,7 @@ export default class Albat extends Phaser.GameObjects.Sprite {
         this.dead = false;
         this.fartCollider = 0;
         this.life = 10;
+        this.attacking = false;
     }
 
     init () {
@@ -30,7 +33,7 @@ export default class Albat extends Phaser.GameObjects.Sprite {
         this.scene.anims.create({
             key: "attack" + this.name,
             frames: this.scene.anims.generateFrameNumbers(this.name, { start: 2, end: 3 }),
-            frameRate: 5,
+            frameRate: 20,
         });
 
         this.deathAnimation = this.scene.anims.create({
@@ -42,12 +45,37 @@ export default class Albat extends Phaser.GameObjects.Sprite {
         this.on('animationcomplete', this.animationComplete, this);
 
         this.body.setVelocityX(100);
+        this.animate("fly")
     }
 
     update () {
-        if (this.body && !this.dead) {
-            this.animate("fly")
-        }
+       if (!this.dead) {
+            if (!this.attacking) this.animate("fly")
+            if (Phaser.Math.Between(1,501) > 500) {
+                this.body.setVelocityX(-this.body.velocity.x);
+            }
+
+            if (Phaser.Math.Between(1,101) > 100) {
+                console.log("GravitY");
+                this.body.setAllowGravity(true);
+                this.scene.time.delayedCall(Phaser.Math.Between(100, 400), this.upAgain, null, this); 
+            }
+
+            if (Phaser.Math.Between(1,801) > 800) {
+                this.attack();
+            }
+       }
+    }
+
+    upAgain() {
+        this.body.setVelocityY(-100);
+        this.scene.time.delayedCall(Phaser.Math.Between(300, 400), () => this.body.setAllowGravity(false), null, this); 
+    }
+
+    attack () {
+        this.attacking = true;
+        this.animate("attack")
+        new Marble(this.scene, this.x, this.y + 10, Phaser.Math.Between(1, 9))
     }
 
     animate (animation) {
@@ -58,6 +86,11 @@ export default class Albat extends Phaser.GameObjects.Sprite {
         if (animation.key.startsWith("death")) {
             console.log("Animation complete")
             this.death();
+        }
+
+        if (animation.key.startsWith("attack")) {
+            console.log("Attack animation complete")
+            this.attacking = false;
         }
     }
 

@@ -36,6 +36,10 @@ export default class Bootloader extends Phaser.Scene {
         Array(9).fill(0).forEach((_,i) => {
             this.load.audio(`fart${i+1}`,`assets/sounds/farts/fart${i+1}.mp3`)
         });
+
+        Array(9).fill(0).forEach((_,i) => {
+            this.load.image(`marble${i+1}`,`assets/images/marbles/marble${i+1}.png`)
+        });
         this.load.spritesheet("tomato", "assets/images/tomato.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("greenpepper", "assets/images/greenpepper.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("avocado", "assets/images/avocado.png", { frameWidth: 32, frameHeight: 32 });
