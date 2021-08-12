@@ -61,8 +61,10 @@ export default class Carrot extends Foe {
     }
 
     reappear () {
-        const platform = this.platforms[Phaser.Math.Between(0, this.platforms.length-1)];
-        this.setPosition(platform.x + 10, platform.y - 32);
-        this.playReverse("hide" + this.name, true );
+        if (!this.dead) {
+            const platform = this.platforms[Phaser.Math.Between(0, this.platforms.length-1)];
+            this.setPosition(platform.x + 10, platform.y - 32);
+            this.playReverse("hide" + this.name, true );
+        }
     }
 }

@@ -21,11 +21,12 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("splash");
+            this.scene.start("intro");
         },this);
         this.load.image("background1", "assets/images/background1.png");
         this.load.image("background2", "assets/images/background2.png");
         // http://www.stripegenerator.com/
+        this.load.image("logo", "assets/images/logo.png");
         this.load.image("ground", "assets/images/platform.png");
         this.load.image("closed_door", "assets/images/closed_door.png");
         this.load.image("door", "assets/images/door.png");

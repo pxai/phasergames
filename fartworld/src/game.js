@@ -137,10 +137,10 @@ export default class Game extends Phaser.Scene {
     setCollidersWithFoes (fart, type) {
       if (type === "normal") {
         this.foeGenerator.setFartCollider(fart);
-        if (this.albat) this.albat.setFartCollider(fart);
+        if (this.albat && !this.albat.dead) this.albat.setFartCollider(fart);
       } else {
         this.foeGenerator.setRedFartCollider(fart);
-        if (this.albat) this.albat.setRedFartCollider(fart);
+        if (this.albat && !this.albat.dead) this.albat.setRedFartCollider(fart);
       }
     }
 

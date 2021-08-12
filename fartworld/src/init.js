@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import Bootloader from "./bootloader";
+import Intro from "./intro";
 import Splash from "./splash";
 import Transition from "./transition";
 import Stage1 from "./scenes/stage1/";
@@ -22,6 +23,7 @@ const config = {
     },
     scene: [
         Bootloader,
+        Intro,
         Splash,
         Transition,
         Stage1

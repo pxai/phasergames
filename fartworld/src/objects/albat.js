@@ -6,7 +6,7 @@ export default class Albat extends Phaser.GameObjects.Sprite {
 
         this.scene = scene;
         this.name = "albat";
-
+        this.setScale(2);
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
@@ -44,7 +44,7 @@ export default class Albat extends Phaser.GameObjects.Sprite {
 
         this.on('animationcomplete', this.animationComplete, this);
 
-        // this.body.setVelocityX(100);
+        this.body.setVelocityX(100);
         this.animate("fly")
     }
 
@@ -52,10 +52,10 @@ export default class Albat extends Phaser.GameObjects.Sprite {
        if (!this.dead) {
             if (!this.attacking) this.animate("fly")
             if (Phaser.Math.Between(1,501) > 500) {
-               // this.body.setVelocityX(-this.body.velocity.x);
+               this.body.setVelocityX(-this.body.velocity.x);
             }
 
-           /* if (Phaser.Math.Between(1,101) > 100) {
+            if (Phaser.Math.Between(1,101) > 100) {
                 console.log("GravitY");
                 this.body.setAllowGravity(true);
                 this.scene.time.delayedCall(Phaser.Math.Between(100, 400), this.upAgain, null, this); 
@@ -63,7 +63,7 @@ export default class Albat extends Phaser.GameObjects.Sprite {
 
             if (Phaser.Math.Between(1,801) > 800) {
                 this.attack();
-            }*/
+            }
        }
     }
 
@@ -102,7 +102,6 @@ export default class Albat extends Phaser.GameObjects.Sprite {
     }
 
     setFartCollider(fart) {
-        console.log("Set fart collider");
         this.fartCollider  = this.scene.physics.add.overlap(fart, this, this.farted, null, this);
     }
 
@@ -112,7 +111,6 @@ export default class Albat extends Phaser.GameObjects.Sprite {
     }
 
     farted(fart, albat, x) {
-        console.log("Farted ", fart, foe, fart.tint, foe.body.speed);
         this.fartCollider.active = false;
         fart.body.destroy();
         albat.body.setVelocityX(-albat.body.velocity.x);
@@ -121,7 +119,6 @@ export default class Albat extends Phaser.GameObjects.Sprite {
 
     redFarted (fart, albat) {   
         this.redFartCollider.active = false;
-        console.log("Red farted albat!! ", this, this.life);
         this.life--;
         this.scene.updateAlbatLife(this.life);
         if (this.life === 0) {
