@@ -110,7 +110,11 @@ export default class Game extends Phaser.Scene {
         console.log("Finished!!", player, door);
         this.doorOverlap.active = false;
         player.finish();
-        this.nextSceneId = setTimeout(() => this.scene.start("transition", {name: this.nextScene, nextScene: this.nextScene}), 3000);
+        if (this.albat && this.albat.dead) {
+          this.nextSceneId = setTimeout(() => this.scene.start("outro"), 3000)
+        } else {
+          this.nextSceneId = setTimeout(() => this.scene.start("transition", {name: this.nextScene, nextScene: this.nextScene}), 3000);
+        }
       }
     }
 

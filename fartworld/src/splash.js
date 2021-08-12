@@ -31,7 +31,7 @@ export default class Splash extends Phaser.Scene {
          this.tweens.add({
             targets: this.splashLayer.getChildren(),
             duration: 2000,
-            y: { from: 800, to: 200 },
+            y: { from: 800, to: 160 },
             onComplete: this.showHelp,
             onCompleteScope: this,
          });
@@ -39,8 +39,9 @@ export default class Splash extends Phaser.Scene {
 
     showHelp() {
         console.log("Show help");
-        this.add.bitmapText(this.center_width, 460, "pixelFont", "A FARTASTIC ADVENTURE!!", 30).setOrigin(0.5);
-        this.player = this.add.sprite(this.center_width, 400, "aki").setOrigin(0.5).setScale(2);
+        this.add.bitmapText(this.center_width, 420, "pixelFont", "A FARTASTIC ADVENTURE!!", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 460, "pixelFont", "By PELLO", 15).setOrigin(0.5);
+        this.player = this.add.sprite(this.center_width, 360, "aki").setOrigin(0.5).setScale(2);
         this.anims.create({
             key: "idlesplash",
             frames: this.anims.generateFrameNumbers("aki", { start: 0, end: 1 }),

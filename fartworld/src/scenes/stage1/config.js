@@ -16,9 +16,9 @@ export default {
         { x: 480, y: 550, color: 0x00ff00 }
     ],
     foes: [
-        { x: 400, y: 350, name: "tomato" },
+       /* { x: 400, y: 350, name: "tomato" },
         { x: 230, y: 400, name: "tomato" },
-        { x: 100, y: 50, name: "carrot" },
+        { x: 100, y: 50, name: "carrot" },*/
        // { x: 330, y: 200, name: "avocado" },
     ],
     platforms: [

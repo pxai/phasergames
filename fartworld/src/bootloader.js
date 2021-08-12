@@ -5,7 +5,6 @@ export default class Bootloader extends Phaser.Scene {
 
     preload () {
         this.createBars();
-
         this.load.on(
             "progress",
             function (value) {
@@ -26,6 +25,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image("background1", "assets/images/background1.png");
         this.load.image("background2", "assets/images/background2.png");
         // http://www.stripegenerator.com/
+        this.load.image("pello", "assets/images/pello.png");
         this.load.image("logo", "assets/images/logo.png");
         this.load.image("ground", "assets/images/platform.png");
         this.load.image("closed_door", "assets/images/closed_door.png");
@@ -53,16 +53,15 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("redbean", "assets/images/redbean.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("albat", "assets/images/albat.png", { frameWidth: 32, frameHeight: 32 });
         this.load.audio("music", "assets/sounds/muzik.mp3");
+        this.load.bitmapFont("pixelFont", "assets/fonts/arcade.png", "assets/fonts/arcade.xml");
 
         this.registry.set("score", 0);
         this.registry.set("green", 0);
         this.registry.set("red", 0);
-        this.load.bitmapFont("pixelFont", "assets/fonts/arcade.png", "assets/fonts/arcade.xml");
     }
 
     create () {
-        // this.scene.start("splash")
-    }
+      }
 
     createBars () {
         this.loadBar = this.add.graphics();

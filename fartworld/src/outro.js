@@ -30,14 +30,14 @@ export default class Outro extends Phaser.Scene {
         this.text.forEach((line, i) => {
                 this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this); 
         });
-        this.time.delayedCall(this.text.length * 3000, () => this.showPlayer(), null, this); 
+        this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
     }
 
     showLine(text, y) {
         let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "pixelFont", text, 25).setOrigin(0.5).setAlpha(0));
         this.tweens.add({
             targets: line,
-            duration: 1000,
+            duration: 2000,
             alpha: 1
         })
     }
@@ -56,7 +56,8 @@ export default class Outro extends Phaser.Scene {
             alpha: 1
         })
         this.player.anims.play("idlesplash")
-        this.time.delayedCall(10000, () => this.startSplash(), null, this); 
+        this.add.bitmapText(this.center_width, (this.text.length * 60) + 200, "pixelFont", "SCORE: " + this.registry.get("score"), 25).setOrigin(0.5);
+        this.time.delayedCall(20000, () => this.startSplash(), null, this); 
     }
 
     startSplash () {
