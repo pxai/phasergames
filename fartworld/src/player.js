@@ -15,10 +15,10 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.init();
         this.right = 1;
         this.enableAttackFart = true;
+        this.dead = false;
     }
 
     init () {
-        // this.body.setBounce(0.2);
         this.body.setCollideWorldBounds(true);
         this.setOrigin(0.5);
 
@@ -67,6 +67,13 @@ export default class Player extends Phaser.GameObjects.Sprite {
             frameRate: 5
         });
 
+        this.scene.anims.create({
+            key: "reappear",
+            frames: this.scene.anims.generateFrameNumbers("fart"),
+            frameRate: 20
+        });
+
+        this.on('animationcomplete', this.animationComplete, this);
     }
 
     update () {
@@ -137,12 +144,32 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.anims.play("turn", true);
         this.body.stop();
         console.log("Player was finished!");
+        this.dead = true;
+        this.rotateTween = this.scene.tweens.add({
+            targets: this,
+            duration: 100,
+            alpha: 0,
+            repeat: -1,
+        })
     }
 
     restart () {
       this.x = this.startX;
       this.y = this.startY;
-        this.anims.play("turn", true)
+      this.rotateTween.stop();
+      this.body.rotation = 0;
+      this.anims.play("reappear", true);
+    }
+
+    animationComplete(animation, frame) {
+        if (animation.key === "reappear") {
+            console.log("Death complete")
+            this.scene.finished = false;
+            this.alpha = 1;
+            this.anims.play("turn", true)
+
+            this.dead = false;
+        }
     }
 
      addGreenBean () {

@@ -71,9 +71,11 @@ export default class Foe extends Phaser.GameObjects.Sprite {
     }
 
     touch (player, foe) {
-        console.log("Touched, player DEATH ", player, foe);
-        foe.overlap.active = false;
-        player.scene.playerDeath(player);
+        if (!player.dead) {
+            console.log("Touched, player DEATH ", player, foe);
+            foe.overlap.active = false;
+            player.scene.playerDeath(player);
+        }
     }
 
     setFartCollider(collider) {

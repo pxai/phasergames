@@ -82,7 +82,6 @@ export default class Game extends Phaser.Scene {
     }
 
     playerRestart () {
-      this.finished = false;
       this.player.restart();
       console.log("Come from death: ", this.player.body.y, this.player.body.y + 100 < this.height);
       if (this.player.body.y + 100 < this.height) {
@@ -130,6 +129,6 @@ export default class Game extends Phaser.Scene {
 
     playFart(volume = 0.7) {
       this.fart = this.sound.add(`fart${Phaser.Math.Between(1,9)}`, {volume});
-      this.fart.play();;
+      this.fart.play();
     }
 }
