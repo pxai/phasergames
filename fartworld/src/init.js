@@ -5,6 +5,9 @@ import Outro from "./outro";
 import Splash from "./splash";
 import Transition from "./transition";
 import Stage1 from "./scenes/stage1/";
+import Stage2 from "./scenes/stage2/";
+import Stage3 from "./scenes/stage3/";
+import Stage4 from "./scenes/stage4/";
 
 const config = {
     width: 800,
@@ -28,6 +31,9 @@ const config = {
         Splash,
         Transition,
         Stage1,
+        Stage2,
+        Stage3,
+        Stage4,
         Outro,
     ]
 };

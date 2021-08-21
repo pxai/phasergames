@@ -22,6 +22,7 @@ export default class Splash extends Phaser.Scene {
         ];
         this.time.delayedCall(1000, () => this.showLogo(), null, this); 
         //this.scene.start("transition", {name: "STAGE1", nextScene: "stage1"})
+        this.redbean = this.sound.add("redbean");
         this.input.keyboard.on("keydown-ENTER", () => this.scene.start("transition", {name: "STAGE1", nextScene: "stage1"}), this);
     }
 
@@ -38,6 +39,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     showHelp() {
+        this.redbean.play();
         console.log("Show help");
         this.add.bitmapText(this.center_width, 420, "pixelFont", "A FARTASTIC ADVENTURE!!", 30).setOrigin(0.5);
         this.add.sprite(this.center_width -40, 460, "pello").setOrigin(0.5).setScale(0.3)

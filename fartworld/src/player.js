@@ -173,6 +173,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
      addGreenBean () {
+        this.scene.playAudio("greenbean");
         this.greenBeans++;
         this.scene.updateScore(20);
         this.scene.updateGreenBeans(this.greenBeans);
@@ -184,6 +185,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
       }
 
       addRedBean () {
+        this.scene.playAudio("redbean");
         this.redBeans++;
         this.scene.updateScore(50);
         this.scene.updateRedBeans(this.redBeans);

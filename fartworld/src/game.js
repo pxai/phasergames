@@ -44,13 +44,48 @@ export default class Game extends Phaser.Scene {
         this.add.sprite(this.center_width - 200 + 22, 16, "single-bean").setScale(0.8).setAngle(25);
         this.redText = this.add.bitmapText(this.center_width + 200, 16, "pixelFont", this.registry.get("red"), 20).setOrigin(0.5);
         this.add.sprite(this.center_width + 200 + 22, 16, "single-redbean").setScale(0.8).setAngle(25);
+        this.loadAudios();
         this.updateScore();
         this.playMusic();
       }
 
+      createPlatforms (platforms) {
+        this.platforms = this.physics.add.staticGroup();
+        this.platformLimits = this.physics.add.staticGroup();
+        platforms.forEach(platform => {
+            this.platformsLayer.add(this.platformLimits.create(platform.x - platform.offset, platform.y - 8, "limit"));
+            console.log("PlatformX: ", platform.x);
+            this.platformsLayer.add(this.platforms.create(platform.x, platform.y, platform.type));
+            this.platformsLayer.add(this.platformLimits.create(platform.x + platform.offset, platform.y - 8, "limit"));
+        });
+      }
+
+      loadAudios () {
+        this.audios = {
+          "albatdeath": this.sound.add("albatdeath"),
+          "carrot1": this.sound.add("carrot1"),
+          "carrot2": this.sound.add("carrot2"),
+          "fall": this.sound.add("fall"),
+          "farthit": this.sound.add("farthit"),
+          "greenbean": this.sound.add("greenbean"),
+          "kill": this.sound.add("kill"),
+          "playerplatform": this.sound.add("playerplatform"),
+          "playerreturn": this.sound.add("playerreturn"),
+          "redbean": this.sound.add("redbean"),
+          "playerdeath": this.sound.add("playerdeath"),
+          "marble": this.sound.add("marble"),
+        };
+      }
+
+      playAudio(key) {
+        this.audios[key].play();
+      }
+
       playMusic (theme="music") {
-        this.sound.add(theme);
-        this.sound.play(theme,{
+
+        this.theme = this.sound.add(theme);
+        this.theme.stop();
+        this.theme.play({
           mute: false,
           volume: 1,
           rate: 1,
@@ -67,7 +102,7 @@ export default class Game extends Phaser.Scene {
         this.foeGenerator.update();
       }
       if (this.albat) this.albat.update();
-      if (this.foeGenerator.areAllDead()) {
+      if (this.allFoesAreDead()) {
         this.door.setTexture("door");
       }
     }
@@ -91,6 +126,7 @@ export default class Game extends Phaser.Scene {
     playerDeath (player, star) {
       this.finished = true;
       console.log("Death!!", player);
+      this.playAudio("playerdeath");
       player.finish();
 
       this.playerRestartId = setTimeout(() => this.playerRestart(), 2000);
@@ -98,6 +134,7 @@ export default class Game extends Phaser.Scene {
 
     playerRestart () {
       this.player.restart();
+      this.playAudio("playerreturn");
       console.log("Come from death: ", this.player.body.y, this.player.body.y + 100 < this.height);
       if (this.player.body.y + 100 < this.height) {
         this.player.y += 100;
@@ -105,17 +142,23 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene (player, door) {
-      if (this.foeGenerator.areAllDead()) {
+      if (this.allFoesAreDead()) {
         this.finished = true;
         console.log("Finished!!", player, door);
         this.doorOverlap.active = false;
-        player.finish();
+        this.theme.stop();
+        player.body.stop();
         if (this.albat && this.albat.dead) {
           this.nextSceneId = setTimeout(() => this.scene.start("outro"), 3000)
         } else {
           this.nextSceneId = setTimeout(() => this.scene.start("transition", {name: this.nextScene, nextScene: this.nextScene}), 3000);
         }
       }
+    }
+
+    allFoesAreDead() {
+      return (this.foeGenerator.areAllDead() && !this.albat) || 
+        (this.foeGenerator.areAllDead() && this.albat && this.albat.dead);
     }
 
     shoot (avocado, direction) {

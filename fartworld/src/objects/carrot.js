@@ -25,8 +25,10 @@ export default class Carrot extends Foe {
                 this.platformCollider.active = true; 
                 if (Phaser.Math.Between(1,101) > 100) {
                     this.hiding = true;
+                    this.overlap.active = false;
                     this.body.setVelocityX(0);
                     this.play("hide" + this.name, true );
+                    this.scene.playAudio("carrot1");
                 }
             } else {
                 this.play("fall" + this.name, true);
@@ -38,6 +40,7 @@ export default class Carrot extends Foe {
     }
 
     hitGround(ground, foe) {
+        this.scene.playAudio("fall");
         console.log("Oh I hit the ground a carrot!! ", this);
         this.dead = true;
         this.body.enable = false; 
@@ -54,6 +57,7 @@ export default class Carrot extends Foe {
                 this.appearing = true;
                 this.scene.time.delayedCall(Phaser.Math.Between(2000, 4000), this.reappear, null, this); 
              } else if (this.appearing) {
+                this.overlap.active = true;
                 this.appearing = false;
                 this.body.setVelocityX(100);
             }
@@ -62,6 +66,7 @@ export default class Carrot extends Foe {
 
     reappear () {
         if (!this.dead) {
+            this.scene.playAudio("carrot2");
             const platform = this.platforms[Phaser.Math.Between(0, this.platforms.length-1)];
             this.setPosition(platform.x + 10, platform.y - 32);
             this.playReverse("hide" + this.name, true );

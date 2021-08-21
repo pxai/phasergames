@@ -40,6 +40,7 @@ export default class Avocado extends Foe {
     }
 
     hitGround(ground, foe) {
+        this.scene.playAudio("fall");
         this.dead = true;
         this.body.enable = false; 
         this.scene.updateScore(1000);

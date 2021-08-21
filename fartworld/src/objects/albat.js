@@ -14,7 +14,7 @@ export default class Albat extends Phaser.GameObjects.Sprite {
         this.init();
         this.dead = false;
         this.fartCollider = 0;
-        this.life = 1;
+        this.life = 5;
         this.attacking = false;
     }
 
@@ -46,13 +46,23 @@ export default class Albat extends Phaser.GameObjects.Sprite {
 
         this.body.setVelocityX(100);
         this.animate("fly")
+
+        this.scene.physics.world.on('worldbounds', (albat, up, down, left, right) => {
+            if (right) {
+                albat.setVelocityX(-100);
+            } else if (left) {
+                albat.setVelocityX(100);
+            }
+        });
     }
 
     update () {
        if (!this.dead) {
             if (!this.attacking) this.animate("fly")
-            if (Phaser.Math.Between(1,501) > 500) {
+            if (Phaser.Math.Between(1,201) > 200) {
+                console.log("Change direction: ", this.body.velocity.x)
                this.body.setVelocityX(-this.body.velocity.x);
+               console.log("Change direction: ", this.body.velocity.x)
             }
 
             if (Phaser.Math.Between(1,101) > 100) {
@@ -76,6 +86,7 @@ export default class Albat extends Phaser.GameObjects.Sprite {
         this.attacking = true;
         this.animate("attack")
         new Marble(this.scene, this.x, this.y + 10, Phaser.Math.Between(1, 9))
+        this.scene.playAudio("marble");
     }
 
     animate (animation) {
@@ -111,6 +122,7 @@ export default class Albat extends Phaser.GameObjects.Sprite {
     }
 
     farted(fart, albat, x) {
+        this.scene.playAudio("farthit");
         this.fartCollider.active = false;
         fart.body.destroy();
         albat.body.setVelocityX(-albat.body.velocity.x);
@@ -120,6 +132,7 @@ export default class Albat extends Phaser.GameObjects.Sprite {
     redFarted (fart, albat) {   
         this.redFartCollider.active = false;
         this.life--;
+        this.scene.playAudio("kill");
         this.scene.updateAlbatLife(this.life);
         if (this.life === 0) {
             this.animate("death");
@@ -129,10 +142,10 @@ export default class Albat extends Phaser.GameObjects.Sprite {
         }
     }
 
-
     death() {
         console.log("Im dead ", this, this.name);
         this.dead = true;
+        this.scene.playAudio("albatdeath");
         this.destroy();
     }
 

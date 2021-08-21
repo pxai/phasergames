@@ -83,6 +83,7 @@ export default class Foe extends Phaser.GameObjects.Sprite {
     }
 
     farted(fart, foe, x) {
+        foe.scene.playAudio("farthit");
         console.log("Farted ", fart, foe, fart.tint, foe.body.speed);
         foe.fartCollider.active = false;
         fart.body.destroy();
@@ -92,6 +93,7 @@ export default class Foe extends Phaser.GameObjects.Sprite {
     }
 
     redFarted (fart, foe) {   
+        this.scene.playAudio("kill");
         console.log("Red farted!! ", this);
         this.animate("death");
         this.dead = true;
