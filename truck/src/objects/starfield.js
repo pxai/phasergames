@@ -9,13 +9,13 @@ export default class Starfield {
 
     generate () {
         this.generateInitial();
-        setInterval(() => this.add(), 500)
+        setInterval(() => this.add(), 100)
 
     }
 
     generateInitial () {
-        for (let i = 0; i < 8; i++) {
-            this.add(Phaser.Math.Between(100, 600));
+        for (let i = 0; i < 32; i++) {
+            this.add(Phaser.Math.Between(100, 1600));
         }
     }
 

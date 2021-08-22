@@ -7,7 +7,7 @@ export default class ContainerGenerator {
     }
 
     generate () {
-        setInterval(() => this.add(), 4000)
+        setInterval(() => this.add(), 1000)
     }
 
     add () {
@@ -17,7 +17,7 @@ export default class ContainerGenerator {
 
     update () {
        this.containers.forEach( container => {
-        //   if (container.free) container.x -= 1;
+           if (container.free) container.x -= 1;
        })
     }
 }

@@ -1,7 +1,7 @@
 class Container extends Phaser.Physics.Arcade.Sprite {
     constructor (scene) {
-        const x = Phaser.Math.Between(800, 850);
-        const y = Phaser.Math.Between(0, 600);
+        const x = Phaser.Math.Between(scene.physics.world.bounds.width, scene.physics.world.bounds.width + 50);
+        const y = Phaser.Math.Between(0, scene.physics.world.bounds.height);
         super(scene, x, y, "container");
         this.scene = scene;
         this.scene.physics.add.existing(this);

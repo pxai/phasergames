@@ -1,8 +1,9 @@
 class Asteroid extends Phaser.Physics.Arcade.Sprite {
     constructor (scene) {
-        const x = Phaser.Math.Between(800, 850);
-        const y = Phaser.Math.Between(0, 600);
-        const scale = Math.random();
+        const x = Phaser.Math.Between(scene.physics.world.bounds.width, scene.physics.world.bounds.width + 50);
+        const y = Phaser.Math.Between(0, scene.physics.world.bounds.height);
+
+        const scale = Math.random() + 0.2;
         super(scene, x, y, "asteroid");
         this.scene = scene;
         this.scene.physics.add.existing(this);

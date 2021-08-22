@@ -20,6 +20,8 @@ export default class Game extends Phaser.Scene {
 
     create () {
       // this.add.tileSprite(0, 0, 800, 600, 'background1').setOrigin(0,0);
+      this.physics.world.setBounds(-800, -600, 1600, 1200);
+      console.log(this.physics.world);
       this.finished = false;
       this.starfield = new Starfiled(this);
       this.asteroidField = new AsteroidField(this);
@@ -42,11 +44,25 @@ export default class Game extends Phaser.Scene {
         this.loadAudios();
      //   this.updateScore();
         // this.playMusic();
+        this.cameras.main.setBounds(0, 0, 800, 600);
+        // this.cameras.main.focusOnXY(-800, -600);
+        //this.camera.
         this.starfield.generate();
         this.asteroidField.generate();
         this.containerGenerator.generate();
       }
 
+
+      zoomOut (zoomAmount) {
+        this.cameras.main.zoomTo(zoomAmount, 500);
+        //this.cameras.main.scale.x += zoomAmount;
+        //this.cameras.main.scale.y += zoomAmount;
+
+       /* this.cameras.main.bounds.x =  * this.cameras.main.scale.x;
+        this.cameras.main.bounds.y = size.y * this.cameras.main.scale.y;
+        this.cameras.main.bounds.width = size.width * this.cameras.main.scale.x;
+        this.cameras.main.bounds.height = size.height * this.cameras.main.scale.y;*/
+      }
 
       loadAudios () {
         this.audios = {

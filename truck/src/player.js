@@ -80,12 +80,33 @@ export default class Player extends Phaser.GameObjects.Container {
 
       this.lockContainer(container)
       this.containers.push(container);
+      this.zoomOut();
+      this.adaptBounce();
+      // this.body.setCollideWorldBounds(true);
       this.body.setSize(this.ship.width + (128 * this.containers.length), this.body.height)
       this.body.setOffset(-(128 * this.containers.length), 0);
       this.show(`+${container.reward}$`,`x${this.containers.length}`);
 
       this.scene.updateContainers(this.containers.length);
 
+    }
+
+    zoomOut () {
+      let amount = 1;
+      if (this.containers.length >= 4 && this.containers.length < 9 ) {
+         amount = 0.8;
+      } else if (this.containers.length >= 9 && this.containers.length < 15 ) {
+         amount = 0.6;
+      } else if (this.containers.length >= 15) {
+        amount = 0.5;
+      }
+
+      this.scene.zoomOut(amount);
+    }
+
+    adaptBounce () {
+      const bounce =  this.containers.length < 8 ? 1 - (this.containers.length * 0.1): 0.2;
+      this.body.setBounce(bounce);
     }
 
     show (value, containerLength) {
@@ -163,6 +184,7 @@ export default class Player extends Phaser.GameObjects.Container {
       this.containers = [];
       this.hull = 100;
       this.scene.updateHull(this.hull);
+      this.scene.zoomOut(1);
       this.healthBar = new HealthBar(this, 64, 64, this.hull);
       this.scene.updateContainers(0);
     }

@@ -11,3 +11,4 @@ TODO:
 - Add sounds: horn, hit, hit between asteroids, pick, thrust
 - Adds music
 - Adds logo
+- Camera zoom with more containers
