@@ -38,13 +38,9 @@ export default class Game extends Phaser.Scene {
 
         this.ground = this.add.rectangle(this.center_width, this.height, this.width, 1, 0x000000, 0);
         this.physics.world.enable(this.ground, 1);
-        this.scoreText = this.add.bitmapText(this.center_width, 16, "pixelFont", "SCORE", 20).setOrigin(0.5)
-        this.greenText = this.add.bitmapText(this.center_width - 200, 16, "pixelFont", this.registry.get("containers"), 20).setOrigin(0.5);
-        this.add.sprite(this.center_width - 200 + 22, 16, "single-bean").setScale(0.8).setAngle(25);
-        this.redText = this.add.bitmapText(this.center_width + 200, 16, "pixelFont", this.registry.get("hull"), 20).setOrigin(0.5);
-        this.add.sprite(this.center_width + 200 + 22, 16, "single-redbean").setScale(0.8).setAngle(25);
+     //   this.scoreText = this.add.bitmapText(this.center_width, 16, "pixelFont", "SCORE", 20).setOrigin(0.5)
         this.loadAudios();
-        this.updateScore();
+     //   this.updateScore();
         // this.playMusic();
         this.starfield.generate();
         this.asteroidField.generate();
@@ -116,11 +112,9 @@ export default class Game extends Phaser.Scene {
 
     updateContainers (amount) {
         this.registry.set("containers", amount);
-        this.greenText.setText(amount);
     }
 
     updateHull (amount = 1) {
       this.registry.set("hull", amount);
-      this.redText.setText(amount);
     }
 }

@@ -13,14 +13,11 @@ export default class ContainerGenerator {
     add () {
         const added = new Container(this.scene);
         this.containers.push(added);
-        this.containers.forEach(container => {
-            this.scene.physics.add.overlap(container, added, added.containerHit, null, added);
-        })
     }
 
     update () {
        this.containers.forEach( container => {
-           if (container.free) container.x -= 1;
+        //   if (container.free) container.x -= 1;
        })
     }
 }

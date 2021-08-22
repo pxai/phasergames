@@ -16,6 +16,9 @@ export default class AsteroidField {
         this.asteroids.push(added);
         this.asteroids.forEach(asteroid => {
             this.scene.physics.add.collider(asteroid, added, added.asteroidHit, null, added);
+            this.scene.containerGenerator.containers.forEach(container => {
+              //  this.scene.physics.add.collider(asteroid, container, this.scene.player.asteroidHit, null, this.scene.player);
+            })
         })
     }
 
@@ -23,8 +26,8 @@ export default class AsteroidField {
        this.asteroids.forEach( asteroid => {
            if (asteroid.x < 0) asteroid.destroy();
             if (asteroid.active) {
-                asteroid.x -= 1/asteroid.scale;
                 asteroid.angle += 1/(5*asteroid.scale);
+                asteroid.body.angle += 1/(5*asteroid.scale);
             }
        })
        this.asteroids = this.asteroids.filter(asteroid => asteroid.active);

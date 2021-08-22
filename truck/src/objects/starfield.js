@@ -8,11 +8,19 @@ export default class Starfield {
     }
 
     generate () {
+        this.generateInitial();
         setInterval(() => this.add(), 500)
+
     }
 
-    add () {
-        const star = new Star(this.scene);
+    generateInitial () {
+        for (let i = 0; i < 8; i++) {
+            this.add(Phaser.Math.Between(100, 600));
+        }
+    }
+
+    add (x = 800) {
+        const star = new Star(this.scene, x);
         this.starfield.add(star);
         this.stars.push(star);
     }

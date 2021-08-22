@@ -1,4 +1,4 @@
-
+import HealthBar from "./objects/health_bar";
 
 export default class Player extends Phaser.GameObjects.Container {
     constructor (scene, x, y, name, green, red) {
@@ -8,27 +8,28 @@ export default class Player extends Phaser.GameObjects.Container {
         this.scene = scene;
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
-        this.ship = new Phaser.GameObjects.Sprite(this.scene, 0, 0, "ship").setOrigin(0.5);
+        this.ship = new Phaser.GameObjects.Sprite(this.scene, 32, 32, "ship");
         this.add(this.ship);
         this.defaultVelocity = 100;
-        this.hull = 1000;
+        this.hull = 100;
         this.greenBeans = green;
         this.redBeans = red;
         this.init();
         this.right = 1;
-        this.enableAttackFart = true;
         this.dead = false;
         this.containers = [];
         this.containerValue = new Phaser.GameObjects.BitmapText(this.scene, 30, -20, "pixelFont", "SCORE", 20).setAlpha(0).setOrigin(0.5)
         this.add(this.containerValue);
-        this.damageValue = new Phaser.GameObjects.BitmapText(this.scene, 30, -20, "pixelFont", "DAMAGE", 20).setTint(0xf00).setAlpha(0).setOrigin(0.5)
+        this.containerNumber = new Phaser.GameObjects.BitmapText(this.scene, 30, 80, "pixelFont", "LENGTH", 40).setAlpha(0).setOrigin(0.5)
+        this.add(this.containerNumber);
+        this.damageValue = new Phaser.GameObjects.BitmapText(this.scene, 30, -40, "pixelFont", "DAMAGE", 20).setTint(0xff0000).setAlpha(0).setOrigin(0.5)
         this.add(this.damageValue);
+        this.healthBar = new HealthBar(this, 64, 64, this.hull);
       }
 
     init () {
       this.containers = [];
         this.body.setCollideWorldBounds(true);
-        // this.setOrigin(0.5);
         this.cursor = this.scene.input.keyboard.createCursorKeys();
     }
 
@@ -48,33 +49,67 @@ export default class Player extends Phaser.GameObjects.Container {
 
     hit (asteroid, player) {
       const damage = Math.floor(asteroid.scale * 10);
-      console.log("I was hit!!");
-      asteroid.body.setVelocityX(-asteroid.body.velocity.x)
-      asteroid.body.setVelocityY(-asteroid.body.velocity.y);
       this.hull = this.hull - damage;
       this.scene.updateHull(this.hull);
-      this.show(`-${damage}`)
+      this.healthBar.decrease(damage);
+      this.showHit(`-${damage}`)
       if (this.isPlayerDead()) {
         asteroid.collider.destroy();
         this.scene.playerDeath(this);
       }
     }
 
+    asteroidHit (asteroid, container) {
+      console.log("Hit container: ", container);
+     //  this.hit(asteroid)
+    }
+
     pick (container, player) {
       container.pickOverlap.destroy();
       console.log("Picked up!!", container);
-      this.show(`+${container.reward}$`);
       container.free = false;
+      container.body.setVelocityX(0);
+      container.body.immovable = true
+      container.body.setBounce(1);
       this.add(container);
-      //container.setPosition(0, 0);
+
       this.lockContainer(container)
       this.containers.push(container);
+      this.show(`+${container.reward}$`,`x${this.containers.length}`);
       // this.scene.playAudio("greenbean");
       this.scene.updateContainers(this.containers.length);
       console.log("Length: ", this.containers.length);
     }
 
-    show (value) {
+    show (value, containerLength) {
+      this.containerValue.setPosition(30, -20);
+      this.containerValue.setText(value);
+      this.containerValue.setAlpha(1);
+      this.containerNumber.setText(containerLength);
+      this.containerNumber.setAlpha(1);
+      this.scene.tweens.add({
+        targets: this.containerValue,
+        duration: 500,
+        y: {
+          from: 0,
+          to: -100
+        },
+        alpha: {
+          from: 1,
+          to: 0
+        },
+      });
+      this.scene.tweens.add({
+        targets: this.containerNumber,
+        duration:1000,
+        alpha: {
+          from: 1,
+          to: 0
+        },
+      });
+    }
+
+    showHit (value) {
       this.containerValue.setPosition(30, -20);
       this.containerValue.setText(value);
       this.containerValue.setAlpha(1);
@@ -90,6 +125,14 @@ export default class Player extends Phaser.GameObjects.Container {
           to: 0
         },
       });
+      this.scene.tweens.add({
+        targets: this.healthBar.bar,
+        duration: 1000,
+        alpha: {
+          from: 1,
+          to: 0
+        },
+      });
     }
 
     isPlayerDead () {
@@ -97,8 +140,8 @@ export default class Player extends Phaser.GameObjects.Container {
     }
 
     lockContainer(container) {
-      const x = -80 - (128 * this.containers.length);
-      const y = 0;
+      const x = -60 - (128 * this.containers.length);
+      const y = 32;
       container.setPosition(x, y);
     }
     
