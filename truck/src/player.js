@@ -45,6 +45,10 @@ export default class Player extends Phaser.GameObjects.Container {
       } else if (this.cursor.down.isDown) {
           this.body.setVelocityY(100);
       }
+
+      if (this.body.x < -5 && this.body.x > 810) {
+        this.scene.playerDeath(this);
+      }
     }
 
     hit (asteroid, player) {
@@ -53,6 +57,7 @@ export default class Player extends Phaser.GameObjects.Container {
       this.scene.updateHull(this.hull);
       this.healthBar.decrease(damage);
       this.showHit(`-${damage}`)
+      console.log("Is player dead? ", this.hull, this.isPlayerDead(), this.ship);
       if (this.isPlayerDead()) {
         asteroid.collider.destroy();
         this.scene.playerDeath(this);
@@ -75,10 +80,12 @@ export default class Player extends Phaser.GameObjects.Container {
 
       this.lockContainer(container)
       this.containers.push(container);
+      this.body.setSize(this.ship.width + (128 * this.containers.length), this.body.height)
+      this.body.setOffset(-(128 * this.containers.length), 0);
       this.show(`+${container.reward}$`,`x${this.containers.length}`);
-      // this.scene.playAudio("greenbean");
+
       this.scene.updateContainers(this.containers.length);
-      console.log("Length: ", this.containers.length);
+
     }
 
     show (value, containerLength) {
@@ -154,8 +161,9 @@ export default class Player extends Phaser.GameObjects.Container {
       this.y = this.startY;
       this.containers.forEach(container => container.destroy());
       this.containers = [];
-      this.hull = 1000;
+      this.hull = 100;
       this.scene.updateHull(this.hull);
+      this.healthBar = new HealthBar(this, 64, 64, this.hull);
       this.scene.updateContainers(0);
     }
 

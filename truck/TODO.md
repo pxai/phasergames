@@ -1,7 +1,7 @@
 TODO:
 - ~~Stars from beginning~~
 - ~~Correct container position~~
-- Colliders with containers
+- ~~Colliders with containers~~
 - ~~Progress bar for damage~~ 
 - Player dying
 - Containers go away when dying

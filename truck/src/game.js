@@ -34,7 +34,7 @@ export default class Game extends Phaser.Scene {
         const redBeans = +this.registry.get("hull");
         this.player = new Player(this, 100, this.height - 32, "ship", greenBeans, redBeans)//.setOrigin(0.5); // this.physics.add.sprite(100, 450, 'dude');
 
-        this.physics.world.setBoundsCollision(true, true, true, true);
+        this.physics.world.setBoundsCollision(false, true, true, true);
 
         this.ground = this.add.rectangle(this.center_width, this.height, this.width, 1, 0x000000, 0);
         this.physics.world.enable(this.ground, 1);

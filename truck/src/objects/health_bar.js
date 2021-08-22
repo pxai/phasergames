@@ -29,7 +29,12 @@ export default class HealthBar {
 
     draw () {
         this.bar.clear();
-        const color = this.value > 30 ? 0x00ff00 : 0xff0000;
+        let color = 0x00ff00;
+        if (this.value > 30 && this.value < 60) {
+            color = 0xffa500;
+        } else if (this.value <= 30) {
+            color = 0xff0000;
+        }
 
         this.bar.fillStyle(color);
         this.bar.fillRect(this.x, this.y, 80, 16);

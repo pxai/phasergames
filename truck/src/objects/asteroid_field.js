@@ -8,7 +8,7 @@ export default class AsteroidField {
     }
 
     generate () {
-        setInterval(() => this.add(), 2000)
+        setInterval(() => this.add(), 1000)
     }
 
     add () {
@@ -16,9 +16,6 @@ export default class AsteroidField {
         this.asteroids.push(added);
         this.asteroids.forEach(asteroid => {
             this.scene.physics.add.collider(asteroid, added, added.asteroidHit, null, added);
-            this.scene.containerGenerator.containers.forEach(container => {
-              //  this.scene.physics.add.collider(asteroid, container, this.scene.player.asteroidHit, null, this.scene.player);
-            })
         })
     }
 
