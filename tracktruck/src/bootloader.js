@@ -27,6 +27,10 @@ export default class Bootloader extends Phaser.Scene {
             this.load.image(`marble${i+1}`,`assets/images/marbles/marble${i+1}.png`)
         });
 
+        Array(8).fill(0).forEach((_,i) => {
+            this.load.image(`container${i+1}`,`assets/images/containers/${i+1}.png`)
+        });
+
         /*this.load.image("single-redbean", "assets/images/single-redbean.png");
         this.load.audio("playerdeath","assets/sounds/playerdeath.mp3");
         this.load.spritesheet("tomato", "assets/images/tomato.png", { frameWidth: 32, frameHeight: 32 });

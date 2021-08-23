@@ -8,15 +8,18 @@ export default class Player extends Phaser.GameObjects.Container {
         this.scene = scene;
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
-        this.ship = new Phaser.GameObjects.Sprite(this.scene, 32, 32, "ship");
+        this.ship = new Phaser.GameObjects.Sprite(this.scene, 64, 32, "ship");
         this.add(this.ship);
         this.defaultVelocity = 100;
         this.hull = 100;
         this.greenBeans = green;
         this.redBeans = red;
         this.init();
+        this.setBodySize();
         this.right = 1;
         this.dead = false;
+        this.body.setDrag(60);
+        this.body.setBounce(1)
         this.containers = [];
         this.containerValue = new Phaser.GameObjects.BitmapText(this.scene, 30, -20, "pixelFont", "SCORE", 20).setAlpha(0).setOrigin(0.5)
         this.add(this.containerValue);

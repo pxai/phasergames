@@ -17,16 +17,17 @@ export default class Game extends Phaser.Scene {
 
     create () {
       // this.add.tileSprite(0, 0, 800, 600, 'background1').setOrigin(0,0);
+      // 494d7e
+
+      this.width = this.sys.game.config.width;
+      this.height = this.sys.game.config.height;
+      this.center_width = this.width / 2;
+      this.center_height = this.height / 2;
       this.physics.world.setBounds(0, 0, 1600, 1200);
       this.finished = false;
       this.starfield = new Starfiled(this);
       this.asteroidField = new AsteroidField(this);
       this.containerGenerator = new ContainerGenerator(this);
-        this.width = this.sys.game.config.width;
-        this.height = this.sys.game.config.height;
-        this.center_width = this.width / 2;
-        this.center_height = this.height / 2
-
         const greenBeans = +this.registry.get("containers");
         const redBeans = +this.registry.get("hull");
         this.player = new Player(this, 100, this.height - 32, "ship", greenBeans, redBeans)//.setOrigin(0.5); // this.physics.add.sprite(100, 450, 'dude');
@@ -45,7 +46,8 @@ export default class Game extends Phaser.Scene {
         this.starfield.generate();
         this.asteroidField.generate();
         this.containerGenerator.generate();
-        this.cameras.main.startFollow(this.player);
+        this.cameras.main.setBackgroundColor(0x494d7e);
+        // this.cameras.main.startFollow(this.player);
         // this.zoomOut(0.5);
       }
 
