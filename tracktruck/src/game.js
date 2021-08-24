@@ -5,12 +5,18 @@ import ContainerGenerator from "./objects/container_generator";
 
 export default class Game extends Phaser.Scene {
     constructor ({ key }) {
-        super({ key });
+        super({ key: "game" });
         this.player = null;
         this.cursors = null;
         this.score = 0;
         this.scoreText = null;
     }
+
+    init (data) {
+      this.name = data.name;
+      this.number = data.number;
+      this.time = data.time;
+  }
 
     preload () {
     }
@@ -18,7 +24,8 @@ export default class Game extends Phaser.Scene {
     create () {
       // this.add.tileSprite(0, 0, 800, 600, 'background1').setOrigin(0,0);
       // 494d7e
-
+      console.log("Scene time: ", this.time);
+      this.duration = this.time * 1000;
       this.width = this.sys.game.config.width;
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
@@ -49,18 +56,51 @@ export default class Game extends Phaser.Scene {
         this.cameras.main.setBackgroundColor(0x494d7e);
         // this.cameras.main.startFollow(this.player);
         // this.zoomOut(0.5);
+        this.finishStageId = setTimeout(() => this.finishStage(), this.duration);
       }
 
+      finishStage () {
+          this.starfield.stop();
+          this.asteroidField.stop();
+          this.containerGenerator.stop();
+          this.zoomOut(0.5);
+          this.showFinish();
+      }
 
       zoomOut (zoomAmount) {
         this.cameras.main.zoomTo(zoomAmount, 500);
-        //this.cameras.main.scale.x += zoomAmount;
-        //this.cameras.main.scale.y += zoomAmount;
+      }
 
-       /* this.cameras.main.bounds.x =  * this.cameras.main.scale.x;
-        this.cameras.main.bounds.y = size.y * this.cameras.main.scale.y;
-        this.cameras.main.bounds.width = size.width * this.cameras.main.scale.x;
-        this.cameras.main.bounds.height = size.height * this.cameras.main.scale.y;*/
+      showFinish () {
+        this.add.image(1800, 400, "planet").setOrigin(0.5).setTint(0xffffff * Math.random());
+        this.player.disablePlayer();
+        this.input.keyboard.on("keydown-SPACE", () => this.scene.start("transition", {name: "STAGE", number: this.number + 1, time: this.time * 2}), this);
+      }
+
+      showResult () {
+        //this.add.rectangle(50, 50, 1700, 1100, 0x000, 0.7).setOrigin(0.5);
+        this.totalScore = 0;
+        this.titleResult = this.add.bitmapText(this.center_width, 200, "pixelFont", `    ${this.name} ${this.number}\nTOTAL SCORE`, 60).setOrigin(0.5)
+        this.totalContainersResult = this.add.bitmapText(this.center_width, 300, "pixelFont", "TOTAL CONTAINERS: " + this.player.containers.length, 50).setOrigin(0.5)
+        this.containerInfo1 = this.add.bitmapText(this.center_width, 400, "pixelFont", "", 40)
+        this.containerInfo2 = this.add.bitmapText(this.center_width, 450, "pixelFont", "", 40)
+        this.containerInfo3 = this.add.bitmapText(this.center_width, 500, "pixelFont", "", 40)
+
+        this.player.containers.forEach( (container, i) => {
+          this.showContainersIntervalId = setTimeout(() => this.showContainer(container, i), 1000 * (i+1));
+        })
+        this.textContinue= this.add.bitmapText(this.center_width, 800, "pixelFont", "Press SPACE", 35).setOrigin(0.5)
+      }
+
+      showContainer (container, i) {
+        this.totalScore += container.type.value;
+        this.add.image(this.center_width - 300, 450, `container${container.type.id}`).setScale(0.8)
+        this.containerInfo1.setText("Container: " + container.type.name);
+        this.containerInfo2.setText(container.type.description);
+        this.containerInfo3.setText("Value: " + container.type.value + "$");
+        if (i === this.player.containers.length - 1) {
+          this.textTotalScore = this.add.bitmapText(this.center_width, 700, "pixelFont", `Total: ${this.totalScore}$ !!`, 60)
+        }
       }
 
       loadAudios () {

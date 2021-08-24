@@ -4,6 +4,7 @@ class Marble extends Phaser.GameObjects.Sprite {
         const y = Phaser.Math.Between(0, scene.physics.world.bounds.height);
         const number = Phaser.Math.Between(1, 9);
         super(scene, x, y, `marble${number}`);
+        this.number = number;
         this.scene = scene;
         this.setOrigin(0.5)
         this.active = true;
@@ -11,7 +12,7 @@ class Marble extends Phaser.GameObjects.Sprite {
         scene.physics.add.existing(this);
         this.body.setVelocityX(-100);
         
-        this.collider = this.scene.physics.add.overlap(this.scene.player, this, this.scene.player.recover, null, this.scene.player);
+        this.collider = this.scene.physics.add.overlap(this.scene.player, this, this.scene.player.pickMarble, null, this.scene.player);
     }
 }
 

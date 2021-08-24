@@ -26,6 +26,10 @@ class Asteroid extends Phaser.Physics.Arcade.Sprite {
         this.body.setVelocityX(-100 * (1/this.scale));
     }
 
+    marbleHit(me, marble) {
+        me.destroy();
+    }
+
     asteroidHit(other, me) {
 
     }

@@ -4,13 +4,19 @@ export default class Starfield {
     constructor(scene){
         this.scene = scene;
         this.starfield = this.scene.add.layer();
-        this.stars = [];
+
     }
 
     generate () {
+        this.stars = [];
+        this.stopped = false;
         this.generateInitial();
-        setInterval(() => this.add(), 100)
+        this.generationIntervalId = setInterval(() => this.add(), 100)
+    }
 
+    stop () {
+        clearInterval(this.generationIntervalId);
+        this.stopped = true;
     }
 
     generateInitial () {
@@ -28,7 +34,7 @@ export default class Starfield {
     update () {
        this.stars.forEach( star => {
            if (star.x < 0) star.destroy();
-           if (star.active) star.x -= star.scale/2;
+           if (star.active && !this.stopped) star.x -= star.scale/2;
        }) 
        this.stars = this.stars.filter(star => star.active);
     }

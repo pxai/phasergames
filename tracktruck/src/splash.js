@@ -15,6 +15,6 @@ export default class Splash extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
 
-        this.input.keyboard.on("keydown-SPACE", () => this.scene.start("transition", {name: "STAGE1", nextScene: "stage1"}), this);
+        this.input.keyboard.on("keydown-SPACE", () => this.scene.start("transition", {name: "STAGE", number: 1, time: 30}), this);
     }
 }

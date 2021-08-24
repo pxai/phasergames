@@ -8,7 +8,14 @@ export default class ContainerGenerator {
     }
 
     generate () {
-        setInterval(() => this.add(), 2000)
+        this.generationIntervalId = setInterval(() => this.add(), 2000)
+    }
+
+    stop () {
+      clearInterval(this.generationIntervalId);
+      this.containers.forEach(container => {
+        if (container.free) container.destroy();
+      });
     }
 
     add () {

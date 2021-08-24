@@ -1,4 +1,5 @@
 import HealthBar from "./objects/health_bar";
+import MarbleShot from "./objects/marble_shot";
 
 export default class Player extends Phaser.GameObjects.Container {
     constructor (scene, x, y, name, green, red) {
@@ -20,7 +21,6 @@ export default class Player extends Phaser.GameObjects.Container {
         this.dead = false;
         this.body.setDrag(60);
         this.body.setBounce(1)
-        this.containers = [];
         this.containerValue = new Phaser.GameObjects.BitmapText(this.scene, 30, -20, "pixelFont", "SCORE", 20).setAlpha(0).setOrigin(0.5)
         this.add(this.containerValue);
         this.containerNumber = new Phaser.GameObjects.BitmapText(this.scene, 30, 80, "pixelFont", "LENGTH", 40).setAlpha(0).setOrigin(0.5)
@@ -31,10 +31,37 @@ export default class Player extends Phaser.GameObjects.Container {
       }
 
     init () {
-      this.containers = [];
+        this.marbles = [];
+       this.containers = [];
         this.body.setCollideWorldBounds(true);
         this.cursor = this.scene.input.keyboard.createCursorKeys();
         this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    }
+
+    disablePlayer () {
+      this.body.setDrag(0);
+      this.body.setVelocityY(this.y > 600 ? -10 : 10)
+      this.body.setVelocityX(200);
+      this.scene.tweens.add({
+        targets: this,
+        duration: 4000,
+        scale: {
+          from: 1,
+          to: 0
+        },
+        velocityX: {
+          from: 200,
+          to: 0
+        },
+        velocityY: {
+          from: 10,
+          to: 0
+        }
+      });
+      this.body.checkCollision.none = true;
+      this.scene.input.keyboard.resetKeys();
+      this.marbles = [];
+      this.scene.showResult();
     }
 
     update () {
@@ -55,16 +82,14 @@ export default class Player extends Phaser.GameObjects.Container {
       }
 
       if (this.spaceBar.isDown) {
-          this.dropContainer();
+          this.shoot();
       }
     }
 
-    dropContainer () {
-      if (this.containers.length > 0) {
-        const container = this.containers.pop();
-        container.body.setVelocityX(-100);
-        this.remove(container);
-        this.setBodySize();
+    shoot () {
+      if (this.marbles.length > 0) {
+        const marble = this.marbles.pop();
+        new MarbleShot(this.scene, this.x + 64, this.y, marble.number);
       }
     }
 
@@ -86,17 +111,14 @@ export default class Player extends Phaser.GameObjects.Container {
       }
     }
 
-    recover (player, marble) {
-     /* const recover = Phaser.Math.Between(20, 60);
-      this.hull = this.hull + recover;
-      this.scene.updateHull(this.hull);
-      this.healthBar.decrease(this.hull);
-      this.showHit(`+${recover}`)
-      marble.destroy();*/
+    pickMarble (player, marble) {
+      this.marbles.push(marble);
+      this.showMarbles(`+${this.marbles.length}`);
+      console.log("Picked up: ", this.marbles);
+      marble.destroy();
     }
 
     asteroidHit (asteroid, container) {
-
      //  this.hit(asteroid)
     }
 
@@ -139,6 +161,19 @@ export default class Player extends Phaser.GameObjects.Container {
     adaptBounce () {
       const bounce =  this.containers.length < 8 ? 1 - (this.containers.length * 0.1): 0.2;
       this.body.setBounce(bounce);
+    }
+
+    showMarbles (marbleLength) {
+      this.containerNumber.setText(marbleLength);
+      this.containerNumber.setAlpha(1);
+      this.scene.tweens.add({
+        targets: this.containerNumber,
+        duration:1000,
+        alpha: {
+          from: 1,
+          to: 0
+        },
+      });
     }
 
     show (value, containerLength) {
