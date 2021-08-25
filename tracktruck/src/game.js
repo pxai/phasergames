@@ -72,7 +72,8 @@ export default class Game extends Phaser.Scene {
       }
 
       showFinish () {
-        this.add.image(1800, 400, "planet").setOrigin(0.5).setTint(0xffffff * Math.random());
+        this.planet = this.add.image(1800, 400, "planet").setOrigin(0.5).setTint(0xffffff * Math.random());
+        this.planet.rotation = 100 * Math.random();
         this.player.disablePlayer();
         this.input.keyboard.on("keydown-SPACE", () => this.scene.start("transition", {name: "STAGE", number: this.number + 1, time: this.time * 2}), this);
       }
@@ -98,6 +99,7 @@ export default class Game extends Phaser.Scene {
         this.containerInfo1.setText("Container: " + container.type.name);
         this.containerInfo2.setText(container.type.description);
         this.containerInfo3.setText("Value: " + container.type.value + "$");
+        this.playAudio("lock");
         if (i === this.player.containers.length - 1) {
           this.textTotalScore = this.add.bitmapText(this.center_width, 700, "pixelFont", `Total: ${this.totalScore}$ !!`, 60)
         }
@@ -105,7 +107,9 @@ export default class Game extends Phaser.Scene {
 
       loadAudios () {
         this.audios = {
-          // "albatdeath": this.sound.add("albatdeath"),
+          "lock": this.sound.add("lock"),
+          "thrust": this.sound.add("thrust"),
+          "marble": this.sound.add("marble"),
         };
       }
 

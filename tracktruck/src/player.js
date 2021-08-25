@@ -67,14 +67,18 @@ export default class Player extends Phaser.GameObjects.Container {
     update () {
       if (this.cursor.left.isDown) {
           this.body.setVelocityX(-100);
+          this.scene.playAudio("thrust");
       } else if (this.cursor.right.isDown) {
           this.body.setVelocityX(100);
+          this.scene.playAudio("thrust");
       }
 
       if (this.cursor.up.isDown) {
           this.body.setVelocityY(-100);
+          this.scene.playAudio("thrust");
       } else if (this.cursor.down.isDown) {
           this.body.setVelocityY(100);
+          this.scene.playAudio("thrust");
       }
 
       if (this.body.x < (-128 * (this.containers.length + 1)) || this.body.x > this.scene.physics.world.bounds.width + 10) {
@@ -112,6 +116,7 @@ export default class Player extends Phaser.GameObjects.Container {
     }
 
     pickMarble (player, marble) {
+      this.scene.playAudio("marble");
       this.marbles.push(marble);
       this.showMarbles(`+${this.marbles.length}`);
       console.log("Picked up: ", this.marbles);
@@ -124,7 +129,7 @@ export default class Player extends Phaser.GameObjects.Container {
 
     pick (container, player) {
       container.pickOverlap.destroy();
-
+      this.scene.playAudio("lock");
       container.free = false;
       container.body.setVelocityX(0);
       container.body.immovable = true
