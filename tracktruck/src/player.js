@@ -1,5 +1,6 @@
 import HealthBar from "./objects/health_bar";
 import MarbleShot from "./objects/marble_shot";
+import Thrust from "./objects/thrust";
 
 export default class Player extends Phaser.GameObjects.Container {
     constructor (scene, x, y, name, green, red) {
@@ -17,7 +18,6 @@ export default class Player extends Phaser.GameObjects.Container {
         this.redBeans = red;
         this.init();
         this.setBodySize();
-        this.right = 1;
         this.dead = false;
         this.body.setDrag(60);
         this.body.setBounce(1)
@@ -27,6 +27,7 @@ export default class Player extends Phaser.GameObjects.Container {
         this.add(this.containerNumber);
         this.damageValue = new Phaser.GameObjects.BitmapText(this.scene, 30, -40, "pixelFont", "DAMAGE", 20).setTint(0xff0000).setAlpha(0).setOrigin(0.5)
         this.add(this.damageValue);
+        this.bump = this.scene.add.image(this.x, this.y, "bump").setOrigin(0.5).setAlpha(0);
         this.healthBar = new HealthBar(this, 64, 64, this.hull);
       }
 
@@ -36,6 +37,24 @@ export default class Player extends Phaser.GameObjects.Container {
         this.body.setCollideWorldBounds(true);
         this.cursor = this.scene.input.keyboard.createCursorKeys();
         this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.scene.anims.create({
+          key: "thrust",
+          frames: this.scene.anims.generateFrameNumbers("thrust"),
+          frameRate: 5,
+          repeat: -1
+        });
+
+        this.scene.anims.create({
+            key: "shot",
+            frames: this.scene.anims.generateFrameNumbers("shot"),
+            frameRate: 20
+        });
+
+        this.scene.anims.create({
+            key: "lock",
+            frames: this.scene.anims.generateFrameNumbers("lock"),
+            frameRate: 20
+        });
     }
 
     disablePlayer () {
@@ -58,6 +77,7 @@ export default class Player extends Phaser.GameObjects.Container {
           to: 0
         }
       });
+      setTimeout(() => { this.body.setVelocityX(0); this.body.setVelocityY(0);}, 4000);
       this.body.checkCollision.none = true;
       this.scene.input.keyboard.resetKeys();
       this.marbles = [];
@@ -68,17 +88,22 @@ export default class Player extends Phaser.GameObjects.Container {
       if (this.cursor.left.isDown) {
           this.body.setVelocityX(-100);
           this.scene.playAudio("thrust");
+          this.showThrust("left");
       } else if (this.cursor.right.isDown) {
           this.body.setVelocityX(100);
           this.scene.playAudio("thrust");
+          this.showThrust("right");
       }
 
       if (this.cursor.up.isDown) {
           this.body.setVelocityY(-100);
           this.scene.playAudio("thrust");
+          this.showThrust("up");
+                // this.showBump(player.x, player.y)
       } else if (this.cursor.down.isDown) {
           this.body.setVelocityY(100);
           this.scene.playAudio("thrust");
+          this.showThrust("down");
       }
 
       if (this.body.x < (-128 * (this.containers.length + 1)) || this.body.x > this.scene.physics.world.bounds.width + 10) {
@@ -93,7 +118,7 @@ export default class Player extends Phaser.GameObjects.Container {
     shoot () {
       if (this.marbles.length > 0) {
         const marble = this.marbles.pop();
-        new MarbleShot(this.scene, this.x + 64, this.y, marble.number);
+        new MarbleShot(this.scene, this.x + 64, this.y + 32, marble.number);
       }
     }
 
@@ -103,6 +128,9 @@ export default class Player extends Phaser.GameObjects.Container {
     }
 
     hit (asteroid, player) {
+      console.log("Asteroid: ", asteroid.collider);
+      this.scene.playAudio(`hit${Phaser.Math.Between(1, 4)}`);
+      // this.showBump(player.x, player.y)
       const damage = Math.floor(asteroid.scale * 10);
       this.hull = this.hull - damage;
       this.scene.updateHull(this.hull);
@@ -115,6 +143,38 @@ export default class Player extends Phaser.GameObjects.Container {
       }
     }
 
+    showBump (x, y) {
+      console.log(x, y, this.bump)
+      this.bump.x = x;
+      this.bump.y = y;
+      this.bump.rotation = 100 * Math.random();
+      this.bump.setAlpha(1);
+      this.scene.tweens.add({
+        targets: this.bump,
+        duration: 4000,
+        scale: {
+          from: 1,
+          to: 0
+        },
+        alpha: {
+          from: 1,
+          to: 0
+        }
+      });
+    }
+
+    showThrust(side) {
+      console.log(this.ship);
+      const offset = (this.containers.length * 128);
+      const position = {
+        "up": {x: this.body.x + 32 + offset, y: this.body.y + 74},
+        "down": {x: this.body.x + 32 + offset, y: this.body.y - 10},
+        "right": {x: this.body.x - 10 + offset, y: this.body.y + 32},
+        "left": {x: this.body.x + 138 + offset, y: this.body.y + 32},
+      }[side];
+      new Thrust(this.scene, position.x, position.y, side);
+    }
+  
     pickMarble (player, marble) {
       this.scene.playAudio("marble");
       this.marbles.push(marble);

@@ -1,5 +1,5 @@
 class Star extends Phaser.GameObjects.Rectangle {
-    constructor (scene, x, color = 0xffffff) {
+    constructor (scene, x, color = 0xf2d3ab) {
         const finalX = x || scene.physics.world.bounds.width;
         const y = Phaser.Math.Between(0, 2000);
         const scale = Phaser.Math.Between(0, 5);

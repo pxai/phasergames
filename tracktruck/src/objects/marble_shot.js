@@ -7,6 +7,8 @@ class MarbleShot extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setVelocityX(300);
+        this.anims.play("shot", true)
+
         this.scene.asteroidField.asteroids.forEach(asteroid => {
             this.scene.physics.add.collider(asteroid, this, asteroid.marbleHit, null, asteroid);
         })

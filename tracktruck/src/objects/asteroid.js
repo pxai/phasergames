@@ -9,7 +9,7 @@ class Asteroid extends Phaser.Physics.Arcade.Sprite {
         this.scene.physics.add.existing(this);
         this.scene.physics.world.enable(this);
         this.setScale(scale);
-        this.setBounce(0.2)
+        this.setBounce(0.3)
         this.scene.add.existing(this);
         this.collider = this.scene.physics.add.collider(this, this.scene.player, this.scene.player.hit, null, this.scene.player);
         this.scene.containerGenerator.containers.forEach( container => {
@@ -31,7 +31,6 @@ class Asteroid extends Phaser.Physics.Arcade.Sprite {
     }
 
     asteroidHit(other, me) {
-
     }
 }
 
