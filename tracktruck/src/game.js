@@ -47,7 +47,7 @@ export default class Game extends Phaser.Scene {
         this.loadAudios();
      //   this.updateScore();
         // this.playMusic();
-        this.cameras.main.setBounds(0, 0, 800, 600);
+        this.cameras.main.setBounds(0, 300, 800, 600);
         // this.cameras.main.focusOnXY(-800, -600);
         //this.camera.
         this.starfield.generate();
@@ -81,30 +81,31 @@ export default class Game extends Phaser.Scene {
       showResult () {
         //this.add.rectangle(50, 50, 1700, 1100, 0x000, 0.7).setOrigin(0.5);
         this.totalScore = 0;
-        this.titleResult = this.add.bitmapText(this.center_width * 2, 100, "pixelFont", `${this.name} ${this.number} TOTAL SCORE`, 60).setOrigin(0.5)
-        this.totalContainersResult = this.add.bitmapText(this.center_width * 2, 200, "pixelFont", "TOTAL CONTAINERS: " + this.player.containers.length, 50).setOrigin(0.5)
-        this.containerInfo1 = this.add.bitmapText(this.center_width * 2, 500, "pixelFont", "", 40).setOrigin(0.5)
-        this.containerInfo2 = this.add.bitmapText(this.center_width * 2, 560, "pixelFont", "", 40).setOrigin(0.5)
-        this.containerInfo3 = this.add.bitmapText(this.center_width * 2, 620, "pixelFont", "", 40).setOrigin(0.5)
+        this.titleResult = this.add.bitmapText(this.center_width * 2, 400, "pixelFont", `${this.name} ${this.number} TOTAL SCORE`, 60).setOrigin(0.5)
+        this.totalContainersResult = this.add.bitmapText(this.center_width * 2, 500, "pixelFont", "TOTAL CONTAINERS: " + this.player.containers.length, 50).setOrigin(0.5)
+        this.containerInfo1 = this.add.bitmapText(this.center_width * 2, 800, "pixelFont", "", 40).setOrigin(0.5)
+        this.containerInfo2 = this.add.bitmapText(this.center_width * 2, 860, "pixelFont", "", 40).setOrigin(0.5)
+        this.containerInfo3 = this.add.bitmapText(this.center_width * 2, 920, "pixelFont", "", 40).setOrigin(0.5)
         if (this.player.containers.length === 0) {
-          this.add.bitmapText(this.center_width * 2, 500, "pixelFont", `YOU SUCK!!`, 120).setOrigin(0.5)
+          this.add.bitmapText(this.center_width * 2, 800, "pixelFont", `YOU SUCK!!`, 120).setOrigin(0.5)
         } 
+        this.showContainersTimeoutId = [];
         this.player.containers.forEach( (container, i) => {
-          this.showContainersIntervalId = setTimeout(() => this.showContainer(container, i), 1000 * (i+1));
+          this.showContainersTimeoutId.push(setTimeout(() => this.showContainer(container, i), 1000 * (i+1)));
         })
-        this.textContinue= this.add.bitmapText(this.center_width * 2, 800, "pixelFont", "Press SPACE", 35).setOrigin(0.5)
+        this.textContinue= this.add.bitmapText(this.center_width * 2, 1100, "pixelFont", "Press SPACE", 35).setOrigin(0.5)
         setTimeout(() => this.finishScene(), 1000 * (this.player.containers.length + 1) + 1000)
       }
 
       showContainer (container, i) {
         this.totalScore += container.type.value;
-        this.add.image((this.center_width * 2), 350, `container${container.type.id}`).setScale(0.8)
+        this.add.image((this.center_width * 2), 650, `container${container.type.id}`).setScale(0.8)
         this.containerInfo1.setText("Container: " + container.type.name);
         this.containerInfo2.setText(container.type.description);
         this.containerInfo3.setText("Value: " + container.type.value + "$");
         this.playAudio("lock");
         if (i === this.player.containers.length - 1) {
-          this.textTotalScore = this.add.bitmapText(this.center_width * 2, 700, "pixelFont", `Total: ${this.totalScore}$ !!`, 60).setOrigin(0.5)
+          this.textTotalScore = this.add.bitmapText(this.center_width * 2, 1000, "pixelFont", `Total: ${this.totalScore}$ !!`, 60).setOrigin(0.5)
           this.playAudio("lock");
         }
       }
@@ -114,6 +115,7 @@ export default class Game extends Phaser.Scene {
           "lock": this.sound.add("lock"),
           "thrust": this.sound.add("thrust"),
           "marble": this.sound.add("marble"),
+          "shot": this.sound.add("shot"),
           "hit1": this.sound.add("hit1"),
           "hit2": this.sound.add("hit2"),
           "hit3": this.sound.add("hit3"),
@@ -168,6 +170,9 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene () {
+      if (this.showContainersTimeoutId.length > 0) 
+        this.showContainersTimeoutId.forEach(timeoutId => {clearTimeout(timeoutId)});
+
       this.scene.start("transition", {name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 

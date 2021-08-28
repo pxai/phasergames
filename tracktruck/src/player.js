@@ -37,6 +37,7 @@ export default class Player extends Phaser.GameObjects.Container {
         this.body.setCollideWorldBounds(true);
         this.cursor = this.scene.input.keyboard.createCursorKeys();
         this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
         this.scene.anims.create({
           key: "thrust",
           frames: this.scene.anims.generateFrameNumbers("thrust"),
@@ -110,15 +111,18 @@ export default class Player extends Phaser.GameObjects.Container {
         this.scene.playerDeath(this);
       }
 
-      if (this.spaceBar.isDown) {
-          this.shoot();
+      if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
+        this.shoot();
       }
+
     }
 
     shoot () {
       if (this.marbles.length > 0) {
         const marble = this.marbles.pop();
-        new MarbleShot(this.scene, this.x + 64, this.y + 32, marble.number);
+        const offset = (this.containers.length * 128);
+        this.scene.playAudio("shot");
+        new MarbleShot(this.scene, this.x + 138, this.y + 32, marble.number);
       }
     }
 

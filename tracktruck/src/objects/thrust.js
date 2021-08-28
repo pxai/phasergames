@@ -11,7 +11,7 @@ class Thrust extends Phaser.GameObjects.Sprite {
         //this.play("thrust", true)
         this.scene.tweens.add({
             targets: this,
-            duration: 1000,
+            duration: 800,
             scale: {
               from: 1,
               to: 0
@@ -21,6 +21,8 @@ class Thrust extends Phaser.GameObjects.Sprite {
               to: 0
             }
         });
+
+        setTimeout(() => this.destroy(), 1000);
     }
 }
 

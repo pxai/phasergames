@@ -1,7 +1,7 @@
 class Asteroid extends Phaser.Physics.Arcade.Sprite {
-    constructor (scene) {
-        const x = Phaser.Math.Between(scene.physics.world.bounds.width, scene.physics.world.bounds.width + 50);
-        const y = Phaser.Math.Between(0, scene.physics.world.bounds.height);
+    constructor (scene, x, y, disperse) {
+        x = x || Phaser.Math.Between(scene.physics.world.bounds.width, scene.physics.world.bounds.width + 50);
+        y = y || Phaser.Math.Between(0, scene.physics.world.bounds.height);
 
         const scale = Math.random() + 0.2;
         super(scene, x, y, "asteroid");
@@ -16,18 +16,25 @@ class Asteroid extends Phaser.Physics.Arcade.Sprite {
             container.asteroidCollider = this.scene.physics.add.collider(this, container, () => 0, null, this);
         })
 
-        this.moveIt();
+        this.moveIt(disperse);
     }
 
-    moveIt () {
-        if (Phaser.Math.Between(1, 101) > 10) {
-            this.body.setVelocityY(Phaser.Math.Between(-10, 10));
+    moveIt (disperse) {
+        if (disperse) {
+            this.body.setVelocityY(disperse);
+            this.body.setVelocityX(100 * (1/this.scale));
+        } else {
+            if (Phaser.Math.Between(1, 101) > 10) {
+                this.body.setVelocityY(Phaser.Math.Between(-10, 10));
+            }
+            this.body.setVelocityX(-100 * (1/this.scale));
         }
-        this.body.setVelocityX(-100 * (1/this.scale));
     }
 
     marbleHit(me, marble) {
         me.destroy();
+        this.scene.asteroidField.addDispersed(new Asteroid(this.scene, this.x, this.y, -10));
+        this.scene.asteroidField.addDispersed(new Asteroid(this.scene, this.x, this.y, 10));
     }
 
     asteroidHit(other, me) {

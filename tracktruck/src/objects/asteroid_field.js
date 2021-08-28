@@ -29,6 +29,13 @@ export default class AsteroidField {
         this.maybeAddMarble();
     }
 
+    addDispersed (dispersed) {
+        this.asteroids.push(dispersed);
+        this.asteroids.forEach(asteroid => {
+            this.scene.physics.add.collider(asteroid, dispersed, dispersed.asteroidHit, null, dispersed);
+        });
+    }
+
     maybeAddMarble () {
         if (Phaser.Math.Between(1, 11) > 10) {
             const marble = new Marble(this.scene);
