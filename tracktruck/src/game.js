@@ -72,7 +72,7 @@ export default class Game extends Phaser.Scene {
       }
 
       showFinish () {
-        this.planet = this.add.image(1800, 400, "planet").setOrigin(0.5).setTint(0xffffff * Math.random());
+        this.planet = this.add.image(1800, 600, "planet").setOrigin(0.5).setTint(0xffffff * Math.random());
         this.planet.rotation = 100 * Math.random();
         this.player.disablePlayer();
         this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);

@@ -11,6 +11,12 @@ export default class ContainerGenerator {
         this.generationIntervalId = setInterval(() => this.add(), 2000)
     }
 
+    generateInitial() {
+      this.positions.push([this.scene.player.x + 400, this.scene.player.y + 200]);
+      this.current = this.positions.length - 1;
+      this.add();
+    }
+  
     stop () {
       clearInterval(this.generationIntervalId);
       this.containers.forEach(container => {
@@ -21,7 +27,7 @@ export default class ContainerGenerator {
     add () {
         const [x, y] = this.positions[this.current];
         const container = containerTypes[Phaser.Math.Between(1, containerTypes.length - 1)];
-        const added = new Container(this.scene, container);
+        const added = new Container(this.scene, container, x, y);
         this.containers.push(added);
         this.current = this.current === this.positions.length - 1 ? 0 : this.current + 1;
     }

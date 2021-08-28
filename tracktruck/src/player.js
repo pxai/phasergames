@@ -1,6 +1,7 @@
 import HealthBar from "./objects/health_bar";
 import MarbleShot from "./objects/marble_shot";
 import Thrust from "./objects/thrust";
+import Lock from "./objects/lock";
 
 export default class Player extends Phaser.GameObjects.Container {
     constructor (scene, x, y, name, green, red) {
@@ -54,7 +55,7 @@ export default class Player extends Phaser.GameObjects.Container {
         this.scene.anims.create({
             key: "lock",
             frames: this.scene.anims.generateFrameNumbers("lock"),
-            frameRate: 20
+            frameRate: 10
         });
     }
 
@@ -123,6 +124,7 @@ export default class Player extends Phaser.GameObjects.Container {
         const offset = (this.containers.length * 128);
         this.scene.playAudio("shot");
         new MarbleShot(this.scene, this.x + 138, this.y + 32, marble.number);
+        this.showMarbles(`=${this.marbles.length}`);
       }
     }
 
@@ -176,6 +178,16 @@ export default class Player extends Phaser.GameObjects.Container {
         "left": {x: this.body.x + 158 + offset, y: this.body.y + 32},
       }[side];
       new Thrust(this.scene, position.x, position.y, side);
+    }
+
+    showLock(side) {
+      // const offset = (this.containers.length * 32);
+      const position = {
+        "up": {x: this.body.x - 12, y: this.body.y + 90},
+        "down": {x: this.body.x - 12, y: this.body.y - 26},
+      }[side];
+      const lock = new Lock(this.scene, position.x, position.y, side);
+      lock.anims.play("lock");
     }
   
     pickMarble (player, marble) {
@@ -306,6 +318,8 @@ export default class Player extends Phaser.GameObjects.Container {
       const x = -60 - (128 * this.containers.length);
       const y = 32;
       container.setPosition(x, y);
+      this.showLock("up");
+      this.showLock("down");
     }
     
     finish() {
