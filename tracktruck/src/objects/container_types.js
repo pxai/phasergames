@@ -47,4 +47,40 @@ export default [
         description: "Affordable meal shake",
         value: 5000000,
     },
+    {
+        id: 9,
+        name: "KAS",
+        description: "Refreshing beverages",
+        value: 50000,
+    },
+    {
+        id: 10,
+        name: "Love",
+        description: "Alva & Guinxu's secrets",
+        value: 6969,
+    },
+    {
+        id: 11,
+        name: "Ice Cream",
+        description: "Absolute-zero ice cream",
+        value: 20000,
+    },
+    {
+        id: 12,
+        name: "Pokentainer",
+        description: "Gotta catch'em all",
+        value: 20000,
+    },
+    {
+        id: 13,
+        name: "Nido",
+        description: "Food for birds",
+        value: 54000,
+    },
+    {
+        id: 14,
+        name: "JavaScript",
+        description: "JavaScript frameworks",
+        value: 880000,
+    },
 ];

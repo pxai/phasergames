@@ -4,7 +4,6 @@ export default class Starfield {
     constructor(scene){
         this.scene = scene;
         this.starfield = this.scene.add.layer();
-
     }
 
     generate () {

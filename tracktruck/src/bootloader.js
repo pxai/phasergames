@@ -27,7 +27,7 @@ export default class Bootloader extends Phaser.Scene {
             this.load.image(`marble${i+1}`,`assets/images/marbles/marble${i+1}.png`)
         });
 
-        Array(8).fill(0).forEach((_,i) => {
+        Array(14).fill(0).forEach((_,i) => {
             this.load.image(`container${i+1}`,`assets/images/containers/${i+1}.png`)
         });
 
@@ -35,6 +35,8 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image("planet", "assets/images/planet.png");
         this.load.image("asteroid", "assets/images/asteroid.png");
         this.load.image("container", "assets/images/container.png");
+        this.load.image("logo", "assets/images/logo.png");
+        this.load.image("pello", "assets/images/pello.png");
         this.load.image("bump", "assets/images/bump.png");
         this.load.audio("music", "assets/sounds/muzik.mp3");
         this.load.audio("horn", "assets/sounds/horn.mp3");

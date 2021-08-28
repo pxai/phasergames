@@ -8,13 +8,25 @@ export default class ContainerGenerator {
     }
 
     generate () {
-        this.generationIntervalId = setInterval(() => this.add(), 2000)
+      if (this.scene.number === 1) this.generateInitial();
+
+      this.generationIntervalId = setInterval(() => this.add(), 2000)
     }
 
     generateInitial() {
-      this.positions.push([this.scene.player.x + 400, this.scene.player.y + 200]);
-      this.current = this.positions.length - 1;
-      this.add();
+      const [x, y] = [this.scene.player.x + Phaser.Math.Between(200, 400), this.scene.player.y + Phaser.Math.Between(-200, 200)];
+      const container = containerTypes[Phaser.Math.Between(1, containerTypes.length - 1)];
+      const added = new Container(this.scene, container, x, y);
+      const instruction = this.scene.add.bitmapText(x, y + 100, "pixelFont", "Pick containers like this!!", 20).setOrigin(0.5);
+      this.scene.tweens.add({
+        targets: instruction,
+        duration: 2000,
+        alpha: {
+          from: 1,
+          to: 0
+        },
+      });
+      this.containers.push(added);
     }
   
     stop () {
@@ -27,7 +39,7 @@ export default class ContainerGenerator {
     add () {
         const [x, y] = this.positions[this.current];
         const container = containerTypes[Phaser.Math.Between(1, containerTypes.length - 1)];
-        const added = new Container(this.scene, container, x, y);
+        const added = new Container(this.scene, container);
         this.containers.push(added);
         this.current = this.current === this.positions.length - 1 ? 0 : this.current + 1;
     }

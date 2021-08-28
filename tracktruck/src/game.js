@@ -1,5 +1,5 @@
 import Player from "./player";
-import Starfiled from "./objects/starfield";
+import Starfield from "./objects/starfield";
 import AsteroidField from "./objects/asteroid_field";
 import ContainerGenerator from "./objects/container_generator";
 
@@ -32,7 +32,7 @@ export default class Game extends Phaser.Scene {
       this.center_height = this.height / 2;
       this.physics.world.setBounds(0, 0, 1600, 1200);
       this.finished = false;
-      this.starfield = new Starfiled(this);
+      this.starfield = new Starfield(this);
       this.asteroidField = new AsteroidField(this);
       this.containerGenerator = new ContainerGenerator(this);
         const greenBeans = +this.registry.get("containers");
