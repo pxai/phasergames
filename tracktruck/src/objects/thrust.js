@@ -2,6 +2,7 @@ class Thrust extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, side) {
         super(scene, x, y, "thrust");
         this.scene = scene;
+        this.setScale(2)
         this.setOrigin(0.5)
         if (side === "up") this.angle = 180;
         if (side === "left") this.angle = 90;
@@ -13,7 +14,7 @@ class Thrust extends Phaser.GameObjects.Sprite {
             targets: this,
             duration: 800,
             scale: {
-              from: 1,
+              from: 2,
               to: 0
             },
             alpha: {

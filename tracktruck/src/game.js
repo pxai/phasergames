@@ -75,7 +75,7 @@ export default class Game extends Phaser.Scene {
         this.planet = this.add.image(1800, 400, "planet").setOrigin(0.5).setTint(0xffffff * Math.random());
         this.planet.rotation = 100 * Math.random();
         this.player.disablePlayer();
-        this.input.keyboard.on("keydown-SPACE", () => this.scene.start("transition", {name: "STAGE", number: this.number + 1, time: this.time * 2}), this);
+        this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);
       }
 
       showResult () {
@@ -94,12 +94,20 @@ export default class Game extends Phaser.Scene {
           this.showContainersTimeoutId.push(setTimeout(() => this.showContainer(container, i), 1000 * (i+1)));
         })
         this.textContinue= this.add.bitmapText(this.center_width * 2, 1100, "pixelFont", "Press SPACE", 35).setOrigin(0.5)
-        setTimeout(() => this.finishScene(), 1000 * (this.player.containers.length + 1) + 1000)
+        this.finishSceneTimeoutId = setTimeout(() => this.finishScene(), 1000 * (this.player.containers.length + 1) + 1000);
       }
+
+      crearFinishStuff () {
+        clearTimeout(this.finishSceneTimeoutId);
+        this.finishContainer.destroy();
+        if (this.showContainersTimeoutId.length > 0)
+          this.showContainersTimeoutId.forEach(timeoutId => {clearTimeout(timeoutId)});
+      }
+
 
       showContainer (container, i) {
         this.totalScore += container.type.value;
-        this.add.image((this.center_width * 2), 650, `container${container.type.id}`).setScale(0.8)
+        this.finishContainer = this.add.image((this.center_width * 2), 650, `container${container.type.id}`).setScale(0.8)
         this.containerInfo1.setText("Container: " + container.type.name);
         this.containerInfo2.setText(container.type.description);
         this.containerInfo3.setText("Value: " + container.type.value + "$");
@@ -170,9 +178,7 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene () {
-      if (this.showContainersTimeoutId.length > 0) 
-        this.showContainersTimeoutId.forEach(timeoutId => {clearTimeout(timeoutId)});
-
+      this.crearFinishStuff();
       this.scene.start("transition", {name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 

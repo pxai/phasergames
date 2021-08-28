@@ -168,13 +168,12 @@ export default class Player extends Phaser.GameObjects.Container {
     }
 
     showThrust(side) {
-      console.log(this.ship);
       const offset = (this.containers.length * 128);
       const position = {
-        "up": {x: this.body.x + 32 + offset, y: this.body.y + 74},
-        "down": {x: this.body.x + 32 + offset, y: this.body.y - 10},
-        "right": {x: this.body.x - 10 + offset, y: this.body.y + 32},
-        "left": {x: this.body.x + 138 + offset, y: this.body.y + 32},
+        "up": {x: this.body.x + 32 + offset, y: this.body.y + 96},
+        "down": {x: this.body.x + 32 + offset, y: this.body.y - 32},
+        "right": {x: this.body.x - 30 + offset, y: this.body.y + 32},
+        "left": {x: this.body.x + 158 + offset, y: this.body.y + 32},
       }[side];
       new Thrust(this.scene, position.x, position.y, side);
     }
