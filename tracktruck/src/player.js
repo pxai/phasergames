@@ -87,6 +87,7 @@ export default class Player extends Phaser.GameObjects.Container {
     }
 
     update () {
+      if (this.scene.stageFinished) return;
       if (this.cursor.left.isDown) {
           this.body.setVelocityX(-100);
           this.scene.playAudio("thrust");

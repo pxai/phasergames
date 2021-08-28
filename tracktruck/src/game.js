@@ -56,10 +56,12 @@ export default class Game extends Phaser.Scene {
         this.cameras.main.setBackgroundColor(0x494d7e);
         // this.cameras.main.startFollow(this.player);
         // this.zoomOut(0.5);
+        this.stageFinished = false;
         this.finishStageId = setTimeout(() => this.finishStage(), this.duration);
       }
 
       finishStage () {
+          this.stageFinished = true;
           this.starfield.stop();
           this.asteroidField.stop();
           this.containerGenerator.stop();
@@ -88,12 +90,12 @@ export default class Game extends Phaser.Scene {
         this.containerInfo3 = this.add.bitmapText(this.center_width * 2, 920, "pixelFont", "", 40).setOrigin(0.5)
         if (this.player.containers.length === 0) {
           this.add.bitmapText(this.center_width * 2, 800, "pixelFont", `YOU SUCK!!`, 120).setOrigin(0.5)
+          this.showAccumulatedScore(this.totalScore);
         } 
         this.showContainersTimeoutId = [];
         this.player.containers.forEach( (container, i) => {
           this.showContainersTimeoutId.push(setTimeout(() => this.showContainer(container, i), 1000 * (i+1)));
         })
-        this.textContinue= this.add.bitmapText(this.center_width * 2, 1100, "pixelFont", "Press SPACE", 35).setOrigin(0.5)
         this.finishSceneTimeoutId = setTimeout(() => this.finishScene(), 1000 * (this.player.containers.length + 1) + 1000);
       }
 
@@ -113,9 +115,18 @@ export default class Game extends Phaser.Scene {
         this.containerInfo3.setText("Value: " + container.type.value + "$");
         this.playAudio("lock");
         if (i === this.player.containers.length - 1) {
-          this.textTotalScore = this.add.bitmapText(this.center_width * 2, 1000, "pixelFont", `Total: ${this.totalScore}$ !!`, 60).setOrigin(0.5)
+          this.textTotalScore = this.add.bitmapText(this.center_width * 2, 1000, "pixelFont", `Stage total: ${Number(this.totalScore).toLocaleString()}$ !!`, 55).setOrigin(0.5)
           this.playAudio("lock");
+          this.showAccumulatedScore(this.totalScore);
         }
+      }
+
+      showAccumulatedScore(partialScore) {
+        this.updateScore(partialScore);
+        const accumulatedScore = +this.registry.get("score")
+        this.textAccumulatedScore = this.add.bitmapText(this.center_width * 2, 1100, "pixelFont", `Total score: ${Number(accumulatedScore).toLocaleString()}$ !!`, 60).setOrigin(0.5)
+        this.playAudio("lock");
+        this.textContinue= this.add.bitmapText(this.center_width * 2, 1200, "pixelFont", "Press SPACE", 35).setOrigin(0.5)
       }
 
       loadAudios () {
@@ -185,7 +196,7 @@ export default class Game extends Phaser.Scene {
     updateScore (points = 0) {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
-        this.scoreText.setText("SCORE " +  String(score).padStart(6, '0'));
+        // this.scoreText.setText("SCORE " +  Number(score).toLocaleString());
     }
 
     updateContainers (amount) {
