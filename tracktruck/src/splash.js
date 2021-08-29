@@ -15,6 +15,8 @@ export default class Splash extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
         this.starfield = new Starfield(this);
+        this.meow = this.sound.add("meow3");
+        this.lock = this.sound.add("lock");
 
         this.cameras.main.setBackgroundColor(0x494d7e);
         this.showLogo();        
@@ -30,7 +32,7 @@ export default class Splash extends Phaser.Scene {
         this.scene.start("transition", {name: "STAGE", number: 1, time: 30})
     }
     showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, 120, "logo").setScale(0.28).setOrigin(0.5)
+        this.gameLogo = this.add.image(this.center_width*2, 130, "logo").setScale(0.28).setOrigin(0.5)
         this.tweens.add({
             targets: this.gameLogo,
             duration: 1000,
@@ -61,6 +63,8 @@ export default class Splash extends Phaser.Scene {
     }
 
     showInstructions() {
+        this.lock.play();
+        this.meow.play();
         this.add.bitmapText(this.center_width, 350, "pixelFont", "Pick Containers", 30).setOrigin(0.5);
         this.add.bitmapText(this.center_width, 400, "pixelFont", "Avoid Asteroids", 30).setOrigin(0.5);
         this.add.bitmapText(this.center_width, 450, "pixelFont", "Pick & Shoot Marbles", 30).setOrigin(0.5);

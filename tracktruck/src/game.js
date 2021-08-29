@@ -46,7 +46,7 @@ export default class Game extends Phaser.Scene {
      //   this.scoreText = this.add.bitmapText(this.center_width, 16, "pixelFont", "SCORE", 20).setOrigin(0.5)
         this.loadAudios();
      //   this.updateScore();
-        // this.playMusic();
+        this.playMusic();
         this.cameras.main.setBounds(0, 300, 800, 600);
         // this.cameras.main.focusOnXY(-800, -600);
         //this.camera.
@@ -54,10 +54,11 @@ export default class Game extends Phaser.Scene {
         this.asteroidField.generate();
         this.containerGenerator.generate();
         this.cameras.main.setBackgroundColor(0x494d7e);
-        // this.cameras.main.startFollow(this.player);
+        this.cameras.main.startFollow(this.player);
         // this.zoomOut(0.5);
         this.stageFinished = false;
         this.finishStageId = setTimeout(() => this.finishStage(), this.duration);
+        this.player.meow();
       }
 
       finishStage () {
@@ -77,6 +78,7 @@ export default class Game extends Phaser.Scene {
         this.planet = this.add.image(1800, 600, "planet").setOrigin(0.5).setTint(0xffffff * Math.random());
         this.planet.rotation = 100 * Math.random();
         this.player.disablePlayer();
+        this.zoomOut(0.5);
         this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);
       }
 
@@ -101,7 +103,7 @@ export default class Game extends Phaser.Scene {
 
       crearFinishStuff () {
         clearTimeout(this.finishSceneTimeoutId);
-        this.finishContainer.destroy();
+        if (this.finishContainer) this.finishContainer.destroy();
         if (this.showContainersTimeoutId.length > 0)
           this.showContainersTimeoutId.forEach(timeoutId => {clearTimeout(timeoutId)});
       }
@@ -139,6 +141,13 @@ export default class Game extends Phaser.Scene {
           "hit2": this.sound.add("hit2"),
           "hit3": this.sound.add("hit3"),
           "hit4": this.sound.add("hit4"),
+          "meow1": this.sound.add("meow1"),
+          "meow2": this.sound.add("meow2"),
+          "meow3": this.sound.add("meow3"),
+          "meow4": this.sound.add("meow4"),
+          "meow5": this.sound.add("meow5"),
+          "meow6": this.sound.add("meow6"),
+          "meow7": this.sound.add("meow7"),
         };
       }
 
@@ -190,6 +199,7 @@ export default class Game extends Phaser.Scene {
 
     finishScene () {
       this.crearFinishStuff();
+      this.theme.stop();
       this.scene.start("transition", {name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 

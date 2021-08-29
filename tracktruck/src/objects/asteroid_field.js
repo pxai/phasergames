@@ -37,7 +37,7 @@ export default class AsteroidField {
     }
 
     maybeAddMarble () {
-        if (Phaser.Math.Between(1, 110) > 10) {
+        if (Phaser.Math.Between(1, 11) > 10) {
             const marble = new Marble(this.scene);
             this.marbles.push(marble);
         }

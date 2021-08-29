@@ -47,6 +47,10 @@ export default class Bootloader extends Phaser.Scene {
         Array(4).fill(0).forEach((_,i) => {
             this.load.audio(`hit${i+1}`,`assets/sounds/hit${i+1}.mp3`)
         });
+
+        Array(7).fill(0).forEach((_,i) => {
+            this.load.audio(`meow${i+1}`,`assets/sounds/meow/meow${i+1}.mp3`)
+        });
         this.load.bitmapFont("pixelFont", "assets/fonts/arcade.png", "assets/fonts/arcade.xml");
 
         this.load.spritesheet("lock", "assets/images/lock.png", { frameWidth: 32, frameHeight: 32 });

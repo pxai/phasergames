@@ -14,7 +14,7 @@ export default class ContainerGenerator {
     }
 
     generateInitial() {
-      const [x, y] = [this.scene.player.x + Phaser.Math.Between(200, 400), this.scene.player.y + Phaser.Math.Between(-200, 200)];
+      const [x, y] = [this.scene.player.x + Phaser.Math.Between(300, 400), this.scene.player.y + Phaser.Math.Between(-200, 200)];
       const container = containerTypes[Phaser.Math.Between(1, containerTypes.length - 1)];
       const added = new Container(this.scene, container, x, y);
       const instruction = this.scene.add.bitmapText(x, y + 100, "pixelFont", "Pick containers like this!!", 20).setOrigin(0.5);

@@ -49,7 +49,7 @@ export default class Player extends Phaser.GameObjects.Container {
         this.scene.anims.create({
             key: "shot",
             frames: this.scene.anims.generateFrameNumbers("shot"),
-            frameRate: 20
+            frameRate: 15
         });
 
         this.scene.anims.create({
@@ -145,9 +145,16 @@ export default class Player extends Phaser.GameObjects.Container {
       this.showHit(`-${damage}`)
       console.log("Is player dead? ", this.hull, this.isPlayerDead(), this.ship);
       if (this.isPlayerDead()) {
+        this.shot = new Phaser.GameObjects.Sprite(this.scene, this.x, this.y, "shot");
+        this.scene.add.existing(this.shot);
+        this.shot.anims.play("shot", true);
         asteroid.collider.destroy();
         this.scene.playerDeath(this);
       }
+    }
+
+    meow() {
+      this.scene.playAudio(`meow${Phaser.Math.Between(1, 7)}`)
     }
 
     showBump (x, y) {
@@ -328,6 +335,7 @@ export default class Player extends Phaser.GameObjects.Container {
     }
 
     restart () {
+      if (this.scene.stageFinished) return;
       this.x = this.startX;
       this.y = this.startY;
       this.containers.forEach(container => container.destroy());
@@ -338,6 +346,7 @@ export default class Player extends Phaser.GameObjects.Container {
       this.setBodySize();
       this.healthBar = new HealthBar(this, 64, 64, this.hull);
       this.scene.updateContainers(0);
+      this.meow();
     }
 
     animationComplete(animation, frame) {
