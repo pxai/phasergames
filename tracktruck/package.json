@@ -1,7 +1,18 @@
 {
   "name": "tracktruck",
+  "productName": "TrackTruck",
+  "main": "index.html",
+  "window": {
+    "title": "TrackTruck - by Pello, June, Josu",
+    "width": 800,
+    "height": 600,
+    "fullscreen": false,
+    "toolbar": false,
+    "icon": "customIcon.png"
+  },
   "version": "0.0.1",
   "description": "TrackTruck game for tu juego a juicio jam",
+  "chromium-args": "--data-path='./saves/' --in-process-gpu --disable-transparency",
   "scripts": {
     "start": "npx webpack-cli serve -c webpack.dev.js --mode development",
     "build": "webpack --config webpack.prod.js",
