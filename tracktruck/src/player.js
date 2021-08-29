@@ -191,8 +191,8 @@ export default class Player extends Phaser.GameObjects.Container {
     showLock(side) {
       // const offset = (this.containers.length * 32);
       const position = {
-        "up": {x: this.body.x - 12, y: this.body.y + 90},
-        "down": {x: this.body.x - 12, y: this.body.y - 26},
+        "up": {x: this.body.x - 10, y: this.body.y + 90},
+        "down": {x: this.body.x - 10, y: this.body.y - 26},
       }[side];
       const lock = new Lock(this.scene, position.x, position.y, side);
       lock.anims.play("lock");
@@ -219,7 +219,7 @@ export default class Player extends Phaser.GameObjects.Container {
       container.body.stop()
       container.body.setBounce(1);
       this.add(container);
-
+      this.recoverHull(container);
       this.lockContainer(container)
       this.containers.push(container);
       this.zoomOut();
@@ -233,7 +233,16 @@ export default class Player extends Phaser.GameObjects.Container {
 
     }
 
+    recoverHull(container) {
+      if (container.type.id === 1 || container.type.id === 8) {
+        const recover= (this.hull < 70) ? 30 : (100 - this.hull);
+        this.hull += recover;
+        this.showHit(`+${recover}`);
+      }
+    }
+  
     zoomOut () {
+      if (this.scene.stageFinished) return;
       let amount = 1;
       if (this.containers.length >= 4 && this.containers.length < 9 ) {
          amount = 0.8;

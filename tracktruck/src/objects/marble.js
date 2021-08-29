@@ -7,6 +7,7 @@ class Marble extends Phaser.GameObjects.Sprite {
         this.number = number;
         this.scene = scene;
         this.setOrigin(0.5)
+        this.setScale(2);
         this.active = true;
         scene.add.existing(this);
         scene.physics.add.existing(this);
