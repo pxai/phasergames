@@ -17,10 +17,11 @@ export default class ContainerGenerator {
       const [x, y] = [this.scene.player.x + Phaser.Math.Between(300, 400), this.scene.player.y + Phaser.Math.Between(-200, 200)];
       const container = containerTypes[Phaser.Math.Between(1, containerTypes.length - 1)];
       const added = new Container(this.scene, container, x, y);
-      const instruction = this.scene.add.bitmapText(x, y + 100, "pixelFont", "Pick containers like this!!", 20).setOrigin(0.5);
+      const instruction1 = this.scene.add.bitmapText(x, this.scene.player.y - 200, "pixelFont", "WASD/ARROWS + space", 40).setOrigin(0.5);
+      const instruction2 = this.scene.add.bitmapText(x, y + 100, "pixelFont", "Pick containers like this!!", 20).setOrigin(0.5);
       this.scene.tweens.add({
-        targets: instruction,
-        duration: 2000,
+        targets: [instruction1, instruction2],
+        duration: 4000,
         alpha: {
           from: 1,
           to: 0

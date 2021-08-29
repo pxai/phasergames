@@ -38,7 +38,10 @@ export default class Player extends Phaser.GameObjects.Container {
         this.body.setCollideWorldBounds(true);
         this.cursor = this.scene.input.keyboard.createCursorKeys();
         this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
+        this.W = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.scene.anims.create({
           key: "thrust",
           frames: this.scene.anims.generateFrameNumbers("thrust"),
@@ -88,22 +91,21 @@ export default class Player extends Phaser.GameObjects.Container {
 
     update () {
       if (this.scene.stageFinished) return;
-      if (this.cursor.left.isDown) {
+      if (this.cursor.left.isDown || this.A.isDown) {
           this.body.setVelocityX(-100);
           this.scene.playAudio("thrust");
           this.showThrust("left");
-      } else if (this.cursor.right.isDown) {
+      } else if (this.cursor.right.isDown || this.D.isDown) {
           this.body.setVelocityX(100);
           this.scene.playAudio("thrust");
           this.showThrust("right");
       }
 
-      if (this.cursor.up.isDown) {
+      if (this.cursor.up.isDown || this.W.isDown) {
           this.body.setVelocityY(-100);
           this.scene.playAudio("thrust");
           this.showThrust("up");
-                // this.showBump(player.x, player.y)
-      } else if (this.cursor.down.isDown) {
+      } else if (this.cursor.down.isDown || this.S.isDown) {
           this.body.setVelocityY(100);
           this.scene.playAudio("thrust");
           this.showThrust("down");
@@ -191,8 +193,8 @@ export default class Player extends Phaser.GameObjects.Container {
     showLock(side) {
       // const offset = (this.containers.length * 32);
       const position = {
-        "up": {x: this.body.x - 10, y: this.body.y + 90},
-        "down": {x: this.body.x - 10, y: this.body.y - 26},
+        "up": {x: this.body.x - 5, y: this.body.y + 90},
+        "down": {x: this.body.x - 5, y: this.body.y - 26},
       }[side];
       const lock = new Lock(this.scene, position.x, position.y, side);
       lock.anims.play("lock");
@@ -341,9 +343,18 @@ export default class Player extends Phaser.GameObjects.Container {
     
     finish() {
       console.log("Player is finished");
+      this.body.stop();
+      this.deathTween = this.scene.tweens.add({
+        targets: this,
+        duration: 100,
+        alpha: 0,
+        repeat: -1,
+      })
     }
 
     restart () {
+      this.deathTween.stop();
+      this.setAlpha(1);
       if (this.scene.stageFinished) return;
       this.x = this.startX;
       this.y = this.startY;
