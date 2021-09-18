@@ -5,7 +5,7 @@ export default class Lights {
     }
 
     update () {
-        if (Phaser.Math.Between(0, 101) > 100 && !this.out) {
+        if (Phaser.Math.Between(0, 10001) > 10000 && !this.out) {
             this.out = true;
             this.blackOut();
         }

@@ -21,6 +21,7 @@ class Bootloader extends Phaser.Scene {
     this.load.image('heart2', './assets/images/heart2.png')
     this.load.spritesheet('ghost', './assets/images/ghost.png',{ frameWidth: 32, frameHeight: 32 })
     this.load.spritesheet('beer', './assets/images/beer.png',{ frameWidth: 32, frameHeight: 32 })
+    this.load.spritesheet('player', './assets/images/player.png',{ frameWidth: 32, frameHeight: 64 })
     this.load.audio('pong', './assets/sounds/pong.mp3')
 
     this.load.image('tileset', 'assets/maps/tileset.png');
@@ -28,7 +29,6 @@ class Bootloader extends Phaser.Scene {
 
 
     this.registry.set('lives', 7)
-    this.load.image("player", './assets/images/ninjosu.png')
   }
 
   prepareScenes () {

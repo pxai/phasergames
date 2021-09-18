@@ -7,7 +7,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.scene.physics.world.enable(this);
         this.scene.add.existing(this);
 
-        this.body.setSize(20,30);
+        this.body.setSize(32,64);
         this.init();
     }
 
@@ -15,26 +15,62 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setCollideWorldBounds(true);
         this.setOrigin(0.5);
 
+        this.scene.anims.create({
+            key: "idle",
+            frames: this.scene.anims.generateFrameNumbers("player", { start: 0, end: 1 }),
+            frameRate: 2,
+            repeat: -1
+        });
+
+        this.scene.anims.create({
+            key: "left",
+            frames: this.scene.anims.generateFrameNumbers("player", { start: 2, end: 4 }),
+            frameRate: 2
+        });
+
+        this.scene.anims.create({
+            key: "right",
+            frames: this.scene.anims.generateFrameNumbers("player", { start: 5, end: 7 }),
+            frameRate: 2,
+            repeat: -1
+        });
+
+        this.scene.anims.create({
+            key: "down",
+            frames: this.scene.anims.generateFrameNumbers("player", { start: 8, end: 9 }),
+            frameRate: 3,
+            repeat: -1
+        });
+
+        this.scene.anims.create({
+            key: "up",
+            frames: this.scene.anims.generateFrameNumbers("player", { start: 10, end: 11 }),
+            frameRate: 2,
+            repeat: -1
+        });
+
+
+
         this.cursors = this.scene.input.keyboard.createCursorKeys();
     }
 
     update () {
         if (this.cursors.left.isDown) {
-            this.setFlipX(true);
-            //this.body.x--;
+            this.anims.play("left", true);
             this.setVelocityX(-50);
         } else if (this.cursors.right.isDown) {
-            this.setFlipX(false);
+            this.anims.play("right", true);
             this.setVelocityX(50);
         } else if (this.cursors.down.isDown) {
-           //this.body.y++;
+            this.anims.play("down", true);
            this.setVelocityY(50);
         } else if (this.cursors.up.isDown) {
+            this.anims.play("up", true);
             this.setVelocityY(-50);
             //this.body.y--;
         } else {
+            this.anims.play("idle", true);
             this.setVelocity(0,0)
-            this.anims.stop();
         }
     }
 }
