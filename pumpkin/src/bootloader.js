@@ -8,14 +8,15 @@ class Bootloader extends Phaser.Scene {
   preload () {
     this.load.bitmapFont("pixelFont", "assets/fonts/arcade.png", "assets/fonts/arcade.xml");
     this.load.bitmapFont("wizardFont", "assets/fonts/wizard.png", "assets/fonts/wizard.xml");
+    this.load.bitmapFont("zxFont", "assets/fonts/zx.png", "assets/fonts/zx.xml");
 
     this.prepareScenes();
 
     this.load.on('complete', () => {
-      this.scene.start('transition', {index: -1, scenes: this.scenes })
+      this.scene.start('homage', {index: -1, scenes: this.scenes })
     })
 
-
+    this.load.image('zx', './assets/images/zx.png')
     this.load.image('heart1', './assets/images/heart1.png')
     this.load.image('heart2', './assets/images/heart2.png')
     this.load.spritesheet('ghost', './assets/images/ghost.png',{ frameWidth: 32, frameHeight: 32 })
