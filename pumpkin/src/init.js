@@ -2,6 +2,11 @@ import Phaser from 'phaser'
 import Bootloader from './bootloader'
 import Game from './game'
 import Transition from './transition'
+import Intro from './intro'
+import Outro from './outro'
+import GameOver from './game_over'
+import Homage from './homage'
+import Splash from './splash'
 
 const config = {
   width: 800,
@@ -20,7 +25,12 @@ const config = {
   scene: [
     Bootloader,
     Game,
-    Transition
+    Transition,
+    Intro,
+    Outro,
+    GameOver,
+    Homage,
+    Splash
   ]
 }
 

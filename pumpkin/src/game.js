@@ -11,6 +11,7 @@ class Game extends Phaser.Scene {
   }
 
   create () {
+    this.hearts = [];
     console.log("game started")
     this.score = 0
     this.width = this.sys.game.config.width
@@ -18,14 +19,14 @@ class Game extends Phaser.Scene {
     this.center_width = this.width / 2
     this.center_height = this.height / 2
 
-    this.titleTest = this.add.bitmapText(this.center_width, 30, "pixelFont", this.scenes[this.index].name, 20).setOrigin(0.5)
-    this.tileMap = this.make.tilemap({ key: 'scene1' , tileWidth: 16, tileHeight: 16 });
-    this.tileSet = this.tileMap.addTilesetImage('tileset');
-    //this.tileMapLayer = this.tileMap.createLayer('sceneLayer', this.tileSet)
+    this.titleText = this.add.bitmapText(this.center_width, 40, "wizardFont", this.scenes[this.index].name, 20).setTint(0x902406).setOrigin(0.5)
+    this.tileMap = this.make.tilemap({ key: this.scenes[this.index].map , tileWidth: 16, tileHeight: 16 });
+    this.tileSet = this.tileMap.addTilesetImage(this.scenes[this.index].tileset);
+
     this.tileMap.createLayer('background', this.tileSet);
     this.platform = this.tileMap.createLayer('platform', this.tileSet);
     this.objects = this.tileMap.createLayer('objects', this.tileSet);
-   // this.platform.setCollisionByExclusion(-1, true);
+
     this.physics.world.bounds.setTo(0, 0, this.tileMap.widthInPixels, this.tileMap.heightInPixels);
     this.platform.setCollisionByExclusion([-1]);
     this.player = new Player(this, 150, this.height-400, 'player').setScale(0.5);
@@ -43,6 +44,7 @@ class Game extends Phaser.Scene {
   });
 
     this.physics.add.collider(this.player, this.objects, this.objectHit, null, this)
+    this.updateHearts();
   }
   
   objectHit (player, object) {
@@ -58,6 +60,17 @@ class Game extends Phaser.Scene {
   loadNext(sceneName) {
     console.log("Loading next! ");
     this.scene.start("transition", {index: this.index, scenes: this.scenes });
+  }
+
+  updateHearts() {
+    this.hearts.forEach(heart => {
+      heart.destroy();
+      heart = null;
+    });
+
+    Array(+this.registry.get("lives")).fill(0).forEach( (heart, i) => {
+      this.hearts.push(this.add.image(20 + (30 * i), 20, "heart1").setOrigin(0.5));
+    })
   }
 }
 

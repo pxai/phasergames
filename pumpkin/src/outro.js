@@ -1,10 +1,10 @@
-export default class Transition extends Phaser.Scene {
+export default class Outro extends Phaser.Scene {
     constructor () {
-        super({ key: "transition" });
+        super({ key: "outro" });
     }
 
     init (data) {
-        console.log("Transition!!", data);
+        console.log("outro", data);
         this.index = data.index;
         this.scenes = data.scenes;
     }
@@ -18,7 +18,7 @@ export default class Transition extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.titleTest = this.add.bitmapText(this.center_width, this.center_height, "wizardFont", "DOOR OPENED, READY?", 30).setTint(0x902406).setOrigin(0.5)
+        this.titleTest = this.add.bitmapText(this.center_width, this.center_height, "wizardFont", "INTRO", 30).setTint(0x902406).setOrigin(0.5)
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
         setTimeout(() => this.loadNext(), 1000);
     }

@@ -23,3 +23,7 @@ Run the testing
 ```shell
 npm run test
 ```
+
+Colors:
+orange: 0xdc5914
+red: 0x902406
