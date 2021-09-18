@@ -1,14 +1,19 @@
+import scenes from "./scenes";
+
 class Bootloader extends Phaser.Scene {
   constructor () {
     super({ key: 'bootloader' })
   }
 
   preload () {
-    this.load.bitmapFont('squareFont', './assets/fonts/square.png', './assets/fonts/square.xml')
+    this.load.bitmapFont("pixelFont", "assets/fonts/arcade.png", "assets/fonts/arcade.xml");
+
+    this.prepareScenes();
 
     this.load.on('complete', () => {
-      this.scene.start('game')
+      this.scene.start('transition', {index: -1, scenes: this.scenes })
     })
+
 
     this.load.image('ball', './assets/images/ball.png')
     this.load.audio('pong', './assets/sounds/pong.mp3')
@@ -22,6 +27,10 @@ class Bootloader extends Phaser.Scene {
     this.registry.set('winScore', 2)
     this.load.image("player", './assets/images/ninjosu.png')
   }
+
+  prepareScenes () {
+    this.scenes = scenes;
+  } 
 }
 
 export default Bootloader

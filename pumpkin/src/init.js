@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import Bootloader from './bootloader'
 import Game from './game'
+import Transition from './transition'
 
 const config = {
   width: 800,
@@ -19,6 +20,7 @@ const config = {
   scene: [
     Bootloader,
     Game,
+    Transition
   ]
 }
 

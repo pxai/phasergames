@@ -5,7 +5,9 @@ class Game extends Phaser.Scene {
     super({ key: "game" })
   }
 
-  preload () {
+  init (data) {
+    this.index = data.index;
+    this.scenes = data.scenes;
   }
 
   create () {
@@ -16,8 +18,7 @@ class Game extends Phaser.Scene {
     this.center_width = this.width / 2
     this.center_height = this.height / 2
 
-
-    this.physics.world.setBounds(0, 0, 1600, 1200);
+    this.titleTest = this.add.bitmapText(this.center_width, 30, "pixelFont", this.scenes[this.index].name, 20).setOrigin(0.5)
     this.tileMap = this.make.tilemap({ key: 'scene1' , tileWidth: 16, tileHeight: 16 });
     this.tileSet = this.tileMap.addTilesetImage('tileset');
     //this.tileMapLayer = this.tileMap.createLayer('sceneLayer', this.tileSet)
@@ -36,7 +37,7 @@ class Game extends Phaser.Scene {
     })
     this.tileMap.getObjectLayer('objects').objects.forEach((object) => {
       const objectRectangle = this.objects.create(object.x, object.y, 'player').setScale(0.3).setOrigin(0.5);
-      objectRectangle.name = "Topotamadre " + object.name;
+      objectRectangle.name = object.name;
       objectRectangle.body.setSize(object.width, object.height);
       console.log("Yeah:", object);
   });
@@ -46,9 +47,17 @@ class Game extends Phaser.Scene {
   
   objectHit (player, object) {
     console.log("Hit with object: ", object);
+    if (object.name === "door") {
+      this.loadNext();
+    }
   } 
   update(){
     this.player.update();
+  }
+
+  loadNext(sceneName) {
+    console.log("Loading next! ");
+    this.scene.start("transition", {index: this.index, scenes: this.scenes });
   }
 }
 
