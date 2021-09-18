@@ -1,4 +1,7 @@
 import Player from "./player";
+import GhostGenerator from "./ghost_generator";
+import BeerGenerator from "./beer_generator";
+import Lights from "./lights";
 
 class Game extends Phaser.Scene {
   constructor (key) {
@@ -12,6 +15,7 @@ class Game extends Phaser.Scene {
 
   create () {
     this.hearts = [];
+
     console.log("game started")
     this.score = 0
     this.width = this.sys.game.config.width
@@ -32,19 +36,34 @@ class Game extends Phaser.Scene {
     this.player = new Player(this, 150, this.height-400, 'player').setScale(0.5);
     // this.physics.world.enable([ this.player ]);
     this.physics.add.collider(this.player, this.platform);
+  
     this.objects = this.physics.add.group({
       allowGravity: false,
       immovable: true
     })
+  
+    this.foes = this.physics.add.group({
+      allowGravity: false,
+      mass: 0,
+      immovable: false
+    })
+
     this.tileMap.getObjectLayer('objects').objects.forEach((object) => {
       const objectRectangle = this.objects.create(object.x, object.y, 'player').setScale(0.3).setOrigin(0.5);
       objectRectangle.name = object.name;
       objectRectangle.body.setSize(object.width, object.height);
-      console.log("Yeah:", object);
-  });
+    });
 
     this.physics.add.collider(this.player, this.objects, this.objectHit, null, this)
+    this.lightsOut = this.add.rectangle(0, 40, this.width, this.height - 50, 0x0).setOrigin(0)
+    this.lightsOut.setAlpha(0);
     this.updateHearts();
+    this.ghostGenerator = new GhostGenerator(this);
+    this.ghostGenerator.generate();
+    this.beerGenerator = new BeerGenerator(this);
+    this.beerGenerator.generate();
+    this.lights = new Lights(this);
+    this.physics.add.overlap(this.player, this.foes, this.foeHit, null, this)
   }
   
   objectHit (player, object) {
@@ -53,9 +72,29 @@ class Game extends Phaser.Scene {
       this.loadNext();
     }
   } 
+
+  foeHit (player, foe) {
+    console.log("Hit by FOEEEEEE: ", foe);
+    this.foes.remove(foe)
+    this.lives = +this.registry.get("lives");
+    this.lives--;
+    this.registry.set("lives", this.lives);
+    this.updateHearts();
+  } 
+  
+  recover (player) {
+    this.lives = +this.registry.get("lives");
+    this.lives++;
+    this.registry.set("lives", this.lives);
+    this.updateHearts();
+  } 
+
   update(){
     this.player.update();
+    this.ghostGenerator.update();
+    this.lights.update();
   }
+
 
   loadNext(sceneName) {
     console.log("Loading next! ");

@@ -12,12 +12,14 @@ class Bootloader extends Phaser.Scene {
     this.prepareScenes();
 
     this.load.on('complete', () => {
-      this.scene.start('intro', {index: -1, scenes: this.scenes })
+      this.scene.start('transition', {index: -1, scenes: this.scenes })
     })
 
 
     this.load.image('heart1', './assets/images/heart1.png')
     this.load.image('heart2', './assets/images/heart2.png')
+    this.load.spritesheet('ghost', './assets/images/ghost.png',{ frameWidth: 32, frameHeight: 32 })
+    this.load.spritesheet('beer', './assets/images/beer.png',{ frameWidth: 32, frameHeight: 32 })
     this.load.audio('pong', './assets/sounds/pong.mp3')
 
     this.load.image('tileset', 'assets/maps/tileset.png');
