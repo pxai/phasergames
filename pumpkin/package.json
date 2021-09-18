@@ -1,0 +1,97 @@
+{
+  "name": "ninjosu",
+  "main": "dist/index.js",
+  "productName": "ninjosu",
+  "version": "1.0.0",
+  "description": "ninjosu",
+  "chromium-args": "--data-path='./saves/' --in-process-gpu --disable-transparency",
+  "scripts": {
+    "start": "npx webpack-cli serve -c webpack.dev.js --env development --mode development",
+    "build": "webpack --config webpack.prod.js --env production",
+    "test": "npm run lint && npm run unit",
+    "lint": "eslint src/**/*.js test/**/*.js --fix",
+    "unit": "mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js",
+    "exec:start": "electron-forge start",
+    "exec:package": "electron-forge package",
+    "exec:make": "electron-forge make",
+    "exec:publish": "electron-forge publish"
+  },
+  "dependencies": {
+    "phaser": "^3.52.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/register": "^7.12.10",
+    "@electron-forge/cli": "^6.0.0-beta.59",
+    "babel-loader": "^8.2.2",
+    "canvas": "^2.6.1",
+    "chai": "^4.2.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^7.0.0",
+    "electron-forge": "^5.2.4",
+    "electron-compile": "^6.4.4",
+    "electron-prebuilt-compile": "8.2.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "html-webpack-plugin": "^4.5.1",
+    "jsdom": "^16.4.0",
+    "jsdom-global": "^3.0.2",
+    "mocha": "^8.2.1",
+    "nwjs-builder-phoenix": "^1.15.0",
+    "path": "^0.12.7",
+    "webpack": "^5.19.0",
+    "webpack-cli": "^4.4.0",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-merge": "^5.7.3",
+    "write-file-webpack-plugin": "^4.5.1"
+  },
+  "repository": {
+    "url": "https://github.com/josualt/arkapong"
+  },
+  "license": "MIT",
+  "keywords": [
+    "arkapong",
+    "phaser",
+    "games",
+    "josu",
+    "pello"
+  ],
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
+        ]
+      },
+      "electronPackagerConfig": {
+        "packageManager": "npm"
+      },
+      "electronWinstallerConfig": {
+        "name": "Arkapong"
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": "",
+        "name": ""
+      },
+      "windowsStoreConfig": {
+        "packageName": "",
+        "name": "arkapong"
+      }
+    }
+  }
+}

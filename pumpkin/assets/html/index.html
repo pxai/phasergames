@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Pumpkin</title>
+        <meta name="description" content="Pong mixed with arkanoid bits, free online html game">
+        <meta name="keywords" content="pong, arkanoid, arkapong, free, game">
+        <meta name="author" content="Josu Altadill">
+        <script src="phaser.min.js"></script>
+        <script src="index.min.js"></script>
+        <link rel="stylesheet" href="assets/css/styles.css" />
+    </head>
+    <body>
+      <script>
+        nw.App.registerGlobalHotKey(new nw.Shortcut({
+          key: "Escape",
+          active: function () {
+            nw.Window.get().leaveFullscreen();
+          }
+        }));
+      </script>
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-G322KDBYF2"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-G322KDBYF2');
+      </script>
+    </body>
+</html>
