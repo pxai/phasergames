@@ -44,6 +44,12 @@ class Bootloader extends Phaser.Scene {
     this.load.audio('muzik0', './assets/sounds/muzik0.mp3');
     this.load.audio('muzik1', './assets/sounds/muzik1.mp3');
     this.load.audio('muzik2', './assets/sounds/muzik2.mp3');
+    this.load.audio('spooky0', './assets/sounds/spooky0.mp3');
+    this.load.audio('spooky1', './assets/sounds/spooky1.mp3');
+    this.load.audio('spooky2', './assets/sounds/spooky2.mp3');
+    this.load.audio('spooky3', './assets/sounds/spooky3.mp3');
+    this.load.audio('spooky4', './assets/sounds/spooky4.mp3');
+    this.load.audio('zx', './assets/sounds/zx.mp3');
     this.load.image('tileset', 'assets/maps/tileset.png');
     this.load.tilemapTiledJSON('scene1', 'assets/maps/scene1.json');
 

@@ -143,6 +143,7 @@ class Game extends Phaser.Scene {
       "step1": this.sound.add("step1"),
       "step2": this.sound.add("step2"),
       "step3": this.sound.add("step3"),
+      "spooky4": this.sound.add("spooky4"),
     };
   }
 
