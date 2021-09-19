@@ -44,7 +44,7 @@ class Bootloader extends Phaser.Scene {
     this.load.audio('zx', './assets/sounds/zx.mp3');
 
     this.load.image('spooky_tileset', 'assets/maps/spooky_tileset.png');
-    this.load.tilemapTiledJSON('scene2', 'assets/maps/scene2.json');
+    this.load.tilemapTiledJSON('scene1', 'assets/maps/scene1.json');
   }
 
   createBars () {
