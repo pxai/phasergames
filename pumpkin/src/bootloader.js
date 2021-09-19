@@ -32,8 +32,11 @@ class Bootloader extends Phaser.Scene {
     this.load.image('heart1', './assets/images/heart1.png')
     this.load.image('heart2', './assets/images/heart2.png')
     this.load.image('key', './assets/images/key.png')
+    this.load.image('pellopx', './assets/images/pellopx.png')
+    this.load.image('splash', './assets/images/splash.png')
     this.load.spritesheet('ghost', './assets/images/ghost.png',{ frameWidth: 32, frameHeight: 32 })
     this.load.spritesheet('beer', './assets/images/beer.png',{ frameWidth: 32, frameHeight: 32 })
+    this.load.spritesheet('coin', './assets/images/coin.png',{ frameWidth: 32, frameHeight: 32 })
     this.load.spritesheet('player', './assets/images/player.png',{ frameWidth: 32, frameHeight: 64 })
     
     Array(4).fill(0).forEach((e, i) => { this.load.audio(`step${i}`, `./assets/sounds/step${i}.mp3`);})

@@ -1,8 +1,9 @@
 import Player from "./player";
 import GhostGenerator from "./ghost_generator";
-import BeerGenerator from "./beer_generator";
 import Lights from "./lights";
 import Key from "./key";
+import Coin from "./coin";
+import Beer from "./beer";
 import Lightning from "./lightning";
 
 class Game extends Phaser.Scene {
@@ -68,13 +69,16 @@ class Game extends Phaser.Scene {
     this.lightningEffect.setAlpha(0);
     this.updateHearts();
     this.addKey();
+    this.addCoin();
+    this.addBeer();
+    this.coinsText = this.add.bitmapText(740, 40, "wizardFont", this.registry.get("coins"), 20).setTint(0x902406).setOrigin(0.5);
+    this.add.image(700, 20, "coin").setOrigin(0.5)
     this.ghostGenerator = new GhostGenerator(this);
     this.ghostGenerator.generate();
-    this.beerGenerator = new BeerGenerator(this);
-    this.beerGenerator.generate();
     this.lights = new Lights(this);
     this.lightning = new Lightning(this);
     this.physics.add.overlap(this.player, this.foes, this.foeHit, null, this)
+    this.logo = this.add.image(this.center_width, this.height - 80, "splash").setOrigin(0.5).setScale(0.6)
     this.loadAudios();
     this.playMusic();
   }
@@ -105,6 +109,13 @@ class Game extends Phaser.Scene {
     this.updateHearts();
   } 
 
+  pickCoin (player) {
+    this.coins = +this.registry.get("coins");
+    this.coins++;
+    this.registry.set("coins", this.coins);
+    this.updateCoins();
+  } 
+
   update(){
     this.player.update();
     this.ghostGenerator.update();
@@ -115,6 +126,18 @@ class Game extends Phaser.Scene {
   addKey () {
     const {x, y} = this.scenes[this.index].key;
     this.key = new Key(this, x, y,"key");
+  }
+
+  addCoin () {
+    const {x, y} = this.scenes[this.index].coin;
+    this.coin = new Coin(this, x, y,"coin");
+  }
+
+  addBeer () {
+    if (this.scenes[this.index].beer) {
+      const { x, y } = this.scenes[this.index].beer;
+      this.beer = new Beer(this, x, y,"beer");
+    }
   }
 
   isDead () {
@@ -141,6 +164,10 @@ class Game extends Phaser.Scene {
     Array(+this.registry.get("lives")).fill(0).forEach( (heart, i) => {
       this.hearts.push(this.add.image(20 + (30 * i), 20, "heart1").setOrigin(0.5));
     })
+  }
+
+  updateCoins() {
+    this.coinsText.setText(this.registry.get("coins"));
   }
 
   loadAudios () {

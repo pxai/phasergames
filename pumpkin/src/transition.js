@@ -22,6 +22,9 @@ export default class Transition extends Phaser.Scene {
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
         this.door = this.sound.add("door");
         this.door.play();
+        this.logo = this.add.image(this.center_width, this.height - 80, "splash").setOrigin(0.5).setScale(0.6)
+        this.coinsText = this.add.bitmapText(740, 40, "wizardFont", this.registry.get("coins"), 20).setTint(0x902406).setOrigin(0.5);
+        this.add.image(700, 20, "coin").setOrigin(0.5)
         Array(+this.registry.get("lives")).fill(0).forEach( (heart, i) => {
             this.add.image(20 + (30 * i), 20, "heart1").setOrigin(0.5)
           })
