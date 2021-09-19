@@ -36,23 +36,15 @@ class Bootloader extends Phaser.Scene {
     this.load.spritesheet('beer', './assets/images/beer.png',{ frameWidth: 32, frameHeight: 32 })
     this.load.spritesheet('player', './assets/images/player.png',{ frameWidth: 32, frameHeight: 64 })
     
-    this.load.audio('step0', './assets/sounds/step0.mp3');
-    this.load.audio('step1', './assets/sounds/step1.mp3');
-    this.load.audio('step2', './assets/sounds/step2.mp3');
-    this.load.audio('step3', './assets/sounds/step3.mp3');
-    this.load.audio('door', './assets/sounds/door.mp3');
-    this.load.audio('muzik0', './assets/sounds/muzik0.mp3');
-    this.load.audio('muzik1', './assets/sounds/muzik1.mp3');
-    this.load.audio('muzik2', './assets/sounds/muzik2.mp3');
-
+    Array(4).fill(0).forEach((e, i) => { this.load.audio(`step${i}`, `./assets/sounds/step${i}.mp3`);})
+    Array(3).fill(0).forEach((e, i) => { this.load.audio(`muzik${i}`, `./assets/sounds/muzik${i}.mp3`);})
     Array(5).fill(0).forEach((e, i) => { this.load.audio(`spooky${i}`, `./assets/sounds/spooky${i}.mp3`);})
-    
     Array(4).fill(0).forEach((e, i) => { this.load.audio(`thunder${i}`, `./assets/sounds/thunder${i}.mp3`);})
-
+    this.load.audio('door', './assets/sounds/door.mp3');
     this.load.audio('zx', './assets/sounds/zx.mp3');
-    this.load.image('tileset', 'assets/maps/tileset.png');
-    this.load.tilemapTiledJSON('scene1', 'assets/maps/scene1.json');
 
+    this.load.image('spooky_tileset', 'assets/maps/spooky_tileset.png');
+    this.load.tilemapTiledJSON('scene2', 'assets/maps/scene2.json');
   }
 
   createBars () {

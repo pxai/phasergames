@@ -26,20 +26,21 @@ class Game extends Phaser.Scene {
     this.center_height = this.height / 2
 
     this.titleText = this.add.bitmapText(this.center_width, 40, "wizardFont", this.scenes[this.index].name, 20).setTint(0x902406).setOrigin(0.5)
-    this.tileMap = this.make.tilemap({ key: this.scenes[this.index].map , tileWidth: 16, tileHeight: 16 });
+    this.tileMap = this.make.tilemap({ key: this.scenes[this.index].map , tileWidth: 32, tileHeight: 32 });
     this.tileSet = this.tileMap.addTilesetImage(this.scenes[this.index].tileset);
+    // NOTE: tileset image must be same for phaser key (bootstrap) and tiled inside name
+    // tileset = map.addTilesetImage('tilesetNameInTiled', 'tilesetNameInPhaser');
 
     this.tileMap.createLayer('background', this.tileSet);
     this.platform = this.tileMap.createLayer('platform', this.tileSet);
     this.objects = this.tileMap.createLayer('objects', this.tileSet);
 
     this.physics.world.bounds.setTo(0, 0, this.tileMap.widthInPixels, this.tileMap.heightInPixels);
-    this.platformHighTop = this.tileMap.createLayer('platformhightop', this.tileSet);
     this.platform.setCollisionByExclusion([-1]);
-    this.player = new Player(this, 150, this.height-400, 'player');
+    this.player = new Player(this, 150, this.height-300, 'player');
     this.platformHigh = this.tileMap.createLayer('platformhigh', this.tileSet);
 
-    // this.physics.world.enable([ this.player ]);
+    this.physics.world.enable([ this.player ]);
     this.physics.add.collider(this.player, this.platform);
   
     this.objects = this.physics.add.group({
@@ -62,7 +63,7 @@ class Game extends Phaser.Scene {
     this.physics.add.collider(this.player, this.objects, this.objectHit, null, this)
     this.lightsOut = this.add.rectangle(0, 40, this.width, this.height - 50, 0x0).setOrigin(0)
     this.lightsOut.setAlpha(0);
-    this.lightningEffect = this.add.rectangle(0, 40, this.width, this.height - 50, 0xfff).setOrigin(0)
+    this.lightningEffect = this.add.rectangle(0, 40, this.width, this.height - 50, 0xffffff).setOrigin(0)
     this.lightningEffect.setAlpha(0);
     this.updateHearts();
     this.addKey();
