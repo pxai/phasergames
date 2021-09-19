@@ -3,6 +3,7 @@ import GhostGenerator from "./ghost_generator";
 import BeerGenerator from "./beer_generator";
 import Lights from "./lights";
 import Key from "./key";
+import CustomPipeline from "./glow";
 
 class Game extends Phaser.Scene {
   constructor (key) {
@@ -69,6 +70,8 @@ class Game extends Phaser.Scene {
     this.beerGenerator.generate();
     this.lights = new Lights(this);
     this.physics.add.overlap(this.player, this.foes, this.foeHit, null, this)
+    this.loadAudios();
+    this.playMusic();
   }
   
   objectHit (player, object) {
@@ -87,6 +90,7 @@ class Game extends Phaser.Scene {
     this.lives--;
     this.registry.set("lives", this.lives);
     this.updateHearts();
+    if (this.lives === 0) this.isDead();
   } 
   
   recover (player) {
@@ -107,9 +111,19 @@ class Game extends Phaser.Scene {
     this.key = new Key(this, x, y,"key");
   }
 
+  isDead () {
+    this.scene.start("game_over", {index: this.index, scenes: this.scenes });
+  }
+
   loadNext(sceneName) {
     console.log("Loading next! ");
-    this.scene.start("transition", {index: this.index, scenes: this.scenes });
+    this.tweens.add({ targets: this.theme, volume: 0, duration: 1000 });
+    //this.theme.stop();
+    if (this.scenes[this.index].name === "End") {
+      this.scene.start("outro", {index: this.index, scenes: this.scenes });
+    } else {
+      this.scene.start("transition", {index: this.index, scenes: this.scenes });
+    }
   }
 
   updateHearts() {
@@ -121,6 +135,42 @@ class Game extends Phaser.Scene {
     Array(+this.registry.get("lives")).fill(0).forEach( (heart, i) => {
       this.hearts.push(this.add.image(20 + (30 * i), 20, "heart1").setOrigin(0.5));
     })
+  }
+
+  loadAudios () {
+    this.audios = {
+      "step0": this.sound.add("step0"),
+      "step1": this.sound.add("step1"),
+      "step2": this.sound.add("step2"),
+      "step3": this.sound.add("step3"),
+    };
+  }
+
+
+  playMusic (theme="muzik0") {
+      this.theme = this.sound.add(theme);
+      this.theme.stop();
+      this.theme.play({
+        mute: false,
+        volume: 1,
+        rate: 1,
+        detune: 0,
+        seek: 0,
+        loop: true,
+        delay: 0
+    })
+  }
+
+  playAudio(key) {
+    this.audios[key].play();
+  }
+
+  playStep(key) {
+    this.audios[key].play({
+      rate: Phaser.Math.Between(1, 1.5),
+      detune: Phaser.Math.Between(-1000, 1000),
+      delay: 0
+    });
   }
 }
 

@@ -20,7 +20,7 @@ export default class Intro extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.titleTest = this.add.bitmapText(this.center_width, this.center_height, "wizardFont", "INTRO", 30).setTint(0x902406).setOrigin(0.5)
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
-        setTimeout(() => this.loadNext(), 1000);
+        this.time.delayedCall(1000, () => this.loadNext());
     }
 
     update () {
@@ -28,7 +28,7 @@ export default class Intro extends Phaser.Scene {
 
     loadNext(sceneName) {
         console.log("Loading next! ");
-        this.index++;
-        this.scene.start("game", {index: this.index, scenes: this.scenes });
+        this.sound.stopAll();
+        this.scene.start('transition', {index: -1, scenes: this.scenes })
     }
 }

@@ -39,7 +39,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.scene.anims.create({
             key: "down",
             frames: this.scene.anims.generateFrameNumbers("player", { start: 8, end: 9 }),
-            frameRate: 3,
+            frameRate: 2,
             repeat: -1
         });
 
@@ -50,7 +50,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             repeat: -1
         });
 
-
+        this.on("animationupdate" , this.stepSound, this);
 
         this.cursors = this.scene.input.keyboard.createCursorKeys();
     }
@@ -58,16 +58,16 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     update () {
         if (this.cursors.left.isDown) {
             this.anims.play("left", true);
-            this.setVelocityX(-50);
+            this.setVelocityX(-20);
         } else if (this.cursors.right.isDown) {
             this.anims.play("right", true);
-            this.setVelocityX(50);
+            this.setVelocityX(20);
         } else if (this.cursors.down.isDown) {
             this.anims.play("down", true);
-           this.setVelocityY(50);
+           this.setVelocityY(20);
         } else if (this.cursors.up.isDown) {
             this.anims.play("up", true);
-            this.setVelocityY(-50);
+            this.setVelocityY(-20);
             //this.body.y--;
         } else {
             this.anims.play("idle", true);
@@ -77,5 +77,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     getKey() {
         this.hasKey = true;
+    }
+
+    stepSound(animation, frame, player) {
+        if(animation.key !== "idle") {
+            player.scene.playStep("step" + Phaser.Math.Between(0, 3));
+        }
     }
 }

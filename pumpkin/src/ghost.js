@@ -22,6 +22,13 @@ export default class Ghost extends Phaser.Physics.Arcade.Sprite {
             repeat: -1
         });
 
+        this.scene.tweens.add({
+            targets: this,
+            alpha: { from: 0, to: 1},
+            repeat: -1,
+            yoyo: true
+        })
+
         this.animate("pass");
     }
 

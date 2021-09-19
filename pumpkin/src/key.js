@@ -13,6 +13,12 @@ export default class Key extends Phaser.GameObjects.Sprite {
 
     init () {
         this.setOrigin(0.5);
+        this.scene.tweens.add({
+            targets: this,
+            alpha: { from: 0, to: 1},
+            repeat: -1,
+            yoyo: true
+        })
     }
 
     pick (player, key) {

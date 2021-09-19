@@ -1,5 +1,3 @@
-import scenes from "./scenes";
-
 class Bootloader extends Phaser.Scene {
   constructor () {
     super({ key: 'bootloader' })
@@ -26,10 +24,8 @@ class Bootloader extends Phaser.Scene {
     this.load.bitmapFont("wizardFont", "assets/fonts/wizard.png", "assets/fonts/wizard.xml");
     this.load.bitmapFont("zxFont", "assets/fonts/zx.png", "assets/fonts/zx.xml");
 
-    this.prepareScenes();
-
     this.load.on('complete', () => {
-      this.scene.start('homage', {index: -1, scenes: this.scenes })
+      this.scene.start('homage')
     })
 
     this.load.image('zx', './assets/images/zx.png')
@@ -39,24 +35,19 @@ class Bootloader extends Phaser.Scene {
     this.load.spritesheet('ghost', './assets/images/ghost.png',{ frameWidth: 32, frameHeight: 32 })
     this.load.spritesheet('beer', './assets/images/beer.png',{ frameWidth: 32, frameHeight: 32 })
     this.load.spritesheet('player', './assets/images/player.png',{ frameWidth: 32, frameHeight: 64 })
-    this.load.audio('pong', './assets/sounds/pong.mp3')
-
+    
+    this.load.audio('step0', './assets/sounds/step0.mp3');
+    this.load.audio('step1', './assets/sounds/step1.mp3');
+    this.load.audio('step2', './assets/sounds/step2.mp3');
+    this.load.audio('step3', './assets/sounds/step3.mp3');
+    this.load.audio('door', './assets/sounds/door.mp3');
+    this.load.audio('muzik0', './assets/sounds/muzik0.mp3');
+    this.load.audio('muzik1', './assets/sounds/muzik1.mp3');
+    this.load.audio('muzik2', './assets/sounds/muzik2.mp3');
     this.load.image('tileset', 'assets/maps/tileset.png');
     this.load.tilemapTiledJSON('scene1', 'assets/maps/scene1.json');
 
-
-    this.registry.set('lives', 7)
   }
-
-  prepareScenes () {
-    this.scenes = [ 
-      scenes[0], 
-      ...scenes.slice(1,scenes.length - 2).sort(() => 0.5 - Math.random()),
-      scenes[scenes.length - 1]
-    ];
-    console.log(this.scenes)
-  } 
-
 
   createBars () {
     this.loadBar = this.add.graphics();
