@@ -8,6 +8,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.scene.add.existing(this);
 
         this.body.setSize(32,64);
+        this.hasKey = false;
         this.init();
     }
 
@@ -72,5 +73,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.anims.play("idle", true);
             this.setVelocity(0,0)
         }
+    }
+
+    getKey() {
+        this.hasKey = true;
     }
 }

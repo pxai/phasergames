@@ -2,6 +2,7 @@ import Player from "./player";
 import GhostGenerator from "./ghost_generator";
 import BeerGenerator from "./beer_generator";
 import Lights from "./lights";
+import Key from "./key";
 
 class Game extends Phaser.Scene {
   constructor (key) {
@@ -32,8 +33,11 @@ class Game extends Phaser.Scene {
     this.objects = this.tileMap.createLayer('objects', this.tileSet);
 
     this.physics.world.bounds.setTo(0, 0, this.tileMap.widthInPixels, this.tileMap.heightInPixels);
+    this.platformHighTop = this.tileMap.createLayer('platformhightop', this.tileSet);
     this.platform.setCollisionByExclusion([-1]);
     this.player = new Player(this, 150, this.height-400, 'player');
+    this.platformHigh = this.tileMap.createLayer('platformhigh', this.tileSet);
+
     // this.physics.world.enable([ this.player ]);
     this.physics.add.collider(this.player, this.platform);
   
@@ -58,6 +62,7 @@ class Game extends Phaser.Scene {
     this.lightsOut = this.add.rectangle(0, 40, this.width, this.height - 50, 0x0).setOrigin(0)
     this.lightsOut.setAlpha(0);
     this.updateHearts();
+    this.addKey();
     this.ghostGenerator = new GhostGenerator(this);
     this.ghostGenerator.generate();
     this.beerGenerator = new BeerGenerator(this);
@@ -68,8 +73,10 @@ class Game extends Phaser.Scene {
   
   objectHit (player, object) {
     console.log("Hit with object: ", object);
-    if (object.name === "door") {
+    if (object.name === "door" && this.player.hasKey) {
       this.loadNext();
+    } else if (object.name === "door" && !this.player.hasKey) {
+      this.needTheKey = this.add.bitmapText(this.center_width, 60, "wizardFont", "You need the key!!", 15).setTint(0x902406).setOrigin(0.5)
     }
   } 
 
@@ -95,6 +102,10 @@ class Game extends Phaser.Scene {
     this.lights.update();
   }
 
+  addKey () {
+    const {x, y} = this.scenes[this.index].key;
+    this.key = new Key(this, x, y,"key");
+  }
 
   loadNext(sceneName) {
     console.log("Loading next! ");
