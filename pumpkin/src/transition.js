@@ -33,6 +33,7 @@ export default class Transition extends Phaser.Scene {
 
     loadNext(sceneName) {
         console.log("Loading next! ");
+        this.sound.stopAll();
         this.index++;
         this.scene.start("game", {index: this.index, scenes: this.scenes });
     }

@@ -81,7 +81,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     stepSound(animation, frame, player) {
         if(animation.key !== "idle") {
-            player.scene.playStep("step" + Phaser.Math.Between(0, 3));
+            player.scene.playRandom("step" + Phaser.Math.Between(0, 3));
         }
     }
 }

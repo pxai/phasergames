@@ -3,7 +3,7 @@ import GhostGenerator from "./ghost_generator";
 import BeerGenerator from "./beer_generator";
 import Lights from "./lights";
 import Key from "./key";
-import CustomPipeline from "./glow";
+import Lightning from "./lightning";
 
 class Game extends Phaser.Scene {
   constructor (key) {
@@ -62,6 +62,8 @@ class Game extends Phaser.Scene {
     this.physics.add.collider(this.player, this.objects, this.objectHit, null, this)
     this.lightsOut = this.add.rectangle(0, 40, this.width, this.height - 50, 0x0).setOrigin(0)
     this.lightsOut.setAlpha(0);
+    this.lightningEffect = this.add.rectangle(0, 40, this.width, this.height - 50, 0xfff).setOrigin(0)
+    this.lightningEffect.setAlpha(0);
     this.updateHearts();
     this.addKey();
     this.ghostGenerator = new GhostGenerator(this);
@@ -69,6 +71,7 @@ class Game extends Phaser.Scene {
     this.beerGenerator = new BeerGenerator(this);
     this.beerGenerator.generate();
     this.lights = new Lights(this);
+    this.lightning = new Lightning(this);
     this.physics.add.overlap(this.player, this.foes, this.foeHit, null, this)
     this.loadAudios();
     this.playMusic();
@@ -104,6 +107,7 @@ class Game extends Phaser.Scene {
     this.player.update();
     this.ghostGenerator.update();
     this.lights.update();
+    this.lightning.update();
   }
 
   addKey () {
@@ -143,12 +147,17 @@ class Game extends Phaser.Scene {
       "step1": this.sound.add("step1"),
       "step2": this.sound.add("step2"),
       "step3": this.sound.add("step3"),
+      "thunder0": this.sound.add("thunder0"),
+      "thunder1": this.sound.add("thunder1"),
+      "thunder2": this.sound.add("thunder2"),
+      "thunder3": this.sound.add("thunder3"),
       "spooky4": this.sound.add("spooky4"),
     };
   }
 
 
   playMusic (theme="muzik0") {
+      this.sound.stopAll();
       this.theme = this.sound.add(theme);
       this.theme.stop();
       this.theme.play({
@@ -166,7 +175,7 @@ class Game extends Phaser.Scene {
     this.audios[key].play();
   }
 
-  playStep(key) {
+  playRandom(key) {
     this.audios[key].play({
       rate: Phaser.Math.Between(1, 1.5),
       detune: Phaser.Math.Between(-1000, 1000),
