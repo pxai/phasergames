@@ -34,6 +34,7 @@ class Bootloader extends Phaser.Scene {
     this.load.image('key', './assets/images/key.png')
     this.load.image('pellopx', './assets/images/pellopx.png')
     this.load.image('splash', './assets/images/splash.png')
+    this.load.image('devil', './assets/images/devil.png')
     this.load.spritesheet('ghost', './assets/images/ghost.png',{ frameWidth: 32, frameHeight: 32 })
     this.load.spritesheet('beer', './assets/images/beer.png',{ frameWidth: 32, frameHeight: 32 })
     this.load.spritesheet('coin', './assets/images/coin.png',{ frameWidth: 32, frameHeight: 32 })
@@ -45,9 +46,14 @@ class Bootloader extends Phaser.Scene {
     Array(4).fill(0).forEach((e, i) => { this.load.audio(`thunder${i}`, `./assets/sounds/thunder${i}.mp3`);})
     this.load.audio('door', './assets/sounds/door.mp3');
     this.load.audio('zx', './assets/sounds/zx.mp3');
+    this.load.audio('key', './assets/sounds/key.mp3');
+    this.load.audio('beer', './assets/sounds/beer.mp3');
+    this.load.audio('coin', './assets/sounds/coin.mp3');
+    this.load.audio('hit', './assets/sounds/hit.mp3');
 
     this.load.image('spooky_tileset', 'assets/maps/spooky_tileset.png');
-    this.load.tilemapTiledJSON('scene1', 'assets/maps/scene1.json');
+    Array(4).fill(0).forEach((e, i) => {this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`); })
+    
   }
 
   createBars () {

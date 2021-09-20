@@ -5,7 +5,7 @@ export default class Lights {
     }
 
     update () {
-        if (Phaser.Math.Between(0, 10001) > 10000 && !this.out) {
+        if (Phaser.Math.Between(0, 2001) > 2000 && !this.out) {
             this.out = true;
             this.blackOut();
         }
@@ -31,7 +31,18 @@ export default class Lights {
             alpha: { from: 0, to: 1},
             duration: 1000,
           });
+        timeline.add({
+            targets: this.scene.damn,
+            alpha: { from: 0, to: 1},
+            duration: 2000,
+          });
+          timeline.add({
+            targets: this.scene.damn,
+            alpha: { from: 1, to: 0},
+            duration: 4000,
+          });
 
       timeline.play();
+      this.scene.playAudio("spooky1")
     }
 }

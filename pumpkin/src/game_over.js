@@ -20,7 +20,9 @@ export default class GameOver extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.titleTest = this.add.bitmapText(this.center_width, this.center_height, "wizardFont", "GAME OVER", 30).setTint(0x902406).setOrigin(0.5)
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
-        this.time.delayedCall(1000, () => this.loadNext());
+        this.sound.stopAll();
+        this.sound.add("spooky0").play();
+        this.time.delayedCall(3000, () => this.loadNext());
     }
 
     update () {

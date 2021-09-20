@@ -39,7 +39,9 @@ class Game extends Phaser.Scene {
     this.physics.world.bounds.setTo(0, 0, this.tileMap.widthInPixels, this.tileMap.heightInPixels);
     this.platform.setCollisionByExclusion([-1]);
     this.tileMap.createLayer('platformhightop', this.tileSet);
-    this.player = new Player(this, 150, this.height-300, 'player');
+    this.player = new Player(this, this.scenes[this.index].spawn.x, this.scenes[this.index].spawn.y, 'player');
+    this.devil = this.add.image(this.player.x + 40, this.player.y, "devil").setScale(1.5).setAlpha(0)
+
     this.platformHigh = this.tileMap.createLayer('platformhigh', this.tileSet);
 
     this.physics.world.enable([ this.player ]);
@@ -77,6 +79,7 @@ class Game extends Phaser.Scene {
     this.ghostGenerator.generate();
     this.lights = new Lights(this);
     this.lightning = new Lightning(this);
+    this.damn = this.add.bitmapText(this.center_width, this.center_height, "wizardFont", "\"Damn, it's dark, better find the door...\"", 20).setTint(0x902406).setOrigin(0.5).setAlpha(0);
     this.physics.add.overlap(this.player, this.foes, this.foeHit, null, this)
     this.logo = this.add.image(this.center_width, this.height - 80, "splash").setOrigin(0.5).setScale(0.6)
     this.loadAudios();
@@ -93,7 +96,7 @@ class Game extends Phaser.Scene {
   } 
 
   foeHit (player, foe) {
-    console.log("Hit by FOEEEEEE: ", foe);
+    this.playAudio("hit")
     this.foes.remove(foe)
     this.lives = +this.registry.get("lives");
     this.lives--;
@@ -103,13 +106,20 @@ class Game extends Phaser.Scene {
   } 
   
   recover (player) {
+    this.playAudio("beer");
     this.lives = +this.registry.get("lives");
     this.lives++;
     this.registry.set("lives", this.lives);
     this.updateHearts();
   } 
 
+  getKey () {
+    this.playAudio("key")
+    this.add.image(600, 20, "key").setOrigin(0.5)
+  }
+
   pickCoin (player) {
+    this.playAudio("coin");
     this.coins = +this.registry.get("coins");
     this.coins++;
     this.registry.set("coins", this.coins);
@@ -145,9 +155,7 @@ class Game extends Phaser.Scene {
   }
 
   loadNext(sceneName) {
-    console.log("Loading next! ");
     this.tweens.add({ targets: this.theme, volume: 0, duration: 1000 });
-    //this.theme.stop();
     if (this.scenes[this.index].name === "End") {
       this.scene.start("outro", {index: this.index, scenes: this.scenes });
     } else {
@@ -180,10 +188,24 @@ class Game extends Phaser.Scene {
       "thunder1": this.sound.add("thunder1"),
       "thunder2": this.sound.add("thunder2"),
       "thunder3": this.sound.add("thunder3"),
+      "spooky1": this.sound.add("spooky1"),
+      "spooky2": this.sound.add("spooky2"),
+      "spooky3": this.sound.add("spooky3"),
       "spooky4": this.sound.add("spooky4"),
+      "key": this.sound.add("key"),
+      "beer": this.sound.add("beer"),
+      "coin": this.sound.add("coin"),
+      "hit": this.sound.add("hit"),
     };
   }
 
+  showDevil () {
+    this.devil.x = this.player.x + 40;
+    this.devil.y = this.player.y;
+    this.devil.setAlpha(1);
+    this.playAudio("spooky2");
+    this.foeHit();
+  }
 
   playMusic (theme="muzik0") {
       this.sound.stopAll();

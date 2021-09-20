@@ -22,7 +22,7 @@ export default class Splash extends Phaser.Scene {
         this.textInstruction3 = this.add.bitmapText(this.center_width, this.height - 50, "wizardFont", "A game by Pello", 15).setTint(0x902406).setOrigin(0.5)
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
         this.showText();
-        this.registry.set('lives', 1)
+        this.registry.set('lives', 5)
         this.registry.set('coins', 0)
         this.prepareScenes();
         this.sound.add("spooky4").play();
@@ -60,7 +60,7 @@ export default class Splash extends Phaser.Scene {
     prepareScenes () {
         this.scenes = [ 
           scenes[0], 
-          ...scenes.slice(1,scenes.length - 2).sort(() => 0.5 - Math.random()),
+          ...scenes.slice(1,scenes.length - 1).sort(() => 0.5 - Math.random()),
           scenes[scenes.length - 1]
         ];
         console.log(this.scenes)

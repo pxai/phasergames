@@ -77,6 +77,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     getKey() {
         this.hasKey = true;
+        this.scene.getKey();
     }
 
     stepSound(animation, frame, player) {
