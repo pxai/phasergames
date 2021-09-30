@@ -12,10 +12,12 @@ const config = {
   autoRound: false,
   parent: 'contenedor',
   physics: {
-    default: 'arcade',
-    gravity: { y: 350 },
-    debug: true
-  },
+    default: "arcade",
+    arcade: {
+        gravity: { y: 350 },
+        debug: false
+    }
+},
   scene: [
     Bootloader,
     Game,
