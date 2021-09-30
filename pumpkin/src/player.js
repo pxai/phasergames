@@ -9,11 +9,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.body.setSize(32,64);
         this.hasKey = false;
+
         this.init();
     }
 
     init () {
         this.body.setCollideWorldBounds(true);
+
         this.setOrigin(0.5);
 
         this.scene.anims.create({
@@ -56,6 +58,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update () {
+        this.scene.light.x = this.x;
+        this.scene.light.y = this.y;
         if (this.cursors.left.isDown) {
             this.anims.play("left", true);
             this.setVelocityX(-20);

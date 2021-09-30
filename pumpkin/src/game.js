@@ -32,7 +32,10 @@ class Game extends Phaser.Scene {
     // NOTE: tileset image must be same for phaser key (bootstrap) and tiled inside name
     // tileset = map.addTilesetImage('tilesetNameInTiled', 'tilesetNameInPhaser');
 
-    this.tileMap.createLayer('background', this.tileSet);
+    this.background = this.tileMap.createLayer('background', this.tileSet);
+    this.background.setPipeline('Light2D');
+   // this.light = this.lights.addLight(20, 20, 200).setScrollFactor(0.0).setIntensity(2);
+   // this.lights.enable().setAmbientColor(0x555555);
     this.platform = this.tileMap.createLayer('platform', this.tileSet);
     this.objects = this.tileMap.createLayer('objects', this.tileSet);
 
