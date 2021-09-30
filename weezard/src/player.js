@@ -6,14 +6,11 @@ class Player extends Phaser.GameObjects.Sprite {
       this.scene.add.existing(this);
       this.scene.physics.add.existing(this);
       this.body.collideWorldBounds = true;
-      this.isFilled = false;
-      this.isStroked = true;
-      this.lineWidth = 5;
-      this.strokeColor = 0x00dd00;
       this.cursor = this.scene.input.keyboard.createCursorKeys();
       this.right = false;
       this.init();
       this.casting = false;
+      this.spells = [];
     }
 
     init () {
@@ -32,13 +29,19 @@ class Player extends Phaser.GameObjects.Sprite {
 
         this.scene.anims.create({
             key: "playercast",
-            frames: this.scene.anims.generateFrameNumbers("wizard", { start: 9, end: 12 }),
+            frames: this.scene.anims.generateFrameNumbers("wizard", { start: 9, end: 13 }),
             frameRate: 5,
         });
 
         this.scene.anims.create({
             key: "playerjump",
-            frames: this.scene.anims.generateFrameNumbers("wizard", { start: 13, end: 14 }),
+            frames: this.scene.anims.generateFrameNumbers("wizard", { start: 14, end: 15 }),
+            frameRate: 5,
+        });
+
+        this.scene.anims.create({
+            key: "playerdead",
+            frames: this.scene.anims.generateFrameNumbers("wizard", { start: 16, end: 20 }),
             frameRate: 5,
         });
 
@@ -48,8 +51,8 @@ class Player extends Phaser.GameObjects.Sprite {
   
     update() {
         if (this.casting) return;
-         if (this.cursor.down.isDown) {
-            // this.body.setVelocityY(200);
+         if (this.cursor.down.isDown && this.spells.length) {
+            this.body.setVelocityX(0);
             this.casting = true;
             this.anims.play("playercast", true);
           } else if (this.cursor.up.isDown && this.body.blocked.down) {
@@ -67,14 +70,13 @@ class Player extends Phaser.GameObjects.Sprite {
             this.body.setVelocityX(-160);  
          } else {
             this.body.setVelocityX(0);
-           // if (this.body.blocked.down)
-                // this.anims.play("playeridle", true);
         }
     }
 
     animationComplete (animation, frame) {
         if (animation.key === "playercast") {
             this.casting = false;
+            this.anims.play("playeridle", true);
         }
     }
   }
