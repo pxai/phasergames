@@ -1,14 +1,14 @@
-import StartBurst from "./starburst";
 import StarBurst from "./starburst";
 
 class Pot extends Phaser.GameObjects.Sprite {
-  constructor (scene, x, y, name) {
+  constructor (scene, x, y, name, color = "0xffffff", launch = false) {
       super(scene, x, y, name);
       this.scene = scene;
+      this.color = color;
       this.x = x;
       this.y = y;
       this.name = name;
-      this.setTween();
+      this.setTween(launch);
       scene.add.existing(this);
       scene.physics.add.existing(this);
 
@@ -16,38 +16,42 @@ class Pot extends Phaser.GameObjects.Sprite {
       this.body.moves = false;
   
       const potAnimation = this.scene.anims.create({
-          key: "potspin",
+          key: this.name,
           frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 6 }, ),
           frameRate: 5
       });
-      this.play({ key: "potspin", repeat: -1 });
-      this.overlap = this.scene.physics.add.overlap(this.scene.player, this, this.pick, null, this.scene);
-  }
+      this.play({ key: this.name, repeat: -1 });
+   }
 
-  setTween () {
+  setTween (launch) {
+    if (launch) {
+
       this.scene.tweens.add({
-          targets: this,
-          duration: 500,
-          y: this.y - 20,
-          repeat: -1,
-          yoyo: true
-      })   
-  }
-
-  pick (player, pot) {
-      this.starBurst = new StarBurst(pot.scene, pot.x, pot.y);
-      pot.disable();
+        targets: this,
+        duration: 200,
+        y: this.y - 70,
+        alpha: { from: 1, to: 0 },
+        onComplete: () => {
+          console.log("LAUCHN!!", this.scene, this.color);
+          new StarBurst(this.scene, this.x, this.y, this.color, true);
+          this.disable();
+      },
+      })  
+    } else {
+      this.scene.tweens.add({
+        targets: this,
+        duration: 500,
+        y: this.y - 20,
+        repeat: -1,
+        yoyo: true
+      })  
+    }
   }
 
   disable () {
       this.visible = false;
-      this.overlap.active = false;
+      this.destroy();
   } 
-
-  enableAgain () {
-      this.visible = true;
-      this.overlap.active = true;
-  }
 
   destroy() {
       super.destroy();

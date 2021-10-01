@@ -20,7 +20,7 @@ class Bootloader extends Phaser.Scene {
         this
     );
 
-  //  this.load.bitmapFont("wizardFont", "assets/fonts/wizard.png", "assets/fonts/wizard.xml");
+    this.load.bitmapFont("wizardFont", "assets/fonts/wizard.png", "assets/fonts/wizard.xml");
 
     this.load.on('complete', () => {
       this.scene.start('game')
@@ -29,11 +29,11 @@ class Bootloader extends Phaser.Scene {
     this.load.image('star', './assets/images/star.png');
 
     this.load.spritesheet('wizard', './assets/images/wizard.png',{ frameWidth: 32, frameHeight: 64 })
-    Array(1).fill(0).forEach((e, i) => { this.load.spritesheet(`pot${i}`, `./assets/images/pot${i}.png`,{ frameWidth: 40, frameHeight: 40 });})
+    Array(4).fill(0).forEach((e, i) => { this.load.spritesheet(`pot${i}`, `./assets/images/pot${i}.png`,{ frameWidth: 40, frameHeight: 40 });})
     //  this.load.audio('hit', './assets/sounds/hit.mp3');
 
-    // this.load.image('spooky_tileset', 'assets/maps/spooky_tileset.png');
-    // Array(4).fill(0).forEach((e, i) => {this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`); })
+    this.load.image('grass_tileset', 'assets/maps/grass.png');
+    Array(1).fill(0).forEach((e, i) => {this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`); })
     
   }
 

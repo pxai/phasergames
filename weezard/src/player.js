@@ -1,3 +1,6 @@
+import Pot from "./pot";
+
+
 class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, name) {
       super(scene, x, y, "wizard")
@@ -10,7 +13,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.right = false;
       this.init();
       this.casting = false;
-      this.spells = [];
+      this.pots = [];
     }
 
     init () {
@@ -46,12 +49,13 @@ class Player extends Phaser.GameObjects.Sprite {
         });
 
         this.anims.play("playeridle", true);
+        this.on("animationupdate" , this.castInTime, this);
         this.on('animationcomplete', this.animationComplete, this);
     }    
   
     update() {
         if (this.casting) return;
-         if (this.cursor.down.isDown && this.spells.length) {
+         if (this.cursor.down.isDown && this.pots.length) {
             this.body.setVelocityX(0);
             this.casting = true;
             this.anims.play("playercast", true);
@@ -73,10 +77,23 @@ class Player extends Phaser.GameObjects.Sprite {
         }
     }
 
+    usePot() {
+        const pot = this.pots.pop();
+        console.log("About to use pot: ", pot.color)
+        new Pot(this.scene, this.x, this.y - 20, pot.name, pot.color, true);
+        this.scene.removePot(pot);
+    }
+
     animationComplete (animation, frame) {
         if (animation.key === "playercast") {
             this.casting = false;
             this.anims.play("playeridle", true);
+        }
+    }
+
+    castInTime(animation, frame) {
+        if (animation.key === "playercast" && frame.index === 4) {
+            this.usePot();
         }
     }
   }
