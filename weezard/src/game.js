@@ -34,7 +34,7 @@ class Game extends Phaser.Scene {
     this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
       return this.colliderActivated;
     }, this);
-    this.physics.add.collider(this.player, this.weezardSpawn.weezards, this.hitFloor, ()=>{
+    this.physics.add.collider(this.player, this.weezardSpawn.weezards, this.hitPlayer, ()=>{
       return this.colliderActivated;
     }, this);
 
@@ -62,6 +62,7 @@ class Game extends Phaser.Scene {
       "pick": this.sound.add("pick"),
       "cast1": this.sound.add("cast1"),
       "cast2": this.sound.add("cast2"),
+      "inception": this.sound.add("inception")
     };
   }
 
@@ -71,6 +72,29 @@ class Game extends Phaser.Scene {
 
   hitFloor () {
     this.player.hitFloor();
+  }
+
+  hitPlayer () {
+    this.player.hitPlayer();
+    if (this.player.health === 0) {
+      console.log("GAME OVER")
+    } 
+  }
+
+  updateHealth() {
+    this.heartsText.setText(this.player.health);
+    this.tweens.add({
+      targets: this.hearts,
+      scale: { from: 0.5, to: 1},
+      duration: 100,
+      alpha: { from: 0, to: 1},
+      repeat: 10,
+      yoyo: true,
+      onComplete: () => {
+        this.hearts.setAlpha(1)
+        this.hearts.setScale(0.9)
+    },
+    });
   }
 
   addObjects () {
@@ -141,6 +165,7 @@ class Game extends Phaser.Scene {
           break;
         case "pot4":
           this.inception();
+          this.time.delayedCall(20000, () => this.inception(3.14, 0), null, this);
             break;
         default: break;
     }
@@ -168,8 +193,13 @@ class Game extends Phaser.Scene {
     });
   }
 
-  inception () {
-    console.log("Chaaaan")
+  inception (from = 0, to = 3.14) {
+    this.playAudio("inception")
+    this.tweens.add({
+      targets: this.cameras.main,
+      rotation: { from , to },
+      duration: 10000,
+    });
   }
 }
 

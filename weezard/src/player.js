@@ -180,6 +180,26 @@ class Player extends Phaser.GameObjects.Sprite {
         }
     }
 
+    hitPlayer() {
+        if (!this.hit) {
+            this.hit = true;
+            this.health--;
+            console.log("Player hit! ");
+            this.scene.updateHealth();
+            this.scene.tweens.add({
+                targets: this,
+                duration: 100,
+                alpha: { from: 0, to: 1},
+                repeat: 10,
+                yoyo: true,
+                onComplete: () => {
+                    this.setAlpha(1);
+                    this.hit = false;
+                }
+            })
+        }
+    }
+
     startFloat () {
         this.scene.weezardSpawn.startFloat();
     }

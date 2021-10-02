@@ -37,6 +37,7 @@ class Bootloader extends Phaser.Scene {
     this.load.audio('pick', './assets/sounds/pick.mp3');
     this.load.audio('cast1', './assets/sounds/cast1.mp3');
     this.load.audio('cast2', './assets/sounds/cast2.mp3');
+    this.load.audio('inception', './assets/sounds/inception.mp3');
     this.load.image('grass_tileset', 'assets/maps/grass.png');
 
     Array(1).fill(0).forEach((e, i) => {this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`); })
