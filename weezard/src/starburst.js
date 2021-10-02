@@ -5,7 +5,6 @@ class StarBurst {
         this.y = y;
         this.launch = launch;
         this.color = Phaser.Display.Color.HexStringToColor(color).color;
-        console.log("Check this color: ", color, this.color);
         this.stars = Array(this.launch ? 11 : 5).fill(0).map(i => {
             let image = this.scene.add.image(this.x, this.y - 2, "star").setTint(this.color);
             return image;

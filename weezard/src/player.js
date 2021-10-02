@@ -22,6 +22,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.currentPot = 0;
       this.potTypes = 3;
       this.jumping = false;
+      this.frozen = false;
     }
 
     init () {
@@ -86,6 +87,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     playerMove () {
+ 
         if (Phaser.Input.Keyboard.JustDown(this.down) && this.pots.length) {
             this.body.setVelocityX(0);
             this.casting = true;
@@ -111,24 +113,36 @@ class Player extends Phaser.GameObjects.Sprite {
             if (this.body.blocked.down) { this.anims.play("playerwalkidle" + this.number, true); }
             this.body.setVelocityX(0);
         }
+
+        //const scrol_x = this.x - this.scene.center_width;     
+ ///  scrollX - Х top left point of camera
+      //  this.scene.cameras.main.x = scrol_x;
     }
 
     mirrorMove() {
+        if (this.frozen) return;
         if (this.body) {
             if (this.body.onFloor()) {
-                console.log("Epa: onFloor",this.body.velocity.x);
+                let initMove = this.right ? 1 : -1;
+                this.body.setVelocityX(initMove * 160);
                 this.play("playerwalk" + this.number, true);
                 if (Phaser.Math.Between(1,101) > 100) {
+                    this.body.setVelocityX(initMove * 160);
                     this.body.setVelocityY(-300);
                     this.scene.playAudio("jump")
                     new Dust(this.scene, this.x, this.y)
                     this.jumping = true;
                 }
 
+                if (Phaser.Math.Between(1,101) > 100) {
+                    this.right = !this.right;
+                    this.flipX = (this.body.velocity.x < 0);
+                }
+
             } else { // fall
                 this.play("playerjump" + this.number, true);
             }
-            this.flipX = (this.body.velocity.x > 0);
+            this.flipX = (this.body.velocity.x < 0);
         }
     }
 
@@ -138,6 +152,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.scene.removePot(pot);
         const current = this.pots.length > 0 ? this.pots[this.pots.length-1].name : "";
         this.scene.changeSelectedPot(pot.name, current)
+        this.scene.applyPot(pot);
     }
 
     animationComplete (animation, frame) {
@@ -161,6 +176,55 @@ class Player extends Phaser.GameObjects.Sprite {
 
             this.jumping = false;
         }
+    }
+
+    startFloat () {
+        this.scene.weezardSpawn.playerCollider.destroy()
+        this.scene.weezardSpawn.startFloat();
+        /*this.invisibleEffect = this.scene.tweens.add({
+            targets: this,
+            duration: 200,
+            alpha: { from: 0, to: 1},
+            repeat: -1,
+            yoyo: true
+        })*/
+        console.log("unvisible!!!", this.number);
+    }
+
+    stopFloat () {
+        this.scene.weezardSpawn.stopFloat();
+        // this.scene.tweens.remove(this.invisibleEffect);
+        this.scene.weezardSpawn.createPlayerCollider()
+        console.log("visible!!!", this.number);
+    }
+
+    freeze () {
+        console.log("YEA!!!", this.number);
+        this.body.setVelocityX(0);
+        this.body.setVelocityY(0);
+        this.body.enable = false;
+        this.frozen = true;
+    }
+
+    unfreeze () {
+        console.log("UNFROZEN!!!", this.number);
+        this.body.enable = true;
+        this.frozen = false;
+    }
+
+    fly () {
+        this.frozen = true;
+        this.flyTween = this.scene.tweens.add({
+            targets: this,
+            duration: 10000,
+            y: { from: this.y, to: -100},
+        })
+    }
+
+    backToLand () {
+        this.frozen = false;
+        this.scene.tweens.remove(this.flyTween);
+        this.body.enable = true;
     }
   }
 

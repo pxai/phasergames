@@ -5,7 +5,6 @@ class Dust {
         this.y = y;
         this.launch = launch;
         this.color = Phaser.Display.Color.HexStringToColor(color).color;
-        console.log("Check this color: ", color, this.color, this.y);
         this.dust = Array(11).fill(0).map(i => {
             let rectangle = this.scene.add.rectangle(this.x, this.y, 5, 5, this.color);
             return rectangle;

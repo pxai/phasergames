@@ -28,7 +28,8 @@ class Game extends Phaser.Scene {
    // this.physics.world.bounds.setTo(0, 0, this.tileMap.widthInPixels, this.tileMap.heightInPixels);
     this.platform.setCollisionByExclusion([-1]);
 
-
+    this.cameras.main.setBounds(0, 0, 1920 * 2, 1080 * 2);
+    this.physics.world.setBounds(0, 0, 1920 * 2, 1080 * 2);
     this.player = new Player(this, 200, 200, 0);
     this.weezardSpawn = new WeezardSpawn(this);
     this.physics.world.enable([ this.player ]);
@@ -39,6 +40,10 @@ class Game extends Phaser.Scene {
     this.physics.add.collider(this.player, this.weezardSpawn.weezards, this.hitFloor, ()=>{
       return this.colliderActivated;
     }, this);
+    // this.cameras.main.setBounds(0, 0, 800, 600);
+    this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 250);
+    // this.cameras.main.setFollowOffset(0, 60);
+
     this.loadAudios();
     this.addObjects();
     this.addPots();
@@ -84,8 +89,8 @@ class Game extends Phaser.Scene {
         x: 15 + (i * 100),
         y: 20,
         color: colors[i],
-        image: this.add.image(15 + (i * 100), 20, `pot${i}`).setScale(0.7).setOrigin(0.5),
-        text: this.add.bitmapText(50 + (i * 100), 45, "wizardFont", "0", 22).setOrigin(0.5)
+        image: this.add.image(15 + (i * 100), 20, `pot${i}`).setScale(0.7).setOrigin(0.5).setScrollFactor(0),
+        text: this.add.bitmapText(50 + (i * 100), 45, "wizardFont", "0", 22).setOrigin(0.5).setScrollFactor(0)
       }
     })
   }
@@ -112,6 +117,25 @@ class Game extends Phaser.Scene {
   removePot(pot) {
     this.potScore[pot.name].score--;
     this.potScore[pot.name].text.setText(this.potScore[pot.name].score);
+  }
+
+  applyPot(pot) {
+    console.log("Apply pot: ", pot.name);
+    switch (pot.name) {
+        case "pot0":
+          this.player.startFloat()
+          this.time.delayedCall(6000, () => this.player.stopFloat(), null, this);
+          break;
+        case "pot1":
+          break;
+        case "pot2":
+          break;
+        case "pot3":
+          this.weezardSpawn.freeze();
+          this.time.delayedCall(4000, () => this.weezardSpawn.unfreeze(), null, this);
+          break;
+        default: break;
+    }
   }
 
   pick (player, pot) {

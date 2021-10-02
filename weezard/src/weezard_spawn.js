@@ -8,14 +8,18 @@ class WeezardSpawn {
             // mass: 0,
             immovable: false
         })
-        this.scene.physics.add.overlap(this.scene.player, this.weezards, this.touch, null, this)
-        this.scene.physics.world.enable([ this.weezards ]);
+        this.createPlayerCollider();
+         this.scene.physics.world.enable([ this.weezards ]);
         this.scene.physics.add.collider(this.weezards, this.scene.platform);
+    }
+
+    createPlayerCollider () {
+        this.playerCollider = this.scene.physics.add.overlap(this.scene.player, this.weezards, this.touch, null, this)
     }
 
     generate () {
         Array(10).fill(0).forEach((w, i) => {
-            this.weezards.add(new Player(this.scene, 20, 30, "wizard" + (i + 1), (i + 1)));
+            this.weezards.add(new Player(this.scene, 20, 30, (i + 1)));
         })
     }
 
@@ -25,6 +29,22 @@ class WeezardSpawn {
 
     update () {
        this.weezards.children.entries.forEach( weezard => weezard.update() )
+    }
+
+    freeze () {
+        this.weezards.children.entries.forEach( weezard => weezard.freeze() )
+    }
+
+    unfreeze () {
+        this.weezards.children.entries.forEach( weezard => weezard.unfreeze() )
+    }
+
+    startFloat () {
+        this.weezards.children.entries.forEach( weezard => weezard.fly() )
+    }
+
+    stopFloat () {
+        this.weezards.children.entries.forEach( weezard => weezard.backToLand() )
     }
 }
 
