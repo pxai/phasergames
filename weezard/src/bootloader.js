@@ -30,8 +30,11 @@ class Bootloader extends Phaser.Scene {
 
     this.load.spritesheet('wizard', './assets/images/wizard.png',{ frameWidth: 32, frameHeight: 64 })
     Array(4).fill(0).forEach((e, i) => { this.load.spritesheet(`pot${i}`, `./assets/images/pot${i}.png`,{ frameWidth: 40, frameHeight: 40 });})
-    //  this.load.audio('hit', './assets/sounds/hit.mp3');
-
+    this.load.audio('ground', './assets/sounds/ground.mp3');
+    this.load.audio('jump', './assets/sounds/jump.mp3');
+    this.load.audio('pick', './assets/sounds/pick.mp3');
+    this.load.audio('cast1', './assets/sounds/cast1.mp3');
+    this.load.audio('cast2', './assets/sounds/cast2.mp3');
     this.load.image('grass_tileset', 'assets/maps/grass.png');
     Array(1).fill(0).forEach((e, i) => {this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`); })
     

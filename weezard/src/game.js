@@ -23,16 +23,38 @@ class Game extends Phaser.Scene {
     this.platform = this.tileMap.createLayer('scene0', this.tileSet);
     this.objectsLayer = this.tileMap.getObjectLayer('objects');
 
-    this.physics.world.bounds.setTo(0, 0, this.tileMap.widthInPixels, this.tileMap.heightInPixels);
+   // this.physics.world.bounds.setTo(0, 0, this.tileMap.widthInPixels, this.tileMap.heightInPixels);
     this.platform.setCollisionByExclusion([-1]);
 
 
     this.player = new Player(this, 200, 200);
 
     this.physics.world.enable([ this.player ]);
-    this.physics.add.collider(this.player, this.platform);
+    this.colliderActivated = true;
+    this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
+      return this.colliderActivated;
+    }, this);
+    this.loadAudios();
     this.addObjects();
     this.addPots();
+  }
+
+  loadAudios () {
+    this.audios = {
+      "jump": this.sound.add("jump"),
+      "ground": this.sound.add("ground"),
+      "pick": this.sound.add("pick"),
+      "cast1": this.sound.add("cast1"),
+      "cast2": this.sound.add("cast2"),
+    };
+  }
+
+  playAudio(key) {
+    this.audios[key].play();
+  }
+
+  hitFloor () {
+    this.player.hitFloor();
   }
 
   addObjects () {
@@ -83,7 +105,7 @@ class Game extends Phaser.Scene {
 
   pick (player, pot) {
     pot.body.enable = false;
-  
+    player.scene.playAudio("pick")
     this.starBurst = new StarBurst(pot.scene, pot.x, pot.y);
     player.scene.tweens.add({
       targets: pot,

@@ -1,4 +1,5 @@
 import Pot from "./pot";
+import Dust from "./dust";
 
 
 class Player extends Phaser.GameObjects.Sprite {
@@ -18,6 +19,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.pots = [];
       this.currentPot = 0;
       this.potTypes = 3;
+      this.jumping = false;
     }
 
     init () {
@@ -26,6 +28,12 @@ class Player extends Phaser.GameObjects.Sprite {
             frames: this.scene.anims.generateFrameNumbers("wizard", { start: 0, end: 1 }),
             frameRate: 1,
             repeat: -1
+        });
+
+        this.scene.anims.create({
+            key: "playerwalkidle",
+            frames: this.scene.anims.generateFrameNumbers("wizard", { start: 5, end: 5 }),
+            frameRate: 1,
         });
 
         this.scene.anims.create({
@@ -59,24 +67,29 @@ class Player extends Phaser.GameObjects.Sprite {
   
     update() {
         if (this.casting) return;
-         if (Phaser.Input.Keyboard.JustDown(this.down) && this.pots.length) {
+        if (Phaser.Input.Keyboard.JustDown(this.down) && this.pots.length) {
             this.body.setVelocityX(0);
             this.casting = true;
             this.anims.play("playercast", true);
-          } else if (this.cursor.up.isDown && this.body.blocked.down) {
+            this.scene.playAudio("cast1")
+        } else if (this.cursor.up.isDown && this.body.blocked.down) {
             this.body.setVelocityY(-300);
             this.anims.play("playerjump", true);
-          } else if (this.cursor.right.isDown) {
+            this.scene.playAudio("jump")
+            new Dust(this.scene, this.x, this.y)
+            this.jumping = true;
+        } else if (this.cursor.right.isDown) {
             if (this.body.blocked.down) { this.anims.play("playerwalk", true); }
             this.right = true;
             this.flipX = (this.body.velocity.x < 0);
             this.body.setVelocityX(160);
-          } else if (this.cursor.left.isDown) {
+        } else if (this.cursor.left.isDown) {
             if (this.body.blocked.down) { this.anims.play("playerwalk", true); }
             this.right = false;
             this.flipX = (this.body.velocity.x < 0);
             this.body.setVelocityX(-160);  
-         } else {
+        } else {
+            if (this.body.blocked.down) { this.anims.play("playerwalkidle", true); }
             this.body.setVelocityX(0);
         }
     }
@@ -93,12 +106,22 @@ class Player extends Phaser.GameObjects.Sprite {
         if (animation.key === "playercast") {
             this.casting = false;
             this.anims.play("playeridle", true);
+            this.scene.playAudio("cast2")
         }
     }
 
     castInTime(animation, frame) {
         if (animation.key === "playercast" && frame.index === 4) {
             this.usePot();
+        }
+    }
+
+    hitFloor() {
+        if (this.jumping) {
+            this.scene.playAudio("ground")
+            console.log("Player pos: ", this.body.position.y);
+
+            this.jumping = false;
         }
     }
   }
