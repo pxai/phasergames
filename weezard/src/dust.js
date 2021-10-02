@@ -7,7 +7,7 @@ class Dust {
         this.color = Phaser.Display.Color.HexStringToColor(color).color;
         console.log("Check this color: ", color, this.color, this.y);
         this.dust = Array(11).fill(0).map(i => {
-            let rectangle = this.scene.add.rectangle(this.x, this.y + 556, 5, 5, this.color);
+            let rectangle = this.scene.add.rectangle(this.x, this.y, 5, 5, this.color);
             return rectangle;
         })
 
@@ -28,7 +28,7 @@ class Dust {
         this.scene.tweens.add({
             targets: this.dust[i],
             duration: Phaser.Math.Between(500, 800),
-            y: {from: this.y, to: this.y - y},
+            y: {from: this.y + 20, to: this.y + 20 - y},
             x: {from: this.x, to: this.x + x},
             alpha: { from: 1, to: 0 }
         });
