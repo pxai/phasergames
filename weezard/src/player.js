@@ -10,10 +10,14 @@ class Player extends Phaser.GameObjects.Sprite {
       this.scene.physics.add.existing(this);
       this.body.collideWorldBounds = true;
       this.cursor = this.scene.input.keyboard.createCursorKeys();
+      this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+      this.down = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
       this.right = false;
       this.init();
       this.casting = false;
       this.pots = [];
+      this.currentPot = 0;
+      this.potTypes = 3;
     }
 
     init () {
@@ -55,7 +59,7 @@ class Player extends Phaser.GameObjects.Sprite {
   
     update() {
         if (this.casting) return;
-         if (this.cursor.down.isDown && this.pots.length) {
+         if (Phaser.Input.Keyboard.JustDown(this.down) && this.pots.length) {
             this.body.setVelocityX(0);
             this.casting = true;
             this.anims.play("playercast", true);
@@ -79,9 +83,10 @@ class Player extends Phaser.GameObjects.Sprite {
 
     usePot() {
         const pot = this.pots.pop();
-        console.log("About to use pot: ", pot.color)
         new Pot(this.scene, this.x, this.y - 20, pot.name, pot.color, true);
         this.scene.removePot(pot);
+        const current = this.pots.length > 0 ? this.pots[this.pots.length-1].name : "";
+        this.scene.changeSelectedPot(pot.name, current)
     }
 
     animationComplete (animation, frame) {

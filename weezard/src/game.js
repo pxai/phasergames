@@ -17,7 +17,7 @@ class Game extends Phaser.Scene {
     this.height = this.sys.game.config.height;
     this.center_width = this.width / 2;
     this.center_height = this.height / 2;
-    
+    this.currentPot = "pot0";
     this.tileMap = this.make.tilemap({ key: "scene0" , tileWidth: 32, tileHeight: 32 });
     this.tileSet = this.tileMap.addTilesetImage("grass_tileset");
     this.platform = this.tileMap.createLayer('scene0', this.tileSet);
@@ -51,8 +51,8 @@ class Game extends Phaser.Scene {
         x: 15 + (i * 100),
         y: 20,
         color: colors[i],
-        image: this.add.image(15 + (i * 100), 20, `pot${i}`).setScale(0.8).setOrigin(0.5),
-        text: this.add.bitmapText(50 + (i * 100), 45, "wizardFont", "0", 25).setOrigin(0.5)
+        image: this.add.image(15 + (i * 100), 20, `pot${i}`).setScale(0.7).setOrigin(0.5),
+        text: this.add.bitmapText(50 + (i * 100), 45, "wizardFont", "0", 22).setOrigin(0.5)
       }
     })
   }
@@ -61,6 +61,19 @@ class Game extends Phaser.Scene {
     this.potScore[pot.name].score++;
     this.potScore[pot.name].text.setText(this.potScore[pot.name].score);
     this.player.pots.push(pot);
+    const previous = this.currentPot;
+    this.currentPot = pot.name;
+    this.changeSelectedPot(previous, this.currentPot)
+  }
+
+  changeSelectedPot(previous, current) {
+        this.potScore[previous].image.setScale(0.7)
+        this.potScore[previous].text.setScale(1)
+    
+        if (current !== "") {
+          this.potScore[current].image.setScale(0.9)
+          this.potScore[current].text.setScale(1.2)
+        }
   }
 
   removePot(pot) {
@@ -82,9 +95,10 @@ class Game extends Phaser.Scene {
       scaleY: 0.5,
       ease: 'Linear',
       duration: 500,
-      onComplete: function() {
+      onComplete: () => {
           player.scene.addPot(pot);
           pot.disable();
+          
       },
     });
     console.log("yeah");
