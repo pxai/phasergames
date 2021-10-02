@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import Bootloader from './bootloader'
+import Splash from './splash';
 import Game from './game'
 
 const config = {
@@ -20,6 +21,7 @@ const config = {
 },
   scene: [
     Bootloader,
+    Splash,
     Game,
   ]
 }

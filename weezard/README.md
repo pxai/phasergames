@@ -25,5 +25,5 @@ npm run test
 ```
 
 Colors:
-orange: 0xdc5914
-red: 0x902406
+dark: 0x420069
+clear: 0x7500ba

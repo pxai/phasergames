@@ -23,11 +23,11 @@ class Bootloader extends Phaser.Scene {
     this.load.bitmapFont("wizardFont", "assets/fonts/wizard.png", "assets/fonts/wizard.xml");
 
     this.load.on('complete', () => {
-      this.scene.start('game')
+      this.scene.start('splash')
     })
 
     this.load.image('star', './assets/images/star.png');
-
+    this.load.image('logopx', 'assets/images/logopx.png');
     this.load.spritesheet('wizard', './assets/images/wizard.png',{ frameWidth: 32, frameHeight: 64 })
     Array(4).fill(0).forEach((e, i) => { this.load.spritesheet(`pot${i}`, `./assets/images/pot${i}.png`,{ frameWidth: 40, frameHeight: 40 });})
     this.load.audio('ground', './assets/sounds/ground.mp3');
@@ -36,6 +36,7 @@ class Bootloader extends Phaser.Scene {
     this.load.audio('cast1', './assets/sounds/cast1.mp3');
     this.load.audio('cast2', './assets/sounds/cast2.mp3');
     this.load.image('grass_tileset', 'assets/maps/grass.png');
+
     Array(1).fill(0).forEach((e, i) => {this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`); })
     
   }
