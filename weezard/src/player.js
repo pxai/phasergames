@@ -23,6 +23,8 @@ class Player extends Phaser.GameObjects.Sprite {
       this.potTypes = 3;
       this.jumping = false;
       this.frozen = false;
+      this.escaping = false;
+      this.health = 10;
     }
 
     init () {
@@ -134,7 +136,7 @@ class Player extends Phaser.GameObjects.Sprite {
                     this.jumping = true;
                 }
 
-                if (Phaser.Math.Between(1,101) > 100) {
+                if (Phaser.Math.Between(1,101) > 100 && !this.escaping) {
                     this.right = !this.right;
                     this.flipX = (this.body.velocity.x < 0);
                 }
@@ -179,22 +181,38 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     startFloat () {
-        this.scene.weezardSpawn.playerCollider.destroy()
         this.scene.weezardSpawn.startFloat();
-        /*this.invisibleEffect = this.scene.tweens.add({
-            targets: this,
-            duration: 200,
-            alpha: { from: 0, to: 1},
-            repeat: -1,
-            yoyo: true
-        })*/
-        console.log("unvisible!!!", this.number);
     }
 
     stopFloat () {
         this.scene.weezardSpawn.stopFloat();
-        // this.scene.tweens.remove(this.invisibleEffect);
-        this.scene.weezardSpawn.createPlayerCollider()
+    }
+
+    startInvincible () {
+        this.scene.weezardSpawn.playerCollider.destroy()
+        this.invisibleEffect = this.scene.tweens.add({
+            targets: this,
+            duration: 400,
+            alpha: { from: 0, to: 1},
+            repeat: -1,
+            yoyo: true
+        })
+    }
+
+    stopInvincible () {
+        this.scene.tweens.remove(this.invisibleEffect);
+        this.stopInvisibleEffect = this.scene.tweens.add({
+            targets: this,
+            duration: 100,
+            alpha: { from: 0, to: 1},
+            repeat: 10,
+            yoyo: true,
+            onComplete: () => {
+                this.scene.weezardSpawn.createPlayerCollider()
+                this.setAlpha(1);
+            }
+        })
+
         console.log("visible!!!", this.number);
     }
 
@@ -225,6 +243,17 @@ class Player extends Phaser.GameObjects.Sprite {
         this.frozen = false;
         this.scene.tweens.remove(this.flyTween);
         this.body.enable = true;
+    }
+
+    startEscape () {
+        this.right = this.scene.player.x < this.x;
+        this.escaping = true;
+    }
+
+    stopEscape () {
+        this.escaping = false;
+        this.right = !this.right;
+        this.flipX = (this.body.velocity.x < 0);
     }
   }
 

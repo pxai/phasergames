@@ -46,6 +46,14 @@ class WeezardSpawn {
     stopFloat () {
         this.weezards.children.entries.forEach( weezard => weezard.backToLand() )
     }
+
+    batSwarm () {
+        this.weezards.children.entries.forEach( weezard => weezard.startEscape() )
+    }
+
+    stopEscape () {
+        this.weezards.children.entries.forEach( weezard => weezard.stopEscape() )
+    }
 }
 
 export default WeezardSpawn;

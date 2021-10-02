@@ -2,16 +2,13 @@ import Player from "./player";
 import Pot from "./pot";
 import StarBurst from "./starburst";
 import WeezardSpawn from "./weezard_spawn";
+import BatSwarm from "./bat_swarm";
 
 const colors = { pot0: "0x55b700", pot1: "0xffbf00", pot2: "0xff0000", pot3: "0x01156D"};
 
 class Game extends Phaser.Scene {
   constructor () {
     super({ key: 'game' })
-  }
-
-  preload () {
-
   }
 
   create () {
@@ -40,9 +37,12 @@ class Game extends Phaser.Scene {
     this.physics.add.collider(this.player, this.weezardSpawn.weezards, this.hitFloor, ()=>{
       return this.colliderActivated;
     }, this);
-    // this.cameras.main.setBounds(0, 0, 800, 600);
+
     this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 250);
-    // this.cameras.main.setFollowOffset(0, 60);
+
+    this.hearts = this.add.image(this.width - 100, 20, "heart").setScale(0.9).setOrigin(0.5).setScrollFactor(0),
+    this.heartsText = this.add.bitmapText(this.width - 60, 45, "wizardFont", this.player.health, 22).setOrigin(0.5).setScrollFactor(0)
+
 
     this.loadAudios();
     this.addObjects();
@@ -83,7 +83,7 @@ class Game extends Phaser.Scene {
 
   addPots () {
     this.potScore = {};
-    Array(4).fill(0).forEach((e, i) => {
+    Array(5).fill(0).forEach((e, i) => {
       this.potScore[`pot${i}`] = {
         score: 0,
         x: 15 + (i * 100),
@@ -126,14 +126,22 @@ class Game extends Phaser.Scene {
           this.player.startFloat()
           this.time.delayedCall(6000, () => this.player.stopFloat(), null, this);
           break;
-        case "pot1":
+        case "pot1":          
+          new BatSwarm(this, this.player.x, this.player.y)
+          this.weezardSpawn.batSwarm();          
+          this.time.delayedCall(6000, () => this.weezardSpawn.stopEscape(), null, this);
           break;
         case "pot2":
+          this.player.startInvincible()
+          this.time.delayedCall(6000, () => this.player.stopInvincible(), null, this);
           break;
         case "pot3":
           this.weezardSpawn.freeze();
           this.time.delayedCall(4000, () => this.weezardSpawn.unfreeze(), null, this);
           break;
+        case "pot4":
+          this.inception();
+            break;
         default: break;
     }
   }
@@ -158,8 +166,11 @@ class Game extends Phaser.Scene {
           
       },
     });
-    console.log("yeah");
-}
+  }
+
+  inception () {
+    console.log("Chaaaan")
+  }
 }
 
 export default Game;

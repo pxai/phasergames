@@ -9,7 +9,7 @@ class Bootloader extends Phaser.Scene {
         "progress",
         function (value) {
             this.progressBar.clear();
-            this.progressBar.fillStyle(0xdc5914, 1);
+            this.progressBar.fillStyle(0x7500ba, 1);
             this.progressBar.fillRect(
                 this.cameras.main.width / 4,
                 this.cameras.main.height / 2 - 16,
@@ -26,10 +26,12 @@ class Bootloader extends Phaser.Scene {
       this.scene.start('splash')
     })
 
+    this.load.image('heart', './assets/images/heart.png');
     this.load.image('star', './assets/images/star.png');
     this.load.image('logopx', 'assets/images/logopx.png');
     this.load.spritesheet('wizard', './assets/images/wizard.png',{ frameWidth: 32, frameHeight: 64 })
-    Array(4).fill(0).forEach((e, i) => { this.load.spritesheet(`pot${i}`, `./assets/images/pot${i}.png`,{ frameWidth: 40, frameHeight: 40 });})
+    this.load.spritesheet('bat', './assets/images/bat.png',{ frameWidth: 32, frameHeight: 32 })
+    Array(5).fill(0).forEach((e, i) => { this.load.spritesheet(`pot${i}`, `./assets/images/pot${i}.png`,{ frameWidth: 40, frameHeight: 40 });})
     this.load.audio('ground', './assets/sounds/ground.mp3');
     this.load.audio('jump', './assets/sounds/jump.mp3');
     this.load.audio('pick', './assets/sounds/pick.mp3');
@@ -43,7 +45,7 @@ class Bootloader extends Phaser.Scene {
 
   createBars () {
     this.loadBar = this.add.graphics();
-    this.loadBar.fillStyle(0x902406, 1);
+    this.loadBar.fillStyle(0x420069, 1);
     this.loadBar.fillRect(
         this.cameras.main.width / 4 - 2,
         this.cameras.main.height / 2 - 18,
