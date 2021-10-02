@@ -1,6 +1,8 @@
 import Player from "./player";
 import Pot from "./pot";
 import StarBurst from "./starburst";
+import WeezardSpawn from "./weezard_spawn";
+
 const colors = { pot0: "0x55b700", pot1: "0xffbf00", pot2: "0xff0000", pot3: "0x01156D"};
 
 class Game extends Phaser.Scene {
@@ -27,16 +29,25 @@ class Game extends Phaser.Scene {
     this.platform.setCollisionByExclusion([-1]);
 
 
-    this.player = new Player(this, 200, 200);
-
+    this.player = new Player(this, 200, 200, 0);
+    this.weezardSpawn = new WeezardSpawn(this);
     this.physics.world.enable([ this.player ]);
     this.colliderActivated = true;
     this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
       return this.colliderActivated;
     }, this);
+    this.physics.add.collider(this.player, this.weezardSpawn.weezards, this.hitFloor, ()=>{
+      return this.colliderActivated;
+    }, this);
     this.loadAudios();
     this.addObjects();
     this.addPots();
+    this.weezardSpawn.generate();
+  }
+
+  update () {
+    this.player.update()
+    this.weezardSpawn.update();
   }
 
   loadAudios () {
@@ -125,10 +136,6 @@ class Game extends Phaser.Scene {
     });
     console.log("yeah");
 }
-
-  update () {
-   this.player.update()
-  }
 }
 
 export default Game;

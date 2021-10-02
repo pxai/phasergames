@@ -3,16 +3,18 @@ import Dust from "./dust";
 
 
 class Player extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, name) {
+    constructor (scene, x, y, number) {
       super(scene, x, y, "wizard")
       this.setOrigin(0.5)
       this.scene = scene;
+      this.number = number; 
       this.scene.add.existing(this);
       this.scene.physics.add.existing(this);
       this.body.collideWorldBounds = true;
       this.cursor = this.scene.input.keyboard.createCursorKeys();
       this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
       this.down = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+
       this.right = false;
       this.init();
       this.casting = false;
@@ -24,73 +26,109 @@ class Player extends Phaser.GameObjects.Sprite {
 
     init () {
         this.scene.anims.create({
-            key: "playeridle",
+            key: "playeridle" + this.number,
             frames: this.scene.anims.generateFrameNumbers("wizard", { start: 0, end: 1 }),
             frameRate: 1,
             repeat: -1
         });
 
         this.scene.anims.create({
-            key: "playerwalkidle",
+            key: "playerwalkidle" + this.number,
             frames: this.scene.anims.generateFrameNumbers("wizard", { start: 5, end: 5 }),
             frameRate: 1,
         });
 
         this.scene.anims.create({
-            key: "playerwalk",
+            key: "playerwalk" + this.number,
             frames: this.scene.anims.generateFrameNumbers("wizard", { start: 5, end: 8 }),
             frameRate: 5,
         });
 
         this.scene.anims.create({
-            key: "playercast",
+            key: "playercast" + this.number,
             frames: this.scene.anims.generateFrameNumbers("wizard", { start: 9, end: 13 }),
             frameRate: 5,
         });
 
         this.scene.anims.create({
-            key: "playerjump",
+            key: "playerjump" + this.number,
             frames: this.scene.anims.generateFrameNumbers("wizard", { start: 14, end: 15 }),
             frameRate: 5,
         });
 
         this.scene.anims.create({
-            key: "playerdead",
+            key: "playerdead" + this.number,
             frames: this.scene.anims.generateFrameNumbers("wizard", { start: 16, end: 20 }),
             frameRate: 5,
         });
 
-        this.anims.play("playeridle", true);
+        this.anims.play("playeridle" + this.number, true);
         this.on("animationupdate" , this.castInTime, this);
         this.on('animationcomplete', this.animationComplete, this);
+        console.log("This-.number: ", this.number);
+        if (this.number > 0) { 
+            const initMove = Phaser.Math.Between(-1, 1) > 0 ? 1 : -1;
+            this.right = initMove === 1;
+            this.body.setVelocityX(initMove * 160);
+            this.flipX = (this.body.velocity.x < 0);
+            console.log("Init move:", this.body.velocity.x);
+        }
     }    
   
     update() {
         if (this.casting) return;
+        if (!this.number) { 
+            this.playerMove(); 
+        } else {
+            this.mirrorMove();
+        }
+
+    }
+
+    playerMove () {
         if (Phaser.Input.Keyboard.JustDown(this.down) && this.pots.length) {
             this.body.setVelocityX(0);
             this.casting = true;
-            this.anims.play("playercast", true);
+            this.anims.play("playercast" + this.number, true);
             this.scene.playAudio("cast1")
         } else if (this.cursor.up.isDown && this.body.blocked.down) {
             this.body.setVelocityY(-300);
-            this.anims.play("playerjump", true);
+            this.anims.play("playerjump" + this.number, true);
             this.scene.playAudio("jump")
             new Dust(this.scene, this.x, this.y)
             this.jumping = true;
         } else if (this.cursor.right.isDown) {
-            if (this.body.blocked.down) { this.anims.play("playerwalk", true); }
+            if (this.body.blocked.down) { this.anims.play("playerwalk" + this.number, true); }
             this.right = true;
             this.flipX = (this.body.velocity.x < 0);
             this.body.setVelocityX(160);
         } else if (this.cursor.left.isDown) {
-            if (this.body.blocked.down) { this.anims.play("playerwalk", true); }
+            if (this.body.blocked.down) { this.anims.play("playerwalk" + this.number, true); }
             this.right = false;
             this.flipX = (this.body.velocity.x < 0);
             this.body.setVelocityX(-160);  
         } else {
-            if (this.body.blocked.down) { this.anims.play("playerwalkidle", true); }
+            if (this.body.blocked.down) { this.anims.play("playerwalkidle" + this.number, true); }
             this.body.setVelocityX(0);
+        }
+    }
+
+    mirrorMove() {
+        if (this.body) {
+            if (this.body.onFloor()) {
+                console.log("Epa: onFloor",this.body.velocity.x);
+                this.play("playerwalk" + this.number, true);
+                if (Phaser.Math.Between(1,101) > 100) {
+                    this.body.setVelocityY(-300);
+                    this.scene.playAudio("jump")
+                    new Dust(this.scene, this.x, this.y)
+                    this.jumping = true;
+                }
+
+            } else { // fall
+                this.play("playerjump" + this.number, true);
+            }
+            this.flipX = (this.body.velocity.x > 0);
         }
     }
 
@@ -103,15 +141,15 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     animationComplete (animation, frame) {
-        if (animation.key === "playercast") {
+        if (animation.key === "playercast" + this.number) {
             this.casting = false;
-            this.anims.play("playeridle", true);
+            this.anims.play("playeridle" + this.number, true);
             this.scene.playAudio("cast2")
         }
     }
 
     castInTime(animation, frame) {
-        if (animation.key === "playercast" && frame.index === 4) {
+        if (animation.key === "playercast" + this.number && frame.index === 4) {
             this.usePot();
         }
     }
