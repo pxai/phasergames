@@ -4,6 +4,7 @@ import Splash from './splash';
 import Intro from './intro';
 import Game from './game'
 import Outro from './outro';
+import GameOver from './game_over';
 
 const config = {
   width: 800,
@@ -26,7 +27,8 @@ const config = {
     Splash,
     Intro,
     Game,
-    Outro
+    Outro,
+    GameOver
   ]
 }
 

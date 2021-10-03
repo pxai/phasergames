@@ -103,7 +103,7 @@ class Game extends Phaser.Scene {
   hitPlayer () {
     this.player.hitPlayer();
     if (this.player.health === 0) {
-      console.log("GAME OVER")
+      this.player.die();
     } 
   }
 

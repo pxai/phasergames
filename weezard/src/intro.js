@@ -142,6 +142,7 @@ export default class Intro extends Phaser.Scene {
     }
 
     loadNext() {
+        this.theme.stop();
         this.scene.start('game')
     }
 }

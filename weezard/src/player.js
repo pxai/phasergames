@@ -24,7 +24,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.jumping = false;
       this.frozen = false;
       this.escaping = false;
-      this.health = 10;
+      this.health = 1;
     }
 
     init () {
@@ -173,6 +173,10 @@ class Player extends Phaser.GameObjects.Sprite {
             this.anims.play("playeridle" + this.number, true);
             this.scene.playAudio("cast2")
         }
+
+        if (animation.key === "playerdead" + this.number) {
+            this.scene.scene.start('game_over')
+        }
     }
 
     castInTime(animation, frame) {
@@ -208,6 +212,12 @@ class Player extends Phaser.GameObjects.Sprite {
                 }
             })
         }
+    }
+
+    die () {
+        this.body.immovable = true;
+        this.body.moves = false;
+        this.anims.play("playerdead" + this.number)
     }
 
     startFloat () {

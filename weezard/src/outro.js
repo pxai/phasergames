@@ -138,6 +138,7 @@ export default class Outro extends Phaser.Scene {
     }
 
     loadNext() {
+        this.theme.stop();
         this.scene.start('splash')
     }
 }
