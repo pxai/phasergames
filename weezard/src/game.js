@@ -83,6 +83,9 @@ class Game extends Phaser.Scene {
       "pick": this.sound.add("pick"),
       "cast1": this.sound.add("cast1"),
       "cast2": this.sound.add("cast2"),
+      "hit": this.sound.add("hit"),
+      "foejump": this.sound.add("foejump"),
+      "gameover": this.sound.add("gameover"),
       "inception": this.sound.add("inception")
     };
   }

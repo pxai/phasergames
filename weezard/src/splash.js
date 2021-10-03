@@ -19,13 +19,17 @@ export default class Splash extends Phaser.Scene {
         //this.logo = this.add.image(this.center_width, 100, "splash").setOrigin(0.5).setScale(0.8)
         this.pello = this.add.image(this.center_width, this.height - 145, "logopx").setOrigin(0.5).setScale(0.5)
         this.showLogo();
-        this.textInstruction1 = this.add.bitmapText(this.center_width, 350, "wizardFont", "Use ARROW keys", 30).setTint(0xffffff).setOrigin(0.5)
+        this.textInstruction1 = this.add.bitmapText(this.center_width, 300, "wizardFont", "Left/Right: move", 30).setTint(0xffffff).setOrigin(0.5)
         this.textInstruction1.setDropShadow(2, 3, 0x420069, 0.7);
-        this.textInstruction2 = this.add.bitmapText(this.center_width, 400, "wizardFont", "ENTER to continue", 25).setTint(0xffffff).setOrigin(0.5)
+        this.textInstruction2 = this.add.bitmapText(this.center_width, 350, "wizardFont", "Up: jump, Down: spell", 30).setTint(0xffffff).setOrigin(0.5)
         this.textInstruction2.setDropShadow(2, 3, 0x420069, 0.7);
-        this.textInstruction3 = this.add.bitmapText(this.center_width, 550, "wizardFont", "A game by Pello", 15).setTint(0x7500ba).setOrigin(0.5)
+        this.textInstruction3 = this.add.bitmapText(this.center_width, 400, "wizardFont", "ENTER to continue", 25).setTint(0xffffff).setOrigin(0.5)
         this.textInstruction3.setDropShadow(2, 3, 0x420069, 0.7);
+        this.textInstruction4 = this.add.bitmapText(this.center_width, 550, "wizardFont", "A game by Pello", 15).setTint(0x7500ba).setOrigin(0.5)
+        this.textInstruction4.setDropShadow(2, 3, 0x420069, 0.7);
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
+        this.appearSound = this.sound.add("appear");
+        this.boomSound = this.sound.add("boom");
         this.showText();
         
     }
@@ -48,6 +52,7 @@ export default class Splash extends Phaser.Scene {
             alpha: { from: 0, to: 1},
             duration: 200,
             onComplete: () => {
+              this.appearSound.play()
               new StarBurst(this, this.logoW.x, this.logoW.y, "0x7500ba", true);
           }
         });
@@ -57,6 +62,7 @@ export default class Splash extends Phaser.Scene {
             alpha: { from: 0, to: 1},
             duration: 200,
             onComplete: () => {
+                this.appearSound.play()
               new StarBurst(this, this.logoE1.x, this.logoE1.y, "0x7500ba", true);
           }
         });
@@ -66,6 +72,7 @@ export default class Splash extends Phaser.Scene {
             alpha: { from: 0, to: 1},
             duration: 200,
             onComplete: () => {
+                this.appearSound.play()
               new StarBurst(this, this.logoE2.x, this.logoE2.y, "0x7500ba", true);
           }
         });
@@ -75,6 +82,7 @@ export default class Splash extends Phaser.Scene {
             alpha: { from: 0, to: 1},
             duration: 200,
             onComplete: () => {
+                this.appearSound.play()
               new StarBurst(this, this.logoZ.x, this.logoZ.y, "0x7500ba", true);
           }
         });
@@ -84,6 +92,7 @@ export default class Splash extends Phaser.Scene {
             alpha: { from: 0, to: 1},
             duration: 200,
             onComplete: () => {
+                this.appearSound.play()
               new StarBurst(this, this.logoA.x, this.logoA.y, "0x7500ba", true);
           }
         });
@@ -93,6 +102,7 @@ export default class Splash extends Phaser.Scene {
             alpha: { from: 0, to: 1},
             duration: 200,
             onComplete: () => {
+                this.appearSound.play()
               new StarBurst(this, this.logoR.x, this.logoR.y, "0x7500ba", true);
           }
         });
@@ -102,6 +112,7 @@ export default class Splash extends Phaser.Scene {
             alpha: { from: 0, to: 1},
             duration: 200,
             onComplete: () => {
+                this.appearSound.play()
               new StarBurst(this, this.logoD.x, this.logoD.y, "0x7500ba", true);
               this.time.delayedCall(500, () => this.finalEffect())
           }
@@ -119,6 +130,7 @@ export default class Splash extends Phaser.Scene {
                 logo.setDropShadow(4, 6, 0x420069, 0.7);
                 new StarBurst(this, logo.x, logo.y, "0x7500ba", true, true);
             });
+            this.boomSound.play()
         this.player = this.add.sprite(this.center_width, 200, "wizard");
         this.anims.create({
             key: "playeridle",

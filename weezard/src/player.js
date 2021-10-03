@@ -148,7 +148,7 @@ class Player extends Phaser.GameObjects.Sprite {
         let initMove = this.right ? 1 : -1;
         this.body.setVelocityX(initMove * 160);
         this.body.setVelocityY(-300);
-        this.scene.playAudio("jump")
+        this.scene.playAudio("foejump")
         new Dust(this.scene, this.x, this.y)
         this.jumping = true;
     }
@@ -198,7 +198,7 @@ class Player extends Phaser.GameObjects.Sprite {
         if (!this.hit) {
             this.hit = true;
             this.health--;
-            console.log("Player hit! ");
+            this.scene.playAudio("hit")
             this.scene.updateHealth();
             this.scene.tweens.add({
                 targets: this,
@@ -218,6 +218,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.body.immovable = true;
         this.body.moves = false;
         this.anims.play("playerdead" + this.number)
+        this.scene.playAudio("gameover")
     }
 
     startFloat () {
