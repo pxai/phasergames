@@ -130,7 +130,7 @@ export default class Outro extends Phaser.Scene {
         this.tweens.add({
             targets: this.fade,
             alpha: { from: 0, to: 1},
-            duration: 5000,
+            duration: 3000,
             onComplete: () => {
                 this.loadNext()
             }

@@ -1,12 +1,12 @@
 class StarBurst {
-    constructor (scene, x, y, color = "0xffffff", launch = false) {
+    constructor (scene, x, y, color = "0xffffff", launch = false, multi = false) {
         this.scene = scene;
         this.x = x;
         this.y = y;
         this.launch = launch;
         this.color = Phaser.Display.Color.HexStringToColor(color).color;
         this.stars = Array(this.launch ? 11 : 5).fill(0).map(i => {
-            let image = this.scene.add.image(this.x, this.y - 2, "star").setTint(this.color);
+            let image = this.scene.add.image(this.x, this.y - 2, "star").setTint(multi ? 0xffffff * Math.random() : this.color);
             return image;
         })
 

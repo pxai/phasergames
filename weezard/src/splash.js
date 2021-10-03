@@ -117,7 +117,7 @@ export default class Splash extends Phaser.Scene {
             this.logoZ, this.logoA, 
             this.logoR, this.logoD].forEach( logo => {
                 logo.setDropShadow(4, 6, 0x420069, 0.7);
-                new StarBurst(this, logo.x, logo.y, "0x7500ba", true);
+                new StarBurst(this, logo.x, logo.y, "0x7500ba", true, true);
             });
         this.player = this.add.sprite(this.center_width, 200, "wizard");
         this.anims.create({
