@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import Bootloader from './bootloader'
 import Splash from './splash';
+import Intro from './intro';
 import Game from './game'
 
 const config = {
@@ -16,12 +17,13 @@ const config = {
     default: "arcade",
     arcade: {
         gravity: { y: 350 },
-        debug: false
+        debug: true
     }
 },
   scene: [
     Bootloader,
     Splash,
+    Intro,
     Game,
   ]
 }

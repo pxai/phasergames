@@ -3,6 +3,7 @@ import Pot from "./pot";
 import StarBurst from "./starburst";
 import WeezardSpawn from "./weezard_spawn";
 import BatSwarm from "./bat_swarm";
+import JumpPoint from "./jump_point";
 
 const colors = { pot0: "0x55b700", pot1: "0xffbf00", pot2: "0xff0000", pot3: "0x01156D"};
 
@@ -21,6 +22,7 @@ class Game extends Phaser.Scene {
     this.tileSet = this.tileMap.addTilesetImage("grass_tileset");
     this.platform = this.tileMap.createLayer('scene0', this.tileSet);
     this.objectsLayer = this.tileMap.getObjectLayer('objects');
+    this.jumpsLayer = this.tileMap.getObjectLayer('jumppoints');
 
    // this.physics.world.bounds.setTo(0, 0, this.tileMap.widthInPixels, this.tileMap.heightInPixels);
     this.platform.setCollisionByExclusion([-1]);
@@ -31,9 +33,11 @@ class Game extends Phaser.Scene {
     this.weezardSpawn = new WeezardSpawn(this);
     this.physics.world.enable([ this.player ]);
     this.colliderActivated = true;
+    this.jumpGroup = this.add.group()
     this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
       return this.colliderActivated;
     }, this);
+
     this.physics.add.collider(this.player, this.weezardSpawn.weezards, this.hitPlayer, ()=>{
       return this.colliderActivated;
     }, this);
@@ -43,11 +47,11 @@ class Game extends Phaser.Scene {
     this.hearts = this.add.image(this.width - 100, 20, "heart").setScale(0.9).setOrigin(0.5).setScrollFactor(0),
     this.heartsText = this.add.bitmapText(this.width - 60, 45, "wizardFont", this.player.health, 22).setOrigin(0.5).setScrollFactor(0)
 
-
     this.loadAudios();
     this.addObjects();
     this.addPots();
     this.weezardSpawn.generate();
+    this.addJumpPoints();
   }
 
   update () {
@@ -97,12 +101,26 @@ class Game extends Phaser.Scene {
     });
   }
 
+
   addObjects () {
     this.potGroup = this.add.group()
     this.objectsLayer.objects.forEach( object => {
       this.potGroup.add(new Pot(this, object.x, object.y, object.name, colors[object.name]))
     })
     this.overlap = this.physics.add.overlap(this.player, this.potGroup, this.pick);
+  }
+
+  addJumpPoints() {
+    this.jumpsLayer.objects.forEach( object => {
+      this.jumpGroup.add(new JumpPoint(this, object.x, object.y))
+    })
+    this.jumpOverlap = this.physics.add.overlap(this.weezardSpawn.weezards, this.jumpGroup, this.jumpWeezard.bind(this));
+  }
+
+  jumpWeezard (weezard, point) {
+    point.body.enable = false;
+    if (Phaser.Math.Between(0, 3) > 2) weezard.jumpPoint()
+    this.time.delayedCall(3000, () => {  point.body.enable = true; })
   }
 
   addPots () {

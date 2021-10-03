@@ -129,11 +129,7 @@ class Player extends Phaser.GameObjects.Sprite {
                 this.body.setVelocityX(initMove * 160);
                 this.play("playerwalk" + this.number, true);
                 if (Phaser.Math.Between(1,101) > 100) {
-                    this.body.setVelocityX(initMove * 160);
-                    this.body.setVelocityY(-300);
-                    this.scene.playAudio("jump")
-                    new Dust(this.scene, this.x, this.y)
-                    this.jumping = true;
+                    this.jumpPoint()
                 }
 
                 if (Phaser.Math.Between(1,101) > 100 && !this.escaping) {
@@ -146,6 +142,15 @@ class Player extends Phaser.GameObjects.Sprite {
             }
             this.flipX = (this.body.velocity.x < 0);
         }
+    }
+
+    jumpPoint () {
+        let initMove = this.right ? 1 : -1;
+        this.body.setVelocityX(initMove * 160);
+        this.body.setVelocityY(-300);
+        this.scene.playAudio("jump")
+        new Dust(this.scene, this.x, this.y)
+        this.jumping = true;
     }
 
     usePot() {

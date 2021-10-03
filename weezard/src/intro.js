@@ -1,10 +1,9 @@
 import Player from "./player";
-import StarBurst from "./starburst";
 import Pot from "./pot";
 
-export default class Splash extends Phaser.Scene {
+export default class Intro extends Phaser.Scene {
     constructor () {
-        super({ key: "splash" });
+        super({ key: "intro" });
     }
 
     preload () {
@@ -15,19 +14,10 @@ export default class Splash extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-       // this.playMusic();
+        this.playMusic();
         //this.logo = this.add.image(this.center_width, 100, "splash").setOrigin(0.5).setScale(0.8)
-        this.pello = this.add.image(this.center_width, this.height - 145, "logopx").setOrigin(0.5).setScale(0.5)
-        this.showLogo();
-        this.textInstruction1 = this.add.bitmapText(this.center_width, 350, "wizardFont", "Use ARROW keys", 30).setTint(0x7500ba).setOrigin(0.5)
-        this.textInstruction1.setDropShadow(2, 3, 0x420069, 0.7);
-        this.textInstruction2 = this.add.bitmapText(this.center_width, 400, "wizardFont", "ENTER to continue", 25).setTint(0x7500ba).setOrigin(0.5)
-        this.textInstruction2.setDropShadow(2, 3, 0x420069, 0.7);
-        this.textInstruction3 = this.add.bitmapText(this.center_width, 550, "wizardFont", "A game by Pello", 15).setTint(0x7500ba).setOrigin(0.5)
-        this.textInstruction3.setDropShadow(2, 3, 0x420069, 0.7);
-        this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
-        this.showText();
-        
+        //this.showLogo();
+       this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
     }
 
     update () {
@@ -112,6 +102,21 @@ export default class Splash extends Phaser.Scene {
 
     }
 
+
+    playMusic (theme="intro") {
+        this.theme = this.sound.add(theme);
+        this.theme.stop();
+        this.theme.play({
+          mute: false,
+          volume: 1,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+        })
+    }
+
     finalEffect() {
         [this.logoW, this.logoE1, this.logoE2, 
             this.logoZ, this.logoA, 
@@ -143,21 +148,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     loadNext(sceneName) {
-        this.scene.start('intro')
-    }
-
-    playMusic (theme="muzik2") {
-        this.sound.stopAll();
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
-        this.theme.play({
-          mute: false,
-          volume: 1,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-      })
+        console.log("Loading next! ");
+        this.scene.start('game')
     }
 }

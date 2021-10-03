@@ -90,9 +90,75 @@
          "visible":true,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"jumppoints",
+         "objects":[
+                {
+                 "height":0,
+                 "id":9,
+                 "name":"jump",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":428.475443928971,
+                 "y":560.550311950088
+                }, 
+                {
+                 "height":0,
+                 "id":10,
+                 "name":"jump",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":430.011198208287,
+                 "y":365.509518477044
+                }, 
+                {
+                 "height":0,
+                 "id":11,
+                 "name":"jump",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":784.770436730123,
+                 "y":202.719564869621
+                }, 
+                {
+                 "height":0,
+                 "id":12,
+                 "name":"jump",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":460.726283794593,
+                 "y":145.896656534954
+                }, 
+                {
+                 "height":0,
+                 "id":13,
+                 "name":"jump",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":589.729643257079,
+                 "y":465.333546632539
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":3,
- "nextobjectid":9,
+ "nextlayerid":4,
+ "nextobjectid":14,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.1",
