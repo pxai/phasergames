@@ -18,18 +18,33 @@ class Game extends Phaser.Scene {
     this.center_width = this.width / 2;
     this.center_height = this.height / 2;
     this.currentPot = "pot0";
-    this.tileMap = this.make.tilemap({ key: "scene0" , tileWidth: 32, tileHeight: 32 });
+    /*this.tileMap = this.make.tilemap({ key: "scene0" , tileWidth: 32, tileHeight: 32 });
     this.tileSet = this.tileMap.addTilesetImage("grass_tileset");
     this.platform = this.tileMap.createLayer('scene0', this.tileSet);
     this.objectsLayer = this.tileMap.getObjectLayer('objects');
+    this.jumpsLayer = this.tileMap.getObjectLayer('jumppoints');*/
+
+    this.tileMap = this.make.tilemap({ key: "scene0" , tileWidth: 32, tileHeight: 32 });
+    this.tileSetBg = this.tileMap.addTilesetImage("weezard_tileset_bg");
+    this.tileMap.createStaticLayer('background', this.tileSetBg)
+
+    this.tileSet = this.tileMap.addTilesetImage("weezard_tileset_fg");
+    this.platform = this.tileMap.createLayer('scene0', this.tileSet);
+
+
+
+    this.objectsLayer = this.tileMap.getObjectLayer('objects');
     this.jumpsLayer = this.tileMap.getObjectLayer('jumppoints');
+    this.wizardsLayer = this.tileMap.getObjectLayer('wizards');
+    this.specialsLayer = this.tileMap.getObjectLayer('special');
+    const playerPosition = this.specialsLayer.objects.find( object => object.name === "player")
 
    // this.physics.world.bounds.setTo(0, 0, this.tileMap.widthInPixels, this.tileMap.heightInPixels);
     this.platform.setCollisionByExclusion([-1]);
 
-    this.cameras.main.setBounds(0, 0, 1920 * 2, 1080 * 2);
-    this.physics.world.setBounds(0, 0, 1920 * 2, 1080 * 2);
-    this.player = new Player(this, 200, 200, 0);
+    this.cameras.main.setBounds(0, 0, 10920 * 2, 10080 * 2);
+    this.physics.world.setBounds(0, 0, 10920 * 2, 10080 * 2);
+    this.player = new Player(this, playerPosition.x, playerPosition.y, 0);
     this.weezardSpawn = new WeezardSpawn(this);
     this.physics.world.enable([ this.player ]);
     this.colliderActivated = true;
@@ -43,7 +58,7 @@ class Game extends Phaser.Scene {
       return this.colliderActivated;
     }, this);
 
-    this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 250);
+    this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 50);
 
     this.hearts = this.add.image(this.width - 100, 20, "heart").setScale(0.9).setOrigin(0.5).setScrollFactor(0),
     this.heartsText = this.add.bitmapText(this.width - 60, 45, "wizardFont", this.player.health, 22).setOrigin(0.5).setScrollFactor(0)

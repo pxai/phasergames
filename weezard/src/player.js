@@ -24,7 +24,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.jumping = false;
       this.frozen = false;
       this.escaping = false;
-      this.health = 1;
+      this.health = 10;
     }
 
     init () {

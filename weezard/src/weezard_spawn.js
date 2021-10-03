@@ -18,8 +18,10 @@ class WeezardSpawn {
     }
 
     generate () {
-        Array(10).fill(0).forEach((w, i) => {
-            this.weezards.add(new Player(this.scene, 20, 30, (i + 1)));
+        this.scene.wizardsLayer.objects.forEach( (object, i) => {
+            if (object.name === "w")
+            this.weezards.add(new Player(this.scene, object.x, object.y - 64, (i + 1)));
+            //this.turnGroup.add(new JumpPoint(this, object.x, object.y))
         })
     }
 
