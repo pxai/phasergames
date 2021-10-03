@@ -27,3 +27,9 @@ npm run test
 Colors:
 dark: 0x420069
 clear: 0x7500ba
+
+Music:
+Josu
+and 
+Bart
+https://opengameart.org/content/jump-and-run-8-bit

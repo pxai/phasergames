@@ -96,7 +96,7 @@ class Player extends Phaser.GameObjects.Sprite {
             this.anims.play("playercast" + this.number, true);
             this.scene.playAudio("cast1")
         } else if (this.cursor.up.isDown && this.body.blocked.down) {
-            this.body.setVelocityY(-300);
+            this.body.setVelocityY(-330);
             this.anims.play("playerjump" + this.number, true);
             this.scene.playAudio("jump")
             new Dust(this.scene, this.x, this.y)

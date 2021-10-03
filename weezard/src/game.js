@@ -69,6 +69,7 @@ class Game extends Phaser.Scene {
     this.addMirror();
     this.weezardSpawn.generate();
     this.addJumpPoints();
+    this.playMusic()
   }
 
   update () {
@@ -105,6 +106,20 @@ class Game extends Phaser.Scene {
     });
     this.mirror.anims.play("mirror", true)
   }
+
+  playMusic (theme="muzik") {
+    this.theme = this.sound.add(theme);
+    this.theme.stop();
+    this.theme.play({
+      mute: false,
+      volume: 1,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: true,
+      delay: 0
+    })
+}
 
   playAudio(key) {
     this.audios[key].play();
