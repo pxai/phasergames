@@ -34,6 +34,7 @@ class Game extends Phaser.Scene {
     this.physics.world.enable([ this.player ]);
     this.colliderActivated = true;
     this.jumpGroup = this.add.group()
+    this.turnGroup = this.add.group()
     this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
       return this.colliderActivated;
     }, this);
@@ -112,15 +113,25 @@ class Game extends Phaser.Scene {
 
   addJumpPoints() {
     this.jumpsLayer.objects.forEach( object => {
-      this.jumpGroup.add(new JumpPoint(this, object.x, object.y))
+      if (object.name === "jump")
+        this.jumpGroup.add(new JumpPoint(this, object.x, object.y))
+      if (object.name === "turn")
+        this.turnGroup.add(new JumpPoint(this, object.x, object.y))
     })
     this.jumpOverlap = this.physics.add.overlap(this.weezardSpawn.weezards, this.jumpGroup, this.jumpWeezard.bind(this));
+    this.turnOverlap = this.physics.add.overlap(this.weezardSpawn.weezards, this.turnGroup, this.turnWeezard.bind(this));
   }
 
   jumpWeezard (weezard, point) {
     point.body.enable = false;
     if (Phaser.Math.Between(0, 3) > 2) weezard.jumpPoint()
     this.time.delayedCall(3000, () => {  point.body.enable = true; })
+  }
+
+  turnWeezard (weezard, point) {
+    point.body.enable = false;
+    weezard.turn()
+    this.time.delayedCall(1000, () => {  point.body.enable = true; })
   }
 
   addPots () {

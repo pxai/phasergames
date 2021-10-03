@@ -19,9 +19,9 @@ export default class Splash extends Phaser.Scene {
         //this.logo = this.add.image(this.center_width, 100, "splash").setOrigin(0.5).setScale(0.8)
         this.pello = this.add.image(this.center_width, this.height - 145, "logopx").setOrigin(0.5).setScale(0.5)
         this.showLogo();
-        this.textInstruction1 = this.add.bitmapText(this.center_width, 350, "wizardFont", "Use ARROW keys", 30).setTint(0x7500ba).setOrigin(0.5)
+        this.textInstruction1 = this.add.bitmapText(this.center_width, 350, "wizardFont", "Use ARROW keys", 30).setTint(0xffffff).setOrigin(0.5)
         this.textInstruction1.setDropShadow(2, 3, 0x420069, 0.7);
-        this.textInstruction2 = this.add.bitmapText(this.center_width, 400, "wizardFont", "ENTER to continue", 25).setTint(0x7500ba).setOrigin(0.5)
+        this.textInstruction2 = this.add.bitmapText(this.center_width, 400, "wizardFont", "ENTER to continue", 25).setTint(0xffffff).setOrigin(0.5)
         this.textInstruction2.setDropShadow(2, 3, 0x420069, 0.7);
         this.textInstruction3 = this.add.bitmapText(this.center_width, 550, "wizardFont", "A game by Pello", 15).setTint(0x7500ba).setOrigin(0.5)
         this.textInstruction3.setDropShadow(2, 3, 0x420069, 0.7);
@@ -123,7 +123,7 @@ export default class Splash extends Phaser.Scene {
         this.anims.create({
             key: "playeridle",
             frames: this.anims.generateFrameNumbers("wizard", { start: 0, end: 1 }),
-            frameRate: 2,
+            frameRate: 1,
             repeat: -1
         });
         this.player.anims.play("playeridle", true)

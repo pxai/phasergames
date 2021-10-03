@@ -132,7 +132,7 @@ class Player extends Phaser.GameObjects.Sprite {
                     this.jumpPoint()
                 }
 
-                if (Phaser.Math.Between(1,101) > 100 && !this.escaping) {
+                if (Phaser.Math.Between(1,1001) > 1000 && !this.escaping) {
                     this.right = !this.right;
                     this.flipX = (this.body.velocity.x < 0);
                 }
@@ -151,6 +151,11 @@ class Player extends Phaser.GameObjects.Sprite {
         this.scene.playAudio("jump")
         new Dust(this.scene, this.x, this.y)
         this.jumping = true;
+    }
+
+
+    turn () {
+        this.right = !this.right;
     }
 
     usePot() {
