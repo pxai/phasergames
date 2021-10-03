@@ -1,12 +1,9 @@
 import Player from "./player";
 import Pot from "./pot";
 
-export default class Intro extends Phaser.Scene {
+export default class Outro extends Phaser.Scene {
     constructor () {
-        super({ key: "intro" });
-    }
-
-    preload () {
+        super({ key: "outro" });
     }
 
     create () {
@@ -15,17 +12,12 @@ export default class Intro extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
         this.playMusic();
-        //this.logo = this.add.image(this.center_width, 100, "splash").setOrigin(0.5).setScale(0.8)
+
         this.showAnimations();
        this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
     }
 
-    update () {
-    }
-
     
-
-
     playMusic (theme="intro") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
@@ -42,8 +34,8 @@ export default class Intro extends Phaser.Scene {
 
     showAnimations() {
         this.initial();
-        this.time.delayedCall(5000, () => this.getClose())
         this.time.delayedCall(2000, () => this.showText())
+        this.time.delayedCall(5000, () => this.goAway())
     }
 
     initial () {
@@ -76,7 +68,7 @@ export default class Intro extends Phaser.Scene {
             repeat: -1
         });
 
-        this.player = this.add.sprite(this.center_width - 150, 75, "wizard").setOrigin(0.5);
+        this.player = this.add.sprite(this.center_width + 100, 75, "wizard").setOrigin(0.5);
         this.player.anims.play("playeridleintro", true)
         this.mirror.anims.play("mirror", true)
         this.tweens.add({
@@ -86,29 +78,33 @@ export default class Intro extends Phaser.Scene {
         })
     }
 
-    getClose () {
+    goAway () {
         this.player.anims.play("playerwalkintro", true)
         let changed = false
+        this.player.flipX = true;
         this.tweens.add({
             targets: this.player,
-            x: { from: this.center_width - 150, to: this.center_width + 100},
-            duration: 5000,
+            x: { from: this.center_width + 100, to: -100},
+            duration: 13000,
             onUpdate: (time, player) => {
-                if (player.x > this.center_width + 50 && !changed) {
+                if (player.x < 0 && !changed) {
                     changed = true;
+                    console.log("Finally!! ", player.x)
                     this.mirror.anims.play("mirrorShow", true)
                     this.player.anims.stop();
-                    this.time.delayedCall(16000, () => this.fadeToBlack())
+                    this.fadeToBlack();
                 }
             }
         })
     }
 
     showText() {
-        const text = "Once upon a time,\nthere was a weezard\nwho got close\nto a magic mirror.\n\n" +
-                     "The mirror caught\nhis reflection and \n¡it spawned other weezards!\n" + 
-                     "¡Help the weezard!\n\nFind the mirror\nand avoid his reflections.\n"+
-                     "Pick potions to cast spells,\nthat will confuse them...";
+        const text = "Finally!\nWith one single blow\n" + 
+                     "the weezard destroyed\n" +
+                     "the mirror.\n\n" +
+                     "The spawning finally stopped,\n" + 
+                     "and he was free to go...\n\n" +
+                     "...for now.";
         this.characters = [];
         let jump = 0;
         let line = 0;
@@ -128,7 +124,7 @@ export default class Intro extends Phaser.Scene {
         timeline.play();
 
     }
-
+    
     fadeToBlack () {
         this.fade = this.add.rectangle(0, 0, 2000, 2600, 0x000000).setAlpha(0)
         this.tweens.add({
@@ -142,6 +138,6 @@ export default class Intro extends Phaser.Scene {
     }
 
     loadNext() {
-        this.scene.start('game')
+        this.scene.start('splash')
     }
 }

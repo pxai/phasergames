@@ -73,13 +73,19 @@ class Game extends Phaser.Scene {
   }
 
   addMirror() {
-    this.mirror = this.add.sprite(this.width - 100 , 75, "mirror").setOrigin(0.5).setAlpha(0);
+    this.mirror = this.add.sprite(this.width - 100 , 75, "mirror").setOrigin(0.5);
+    this.physics.world.enable([ this.mirror ]);
+    this.mirror.body.immovable = true;
+    this.mirror.body.moves = false;
+    this.physics.add.overlap(this.player, this.mirror, this.hitMirror.bind(this));
+
     this.anims.create({
         key: "mirror",
         frames: this.anims.generateFrameNumbers("mirror", { start: 0, end: 14 }),
-        frameRate: 2,
+        frameRate: 10,
         repeat: -1
     });
+    this.mirror.anims.play("mirror", true)
   }
 
   playAudio(key) {
@@ -88,6 +94,10 @@ class Game extends Phaser.Scene {
 
   hitFloor () {
     this.player.hitFloor();
+  }
+
+  hitMirror () {
+    this.scene.start('outro')
   }
 
   hitPlayer () {

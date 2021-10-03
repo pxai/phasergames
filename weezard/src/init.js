@@ -3,6 +3,7 @@ import Bootloader from './bootloader'
 import Splash from './splash';
 import Intro from './intro';
 import Game from './game'
+import Outro from './outro';
 
 const config = {
   width: 800,
@@ -25,6 +26,7 @@ const config = {
     Splash,
     Intro,
     Game,
+    Outro
   ]
 }
 
