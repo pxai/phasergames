@@ -51,6 +51,7 @@ class Game extends Phaser.Scene {
     this.loadAudios();
     this.addObjects();
     this.addPots();
+    this.addMirror();
     this.weezardSpawn.generate();
     this.addJumpPoints();
   }
@@ -69,6 +70,16 @@ class Game extends Phaser.Scene {
       "cast2": this.sound.add("cast2"),
       "inception": this.sound.add("inception")
     };
+  }
+
+  addMirror() {
+    this.mirror = this.add.sprite(this.width - 100 , 75, "mirror").setOrigin(0.5).setAlpha(0);
+    this.anims.create({
+        key: "mirror",
+        frames: this.anims.generateFrameNumbers("mirror", { start: 0, end: 14 }),
+        frameRate: 2,
+        repeat: -1
+    });
   }
 
   playAudio(key) {
