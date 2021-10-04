@@ -92,7 +92,8 @@ class Game extends Phaser.Scene {
   }
 
   addMirror() {
-    this.mirror = this.add.sprite(this.width - 100 , 75, "mirror").setOrigin(0.5);
+    const mirrorPosition = this.specialsLayer.objects.find( object => object.name === "mirror")
+    this.mirror = this.add.sprite(mirrorPosition.x , mirrorPosition.y, "mirror").setOrigin(0.5);
     this.physics.world.enable([ this.mirror ]);
     this.mirror.body.immovable = true;
     this.mirror.body.moves = false;
@@ -130,6 +131,7 @@ class Game extends Phaser.Scene {
   }
 
   hitMirror () {
+    this.theme.stop();
     this.scene.start('outro')
   }
 

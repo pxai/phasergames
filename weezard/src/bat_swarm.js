@@ -9,8 +9,8 @@ class BatSwarm {
 
 
         this.bats.forEach((bat, i) => {
-            let x = (Phaser.Math.Between(-1, 1) > 0 ? 1 : -1 )* Phaser.Math.Between(800, 1200);
-            let y = (Phaser.Math.Between(-1, 1) > 0 ? 1 : -1 ) * Phaser.Math.Between(800, 1200);
+            let x = (Phaser.Math.Between(-1, 1) > 0 ? 1 : -1 )* Phaser.Math.Between(9800, 11200);
+            let y = (Phaser.Math.Between(-1, 1) > 0 ? 1 : -1 ) * Phaser.Math.Between(9800, 11200);
             this.tweenBat(i, x, y)
         })
     }
@@ -18,7 +18,7 @@ class BatSwarm {
     tweenBat(i, x, y) {
         this.scene.tweens.add({
             targets: this.bats[i],
-            duration: Phaser.Math.Between(10000, 16000),
+            duration: Phaser.Math.Between(30000, 36000),
             y: {from: this.y + Phaser.Math.Between(-200, 200), to: this.y + y},
             x: {from: this.x + Phaser.Math.Between(-200, 200), to: this.x + x},
         })

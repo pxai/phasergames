@@ -128,9 +128,6 @@ class Player extends Phaser.GameObjects.Sprite {
                 let initMove = this.right ? 1 : -1;
                 this.body.setVelocityX(initMove * 160);
                 this.play("playerwalk" + this.number, true);
-                if (Phaser.Math.Between(1,101) > 100) {
-                    this.jumpPoint()
-                }
 
                 if (Phaser.Math.Between(1,1001) > 1000 && !this.escaping) {
                     this.right = !this.right;
@@ -148,7 +145,6 @@ class Player extends Phaser.GameObjects.Sprite {
         let initMove = this.right ? 1 : -1;
         this.body.setVelocityX(initMove * 160);
         this.body.setVelocityY(-300);
-        this.scene.playAudio("foejump")
         new Dust(this.scene, this.x, this.y)
         this.jumping = true;
     }
