@@ -32,7 +32,6 @@ class Pot extends Phaser.GameObjects.Sprite {
         y: this.y - 70,
         alpha: { from: 1, to: 0 },
         onComplete: () => {
-          console.log("LAUCHN!!", this.scene, this.color);
           new StarBurst(this.scene, this.x, this.y, this.color, true);
           this.disable();
       },

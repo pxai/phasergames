@@ -229,7 +229,6 @@ class Game extends Phaser.Scene {
   }
 
   applyPot(pot) {
-    console.log("Apply pot: ", pot.name);
     switch (pot.name) {
         case "pot0":
           this.player.startFloat()

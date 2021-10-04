@@ -21,12 +21,10 @@ class WeezardSpawn {
         this.scene.wizardsLayer.objects.forEach( (object, i) => {
             if (object.name === "w")
             this.weezards.add(new Player(this.scene, object.x, object.y - 64, (i + 1)));
-            //this.turnGroup.add(new JumpPoint(this, object.x, object.y))
         })
     }
 
     touch (player, clone) {
-        console.log("Touch; ", player.number, clone.number);
     }   
 
     update () {
@@ -42,7 +40,10 @@ class WeezardSpawn {
     }
 
     startFloat () {
-        this.weezards.children.entries.forEach( weezard => weezard.fly() )
+        this.weezards.children.entries.forEach( weezard => { 
+            if (this.isCloseEnough(this.scene.player, weezard))
+                weezard.fly(); 
+        })
     }
 
     stopFloat () {
@@ -55,6 +56,11 @@ class WeezardSpawn {
 
     stopEscape () {
         this.weezards.children.entries.forEach( weezard => weezard.stopEscape() )
+    }
+
+    isCloseEnough (player, weezard) {
+         return Math.abs(player.x - weezard.x) < 400 && 
+            Math.abs(player.y - weezard.y) < 400;
     }
 }
 
