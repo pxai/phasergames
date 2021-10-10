@@ -72,12 +72,12 @@ class Player extends Phaser.GameObjects.Sprite {
             if (this.body.blocked.down) { this.anims.play("playerwalk", true); }
             this.right = true;
             this.flipX = (this.body.velocity.x < 0);
-            this.body.setVelocityX(160);
+            this.body.setVelocityX(250);
         } else if (this.cursor.left.isDown) {
             if (this.body.blocked.down) { this.anims.play("playerwalk", true); }
             this.right = false;
             this.flipX = (this.body.velocity.x < 0);
-            this.body.setVelocityX(-160);  
+            this.body.setVelocityX(-250);  
         } else {
             if (this.body.blocked.down) { 
                 this.anims.play("playerwalkidle", true); }

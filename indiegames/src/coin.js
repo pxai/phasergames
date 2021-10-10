@@ -12,7 +12,7 @@ export default class Coin extends Phaser.GameObjects.Sprite {
         const coinAnimation = this.scene.anims.create({
             key: "coin",
             frames: this.scene.anims.generateFrameNumbers("coin", { start: 0, end: 7 }, ),
-            frameRate: 5,
+            frameRate: 8,
         });
         this.play({ key: "coin", repeat: -1 });
     }

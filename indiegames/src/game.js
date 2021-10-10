@@ -31,8 +31,8 @@ class Game extends Phaser.Scene {
    this.physics.world.bounds.setTo(0, 0, this.tileMap.widthInPixels, this.tileMap.heightInPixels);
     this.platform.setCollisionByExclusion([-1]);
 
-    this.cameras.main.setBounds(0, 0, 10920 * 2, 10080 * 2);
-    this.physics.world.setBounds(0, 0, 10920 * 2, 10080 * 2);
+    this.cameras.main.setBounds(0, 0, 20920 * 2, 20080 * 2);
+    this.physics.world.setBounds(0, 0, 20920 * 2, 20080 * 2);
     this.player = new Player(this, playerPosition.x, playerPosition.y, 0);
 
     this.physics.world.enable([ this.player ]);
