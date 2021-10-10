@@ -78,7 +78,7 @@ class Game extends Phaser.Scene {
        }
 
       if (object.name.startsWith("image")) {
-        this.add.image(object.x, object.y, images[object.name].name);
+        this.add.image(object.x, object.y, images[object.name].name).setScale(images[object.name].scale);
       }
     })
     this.overlap = this.physics.add.overlap(this.player, this.coinsGroup, this.pick);
