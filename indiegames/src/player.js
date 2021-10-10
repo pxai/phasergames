@@ -20,6 +20,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.escaping = false;
       this.invincible = false;
       this.health = 10;
+      this.body.setGravity(100)
     }
 
     init () {
@@ -83,10 +84,7 @@ class Player extends Phaser.GameObjects.Sprite {
             this.body.setVelocityX(0);
         }
 
-        //const scrol_x = this.x - this.scene.center_width;     
- ///  scrollX - Х top left point of camera
-      //  this.scene.cameras.main.x = scrol_x;
-    }
+     }
 
 
     turn () {

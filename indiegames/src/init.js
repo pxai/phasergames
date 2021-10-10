@@ -4,8 +4,8 @@ import Game from './game'
 
 
 const config = {
-  width: 800,
-  height: 600,
+  width: 1200,
+  height: 1000,
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH

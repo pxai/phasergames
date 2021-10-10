@@ -27,7 +27,7 @@ class Bootloader extends Phaser.Scene {
     })
 
     this.load.image('logopx', 'assets/images/logopx.png');
-
+    this.load.image('logo', 'assets/images/logo.png');
     this.load.spritesheet('player', './assets/images/player.png',{ frameWidth: 128, frameHeight: 128 })
     this.load.spritesheet('coin', './assets/images/coin.png',{ frameWidth: 64, frameHeight: 64 })
 
@@ -36,7 +36,7 @@ class Bootloader extends Phaser.Scene {
 
     this.load.image('brick', 'assets/maps/brick.png');
     this.load.image('background', 'assets/maps/background.png');
-     this.load.tilemapTiledJSON(`scene0`, `assets/maps/scene0.json`);
+     this.load.tilemapTiledJSON(`indie`, `assets/maps/indie.json`);
   }
 
   createBars () {
