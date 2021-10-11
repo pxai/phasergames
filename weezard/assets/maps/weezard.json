@@ -327,6 +327,17 @@
                  "width":0,
                  "x":5086,
                  "y":4462
+                }, 
+                {
+                 "height":0,
+                 "id":183,
+                 "name":"pot4",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1888,
+                 "y":3391
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1941,10 +1952,10 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":182,
+ "nextobjectid":184,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.7.1",
+ "tiledversion":"1.7.2",
  "tileheight":32,
  "tilesets":[
         {
