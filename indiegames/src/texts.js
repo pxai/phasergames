@@ -11,7 +11,7 @@ export default {
     text10: {title: "Game: Truck Track", size: 40, items: [{text: "Massive Jam"}, {text: "Topic: 'Too Long'"}] },
     text11: {title: "Mini JaM", size: 40, items: [{text: "Every two weeks"}, {text: "Weekend"}, {text: "Topic & Limit"}, {text: "No ceremony..."} ] },
     text12: {title: "Game: Spooky", size: 40, items: [{text: "Topic: pumpkin, Limit: Myth"}, {text: "Tilemap: tiled"}, {text: "Tweens and effects"}, {text: "Feedback + Reviews"}] },
-    text13: {title: "Game: Weezard", size: 40, items: [{text: "Topic: illusion, Limit: single character"}, {text: "Big map, camera effects"}] },
+    text13: {title: "Game: Weezard", size: 40, items: [{text: "Topic: illusion"}, {text: "Limit: single character"}, {text: "Big map, camera effects"}] },
     text14: {title: "What is a game?", size: 40, items: [{text: "Code?"}, {text: "Creation"}, {text: "Story & World"}, {text: "Product"}] },
     text15: {title: "What I learned?", size: 40, items: [{text: "Fun"}, {text: "Learn code, tricks"}] },
     text16: {title: "What I really learned?", size: 40, items: [{text: "Nobody cares about your code"}, {text: "Many skills"}, {text: "Arbitrary"}] },
