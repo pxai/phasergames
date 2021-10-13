@@ -29,11 +29,13 @@ class Bootloader extends Phaser.Scene {
     this.load.image('logopx', 'assets/images/logopx.png');
     this.load.image('2', 'assets/images/2.png');
     this.load.image('3', 'assets/images/3.png');
-    this.load.image('attack', 'assets/images/attack.png');
-    this.load.image('move', 'assets/images/move.png');
-    this.load.image('cancel', 'assets/images/cancel.png');
 
     this.load.spritesheet('ufo', './assets/images/ufo.png',{ frameWidth: 32, frameHeight: 32 })
+    this.load.spritesheet('add', './assets/images/add.png',{ frameWidth: 64, frameHeight: 64 })
+    this.load.spritesheet('del', './assets/images/del.png',{ frameWidth: 64, frameHeight: 64 })
+    this.load.spritesheet('move', './assets/images/move.png',{ frameWidth: 64, frameHeight: 64 })
+    this.load.spritesheet('attack', './assets/images/attack.png',{ frameWidth: 64, frameHeight: 64 })
+    this.load.spritesheet('cancel', './assets/images/cancel.png',{ frameWidth: 64, frameHeight: 64 })
     /*this.load.spritesheet('coin', './assets/images/coin.png',{ frameWidth: 64, frameHeight: 64 })
 
     this.load.audio('jump', './assets/sounds/jump.mp3');

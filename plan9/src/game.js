@@ -59,9 +59,11 @@ class Game extends Phaser.Scene {
   }
 
   loadButtons () {
-    this.move = new Button(this, this.center_width - 128, this.height - 128, "move");
-    this.attack = new Button(this, this.center_width, this.height - 128, "attack");
-    this.cancel = new Button(this, this.center_width + 128, this.height - 128, "cancel");
+    this.addButton = new Button(this, this.center_width - 128, this.height - 164, "add", 1);
+    this.del = new Button(this, this.center_width - 128, this.height - 96, "del", 1);
+    this.move = new Button(this, this.center_width, this.height - 128, "move");
+    this.attack = new Button(this, this.center_width + 128, this.height - 128, "attack");
+    this.cancel = new Button(this, this.center_width + 256, this.height - 128, "cancel");
   }
 
   changeSelection (tile) {
