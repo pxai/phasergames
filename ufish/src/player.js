@@ -42,6 +42,13 @@ export default class Player extends Phaser.GameObjects.Sprite {
           repeat: -1
         });
 
+        this.scene.anims.create({
+          key: "death",
+          frames: this.scene.anims.generateFrameNumbers("death"),
+          frameRate: 5,
+          origin: 0.5
+        });
+        this.on('animationcomplete', this.animationComplete, this);
         this.anims.play("fly", true)
     }
 
@@ -88,6 +95,11 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
     }
 
+    hit (player, bullet) {
+      player.anims.play("death", true)
+      bullet.destroy();
+    }
+
     isTracking () {
       return this.beam && this.beam.active;
     }
@@ -104,14 +116,14 @@ export default class Player extends Phaser.GameObjects.Sprite {
       }
     }
 
+    destroyBeam(beam, foe) {
+      console.log("Destroy!!")
+      beam.scene.player.deactivateBeam();
+    }
+
     animationComplete(animation, frame) {
-        if (animation.key === "reappear") {
-
-            this.scene.finished = false;
-            this.alpha = 1;
-            this.anims.play("turn", true)
-
-            this.dead = false;
+        if (animation.key === "death") {
+            this.anims.play("fly", true)
         }
     }
 }

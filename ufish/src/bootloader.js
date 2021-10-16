@@ -39,6 +39,8 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("redfish", "assets/images/redfish.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("ufo", "assets/images/ufo.png", { frameWidth: 128, frameHeight: 64 });
         this.load.spritesheet("beam", "assets/images/beam.png", { frameWidth: 32, frameHeight: 512 });
+        this.load.spritesheet("missile", "assets/images/missile.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("death", "assets/images/death.png", { frameWidth: 128, frameHeight: 64 });
         this.registry.set("score", 0);
         this.registry.set("containers", 0);
         this.registry.set("hull", 100);

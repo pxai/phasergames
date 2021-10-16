@@ -31,6 +31,5 @@ export default class FoeGenerator {
         if (foe.x < -800) foe.destroy();
         foe.update();
     })
-    this.foe = this.foe.filter(foe => foe.active);
   }
 }

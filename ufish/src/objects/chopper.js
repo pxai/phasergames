@@ -1,3 +1,5 @@
+import Bullet from "./bullet";
+
 class Chopper extends Phaser.Physics.Arcade.Sprite {
     constructor (scene, x, y, name = "chopper", scale = 0.5) {
         x = Phaser.Math.Between(0, 1) ? - 64 : scene.width + 64;
@@ -25,12 +27,16 @@ class Chopper extends Phaser.Physics.Arcade.Sprite {
           });
   
           this.anims.play("chopper", true)
-          this.body.setVelocityX(100)
+          this.direction = Phaser.Math.Between(0, 1) ? -1 : 1;
+          this.body.setVelocityX(100 * this.direction)
+          this.flipX = this.direction < 0;
     }
 
 
     update () {
-
+        if (Phaser.Math.Between(1, 1001) > 1000) {
+            new Bullet(this.scene, this.x, this.y)
+        }
     }
 }
 

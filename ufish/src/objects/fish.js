@@ -1,10 +1,10 @@
 class Fish extends Phaser.Physics.Arcade.Sprite {
     constructor (scene, x, y, name = "redfish", scale = 0.5) {
-        x = Phaser.Math.Between(0, 1) ? - 128 : scene.width + 128;
-        y = y || Phaser.Math.Between(scene.height - 32, scene.height - 200);
-
+        x = Phaser.Math.Between(0, scene.width);
+        y = Phaser.Math.Between(scene.height - 32, scene.height - 200);
         scale = scale || Math.random() + 0.2;
         super(scene, x, y, name);
+        this.direction = Phaser.Math.Between(0, 1) > 0 ? 1 : -1;
         this.name = name;
         this.scene = scene;
         this.scene.physics.add.existing(this);
@@ -18,7 +18,7 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         this.falling = false;
         this.overlap = this.scene.physics.add.overlap(this.scene.player.beamGroup, this, this.up, this.check);
         this.init();
-        this.moveIt(x);
+        this.moveIt(this.direction);
     }
 
     init () {
@@ -40,7 +40,6 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
     }
 
     up (beam, fish) {
-        console.log("caught!", fish.overlap)
         fish.tracked = true;
         fish.falling = false;
         fish.body.setVelocityX(0);
@@ -77,18 +76,21 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
     }
 
     update () {
-        if (this.scene.player && this.scene.player.isTracking() && this.tracked) {
-            this.y -= 5;
-        } else if (this.y - 64 < this.scene.water.surface.y) {
-            this.falling = true;
-            this.tracked = false;
-            this.y++;
-        } else if (this.y - 16 > this.scene.water.surface.y && this.falling && !this.tracked) {
-            this.anims.play("swim" + this.name, true)
-            this.y++;
-            this.destroy();
-        } 
-
+        if (this.scene) {
+            if (this.scene.player && this.scene.player.isTracking() && this.tracked) {
+                this.y -= 5;
+            } else if (this.y - 64 < this.scene.water.surface.y) {
+                this.falling = true;
+                this.tracked = false;
+                this.y++;
+            } else if (this.y - 16 > this.scene.water.surface.y && this.falling && !this.tracked) {
+                this.anims.play("swim" + this.name, true)
+                this.y++;
+                this.destroy();
+            }
+        } else {
+            console.log("Scene is null??")
+        }
     }
 }
 

@@ -11,7 +11,7 @@ export default class FishGenerator {
 
     generate () {
         this.add()
-        this.generationIntervalId = setInterval(() => this.add(), 4000)
+        this.generationIntervalId = setInterval(() => this.add(), 2000)
     }
 
     stop () {
@@ -23,15 +23,15 @@ export default class FishGenerator {
 
     add () {
         this.fishGroup.add(new Fish(this.scene));
-        console.log("Generated FISH: ");
     }
 
     update () {
         this.fishGroup.children.entries.forEach( fish => {
-           if (fish.x < -800) fish.destroy();
+           if (fish.x < - 32 || fish.x > this.scene.width + 32) {
+               fish.destroy();
+               this.fishGroup.remove(fish);
+           }
            fish.update();
        })
-       this.fish = this.fish.filter(fish => fish.active);
-       
     }
 }

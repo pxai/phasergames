@@ -36,13 +36,11 @@ export default class Game extends Phaser.Scene {
       this.finished = false;
       this.addSky();
 
-     /* this.containerGenerator = new ContainerGenerator(this);*/
 
         this.player = new Player(this, this.center_width, 200 )//.setOrigin(0.5); // this.physics.add.sprite(100, 450, 'dude');
 
         this.physics.world.setBoundsCollision(false, true, true, true);
 
-        // this.physics.world.enable(this.ground, 1);
         this.scoreText = this.add.bitmapText(100, 16, "pixelFont", "0", 20).setOrigin(0.5)
        // this.loadAudios();
 
@@ -53,10 +51,12 @@ export default class Game extends Phaser.Scene {
        // this.overlap = this.physics.add.overlap(this.player.beamGroup, this.fishGenerator.fishGroup, this.trackFish);
 
        this.addWater();
+       this.colliderPlayerSurface = this.physics.add.collider(this.water.surface, this.player, this.playerSurface);
+
        this.overlapFishWater = this.physics.add.overlap(this.water.surface, this.fishGenerator.fishGroup, this.surfaceTouch);
        this.overlapPlayer = this.physics.add.overlap(this.player, this.fishGenerator.fishGroup, this.catchFish);
-
-  
+       this.overlapPlayerFoe = this.physics.add.overlap(this.player, this.foeGenerator.foeGroup, this.player.hit);
+       this.overlapFoeBeam = this.physics.add.overlap(this.player.beamGroup, this.foeGenerator.foeGroup, this.player.destroyBeam);
       }
 
       addSky() {
@@ -73,13 +73,15 @@ export default class Game extends Phaser.Scene {
 
       trackFish (beam, fish) {
         fish.up(beam);
-       // fish.disableBody(false, false);
       }
 
       catchFish(player, fish) {
-        console.log("Fish caught!!", player, fish);
         player.scene.updateScore(1);
         fish.destroy()
+      }
+
+      playerSurface (surface, player) {
+
       }
 
       surfaceTouch(surface, fish) {
@@ -88,28 +90,6 @@ export default class Game extends Phaser.Scene {
         } else {
           fish.setAlpha(0.5)
         }
-      }
-
-      showContainer (container, i) {
-        this.totalScore += container.type.value;
-        this.finishContainer = this.add.image((this.center_width * 2), 650, `container${container.type.id}`).setScale(0.8)
-        this.containerInfo1.setText("Container: " + container.type.name);
-        this.containerInfo2.setText(container.type.description);
-        this.containerInfo3.setText("Value: " + container.type.value + "$");
-        this.playAudio("lock");
-        if (i === this.player.containers.length - 1) {
-          this.textTotalScore = this.add.bitmapText(this.center_width * 2, 1000, "pixelFont", `Stage total: ${Number(this.totalScore).toLocaleString()}$ !!`, 55).setOrigin(0.5)
-          this.playAudio("lock");
-          this.showAccumulatedScore(this.totalScore);
-        }
-      }
-
-      showAccumulatedScore(partialScore) {
-        this.updateScore(partialScore);
-        const accumulatedScore = +this.registry.get("score")
-        this.textAccumulatedScore = this.add.bitmapText(this.center_width * 2, 1100, "pixelFont", `Total score: ${Number(accumulatedScore).toLocaleString()}$ !!`, 60).setOrigin(0.5)
-        this.playAudio("lock");
-        this.textContinue= this.add.bitmapText(this.center_width * 2, 1200, "pixelFont", "Press SPACE", 35).setOrigin(0.5)
       }
 
       loadAudios () {
@@ -141,6 +121,7 @@ export default class Game extends Phaser.Scene {
         this.player.update();
         this.sky.update();
         this.fishGenerator.update();
+        this.foeGenerator.update();
     }
 
     finishScene () {
