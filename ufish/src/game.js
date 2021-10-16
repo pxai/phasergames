@@ -1,7 +1,7 @@
 import Player from "./player";
 
 import FishGenerator from "./objects/fish_generator";
-import ContainerGenerator from "./objects/container_generator";
+import FoeGenerator from "./objects/foe_generator";
 import Sky from "./objects/sky";
 import Water from "./objects/water";
 
@@ -49,6 +49,7 @@ export default class Game extends Phaser.Scene {
        // this.playMusic();
 
         this.fishGenerator = new FishGenerator(this);
+        this.foeGenerator = new FoeGenerator(this);
        // this.overlap = this.physics.add.overlap(this.player.beamGroup, this.fishGenerator.fishGroup, this.trackFish);
 
        this.addWater();
@@ -88,7 +89,7 @@ export default class Game extends Phaser.Scene {
           fish.setAlpha(0.5)
         }
       }
-      
+
       showContainer (container, i) {
         this.totalScore += container.type.value;
         this.finishContainer = this.add.image((this.center_width * 2), 650, `container${container.type.id}`).setScale(0.8)

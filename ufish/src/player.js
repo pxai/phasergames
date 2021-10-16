@@ -1,6 +1,5 @@
 import HealthBar from "./objects/health_bar";
 import Beam from "./objects/beam";
-import Thrust from "./objects/thrust";
 
 const VELOCITY = 300;
 
