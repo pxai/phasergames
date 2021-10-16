@@ -5,23 +5,25 @@ import Thrust from "./objects/thrust";
 const VELOCITY = 300;
 
 export default class Player extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, name) {
-        super(scene, x, y);
-        this.startX = x;
-        this.startY = y;
+    constructor (scene, x, y, name = "ufo") {
+        super(scene, x, y, name);
+
         this.scene = scene;
         this.beamLayer = this.scene.add.layer();
+
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
+        this.body.setAllowGravity(false);
+
         this.defaultVelocity = 100;
         this.hull = 100;
         this.init();
 
         this.dead = false;
         this.body.setDrag(0);
-        this.body.setBounce(1)
-        this.beam = null;
 
+        this.beamGroup = this.scene.add.group()
+        this.beam = null;
       }
 
     init () {
@@ -80,19 +82,27 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.deactivateBeam();
       }
 
-      if (this.beam && this.beam.active) {
+      if (this.isTracking()) {
         this.beam.x = this.x;
         this.beam.y = this.y + 256;
       }
 
     }
 
+    isTracking () {
+      return this.beam && this.beam.active;
+    }
+
     activateBeam () {
       this.beam = new Beam(this.scene, this.x, this.y + 250, this.beamLayer)
+      this.beamGroup.add(this.beam);
     }
 
     deactivateBeam () {
-      if (this.beam) this.beam.destroy();
+      if (this.beam) {
+        this.beamGroup.remove(this.beam);
+        this.beam.destroy();
+      }
     }
 
     animationComplete(animation, frame) {

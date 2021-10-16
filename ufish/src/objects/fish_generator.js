@@ -5,6 +5,7 @@ export default class FishGenerator {
         this.scene = scene;
         this.fishLayer = this.scene.add.layer();
         this.fish = [];
+        this.fishGroup = this.scene.add.group()
         this.generate()
     }
 
@@ -15,20 +16,20 @@ export default class FishGenerator {
 
     stop () {
         clearInterval(this.generationIntervalId);
-        this.fish.forEach(fish => {
+        this.fishGroup.children.entries.forEach(fish => {
             fish.destroy();
         });
     }
 
     add () {
-        const added = new Fish(this.scene);
-        this.fish.push(added);
-        console.log("Generated FISH: ", added);
+        this.fishGroup.add(new Fish(this.scene));
+        console.log("Generated FISH: ");
     }
 
     update () {
-       this.fish.forEach( fish => {
+        this.fishGroup.children.entries.forEach( fish => {
            if (fish.x < -800) fish.destroy();
+           fish.update();
        })
        this.fish = this.fish.filter(fish => fish.active);
        

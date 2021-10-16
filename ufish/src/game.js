@@ -3,6 +3,7 @@ import Player from "./player";
 import FishGenerator from "./objects/fish_generator";
 import ContainerGenerator from "./objects/container_generator";
 import Sky from "./objects/sky";
+import Water from "./objects/water";
 
 export default class Game extends Phaser.Scene {
     constructor ({ key }) {
@@ -37,19 +38,24 @@ export default class Game extends Phaser.Scene {
 
      /* this.containerGenerator = new ContainerGenerator(this);*/
 
-        this.player = new Player(this, 100, this.height - 32, "ufo" )//.setOrigin(0.5); // this.physics.add.sprite(100, 450, 'dude');
+        this.player = new Player(this, this.center_width, 200 )//.setOrigin(0.5); // this.physics.add.sprite(100, 450, 'dude');
 
         this.physics.world.setBoundsCollision(false, true, true, true);
 
         // this.physics.world.enable(this.ground, 1);
-     //   this.scoreText = this.add.bitmapText(this.center_width, 16, "pixelFont", "SCORE", 20).setOrigin(0.5)
+        this.scoreText = this.add.bitmapText(100, 16, "pixelFont", "0", 20).setOrigin(0.5)
        // this.loadAudios();
-     //   this.updateScore();
+
        // this.playMusic();
 
         this.fishGenerator = new FishGenerator(this);
-       this.addWater();
+       // this.overlap = this.physics.add.overlap(this.player.beamGroup, this.fishGenerator.fishGroup, this.trackFish);
 
+       this.addWater();
+       this.overlapFishWater = this.physics.add.overlap(this.water.surface, this.fishGenerator.fishGroup, this.surfaceTouch);
+       this.overlapPlayer = this.physics.add.overlap(this.player, this.fishGenerator.fishGroup, this.catchFish);
+
+  
       }
 
       addSky() {
@@ -57,19 +63,32 @@ export default class Game extends Phaser.Scene {
       }
 
       addWater() {
-        this.water = this.add.rectangle(0, this.height - 200, this.width, 200, 0x008080).setAlpha(0.5).setOrigin(0)
+        this.water = new Water(this);
       }
 
       finishStage () {
           this.stageFinished = true;
-          this.showFinish();
       }
 
-      showFinish () {
-        this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);
+      trackFish (beam, fish) {
+        fish.up(beam);
+       // fish.disableBody(false, false);
       }
 
+      catchFish(player, fish) {
+        console.log("Fish caught!!", player, fish);
+        player.scene.updateScore(1);
+        fish.destroy()
+      }
 
+      surfaceTouch(surface, fish) {
+        if (fish.body.velocity.y < 0) {
+          fish.setAlpha(1)
+        } else {
+          fish.setAlpha(0.5)
+        }
+      }
+      
       showContainer (container, i) {
         this.totalScore += container.type.value;
         this.finishContainer = this.add.image((this.center_width * 2), 650, `container${container.type.id}`).setScale(0.8)
@@ -132,7 +151,7 @@ export default class Game extends Phaser.Scene {
     updateScore (points = 0) {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
-        // this.scoreText.setText("SCORE " +  Number(score).toLocaleString());
+        this.scoreText.setText(Number(score).toLocaleString());
     }
 
     updateContainers (amount) {
