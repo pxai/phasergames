@@ -1,7 +1,7 @@
 class Fish extends Phaser.Physics.Arcade.Sprite {
     constructor (scene, x, y, name = "redfish", scale = 0.5) {
-        x = Phaser.Math.Between(0, scene.width);
-        y = Phaser.Math.Between(scene.height - 32, scene.height - 200);
+        x = x || Phaser.Math.Between(0, scene.width);
+        y = y || Phaser.Math.Between(scene.height - 32, scene.height - 200);
         scale = scale || Math.random() + 0.2;
         super(scene, x, y, name);
         this.direction = Phaser.Math.Between(0, 1) > 0 ? 1 : -1;
@@ -44,7 +44,6 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         fish.falling = false;
         fish.body.setVelocityX(0);
    
-       // this.rotation = Phaser.Math.Between(15, 30);
         fish.anims.play("choke" + fish.name, true)
 
         fish.scene.tweens.add({
@@ -91,6 +90,24 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
         } else {
             console.log("Scene is null??")
         }
+    }
+
+    updateWater () {
+        if (this.scene) {
+            if (this.scene.player && this.scene.player.isTracking() && this.tracked) {
+                this.x = this.scene.player.beam.x;
+                this.y -= 5;
+            } else {
+                this.falling = true;
+                this.tracked = false;
+                this.anims.play("swim" + this.name, true)
+            } 
+        }
+    }
+
+    turn () {
+        this.flipX = true;
+        this.body.setVelocityX(-this.body.velocity.x);
     }
 }
 

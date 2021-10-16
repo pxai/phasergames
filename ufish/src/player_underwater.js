@@ -14,11 +14,14 @@ export default class PlayerUnderwater extends Player {
         this.scene.physics.add.existing(this);
         this.body.setAllowGravity(true);
 
+        this.body.setSize(128, 50)
         this.defaultVelocity = 100;
-        this.hull = 100;
+        this.body.setBounce(0.5)
+        this.hull = 10;
         this.init();
 
         this.dead = false;
+        this.coins = [];
 
         this.beamGroup = this.scene.add.group()
         this.beam = null;
@@ -68,6 +71,7 @@ export default class PlayerUnderwater extends Player {
           //this.scene.playAudio("thrust");
           //this.showThrust("right");
       } else if (this.cursor.up.isDown || this.W.isDown) {
+          this.body.setDrag(0)
           this.body.setVelocityY(-VELOCITY);
           this.body.rotation = 0;
           //this.scene.playAudio("thrust");
@@ -89,9 +93,27 @@ export default class PlayerUnderwater extends Player {
 
       if (this.isTracking()) {
         this.beam.x = this.x;
-        this.beam.y = this.y + 256;
+        this.beam.y = this.y + 275;
       }
 
+    }
+
+    hitPlatform (player, platform) {
+      // this.scene.playAudio(`hit${Phaser.Math.Between(1, 4)}`);
+
+      const damage = 1;
+      player.hull = player.hull - damage;
+      player.scene.updateHull(this.hull);
+      // player.body.setVelocityY(playerVELOCITY)
+      player.body.setDrag(60)
+      console.log(player.hull)
+      if (player.isPlayerDead()) {
+        console.log("Player dead");
+      }
+    }
+
+    isPlayerDead () {
+      return this.hull <= 0;
     }
 
     hit (player, bullet) {
@@ -105,7 +127,7 @@ export default class PlayerUnderwater extends Player {
     }
 
     activateBeam () {
-      this.beam = new Beam(this.scene, this.x, this.y + 250, this.beamLayer)
+      this.beam = new Beam(this.scene, this.x, this.y + 270, this.beamLayer)
       this.beamGroup.add(this.beam);
     }
 
@@ -138,5 +160,9 @@ export default class PlayerUnderwater extends Player {
         y: { from: this.y, to: this.scene.height + 256},
         onComplete: () => { this.scene.finishScene() }
     })   
+    }
+
+    addCoin() {
+      this.coins.push(1);
     }
 }

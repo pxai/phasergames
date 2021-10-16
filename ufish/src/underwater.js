@@ -1,7 +1,7 @@
 import PlayerUnderwater from "./player_underwater";
-import FishGenerator from "./objects/fish_generator";
+import Fish from "./objects/fish";
 import FoeGenerator from "./objects/foe_generator";
-import Water from "./objects/water";
+import Coin from "./objects/coin";
 
 
 export default class Underwater extends Phaser.Scene {
@@ -32,17 +32,19 @@ export default class Underwater extends Phaser.Scene {
       this.physics.world.setBounds(0, 0, 10920 * 2, 10080 * 2);
       this.finished = false;
 
+
       this.tileMap = this.make.tilemap({ key: "underwater" , tileWidth: 32, tileHeight: 32 });
       this.tileSetBackground = this.tileMap.addTilesetImage("background");
       this.tileMap.createLayer('background', this.tileSetBackground)
+      this.objectsLayer = this.tileMap.getObjectLayer('objects');
+      this.player = new PlayerUnderwater(this, this.center_width, 200 )
       this.tileSet = this.tileMap.addTilesetImage("block");
       this.platform = this.tileMap.createLayer('underwater', this.tileSet);
       this.platform.setCollisionByExclusion([-1]);
 
-      this.player = new PlayerUnderwater(this, this.center_width, 200 )
       this.physics.world.enable([ this.player ]);
       this.colliderActivated = true;
-      this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
+      this.physics.add.collider(this.player, this.platform, this.player.hitPlatform, ()=>{
         return this.colliderActivated;
       }, this);
 
@@ -56,15 +58,47 @@ export default class Underwater extends Phaser.Scene {
 
        // this.playMusic();
 
-        this.fishGenerator = new FishGenerator(this);
+        // this.fishGenerator = new FishGenerator(this);
         this.foeGenerator = new FoeGenerator(this);
-       // this.overlap = this.physics.add.overlap(this.player.beamGroup, this.fishGenerator.fishGroup, this.trackFish);
+     //   this.overlap = this.physics.add.overlap(this.player.beamGroup, this.fishGenerator.fishGroup, this.trackFish);
 
       /* this.overlapFishWater = this.physics.add.overlap(this.water.surface, this.fishGenerator.fishGroup, this.surfaceTouch);
        this.overlapPlayer = this.physics.add.overlap(this.player, this.fishGenerator.fishGroup, this.catchFish);
        this.overlapPlayerFoe = this.physics.add.overlap(this.player, this.foeGenerator.foeGroup, this.player.hit);
        this.overlapFoeBeam = this.physics.add.overlap(this.player.beamGroup, this.foeGenerator.foeGroup, this.player.destroyBeam);
-*/
+*/    
+        this.addObjects()
+      }
+
+      addObjects () {
+        this.fishGroup = this.add.group()
+        this.coinsGroup = this.add.group()
+        this.objectsLayer.objects.forEach( object => {
+          if (object.name === "f") {
+            this.fishGroup.add(new Fish(this, object.x, object.y))
+          }
+          
+          if (object.name === "c") {
+            this.coinsGroup.add(new Coin(this, object.x, object.y, object.name))
+          }
+        });
+
+        this.physics.add.collider(this.fishGroup, this.platform, this.turnFish, ()=>{
+          return this.colliderActivated;
+        }, this);
+
+        this.overlap = this.physics.add.overlap(this.player.beamGroup, this.fishGroup, this.trackFish);
+        this.overlapPlayer = this.physics.add.overlap(this.player, this.fishGroup, this.catchFish);
+      
+        this.physics.add.collider(this.coinsGroup, this.platform, this.coinHitPlatform, ()=>{
+          return this.colliderActivated;
+        }, this);
+        this.overlapBeamCoins = this.physics.add.overlap(this.player.beamGroup, this.coinsGroup, this.trackCoin);
+        this.overlapPlayerCoin = this.physics.add.overlap(this.player, this.coinsGroup, this.catchCoin);
+      }
+
+      coinHitPlatform () {
+
       }
 
       hitFloor() {
@@ -80,12 +114,27 @@ export default class Underwater extends Phaser.Scene {
       }
 
       trackFish (beam, fish) {
-        fish.up(beam);
+
+        fish.up(beam, fish);
+      }
+
+      trackCoin (beam, coin) {
+        coin.up(beam, coin);
+      }
+
+      turnFish (fish) {
+        fish.turn();
       }
 
       catchFish(player, fish) {
         player.scene.updateScore(1);
         fish.destroy()
+      }
+
+      catchCoin(player, coin) {
+        player.scene.updateScore(1);
+        player.addCoin();
+        coin.destroy()
       }
 
       playerSurface (surface, player) {
@@ -135,10 +184,18 @@ export default class Underwater extends Phaser.Scene {
 
     update() {
         this.player.update();
-      /*
-        this.fishGenerator.update();
+        this.fishGroup.children.entries.forEach( fish => {
+          if (fish.x < - 32 || fish.x > this.width + 32) {
+              fish.destroy();
+              this.fishGroup.remove(fish);
+          }
+          fish.updateWater();
+        })
+
+        this.coinsGroup.children.entries.forEach( coin => {
+          coin.update();
+        })
         this.foeGenerator.update();
-        */
     }
 
     finishScene () {
