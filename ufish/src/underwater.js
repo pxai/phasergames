@@ -1,14 +1,12 @@
-import Player from "./player";
-
+import PlayerUnderwater from "./player_underwater";
 import FishGenerator from "./objects/fish_generator";
 import FoeGenerator from "./objects/foe_generator";
-import Sky from "./objects/sky";
 import Water from "./objects/water";
-import Bullet from "./objects/bullet";
 
-export default class Game extends Phaser.Scene {
+
+export default class Underwater extends Phaser.Scene {
     constructor () {
-        super({ key: "game" });
+        super({ key: "underwater" });
         this.player = null;
         this.score = 0;
         this.scoreText = null;
@@ -21,29 +19,40 @@ export default class Game extends Phaser.Scene {
   }
 
     preload () {
+      console.log("Underwater")
     }
 
     create () {
-      // this.add.tileSprite(0, 0, 800, 600, 'background1').setOrigin(0,0);
-      // 494d7e
-      console.log("Scene time: ", this.time);
       this.duration = this.time * 1000;
       this.width = this.sys.game.config.width;
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      this.physics.world.setBounds(0, 0, 1600, 1200);
+      this.cameras.main.setBounds(0, 0, 10920 * 2, 10080 * 2);
+      this.physics.world.setBounds(0, 0, 10920 * 2, 10080 * 2);
       this.finished = false;
-      this.addSky();
-      setTimeout(this.death.bind(this), 15000);
 
-        this.player = new Player(this, this.center_width, 200 )//.setOrigin(0.5); // this.physics.add.sprite(100, 450, 'dude');
+      this.tileMap = this.make.tilemap({ key: "underwater" , tileWidth: 32, tileHeight: 32 });
+      this.tileSetBackground = this.tileMap.addTilesetImage("background");
+      this.tileMap.createLayer('background', this.tileSetBackground)
+      this.tileSet = this.tileMap.addTilesetImage("block");
+      this.platform = this.tileMap.createLayer('underwater', this.tileSet);
+      this.platform.setCollisionByExclusion([-1]);
 
-        this.physics.world.setBoundsCollision(false, true, true, true);
+      this.player = new PlayerUnderwater(this, this.center_width, 200 )
+      this.physics.world.enable([ this.player ]);
+      this.colliderActivated = true;
+      this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
+        return this.colliderActivated;
+      }, this);
 
-        this.scoreText = this.add.bitmapText(100, 16, "pixelFont", "0", 20).setOrigin(0.5)
-        this.deathText = this.add.bitmapText(this.center_width, this.center_height, "pixelFont", "YOU WERE HIT!!", 40).setOrigin(0.5).setAlpha(0)
-       // this.loadAudios();
+      this.scoreText = this.add.bitmapText(100, 16, "pixelFont", "0", 20).setOrigin(0.5)
+      this.deathText = this.add.bitmapText(this.center_width, this.center_height, "pixelFont", "YOU WERE HIT!!", 40).setOrigin(0.5).setAlpha(0)
+      
+      this.cameras.main.setBackgroundColor(0x000000);
+      this.cameras.main.startFollow(this.player);
+       
+        // this.loadAudios();
 
        // this.playMusic();
 
@@ -51,22 +60,19 @@ export default class Game extends Phaser.Scene {
         this.foeGenerator = new FoeGenerator(this);
        // this.overlap = this.physics.add.overlap(this.player.beamGroup, this.fishGenerator.fishGroup, this.trackFish);
 
-       this.addWater();
-       this.colliderPlayerSurface = this.physics.add.collider(this.water.surface, this.player, this.playerSurface);
-
-       this.overlapFishWater = this.physics.add.overlap(this.water.surface, this.fishGenerator.fishGroup, this.surfaceTouch);
+      /* this.overlapFishWater = this.physics.add.overlap(this.water.surface, this.fishGenerator.fishGroup, this.surfaceTouch);
        this.overlapPlayer = this.physics.add.overlap(this.player, this.fishGenerator.fishGroup, this.catchFish);
        this.overlapPlayerFoe = this.physics.add.overlap(this.player, this.foeGenerator.foeGroup, this.player.hit);
        this.overlapFoeBeam = this.physics.add.overlap(this.player.beamGroup, this.foeGenerator.foeGroup, this.player.destroyBeam);
+*/
+      }
+
+      hitFloor() {
 
       }
 
       addSky() {
         this.sky = new Sky(this);
-      }
-
-      addWater() {
-        this.water = new Water(this);
       }
 
       finishStage () {
@@ -94,6 +100,13 @@ export default class Game extends Phaser.Scene {
           this.player.death()
       }
 
+      surfaceTouch(surface, fish) {
+        if (fish.body.velocity.y < 0) {
+          fish.setAlpha(1)
+        } else {
+          fish.setAlpha(0.5)
+        }
+      }
 
       loadAudios () {
         this.audios = {
@@ -122,14 +135,15 @@ export default class Game extends Phaser.Scene {
 
     update() {
         this.player.update();
+      /*
         this.fishGenerator.update();
         this.foeGenerator.update();
+        */
     }
 
     finishScene () {
-
       // this.theme.stop();
-      this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1, time: this.time * 2});
+      this.scene.start("transition", {next: "depth", name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 
     updateScore (points = 0) {

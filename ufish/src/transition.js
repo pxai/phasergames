@@ -7,6 +7,7 @@ export default class Transition extends Phaser.Scene {
         this.name = data.name;
         this.number = data.number;
         this.time = data.time;
+        this.next = data.next;
     }
 
     preload () {
@@ -29,7 +30,8 @@ export default class Transition extends Phaser.Scene {
     update () {
     }
 
-    loadNext (sceneName) {
-        this.scene.start("game", { name: this.name, number: this.number, time: this.time });
+    loadNext () {
+        console.log("Move to: ", this.next)
+        this.scene.start(this.next, { name: this.name, number: this.number, time: this.time });
     }
 }

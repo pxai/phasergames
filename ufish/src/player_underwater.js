@@ -1,10 +1,10 @@
-import HealthBar from "./objects/health_bar";
+import Player from "./player"
 import Beam from "./objects/beam";
 
-const VELOCITY = 300;
+const VELOCITY = 150;
 
-export default class Player extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, name = "ufo") {
+export default class PlayerUnderwater extends Player {
+    constructor (scene, x, y, name = "ufowater") {
         super(scene, x, y, name);
 
         this.scene = scene;
@@ -12,14 +12,13 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
-        this.body.setAllowGravity(false);
+        this.body.setAllowGravity(true);
 
         this.defaultVelocity = 100;
         this.hull = 100;
         this.init();
 
         this.dead = false;
-        this.body.setDrag(0);
 
         this.beamGroup = this.scene.add.group()
         this.beam = null;
@@ -36,8 +35,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
         this.scene.anims.create({
-          key: "fly",
-          frames: this.scene.anims.generateFrameNumbers("ufo"),
+          key: "flywater",
+          frames: this.scene.anims.generateFrameNumbers("ufowater"),
           frameRate: 5,
           repeat: -1
         });
@@ -49,7 +48,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
           origin: 0.5
         });
         this.on('animationcomplete', this.animationComplete, this);
-        this.anims.play("fly", true)
+        this.anims.play("flywater", true)
+        this.body.setVelocityX(150);
     }
 
 
@@ -69,7 +69,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
           //this.showThrust("right");
       } else if (this.cursor.up.isDown || this.W.isDown) {
           this.body.setVelocityY(-VELOCITY);
-
+          this.body.rotation = 0;
           //this.scene.playAudio("thrust");
           //this.showThrust("up");
       } else if (this.cursor.down.isDown || this.S.isDown) {
@@ -77,9 +77,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
           //this.scene.playAudio("thrust");
           //this.showThrust("down");
       } else {
-        this.body.rotation = 0;
-        this.body.setVelocityX(0);
-        this.body.setVelocityY(0);
+        this.body.rotation = 15;
     }
 
 
@@ -125,7 +123,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
     animationComplete(animation, frame) {
         if (animation.key === "death") {
-            this.anims.play("fly", true)
+            this.anims.play("flywater", true)
         }
     }
 

@@ -3,7 +3,8 @@ import Bootloader from "./bootloader";
 import Outro from "./outro";
 import Splash from "./splash";
 import Transition from "./transition";
-import Stage1 from "./scenes/stage1/";
+import Game from "./game";
+import Underwater from "./underwater";
 
 const config = {
     width: 1000,
@@ -25,7 +26,8 @@ const config = {
         Bootloader,
         Splash,
         Transition,
-        Stage1,
+        Game,
+        Underwater,
         Outro,
     ]
 };
