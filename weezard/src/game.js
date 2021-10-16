@@ -18,11 +18,6 @@ class Game extends Phaser.Scene {
     this.center_width = this.width / 2;
     this.center_height = this.height / 2;
     this.currentPot = "pot0";
-    /*this.tileMap = this.make.tilemap({ key: "scene0" , tileWidth: 32, tileHeight: 32 });
-    this.tileSet = this.tileMap.addTilesetImage("grass_tileset");
-    this.platform = this.tileMap.createLayer('scene0', this.tileSet);
-    this.objectsLayer = this.tileMap.getObjectLayer('objects');
-    this.jumpsLayer = this.tileMap.getObjectLayer('jumppoints');*/
 
     this.tileMap = this.make.tilemap({ key: "scene0" , tileWidth: 32, tileHeight: 32 });
     this.tileSetBg = this.tileMap.addTilesetImage("weezard_tileset_bg");
