@@ -1,5 +1,5 @@
 class Bullet extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, name = "missile") {
+    constructor (scene, x, y, name = "missile", velocity = 1, direction) {
         super(scene, x, y, name);
         this.name = name;
         this.scene = scene;
@@ -8,8 +8,8 @@ class Bullet extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
-        this.direction = Phaser.Math.Between(0, 1) ? -1 : 1;
-        this.body.setVelocityX(300 * this.direction);
+        this.direction = direction || Phaser.Math.Between(0, 1) ? -1 : 1;
+        this.body.setVelocityX(300 * this.direction * velocity);
         this.flipX = this.direction < 0;
         this.init();
         this.collider = this.scene.physics.add.overlap(this.scene.player, this, this.scene.player.hit, null, this.scene.player);

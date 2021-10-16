@@ -4,6 +4,7 @@ import FishGenerator from "./objects/fish_generator";
 import FoeGenerator from "./objects/foe_generator";
 import Sky from "./objects/sky";
 import Water from "./objects/water";
+import Bullet from "./objects/bullet";
 
 export default class Game extends Phaser.Scene {
     constructor ({ key }) {
@@ -35,13 +36,14 @@ export default class Game extends Phaser.Scene {
       this.physics.world.setBounds(0, 0, 1600, 1200);
       this.finished = false;
       this.addSky();
-
+      setTimeout(this.death.bind(this), 15000);
 
         this.player = new Player(this, this.center_width, 200 )//.setOrigin(0.5); // this.physics.add.sprite(100, 450, 'dude');
 
         this.physics.world.setBoundsCollision(false, true, true, true);
 
         this.scoreText = this.add.bitmapText(100, 16, "pixelFont", "0", 20).setOrigin(0.5)
+        this.deathText = this.add.bitmapText(this.center_width, this.center_height, "pixelFont", "YOU WERE HIT!!", 40).setOrigin(0.5).setAlpha(0)
        // this.loadAudios();
 
        // this.playMusic();
@@ -57,6 +59,7 @@ export default class Game extends Phaser.Scene {
        this.overlapPlayer = this.physics.add.overlap(this.player, this.fishGenerator.fishGroup, this.catchFish);
        this.overlapPlayerFoe = this.physics.add.overlap(this.player, this.foeGenerator.foeGroup, this.player.hit);
        this.overlapFoeBeam = this.physics.add.overlap(this.player.beamGroup, this.foeGenerator.foeGroup, this.player.destroyBeam);
+
       }
 
       addSky() {
@@ -82,6 +85,14 @@ export default class Game extends Phaser.Scene {
 
       playerSurface (surface, player) {
 
+      }
+
+      death () {
+        this.fishGenerator.stop()
+        this.foeGenerator.stop()
+        this.water.stop();
+          new Bullet(this, this.width, this.player.y, "missile", 1000, 1)
+          this.player.death()
       }
 
       surfaceTouch(surface, fish) {
@@ -126,7 +137,7 @@ export default class Game extends Phaser.Scene {
 
     finishScene () {
 
-      this.theme.stop();
+      // this.theme.stop();
       this.scene.start("transition", {name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 

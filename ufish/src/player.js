@@ -54,6 +54,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
 
     update () {
+      if (this.dead) return;
       if (this.cursor.left.isDown || this.A.isDown) {
           this.body.setVelocityX(-VELOCITY);
           this.body.rotation = -15;
@@ -125,5 +126,18 @@ export default class Player extends Phaser.GameObjects.Sprite {
         if (animation.key === "death") {
             this.anims.play("fly", true)
         }
+    }
+
+    death () {
+      this.dead = true;
+      this.body.rotation = 15;
+      this.anims.stop(null, true)
+      this.scene.deathText.setAlpha(1);
+      this.scene.tweens.add({
+        targets: this,
+        duration: 4000,
+        y: { from: this.y, to: this.scene.height + 256},
+        onComplete: () => { this.scene.finishScene() }
+    })   
     }
 }
