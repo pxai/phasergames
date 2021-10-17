@@ -43,11 +43,11 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 350, "pixelFont", "Pick Containers", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 400, "pixelFont", "Avoid Asteroids", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "Pick & Shoot Marbles", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 350, "pixelFont", "WASD/Arrows to move", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 400, "pixelFont", "SPACE track beam", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 450, "pixelFont", "B shoot coins", 30).setOrigin(0.5);
         this.add.sprite(this.center_width - 120, 520, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 520, "pixelFont", "By PELLO, JUNE & JOSU", 15).setOrigin(0.5);
+        this.add.bitmapText(this.center_width + 40, 520, "pixelFont", "By PELLO", 15).setOrigin(0.5);
         this.add.bitmapText(this.center_width, 570, "pixelFont", "Press SPACE to start", 30).setOrigin(0.5);
     }
 }

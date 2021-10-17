@@ -266,7 +266,7 @@ export default class Underwater extends Phaser.Scene {
 
     restartScene () {
       // this.theme.stop();
-      this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1, time: this.time * 2});
+      this.scene.start("transition", {next: this.mapName, name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 
     updateScore (points = 0) {
