@@ -1,3 +1,5 @@
+import Bubble from "./bubble";
+
 class Fish extends Phaser.Physics.Arcade.Sprite {
     constructor (scene, x, y, name = "redfish", scale = 0.5) {
         x = x || Phaser.Math.Between(0, scene.width);
@@ -98,6 +100,9 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
                 this.x = this.scene.player.beam.x;
                 this.y -= 5;
             } else {
+                if (Phaser.Math.Between(1, 51) > 50) {
+                    new Bubble(this.scene, this.x - (this.direction * 10), this.y - 10,  50, -1)
+                }
                 this.falling = true;
                 this.tracked = false;
                 this.anims.play("swim" + this.name, true)

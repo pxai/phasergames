@@ -116,11 +116,10 @@ export default class PlayerUnderwater extends Player {
       const damage = 1;
       player.hull = player.hull - damage;
       player.scene.updateHull(this.hull);
-      // player.body.setVelocityY(playerVELOCITY)
       player.body.setDrag(60)
       console.log(player.hull)
       if (player.isPlayerDead()) {
-        this.anims.play("death", true)
+        player.anims.play("death", true)
       }
     }
 

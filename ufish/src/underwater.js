@@ -48,9 +48,9 @@ export default class Underwater extends Phaser.Scene {
         return this.colliderActivated;
       }, this);
 
-      this.scoreText = this.add.bitmapText(100, 16, "pixelFont", "0", 20).setOrigin(0.5)
-      this.add.image(300, 16, "coin").setOrigin(0.5)
-      this.coinsText = this.add.bitmapText(340, 16, "pixelFont", "0", 20).setOrigin(0.5)
+      this.scoreText = this.add.bitmapText(100, 16, "pixelFont", "0", 20).setOrigin(0.5).setScrollFactor(0)
+      this.add.image(300, 16, "coin").setOrigin(0.5).setScrollFactor(0)
+      this.coinsText = this.add.bitmapText(340, 16, "pixelFont", "0", 20).setOrigin(0.5).setScrollFactor(0)
 
       this.deathText = this.add.bitmapText(this.center_width, this.center_height, "pixelFont", "YOU WERE HIT!!", 40).setOrigin(0.5).setAlpha(0)
       
@@ -61,13 +61,6 @@ export default class Underwater extends Phaser.Scene {
 
        // this.playMusic();
 
-     //   this.overlap = this.physics.add.overlap(this.player.beamGroup, this.fishGenerator.fishGroup, this.trackFish);
-
-      /* this.overlapFishWater = this.physics.add.overlap(this.water.surface, this.fishGenerator.fishGroup, this.surfaceTouch);
-       this.overlapPlayer = this.physics.add.overlap(this.player, this.fishGenerator.fishGroup, this.catchFish);
-       this.overlapPlayerFoe = this.physics.add.overlap(this.player, this.foeGenerator.foeGroup, this.player.hit);
-       this.overlapFoeBeam = this.physics.add.overlap(this.player.beamGroup, this.foeGenerator.foeGroup, this.player.destroyBeam);
-*/    
         this.addObjects()
       }
 
@@ -80,7 +73,7 @@ export default class Underwater extends Phaser.Scene {
 
         this.objectsLayer.objects.forEach( object => {
           if (object.name === "f") {
-            this.fishGroup.add(new Fish(this, object.x, object.y))
+            this.fishGroup.add(new Fish(this, object.x, object.y).setAlpha(1))
           }
           
           if (object.name === "c") {
@@ -106,12 +99,30 @@ export default class Underwater extends Phaser.Scene {
         this.physics.add.collider(this.coinsGroup, this.platform, this.coinHitPlatform, ()=>{
           return this.colliderActivated;
         }, this);
+
+        this.physics.add.collider(this.shootingGroup, this.platform, () => void(0), ()=>{
+          return this.colliderActivated;
+        }, this);
+
+        this.physics.add.collider(this.torpedoesGroup, this.platform, this.torpedoDestroy, ()=>{
+          return this.colliderActivated;
+        }, this);
     
         this.overlapBeamCoins = this.physics.add.overlap(this.player.beamGroup, this.coinsGroup, this.trackCoin);
         this.overlapPlayerCoin = this.physics.add.overlap(this.player, this.coinsGroup, this.catchCoin);
       
         this.overlapPlayerFoes = this.physics.add.overlap(this.player, this.submarinesGroup, this.killShips);
+        this.overlapFoesCoins = this.physics.add.overlap(this.shootingGroup, this.submarinesGroup, this.killFoe);
 
+      }
+
+      torpedoDestroy (torpedo, platform) {
+        torpedo.explode();
+      }
+
+      killFoe (coin, submarine) {
+        coin.destroy()
+        submarine.death()
       }
 
       killShips (player, submarine) {

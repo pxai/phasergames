@@ -23,6 +23,12 @@ class Torpedo extends Phaser.GameObjects.Sprite {
             new Bubble(this.scene, this.x - (this.direction * 34), this.y,  50, -1)
         }
     }
+
+    explode() {
+        Array(5).fill(0).forEach(a => { new Bubble(this.scene, this.x, this.y,  50, -1) });
+        
+        this.destroy();
+    }
 }
 
 export default Torpedo;

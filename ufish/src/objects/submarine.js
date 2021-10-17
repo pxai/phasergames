@@ -25,6 +25,7 @@ class Submarine extends Phaser.Physics.Arcade.Sprite {
   
           this.anims.play(this.name, true)
           this.body.setVelocityX(-Phaser.Math.Between(150, 200));
+          this.on('animationcomplete', this.animationComplete, this);
     }
 
 
@@ -45,6 +46,12 @@ class Submarine extends Phaser.Physics.Arcade.Sprite {
         this.body.rotation = 0;
         this.anims.play("death")
       }
+
+      animationComplete(animation, frame) {
+        if (animation.key === "death") {
+          this.destroy()
+        }
+    }
 }
 
 export default Submarine;
