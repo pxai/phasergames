@@ -1,7 +1,7 @@
 import Bubble from "./bubble";
 
 export default class Coin extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, name, velocity= 0, direction = 1) {
+    constructor (scene, x, y, name, velocity= 0, direction = 1, vertical = false) {
         super(scene, x, y, name);
         this.scene = scene;
         this.direction = direction;
@@ -9,7 +9,12 @@ export default class Coin extends Phaser.GameObjects.Sprite {
         scene.physics.add.existing(this);
         this.body.setAllowGravity(velocity === 0);
         console.log(this.direction, velocity)
-        this.body.setVelocityX(this.direction * velocity);
+        if (vertical) {
+            this.body.setVelocityY(this.direction * velocity);
+        } else {
+            this.body.setVelocityX(this.direction * velocity);
+        }
+
    
         this.tracked = false;
         this.body.setBounce(0.5)

@@ -5,8 +5,10 @@ import Submarine from "./objects/submarine";
 
 
 export default class Underwater extends Phaser.Scene {
-    constructor () {
-        super({ key: "underwater" });
+    constructor (key = "underwater", mapName = "underwater", playerType = PlayerUnderwater) {
+        super({ key });
+        this.mapName = mapName;
+        this.playerType = playerType;
         this.player = null;
         this.score = 0;
         this.scoreText = null;
@@ -33,13 +35,14 @@ export default class Underwater extends Phaser.Scene {
       this.finished = false;
 
 
-      this.tileMap = this.make.tilemap({ key: "underwater" , tileWidth: 32, tileHeight: 32 });
+      this.tileMap = this.make.tilemap({ key: this.mapName , tileWidth: 32, tileHeight: 32 });
       this.tileSetBackground = this.tileMap.addTilesetImage("background");
       this.tileMap.createLayer('background', this.tileSetBackground)
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
-      this.player = new PlayerUnderwater(this, this.center_width, 200 )
+      const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
+      this.player = new this.playerType(this, playerPosition.x, playerPosition.y )
       this.tileSet = this.tileMap.addTilesetImage("block");
-      this.platform = this.tileMap.createLayer('underwater', this.tileSet);
+      this.platform = this.tileMap.createLayer(this.mapName, this.tileSet);
       this.platform.setCollisionByExclusion([-1]);
 
       this.physics.world.enable([ this.player ]);
@@ -83,6 +86,10 @@ export default class Underwater extends Phaser.Scene {
           if (object.name === "s") {
             this.submarinesGroup.add(new Submarine(this, object.x, object.y))
           }
+
+          if (object.name === "end") {
+            this.theEnd = new Fish(this, object.x, object.y).setAlpha(1)
+          }
         });
 
         this.physics.add.collider(this.fishGroup, this.platform, this.turnFish, ()=>{
@@ -110,7 +117,7 @@ export default class Underwater extends Phaser.Scene {
     
         this.overlapBeamCoins = this.physics.add.overlap(this.player.beamGroup, this.coinsGroup, this.trackCoin);
         this.overlapPlayerCoin = this.physics.add.overlap(this.player, this.coinsGroup, this.catchCoin);
-      
+        this.physics.add.overlap(this.player, this.theEnd , () => {this.finishScene()});
         this.overlapPlayerFoes = this.physics.add.overlap(this.player, this.submarinesGroup, this.killShips);
         this.overlapFoesCoins = this.physics.add.overlap(this.shootingGroup, this.submarinesGroup, this.killFoe);
 
@@ -242,7 +249,7 @@ export default class Underwater extends Phaser.Scene {
 
     finishScene () {
       // this.theme.stop();
-      this.scene.start("transition", {next: "depth", name: "STAGE", number: this.number + 1, time: this.time * 2});
+      this.scene.start("transition", {next: "escape", name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 
     restartScene () {

@@ -6,9 +6,9 @@ import Coin from "./objects/coin";
 const VELOCITY = 150;
 
 export default class PlayerUnderwater extends Player {
-    constructor (scene, x, y, name = "ufowater") {
+    constructor (scene, x, y, name = "ufowater", velocity = 150, rotation = 15 ) {
         super(scene, x, y, name);
-
+        this.name = name;
         this.scene = scene;
         this.beamLayer = this.scene.add.layer();
 
@@ -17,7 +17,8 @@ export default class PlayerUnderwater extends Player {
         this.body.setAllowGravity(true);
 
         this.body.setSize(128, 50)
-        this.defaultVelocity = 100;
+        this.defaultVelocity = velocity;
+        this.defaultRotation = rotation;
         this.body.setBounce(0.5)
         this.hull = 10;
         this.init();
@@ -41,8 +42,8 @@ export default class PlayerUnderwater extends Player {
         this.B = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
 
         this.scene.anims.create({
-          key: "flywater",
-          frames: this.scene.anims.generateFrameNumbers("ufowater"),
+          key: this.name,
+          frames: this.scene.anims.generateFrameNumbers(this.name),
           frameRate: 5,
           repeat: -1
         });
@@ -54,8 +55,8 @@ export default class PlayerUnderwater extends Player {
           origin: 0.5
         });
         this.on('animationcomplete', this.animationComplete, this);
-        this.anims.play("flywater", true)
-        this.body.setVelocityX(150);
+        this.anims.play(this.name, true)
+        this.body.setVelocityX(this.defaultVelocity);
     }
 
 
@@ -86,7 +87,7 @@ export default class PlayerUnderwater extends Player {
           //this.scene.playAudio("thrust");
           //this.showThrust("down");
       } else {
-        this.body.rotation = 15;
+        this.body.rotation = this.defaultRotation;
     }
 
 
@@ -97,10 +98,7 @@ export default class PlayerUnderwater extends Player {
       }
 
       if (Phaser.Input.Keyboard.JustDown(this.B) && this.coins.length > 0) {
-        const direction = this.body.velocity.x > 0 ? 1 : -1;
-        this.scene.shootingGroup.add(new Coin(this.scene, this.x + (direction * 69), this.y, "coin", 400, direction))
-        this.coins.pop();
-        this.scene.updateCoinScore(-1);
+        this.shoot();
       }
 
       if (this.isTracking()) {
@@ -108,6 +106,13 @@ export default class PlayerUnderwater extends Player {
         this.beam.y = this.y + 275;
       }
 
+    }
+
+    shoot () {
+      const direction = this.body.velocity.x > 0 ? 1 : -1;
+      this.scene.shootingGroup.add(new Coin(this.scene, this.x + (direction * 69), this.y, "coin", 400, direction))
+      this.coins.pop();
+      this.scene.updateCoinScore(-1);
     }
 
     hitPlatform (player, platform) {

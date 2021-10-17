@@ -5,6 +5,8 @@ import Splash from "./splash";
 import Transition from "./transition";
 import Game from "./game";
 import Underwater from "./underwater";
+import Depth from "./depth";
+import Escape from "./escape";
 
 const config = {
     width: 1000,
@@ -28,6 +30,8 @@ const config = {
         Transition,
         Game,
         Underwater,
+        Depth,
+        Escape,
         Outro,
     ]
 };
