@@ -5,9 +5,6 @@ const VELOCITY = 150;
 export default class PlayerEscape extends PlayerUnderwater {
     constructor (scene, x, y, name) {
         super(scene, x, y, "ufo", 0, 0);
-        this.coins.push(1)
-        this.coins.push(1)
-        this.coins.push(1)
     }
 
     shoot () {

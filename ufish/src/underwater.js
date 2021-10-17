@@ -23,6 +23,7 @@ export default class Underwater extends Phaser.Scene {
   }
 
     preload () {
+      this.registry.set("hull", 10);
       console.log("Underwater")
     }
 
@@ -43,6 +44,7 @@ export default class Underwater extends Phaser.Scene {
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
       const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
       this.player = new this.playerType(this, playerPosition.x, playerPosition.y )
+      this.player.setCoins(this.registry.get("coins"))
       this.tileSet = this.tileMap.addTilesetImage("block");
       this.platform = this.tileMap.createLayer(this.mapName, this.tileSet);
       this.platform.setCollisionByExclusion([-1]);
@@ -53,9 +55,12 @@ export default class Underwater extends Phaser.Scene {
         return this.colliderActivated;
       }, this);
 
+      this.add.image(60, 16, "redfish").setOrigin(0.5).setScale(0.5).setScrollFactor(0)
       this.scoreText = this.add.bitmapText(100, 16, "pixelFont", "0", 20).setOrigin(0.5).setScrollFactor(0)
       this.add.image(300, 16, "coin").setOrigin(0.5).setScrollFactor(0)
       this.coinsText = this.add.bitmapText(340, 16, "pixelFont", "0", 20).setOrigin(0.5).setScrollFactor(0)
+      this.add.image(400, 16, "heart").setOrigin(0.5).setScrollFactor(0)
+      this.hullText = this.add.bitmapText(440, 16, "pixelFont", this.player.hull, 20).setOrigin(0.5).setScrollFactor(0)
 
       this.deathText = this.add.bitmapText(this.center_width, this.center_height, "pixelFont", "YOU WERE HIT!!", 40).setOrigin(0.5).setAlpha(0)
       
@@ -86,7 +91,7 @@ export default class Underwater extends Phaser.Scene {
           }
 
           if (object.name === "s") {
-            this.submarinesGroup.add(new Submarine(this, object.x, object.y))
+            this.submarinesGroup.add(new Submarine(this, object.x, object.y, 0.7))
           }
 
           if (object.name === "end") {
@@ -116,13 +121,18 @@ export default class Underwater extends Phaser.Scene {
         this.physics.add.collider(this.torpedoesGroup, this.platform, this.torpedoDestroy, ()=>{
           return this.colliderActivated;
         }, this);
+
+        this.physics.add.overlap(this.player.beamGroup, this.submarinesGroup, this.removeBean);
     
         this.overlapBeamCoins = this.physics.add.overlap(this.player.beamGroup, this.coinsGroup, this.trackCoin);
         this.overlapPlayerCoin = this.physics.add.overlap(this.player, this.coinsGroup, this.catchCoin);
         this.physics.add.overlap(this.player, this.theEnd , () => {this.finishScene()});
         this.overlapPlayerFoes = this.physics.add.overlap(this.player, this.submarinesGroup, this.killShips);
         this.overlapFoesCoins = this.physics.add.overlap(this.shootingGroup, this.submarinesGroup, this.killFoe);
+      }
 
+      removeBean(beam, submarine) {
+         beam.destroy();
       }
 
       torpedoDestroy (torpedo, platform) {
@@ -135,7 +145,7 @@ export default class Underwater extends Phaser.Scene {
       }
 
       killShips (player, submarine) {
-        player.death()
+        player.hitPlatform(player)
         submarine.death()
       }
 
@@ -275,7 +285,11 @@ export default class Underwater extends Phaser.Scene {
         this.registry.set("containers", amount);
     }
 
-    updateHull (amount = 1) {
-      this.registry.set("hull", amount);
+    updateHull (amount) {
+      const hull = +this.registry.get("hull") + amount;
+      console.log("Updating hull: ", hull)
+      if (hull < 0) return;
+      this.registry.set("hull", hull);
+      this.hullText.setText(Number(hull).toLocaleString());
     }
 }

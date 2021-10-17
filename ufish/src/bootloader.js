@@ -32,6 +32,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image("cloud", "assets/images/cloud.png");
         this.load.image("torpedo", "assets/images/torpedo.png");
         this.load.image("bubble", "assets/images/bubble.png");
+        this.load.image("heart", "assets/images/heart.png");
         this.load.audio("horn", "assets/sounds/horn.mp3");
 
 
@@ -53,7 +54,7 @@ export default class Bootloader extends Phaser.Scene {
 
         this.registry.set("score", 0);
         this.registry.set("coins", 0);
-        this.registry.set("hull", 100);
+        this.registry.set("hull", 10);
     }
 
     create () {

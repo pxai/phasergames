@@ -3,10 +3,10 @@ import Beam from "./objects/beam";
 import Bubble from "./objects/bubble";
 import Coin from "./objects/coin";
 
-const VELOCITY = 150;
+const VELOCITY = 250;
 
 export default class PlayerUnderwater extends Player {
-    constructor (scene, x, y, name = "ufowater", velocity = 150, rotation = 15 ) {
+    constructor (scene, x, y, name = "ufowater", velocity = 250, rotation = 15 ) {
         super(scene, x, y, name);
         this.name = name;
         this.scene = scene;
@@ -63,13 +63,13 @@ export default class PlayerUnderwater extends Player {
     update () {
       if (this.dead) return;
       if (this.cursor.left.isDown || this.A.isDown) {
-          this.body.setVelocityX(-VELOCITY);
+          this.x -= 5;
           this.body.rotation = -15;
           this.deactivateBeam();
           //this.scene.playAudio("thrust");
           //this.showThrust("left");
       } else if (this.cursor.right.isDown || this.D.isDown) {
-          this.body.setVelocityX(VELOCITY);
+          this.x += 5;
           this.body.rotation = 15;
           this.deactivateBeam();
           //this.scene.playAudio("thrust");
@@ -88,6 +88,7 @@ export default class PlayerUnderwater extends Player {
           //this.showThrust("down");
       } else {
         this.body.rotation = this.defaultRotation;
+        this.body.setVelocityX(this.defaultVelocity);
     }
 
 
@@ -108,6 +109,11 @@ export default class PlayerUnderwater extends Player {
 
     }
 
+    setCoins(coins) {
+      this.coins = Array(coins).fill(1)
+      console.log("Total coins: ", this.coins.length);
+    }
+
     shoot () {
       const direction = this.body.velocity.x > 0 ? 1 : -1;
       this.scene.shootingGroup.add(new Coin(this.scene, this.x + (direction * 69), this.y, "coin", 400, direction))
@@ -120,7 +126,13 @@ export default class PlayerUnderwater extends Player {
 
       const damage = 1;
       player.hull = player.hull - damage;
-      player.scene.updateHull(this.hull);
+      player.scene.updateHull(-damage);
+      player.scene.tweens.add({
+        targets: player,
+        duration: 100,
+        alpha: { from: 0, to: 1 },
+        repeat: 5
+      });
       player.body.setDrag(60)
       console.log(player.hull)
       if (player.isPlayerDead()) {

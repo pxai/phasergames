@@ -1,15 +1,15 @@
 import Torpedo from "./torpedo";
 
 class Submarine extends Phaser.Physics.Arcade.Sprite {
-    constructor (scene, x, y, name = "submarine", scale = 0.7) {
-        super(scene, x, y, name);
-        this.name = name;
+    constructor (scene, x, y, scale = 0.7, shoot = true) {
+        super(scene, x, y, "submarine");
+        this.name = "submarine";
         this.scene = scene;
         this.scene.physics.add.existing(this);
         this.scene.physics.world.enable(this);
         this.setScale(scale)
         this.body.setAllowGravity(false);
-
+        this.shoot = shoot;
         this.scene.add.existing(this);
 
         this.init();
@@ -30,7 +30,7 @@ class Submarine extends Phaser.Physics.Arcade.Sprite {
 
 
     update () {
-        if (Phaser.Math.Between(1, 101) > 100) {
+        if (this.shoot && Phaser.Math.Between(1, 501) > 500) {
             this.scene.torpedoesGroup.add(new Torpedo(this.scene, this.x, this.y))
         }
     }

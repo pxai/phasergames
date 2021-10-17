@@ -11,6 +11,7 @@ export default class Escape extends Underwater {
     }
 
     preload () {
+      this.registry.set("hull", 10);
       console.log("escape")
     }
 }
