@@ -180,8 +180,7 @@ export default class Underwater extends Phaser.Scene {
       }
 
       turnSubmarine (submarine, collision) {
-        const direction = collision.faceRight ? 1 : -1;
-        submarine.turn(direction)
+        submarine.turn()
       }
 
       catchFish(player, fish) {

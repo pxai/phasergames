@@ -12,7 +12,7 @@ export default class Sky {
         this.clouds = [];
         this.stopped = false;
 
-        this.generationIntervalId = setInterval(() => this.add(), 5000)
+        this.generationIntervalId = setInterval(() => this.add(), 3500)
     }
 
     stop () {

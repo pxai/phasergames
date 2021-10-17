@@ -25,6 +25,7 @@ class Submarine extends Phaser.Physics.Arcade.Sprite {
   
           this.anims.play(this.name, true)
           this.body.setVelocityX(-Phaser.Math.Between(150, 200));
+          this.direction = -1;
           this.on('animationcomplete', this.animationComplete, this);
     }
 
@@ -36,8 +37,9 @@ class Submarine extends Phaser.Physics.Arcade.Sprite {
     }
 
     turn (direction) {
-        this.flipX = direction > 0;
-        this.body.setVelocityX(direction * Phaser.Math.Between(150, 200));
+        this.flipX = this.direction < 0;
+        this.direction = -this.direction;
+        this.body.setVelocityX(this.direction * Phaser.Math.Between(150, 200));
     }
 
     death () {

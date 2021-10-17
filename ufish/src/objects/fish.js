@@ -70,9 +70,9 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
     moveIt (x) {
         if (x < 0) {
             this.flipX = true;
-            this.body.setVelocityX(Phaser.Math.Between(10, 30));
+            this.body.setVelocityX(Phaser.Math.Between(20, 30));
         } else {
-            this.body.setVelocityX(Phaser.Math.Between(-10, -30));
+            this.body.setVelocityX(Phaser.Math.Between(-20, -30));
         }
     }
 
@@ -99,7 +99,7 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
                 this.y -= 5;
             } else {
                 if (Phaser.Math.Between(1, 51) > 50) {
-                    new Bubble(this.scene, this.x - (this.direction * 10), this.y - 10,  50, -1)
+                    new Bubble(this.scene, this.x - (this.direction * 10), this.y - 15,  50, -1)
                 }
                 this.falling = true;
                 this.tracked = false;
@@ -109,8 +109,9 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
     }
 
     turn () {
-        this.flipX = true;
-        this.body.setVelocityX(-this.body.velocity.x);
+        this.flipX = this.direction < 0;
+        this.direction = -this.direction;
+        this.body.setVelocityX(this.direction * Phaser.Math.Between(20, 30));
     }
 }
 

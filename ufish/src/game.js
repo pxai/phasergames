@@ -140,6 +140,7 @@ export default class Game extends Phaser.Scene {
         this.player.update();
         this.fishGenerator.update();
         this.foeGenerator.update();
+        this.sky.update();
     }
 
     finishScene () {
