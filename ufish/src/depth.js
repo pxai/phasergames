@@ -7,7 +7,7 @@ import Underwater from "./underwater";
 
 export default class Depth extends Underwater {
     constructor () {
-        super("depth", "depth", PlayerDepth);
+        super("depth", "depth", PlayerDepth, "escape");
     }
 
     preload () {

@@ -2,16 +2,18 @@ import PlayerUnderwater from "./player_underwater";
 import Fish from "./objects/fish";
 import Coin from "./objects/coin";
 import Submarine from "./objects/submarine";
+import EndScreen from "./objects/endscreen";
 
 
 export default class Underwater extends Phaser.Scene {
-    constructor (key = "underwater", mapName = "underwater", playerType = PlayerUnderwater) {
+    constructor (key = "underwater", mapName = "underwater", playerType = PlayerUnderwater, next="depth") {
         super({ key });
         this.mapName = mapName;
         this.playerType = playerType;
         this.player = null;
         this.score = 0;
         this.scoreText = null;
+        this.next = next;
     }
 
     init (data) {
@@ -88,7 +90,7 @@ export default class Underwater extends Phaser.Scene {
           }
 
           if (object.name === "end") {
-            this.theEnd = new Fish(this, object.x, object.y).setAlpha(1)
+            this.theEnd = new EndScreen(this, object.x, object.y).setAlpha(1)
           }
         });
 
@@ -249,7 +251,7 @@ export default class Underwater extends Phaser.Scene {
 
     finishScene () {
       // this.theme.stop();
-      this.scene.start("transition", {next: "escape", name: "STAGE", number: this.number + 1, time: this.time * 2});
+      this.scene.start("transition", {next: this.next, name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 
     restartScene () {

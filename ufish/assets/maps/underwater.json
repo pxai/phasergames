@@ -1078,7 +1078,7 @@
                 {
                  "height":16,
                  "id":100,
-                 "name":"ende",
+                 "name":"end",
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -1096,17 +1096,6 @@
                  "width":0,
                  "x":342.666666666667,
                  "y":542.666666666667
-                }, 
-                {
-                 "height":18.6666666666667,
-                 "id":103,
-                 "name":"end",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":92,
-                 "x":808,
-                 "y":573.333333333333
                 }, 
                 {
                  "height":0,
@@ -1138,7 +1127,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":105,
+ "nextobjectid":106,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.2",
