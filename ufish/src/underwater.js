@@ -66,7 +66,7 @@ export default class Underwater extends Phaser.Scene {
       this.cameras.main.setBackgroundColor(0x000000);
       this.cameras.main.startFollow(this.player);
        
-        // this.loadAudios();
+        this.loadAudios();
 
         this.playMusic();
 
@@ -215,7 +215,17 @@ export default class Underwater extends Phaser.Scene {
 
       loadAudios () {
         this.audios = {
-          "lock": this.sound.add("lock"),
+          "beam": this.sound.add("beam"),
+          "coinfall": this.sound.add("coinfall"),
+          "coin": this.sound.add("coin"),
+          "coinshot": this.sound.add("coinshot"),
+          "death": this.sound.add("death"),
+          "fish": this.sound.add("fish"),
+          "foedeath": this.sound.add("foedeath"),
+          "hit": this.sound.add("hit"),
+          "screen": this.sound.add("screen"),
+          "torpedo": this.sound.add("torpedo"),
+          "transition": this.sound.add("transition"),
         };
       }
 

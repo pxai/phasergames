@@ -51,14 +51,11 @@ export default class Game extends Phaser.Scene {
           alpha: { from: 1, to: 0}
         })
         this.deathText = this.add.bitmapText(this.center_width, this.center_height, "pixelFont", "YOU WERE HIT!!", 40).setOrigin(0.5).setAlpha(0)
-       // this.loadAudios();
 
-       // this.playMusic();
 
         this.fishGenerator = new FishGenerator(this);
         this.foeGenerator = new FoeGenerator(this);
-       // this.overlap = this.physics.add.overlap(this.player.beamGroup, this.fishGenerator.fishGroup, this.trackFish);
-
+ 
        this.addWater();
        this.colliderPlayerSurface = this.physics.add.collider(this.water.surface, this.player, this.playerSurface);
 
@@ -66,7 +63,8 @@ export default class Game extends Phaser.Scene {
        this.overlapPlayer = this.physics.add.overlap(this.player, this.fishGenerator.fishGroup, this.catchFish);
        this.overlapPlayerFoe = this.physics.add.overlap(this.player, this.foeGenerator.foeGroup, this.player.hit);
        this.overlapFoeBeam = this.physics.add.overlap(this.player.beamGroup, this.foeGenerator.foeGroup, this.player.destroyBeam);
-        this.playMusic();
+       this.loadAudios(); 
+       this.playMusic();
       }
 
       addSky() {
@@ -101,11 +99,31 @@ export default class Game extends Phaser.Scene {
           new Bullet(this, this.width, this.player.y, "missile", 1000, 1)
           this.player.death()
       }
-
+      this.load.audio("beam", "assets/sounds/beam.mp3");
+      this.load.audio("coinfall", "assets/sounds/coinfall.mp3");
+      this.load.audio("coin", "assets/sounds/coin.mp3");
+      this.load.audio("coinshot", "assets/sounds/coinshot.mp3");
+      this.load.audio("death", "assets/sounds/death.mp3");
+      this.load.audio("fish", "assets/sounds/fish.mp3");
+      this.load.audio("foedeath", "assets/sounds/foedeath.mp3");
+      this.load.audio("hit", "assets/sounds/hit.mp3");
+      this.load.audio("screen", "assets/sounds/screen.mp3");
+      this.load.audio("torpedo", "assets/sounds/torpedo.mp3");
+      this.load.audio("transition", "assets/sounds/transition.mp3");
 
       loadAudios () {
         this.audios = {
-          "lock": this.sound.add("lock"),
+          "beam": this.sound.add("beam"),
+          "coinfall": this.sound.add("coinfall"),
+          "coin": this.sound.add("coin"),
+          "coinshot": this.sound.add("coinshot"),
+          "death": this.sound.add("death"),
+          "fish": this.sound.add("fish"),
+          "foedeath": this.sound.add("foedeath"),
+          "hit": this.sound.add("hit"),
+          "screen": this.sound.add("screen"),
+          "torpedo": this.sound.add("torpedo"),
+          "transition": this.sound.add("transition"),
         };
       }
 
