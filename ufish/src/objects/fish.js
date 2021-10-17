@@ -85,7 +85,7 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
             } else if (this.y - 16 > this.scene.water.surface.y && this.falling && !this.tracked) {
                 this.anims.play("swim" + this.name, true)
                 this.y++;
-                this.destroy();
+               this.destroy();
             }
         } else {
             console.log("Scene is null??")

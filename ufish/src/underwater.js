@@ -1,7 +1,7 @@
 import PlayerUnderwater from "./player_underwater";
 import Fish from "./objects/fish";
-import FoeGenerator from "./objects/foe_generator";
 import Coin from "./objects/coin";
+import Submarine from "./objects/submarine";
 
 
 export default class Underwater extends Phaser.Scene {
@@ -49,6 +49,9 @@ export default class Underwater extends Phaser.Scene {
       }, this);
 
       this.scoreText = this.add.bitmapText(100, 16, "pixelFont", "0", 20).setOrigin(0.5)
+      this.add.image(300, 16, "coin").setOrigin(0.5)
+      this.coinsText = this.add.bitmapText(340, 16, "pixelFont", "0", 20).setOrigin(0.5)
+
       this.deathText = this.add.bitmapText(this.center_width, this.center_height, "pixelFont", "YOU WERE HIT!!", 40).setOrigin(0.5).setAlpha(0)
       
       this.cameras.main.setBackgroundColor(0x000000);
@@ -58,8 +61,6 @@ export default class Underwater extends Phaser.Scene {
 
        // this.playMusic();
 
-        // this.fishGenerator = new FishGenerator(this);
-        this.foeGenerator = new FoeGenerator(this);
      //   this.overlap = this.physics.add.overlap(this.player.beamGroup, this.fishGenerator.fishGroup, this.trackFish);
 
       /* this.overlapFishWater = this.physics.add.overlap(this.water.surface, this.fishGenerator.fishGroup, this.surfaceTouch);
@@ -73,6 +74,10 @@ export default class Underwater extends Phaser.Scene {
       addObjects () {
         this.fishGroup = this.add.group()
         this.coinsGroup = this.add.group()
+        this.submarinesGroup = this.add.group();
+        this.torpedoesGroup = this.add.group();
+        this.shootingGroup = this.add.group();
+
         this.objectsLayer.objects.forEach( object => {
           if (object.name === "f") {
             this.fishGroup.add(new Fish(this, object.x, object.y))
@@ -81,9 +86,17 @@ export default class Underwater extends Phaser.Scene {
           if (object.name === "c") {
             this.coinsGroup.add(new Coin(this, object.x, object.y, object.name))
           }
+
+          if (object.name === "s") {
+            this.submarinesGroup.add(new Submarine(this, object.x, object.y))
+          }
         });
 
         this.physics.add.collider(this.fishGroup, this.platform, this.turnFish, ()=>{
+          return this.colliderActivated;
+        }, this);
+
+        this.physics.add.collider(this.submarinesGroup, this.platform, this.turnSubmarine, ()=>{
           return this.colliderActivated;
         }, this);
 
@@ -93,8 +106,17 @@ export default class Underwater extends Phaser.Scene {
         this.physics.add.collider(this.coinsGroup, this.platform, this.coinHitPlatform, ()=>{
           return this.colliderActivated;
         }, this);
+    
         this.overlapBeamCoins = this.physics.add.overlap(this.player.beamGroup, this.coinsGroup, this.trackCoin);
         this.overlapPlayerCoin = this.physics.add.overlap(this.player, this.coinsGroup, this.catchCoin);
+      
+        this.overlapPlayerFoes = this.physics.add.overlap(this.player, this.submarinesGroup, this.killShips);
+
+      }
+
+      killShips (player, submarine) {
+        player.death()
+        submarine.death()
       }
 
       coinHitPlatform () {
@@ -126,13 +148,18 @@ export default class Underwater extends Phaser.Scene {
         fish.turn();
       }
 
+      turnSubmarine (submarine, collision) {
+        const direction = collision.faceRight ? 1 : -1;
+        submarine.turn(direction)
+      }
+
       catchFish(player, fish) {
         player.scene.updateScore(1);
         fish.destroy()
       }
 
       catchCoin(player, coin) {
-        player.scene.updateScore(1);
+        player.scene.updateCoinScore(1);
         player.addCoin();
         coin.destroy()
       }
@@ -185,17 +212,21 @@ export default class Underwater extends Phaser.Scene {
     update() {
         this.player.update();
         this.fishGroup.children.entries.forEach( fish => {
-          if (fish.x < - 32 || fish.x > this.width + 32) {
-              fish.destroy();
-              this.fishGroup.remove(fish);
-          }
           fish.updateWater();
         })
 
         this.coinsGroup.children.entries.forEach( coin => {
           coin.update();
         })
-        this.foeGenerator.update();
+        this.submarinesGroup.children.entries.forEach( submarine => {
+          submarine.update();
+        })
+        this.torpedoesGroup.children.entries.forEach( torpedo => {
+          torpedo.update();
+        })
+        this.shootingGroup.children.entries.forEach( coin => {
+          coin.updateShot();
+        })
     }
 
     finishScene () {
@@ -203,11 +234,22 @@ export default class Underwater extends Phaser.Scene {
       this.scene.start("transition", {next: "depth", name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 
+    restartScene () {
+      // this.theme.stop();
+      this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1, time: this.time * 2});
+    }
+
     updateScore (points = 0) {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
         this.scoreText.setText(Number(score).toLocaleString());
     }
+
+    updateCoinScore (points = 0) {
+      const coins = +this.registry.get("coins") + points;
+      this.registry.set("coins", coins);
+      this.coinsText.setText(Number(coins).toLocaleString());
+  }
 
     updateContainers (amount) {
         this.registry.set("containers", amount);

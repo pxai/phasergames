@@ -1,5 +1,7 @@
 import Player from "./player"
 import Beam from "./objects/beam";
+import Bubble from "./objects/bubble";
+import Coin from "./objects/coin";
 
 const VELOCITY = 150;
 
@@ -36,6 +38,7 @@ export default class PlayerUnderwater extends Player {
         this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        this.B = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
 
         this.scene.anims.create({
           key: "flywater",
@@ -74,6 +77,8 @@ export default class PlayerUnderwater extends Player {
           this.body.setDrag(0)
           this.body.setVelocityY(-VELOCITY);
           this.body.rotation = 0;
+          new Bubble(this.scene, this.x + (Phaser.Math.Between(-32, 32)) , this.y + 33,  50, 1)
+
           //this.scene.playAudio("thrust");
           //this.showThrust("up");
       } else if (this.cursor.down.isDown || this.S.isDown) {
@@ -89,6 +94,13 @@ export default class PlayerUnderwater extends Player {
         if (!this.beam || !this.beam.active) this.activateBeam()
       } else if (this.beam && Phaser.Input.Keyboard.JustUp(this.spaceBar)) {
         this.deactivateBeam();
+      }
+
+      if (Phaser.Input.Keyboard.JustDown(this.B) && this.coins.length > 0) {
+        const direction = this.body.velocity.x > 0 ? 1 : -1;
+        this.scene.shootingGroup.add(new Coin(this.scene, this.x + (direction * 69), this.y, "coin", 400, direction))
+        this.coins.pop();
+        this.scene.updateCoinScore(-1);
       }
 
       if (this.isTracking()) {
@@ -108,7 +120,7 @@ export default class PlayerUnderwater extends Player {
       player.body.setDrag(60)
       console.log(player.hull)
       if (player.isPlayerDead()) {
-        console.log("Player dead");
+        this.anims.play("death", true)
       }
     }
 
@@ -118,7 +130,7 @@ export default class PlayerUnderwater extends Player {
 
     hit (player, bullet) {
       player.deactivateBeam();
-      player.anims.play("death", true)
+      player.death();
       bullet.destroy();
     }
 
@@ -145,21 +157,15 @@ export default class PlayerUnderwater extends Player {
 
     animationComplete(animation, frame) {
         if (animation.key === "death") {
-            this.anims.play("flywater", true)
+          this.scene.restartScene()
         }
     }
 
     death () {
       this.dead = true;
-      this.body.rotation = 15;
-      this.anims.stop(null, true)
-      this.scene.deathText.setAlpha(1);
-      this.scene.tweens.add({
-        targets: this,
-        duration: 4000,
-        y: { from: this.y, to: this.scene.height + 256},
-        onComplete: () => { this.scene.finishScene() }
-    })   
+      this.body.enable = false;
+      this.body.rotation = 0;
+      this.anims.play("death")
     }
 
     addCoin() {
