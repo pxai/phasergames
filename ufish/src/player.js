@@ -15,7 +15,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.body.setAllowGravity(false);
 
         this.defaultVelocity = 100;
-        this.hull = 100;
+        this.hull = 10;
         this.init();
 
         this.dead = false;

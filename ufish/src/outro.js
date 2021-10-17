@@ -15,10 +15,10 @@ export default class Outro extends Phaser.Scene {
         this.introLayer = this.add.layer();
         this.splashLayer = this.add.layer();
         this.text = [ 
-            "Finally our hero Kaki defeated the evil Albat.",
-            "After a few years, Guinxu became so important",
-            "that even Alva Majo worked for him...",
-            "...developing mobile games for money.",
+            "The U.F.I.S.H. recovered the engines.",
+            "After a terrible fishing day,",
+            "they decided to move to Europa moon,",
+            "to fish under the ice",
             "But that is another story..."
         ];
         this.showHistory();

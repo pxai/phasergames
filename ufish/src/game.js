@@ -41,7 +41,13 @@ export default class Game extends Phaser.Scene {
 
         this.physics.world.setBoundsCollision(false, true, true, true);
 
-        this.scoreText = this.add.bitmapText(100, 16, "pixelFont", "0", 20).setOrigin(0.5)
+        this.add.image(60, 16, "redfish").setOrigin(0.5).setScale(0.5).setScrollFactor(0)
+        this.scoreText = this.add.bitmapText(100, 16, "pixelFont", "0", 20).setOrigin(0.5).setScrollFactor(0)
+        this.add.image(300, 16, "coin").setOrigin(0.5).setScrollFactor(0)
+        this.coinsText = this.add.bitmapText(340, 16, "pixelFont", "0", 20).setOrigin(0.5).setScrollFactor(0)
+        this.add.image(400, 16, "heart").setOrigin(0.5).setScrollFactor(0)
+        this.hullText = this.add.bitmapText(440, 16, "pixelFont", this.player.hull, 20).setOrigin(0.5).setScrollFactor(0)
+
         this.deathText = this.add.bitmapText(this.center_width, this.center_height, "pixelFont", "YOU WERE HIT!!", 40).setOrigin(0.5).setAlpha(0)
        // this.loadAudios();
 
@@ -127,7 +133,7 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene () {
-
+      this.sky.stop();
       // this.theme.stop();
       this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
