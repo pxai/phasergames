@@ -66,26 +66,29 @@ export default class PlayerUnderwater extends Player {
           this.x -= 5;
           this.body.rotation = -15;
           this.deactivateBeam();
-          //this.scene.playAudio("thrust");
-          //this.showThrust("left");
+          new Bubble(this.scene, this.x + (Phaser.Math.Between(32, 64)) , this.y + 23,  50, 1)
+
+          this.scene.playBubble();
+
       } else if (this.cursor.right.isDown || this.D.isDown) {
           this.x += 5;
           this.body.rotation = 15;
           this.deactivateBeam();
-          //this.scene.playAudio("thrust");
-          //this.showThrust("right");
+          new Bubble(this.scene, this.x + (Phaser.Math.Between(-64, -32)) , this.y + 23,  50, 1)
+
+          this.scene.playBubble();
+
       } else if (this.cursor.up.isDown || this.W.isDown) {
           this.body.setDrag(0)
           this.body.setVelocityY(-VELOCITY);
           this.body.rotation = 0;
           new Bubble(this.scene, this.x + (Phaser.Math.Between(-32, 32)) , this.y + 33,  50, 1)
 
-          //this.scene.playAudio("thrust");
-          //this.showThrust("up");
+          this.scene.playBubble();
+
       } else if (this.cursor.down.isDown || this.S.isDown) {
           this.body.setVelocityY(VELOCITY);
-          //this.scene.playAudio("thrust");
-          //this.showThrust("down");
+          this.scene.playBubble();
       } else {
         this.body.rotation = this.defaultRotation;
         this.body.setVelocityX(this.defaultVelocity);

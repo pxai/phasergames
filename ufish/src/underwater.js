@@ -230,11 +230,23 @@ export default class Underwater extends Phaser.Scene {
           "screen": this.sound.add("screen"),
           "torpedo": this.sound.add("torpedo"),
           "transition": this.sound.add("transition"),
+          "bubble0": this.sound.add("bubble0"),
+          "bubble1": this.sound.add("bubble1"),
+          "bubble2": this.sound.add("bubble2"),
+          "bubble3": this.sound.add("bubble3"),
+          "bubble4": this.sound.add("bubble4"),
+          "bubble5": this.sound.add("bubble5"),
+          "bubble6": this.sound.add("bubble6"),
         };
       }
 
       playAudio(key) {
         this.audios[key].play();
+      }
+
+      playBubble() {
+        const bubble = Phaser.Math.Between(0, 6);
+        this.audios[`bubble${bubble}`].play();
       }
 
       playMusic (theme) {
