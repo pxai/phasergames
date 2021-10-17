@@ -84,6 +84,7 @@ export default class Game extends Phaser.Scene {
       }
 
       catchFish(player, fish) {
+        player.scene.playAudio("fish");
         player.scene.updateScore(1);
         fish.destroy()
       }
@@ -98,18 +99,8 @@ export default class Game extends Phaser.Scene {
         this.water.stop();
           new Bullet(this, this.width, this.player.y, "missile", 1000, 1)
           this.player.death()
+          this.playAudio("death");
       }
-      this.load.audio("beam", "assets/sounds/beam.mp3");
-      this.load.audio("coinfall", "assets/sounds/coinfall.mp3");
-      this.load.audio("coin", "assets/sounds/coin.mp3");
-      this.load.audio("coinshot", "assets/sounds/coinshot.mp3");
-      this.load.audio("death", "assets/sounds/death.mp3");
-      this.load.audio("fish", "assets/sounds/fish.mp3");
-      this.load.audio("foedeath", "assets/sounds/foedeath.mp3");
-      this.load.audio("hit", "assets/sounds/hit.mp3");
-      this.load.audio("screen", "assets/sounds/screen.mp3");
-      this.load.audio("torpedo", "assets/sounds/torpedo.mp3");
-      this.load.audio("transition", "assets/sounds/transition.mp3");
 
       loadAudios () {
         this.audios = {

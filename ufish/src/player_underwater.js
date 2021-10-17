@@ -114,6 +114,7 @@ export default class PlayerUnderwater extends Player {
     }
 
     shoot () {
+      this.scene.playAudio("coinshot");
       const direction = this.body.velocity.x > 0 ? 1 : -1;
       this.scene.shootingGroup.add(new Coin(this.scene, this.x + (direction * 69), this.y, "coin", 400, direction))
       this.coins.pop();
@@ -121,8 +122,7 @@ export default class PlayerUnderwater extends Player {
     }
 
     hitPlatform (player, platform) {
-      // this.scene.playAudio(`hit${Phaser.Math.Between(1, 4)}`);
-
+      player.scene.playAudio("hit");
       const damage = 1;
       player.hull = player.hull - damage;
       player.scene.updateHull(-damage);
@@ -153,6 +153,7 @@ export default class PlayerUnderwater extends Player {
     }
 
     activateBeam () {
+      this.scene.playAudio("beam");
       this.beam = new Beam(this.scene, this.x, this.y + 270, this.beamLayer)
       this.beamGroup.add(this.beam);
     }
@@ -179,6 +180,7 @@ export default class PlayerUnderwater extends Player {
       this.body.enable = false;
       this.body.rotation = 0;
       this.anims.play("death")
+      this.scene.playAudio("death");
     }
 
     addCoin() {

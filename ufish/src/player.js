@@ -97,6 +97,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
     hit (player, bullet) {
+      player.scene.playAudio("hit");
       player.deactivateBeam();
       player.anims.play("death", true)
       bullet.destroy();
@@ -107,6 +108,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
     activateBeam () {
+      this.scene.playAudio("beam");
       this.beam = new Beam(this.scene, this.x, this.y + 250, this.beamLayer)
       this.beamGroup.add(this.beam);
     }

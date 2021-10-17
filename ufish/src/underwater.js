@@ -94,7 +94,7 @@ export default class Underwater extends Phaser.Scene {
           }
 
           if (object.name === "end") {
-            this.theEnd = new EndScreen(this, object.x, object.y).setAlpha(1)
+            this.theEnd = new EndScreen(this, object.x, object.y).setAlpha(0)
           }
         });
 
@@ -131,6 +131,7 @@ export default class Underwater extends Phaser.Scene {
       }
 
       removeBean(beam, submarine) {
+        beam.scene.playAudio("hit");
          beam.destroy();
       }
 
@@ -139,21 +140,23 @@ export default class Underwater extends Phaser.Scene {
       }
 
       killFoe (coin, submarine) {
+        coin.scene.playAudio("foedeath");
         coin.destroy()
         submarine.death()
       }
 
       killShips (player, submarine) {
+        player.scene.playAudio("foedeath");
+        player.scene.playAudio("hit");
         player.hitPlatform(player)
         submarine.death()
       }
 
       coinHitPlatform () {
-
       }
 
       hitFloor() {
-
+        this.playAudio("hit");
       }
 
       addSky() {
@@ -165,7 +168,6 @@ export default class Underwater extends Phaser.Scene {
       }
 
       trackFish (beam, fish) {
-
         fish.up(beam, fish);
       }
 
@@ -183,11 +185,13 @@ export default class Underwater extends Phaser.Scene {
       }
 
       catchFish(player, fish) {
+        player.scene.playAudio("fish");
         player.scene.updateScore(1);
         fish.destroy()
       }
 
       catchCoin(player, coin) {
+        player.scene.playAudio("coin");
         player.scene.updateCoinScore(1);
         player.addCoin();
         coin.destroy()

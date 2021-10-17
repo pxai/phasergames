@@ -1,6 +1,6 @@
 class EndScreen extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y) {
-        super(scene, x, y, 600, 20, 0xffffff);
+        super(scene, x, y, 600, 20, 0x000000);
         this.name = "end";
         this.scene = scene;
         this.setOrigin(0.5)
