@@ -31,7 +31,6 @@ export default class Transition extends Phaser.Scene {
     }
 
     loadNext () {
-        console.log("Move to: ", this.next)
         this.scene.start(this.next, { name: this.name, number: this.number, time: this.time });
     }
 }

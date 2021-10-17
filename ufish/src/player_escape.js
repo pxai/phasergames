@@ -8,7 +8,6 @@ export default class PlayerEscape extends PlayerUnderwater {
     }
 
     shoot () {
-        console.log("SHOOOOT")
         const direction = this.body.velocity.y > 0 ? 1 : -1;
         this.scene.shootingGroup.add(new Coin(this.scene, this.x, this.y + (direction * 69), "coin", 400, direction, true))
         this.coins.pop();

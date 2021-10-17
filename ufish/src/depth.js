@@ -12,6 +12,5 @@ export default class Depth extends Underwater {
 
     preload () {
       this.registry.set("hull", 10);
-      console.log("Depth")
     }
 }

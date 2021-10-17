@@ -24,7 +24,6 @@ export default class Underwater extends Phaser.Scene {
 
     preload () {
       this.registry.set("hull", 10);
-      console.log("Underwater")
     }
 
     create () {
@@ -57,10 +56,10 @@ export default class Underwater extends Phaser.Scene {
 
       this.add.image(60, 16, "redfish").setOrigin(0.5).setScale(0.5).setScrollFactor(0)
       this.scoreText = this.add.bitmapText(100, 16, "pixelFont", "0", 20).setOrigin(0.5).setScrollFactor(0)
-      this.add.image(300, 16, "coin").setOrigin(0.5).setScrollFactor(0)
-      this.coinsText = this.add.bitmapText(340, 16, "pixelFont", "0", 20).setOrigin(0.5).setScrollFactor(0)
-      this.add.image(400, 16, "heart").setOrigin(0.5).setScrollFactor(0)
-      this.hullText = this.add.bitmapText(440, 16, "pixelFont", this.player.hull, 20).setOrigin(0.5).setScrollFactor(0)
+      this.add.image(this.center_width, 16, "coin").setOrigin(0.5).setScrollFactor(0)
+      this.coinsText = this.add.bitmapText(this.center_width + 40, 16, "pixelFont", "0", 20).setOrigin(0.5).setScrollFactor(0)
+      this.add.image(this.width - 150, 16, "heart").setOrigin(0.5).setScrollFactor(0)
+      this.hullText = this.add.bitmapText(this.width - 110, 16, "pixelFont", this.player.hull, 20).setOrigin(0.5).setScrollFactor(0)
 
       this.deathText = this.add.bitmapText(this.center_width, this.center_height, "pixelFont", "YOU WERE HIT!!", 40).setOrigin(0.5).setAlpha(0)
       
@@ -69,7 +68,7 @@ export default class Underwater extends Phaser.Scene {
        
         // this.loadAudios();
 
-       // this.playMusic();
+        this.playMusic();
 
         this.addObjects()
       }
@@ -224,10 +223,9 @@ export default class Underwater extends Phaser.Scene {
         this.audios[key].play();
       }
 
-      playMusic (theme="music") {
-
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
+      playMusic (theme) {
+        if (this.theme) this.theme.stop();
+        this.theme = this.sound.add(this.mapName);
         this.theme.play({
           mute: false,
           volume: 1,
@@ -260,12 +258,12 @@ export default class Underwater extends Phaser.Scene {
     }
 
     finishScene () {
-      // this.theme.stop();
+      this.theme.stop();
       this.scene.start("transition", {next: this.next, name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 
     restartScene () {
-      // this.theme.stop();
+      this.theme.stop();
       this.scene.start("transition", {next: this.mapName, name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 
@@ -287,7 +285,6 @@ export default class Underwater extends Phaser.Scene {
 
     updateHull (amount) {
       const hull = +this.registry.get("hull") + amount;
-      console.log("Updating hull: ", hull)
       if (hull < 0) return;
       this.registry.set("hull", hull);
       this.hullText.setText(Number(hull).toLocaleString());

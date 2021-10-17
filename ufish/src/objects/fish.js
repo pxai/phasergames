@@ -89,8 +89,6 @@ class Fish extends Phaser.Physics.Arcade.Sprite {
                 this.y++;
                this.destroy();
             }
-        } else {
-            console.log("Scene is null??")
         }
     }
 

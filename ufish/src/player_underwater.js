@@ -111,7 +111,6 @@ export default class PlayerUnderwater extends Player {
 
     setCoins(coins) {
       this.coins = Array(coins).fill(1)
-      console.log("Total coins: ", this.coins.length);
     }
 
     shoot () {
@@ -134,7 +133,6 @@ export default class PlayerUnderwater extends Player {
         repeat: 5
       });
       player.body.setDrag(60)
-      console.log(player.hull)
       if (player.isPlayerDead()) {
         player.anims.play("death", true)
       }
@@ -167,7 +165,6 @@ export default class PlayerUnderwater extends Player {
     }
 
     destroyBeam(beam, foe) {
-      console.log("Destroy!!")
       beam.scene.player.deactivateBeam();
     }
 

@@ -119,7 +119,6 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
     destroyBeam(beam, foe) {
-      console.log("Destroy!!")
       beam.scene.player.deactivateBeam();
     }
 

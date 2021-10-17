@@ -6,7 +6,6 @@ export default class Splash extends Phaser.Scene {
     }
 
     preload () {
-        console.log("splash");
     }
 
     create () {
@@ -16,20 +15,22 @@ export default class Splash extends Phaser.Scene {
         this.center_height = this.height / 2;
 
 
-        this.cameras.main.setBackgroundColor(0x008080);
+        this.cameras.main.setBackgroundColor(0x000000);
         this.showLogo();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
-
+        this.playMusic();
+        this.showPlayer();
     }
 
     startGame () {
+        this.theme.stop();
         this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
     }
 
     showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, 130, "logo").setScale(0.28).setOrigin(0.5)
+        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
         this.tweens.add({
             targets: this.gameLogo,
             duration: 1000,
@@ -37,17 +38,60 @@ export default class Splash extends Phaser.Scene {
               from: this.center_width * 2,
               to: this.center_width
             },
+            y: {
+                from: -200,
+                to: 130
+              },
           })
     }
 
+    showPlayer () {
+        this.ufo = this.add.sprite(this.center_width, 400, "ufo").setOrigin(0.5);
+        this.anims.create({
+            key: "fly",
+            frames: this.anims.generateFrameNumbers("ufo"),
+            frameRate: 5,
+            repeat: -1
+          });
+
+        this.ufo.anims.play("fly", true);
+        this.tweens.add({
+            targets: this.ufo,
+            duration: 500,
+            y: {from: this.ufo.y, to: this.ufo.y - 40},
+            repeat: -1,
+            yoyo: true
+        });
+    }
+
+    playMusic (theme="splash") {
+        this.theme = this.sound.add(theme);
+        this.theme.stop();
+        this.theme.play({
+          mute: false,
+          volume: 1,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+      })
+      }
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 350, "pixelFont", "WASD/Arrows to move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 400, "pixelFont", "SPACE track beam", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "B shoot coins", 30).setOrigin(0.5);
-        this.add.sprite(this.center_width - 120, 520, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 520, "pixelFont", "By PELLO", 15).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 570, "pixelFont", "Press SPACE to start", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: track beam", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 550, "pixelFont", "B: shoot coins", 30).setOrigin(0.5);
+        this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
+        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5);
+        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Press SPACE to start", 30).setOrigin(0.5);
+        this.tweens.add({
+            targets: this.space,
+            duration: 300,
+            alpha: {from: 0, to: 1},
+            repeat: -1,
+            yoyo: true
+        });
     }
 }

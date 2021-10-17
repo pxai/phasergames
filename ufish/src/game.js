@@ -24,9 +24,6 @@ export default class Game extends Phaser.Scene {
     }
 
     create () {
-      // this.add.tileSprite(0, 0, 800, 600, 'background1').setOrigin(0,0);
-      // 494d7e
-      console.log("Scene time: ", this.time);
       this.duration = this.time * 1000;
       this.width = this.sys.game.config.width;
       this.height = this.sys.game.config.height;
@@ -43,11 +40,16 @@ export default class Game extends Phaser.Scene {
 
         this.add.image(60, 16, "redfish").setOrigin(0.5).setScale(0.5).setScrollFactor(0)
         this.scoreText = this.add.bitmapText(100, 16, "pixelFont", "0", 20).setOrigin(0.5).setScrollFactor(0)
-        this.add.image(300, 16, "coin").setOrigin(0.5).setScrollFactor(0)
-        this.coinsText = this.add.bitmapText(340, 16, "pixelFont", "0", 20).setOrigin(0.5).setScrollFactor(0)
-        this.add.image(400, 16, "heart").setOrigin(0.5).setScrollFactor(0)
-        this.hullText = this.add.bitmapText(440, 16, "pixelFont", this.player.hull, 20).setOrigin(0.5).setScrollFactor(0)
-
+        this.add.image(this.center_width, 16, "coin").setOrigin(0.5).setScrollFactor(0)
+        this.coinsText = this.add.bitmapText(this.center_width + 40, 16, "pixelFont", "0", 20).setOrigin(0.5).setScrollFactor(0)
+        this.add.image(this.width - 150, 16, "heart").setOrigin(0.5).setScrollFactor(0)
+        this.hullText = this.add.bitmapText(this.width - 110, 16, "pixelFont", this.player.hull, 20).setOrigin(0.5).setScrollFactor(0)
+        this.tutorial = this.add.bitmapText(this.center_width, 100, "pixelFont", "TUTORIAL SCREEN", 40).setOrigin(0.5).setAlpha(1)
+        this.tweens.add({
+          targets: [this.tutorial],
+          duration: 6000,
+          alpha: { from: 1, to: 0}
+        })
         this.deathText = this.add.bitmapText(this.center_width, this.center_height, "pixelFont", "YOU WERE HIT!!", 40).setOrigin(0.5).setAlpha(0)
        // this.loadAudios();
 
@@ -64,7 +66,7 @@ export default class Game extends Phaser.Scene {
        this.overlapPlayer = this.physics.add.overlap(this.player, this.fishGenerator.fishGroup, this.catchFish);
        this.overlapPlayerFoe = this.physics.add.overlap(this.player, this.foeGenerator.foeGroup, this.player.hit);
        this.overlapFoeBeam = this.physics.add.overlap(this.player.beamGroup, this.foeGenerator.foeGroup, this.player.destroyBeam);
-
+        this.playMusic();
       }
 
       addSky() {
@@ -111,8 +113,7 @@ export default class Game extends Phaser.Scene {
         this.audios[key].play();
       }
 
-      playMusic (theme="music") {
-
+      playMusic (theme="game") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
@@ -134,7 +135,7 @@ export default class Game extends Phaser.Scene {
 
     finishScene () {
       this.sky.stop();
-      // this.theme.stop();
+      this.theme.stop();
       this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 

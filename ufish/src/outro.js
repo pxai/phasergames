@@ -4,7 +4,6 @@ export default class Outro extends Phaser.Scene {
     }
 
     preload () {
-        console.log("outro");
     }
 
     create () {
@@ -22,7 +21,9 @@ export default class Outro extends Phaser.Scene {
             "But that is another story..."
         ];
         this.showHistory();
-
+        this.showPlayer();
+        this.playMusic();
+        this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
     }
 
@@ -32,6 +33,20 @@ export default class Outro extends Phaser.Scene {
         });
         this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
     }
+
+    playMusic (theme="outro") {
+        this.theme = this.sound.add(theme);
+        this.theme.stop();
+        this.theme.play({
+          mute: false,
+          volume: 1,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+      })
+      }
 
     showLine(text, y) {
         let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "pixelFont", text, 25).setOrigin(0.5).setAlpha(0));
@@ -43,9 +58,26 @@ export default class Outro extends Phaser.Scene {
     }
 
     showPlayer () {
-        }
+        this.ufo = this.add.sprite(this.center_width, this.height - 200, "ufo").setOrigin(0.5);
+        this.anims.create({
+            key: "fly",
+            frames: this.anims.generateFrameNumbers("ufo"),
+            frameRate: 5,
+            repeat: -1
+          });
+
+        this.ufo.anims.play("fly", true);
+        this.tweens.add({
+            targets: this.ufo,
+            duration: 500,
+            y: {from: this.ufo.y, to: this.ufo.y - 40},
+            repeat: -1,
+            yoyo: true
+        });
+    }
 
     startSplash () {
+        this.theme.stop();
         this.scene.start("splash");
     }
 }

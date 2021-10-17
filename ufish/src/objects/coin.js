@@ -8,7 +8,7 @@ export default class Coin extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(velocity === 0);
-        console.log(this.direction, velocity)
+
         if (vertical) {
             this.body.setVelocityY(this.direction * velocity);
         } else {

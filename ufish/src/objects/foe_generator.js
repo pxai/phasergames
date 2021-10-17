@@ -23,7 +23,6 @@ export default class FoeGenerator {
 
   add () {
       this.foeGroup.add(new Chopper(this.scene));
-      console.log("Get to the choppah! ");
   }
 
   update () {
