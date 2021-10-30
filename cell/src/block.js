@@ -79,6 +79,10 @@ class Block extends Phaser.GameObjects.Sprite {
         }
     }
 
+    correctPosition () {
+
+    }
+
     stopSpeed () {
         this.body.setVelocityX(0);
         this.body.setVelocityY(0);

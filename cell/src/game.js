@@ -1,7 +1,6 @@
 import Phaser from "phaser";
 import CellWall from "./cell_wall";
 import BlockGenerator from "./block_generator";
-import Bubble from "./bubble";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -24,6 +23,7 @@ export default class Game extends Phaser.Scene {
         this.blockGenerator = new BlockGenerator(this);
         this.setScores();
         this.setKeys();
+        this.generateWall();
         this.generateBlock();
     }
 
@@ -31,6 +31,10 @@ export default class Game extends Phaser.Scene {
         this.current = this.blockGenerator.generate();
         this.current.body.setCollideWorldBounds(true);
         this.blockGroup.add(this.current);
+    }
+
+    generateWall () {
+        this.wall = new CellWall(this);
     }
 
     setKeys () {
@@ -82,7 +86,10 @@ export default class Game extends Phaser.Scene {
             } else {
                 this.current.moveDefault();
             }
+            this.current.correctPosition()
         }
+
+        this.wall.update();
     }
 
     playMusic () {

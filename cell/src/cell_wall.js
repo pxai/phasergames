@@ -17,6 +17,10 @@ class CellWall {
     evolve () {
 
     }
+
+    update () {
+        
+    }
 }
 
 export default CellWall;
