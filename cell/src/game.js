@@ -45,6 +45,18 @@ export default class Game extends Phaser.Scene {
         this.D = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.SPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.ESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
+        this.input.keyboard.on('keyup-LEFT', () => {
+            this.current.x -= 32;
+        });
+        this.input.keyboard.on('keyup-RIGHT', () => {
+            this.current.x += 32;
+        });
+        this.input.keyboard.on('keyup-UP', () => {
+            this.current.y -= 32;
+        });
+        this.input.keyboard.on('keyup-DOWN', () => {
+            this.current.y += 32;
+        });
     }
 
     setScores() {
@@ -65,19 +77,20 @@ export default class Game extends Phaser.Scene {
         }
       
         if (this.current) {
-            if (this.cursor.left.isDown || this.A.isDown) {
+            //if (Phaser.Input.Keyboard.JustDown(this.cursor.left) || this.A.isDown) {
+            if (this.cursor.left.getDuration() > 100) {
                 this.current.stopSpeed();
                 this.current.defaultDirection = 1;
                 this.current.left();
-            } else if (this.cursor.right.isDown || this.D.isDown) {
+            }  else if (this.cursor.right.getDuration() > 100) {
                 this.current.stopSpeed();
                 this.current.defaultDirection = 0;
                 this.current.right();
-            } else if (this.cursor.up.isDown || this.W.isDown) {
+            } else if (this.cursor.up.getDuration() > 100) {
                 this.current.stopSpeed();
                 this.current.defaultDirection = 3;
                 this.current.up();
-            } else if (this.cursor.down.isDown || this.S.isDown) {
+            } else if (this.cursor.down.getDuration() > 100) {
                 this.current.stopSpeed();
                 this.current.defaultDirection = 2;
                 this.current.down();
