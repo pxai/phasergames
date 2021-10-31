@@ -46,9 +46,9 @@ class Block extends Phaser.GameObjects.Sprite {
     }
 
     right () {
-        if (this.checkNextCell(this.coords.x + 1, this.coords.y)) {
+        if (this.checkNextCell(this.coords.x, this.coords.y + 1)) {
             this.x += 32;
-            this.coords.x++;
+            this.coords.y++;
             new Bubble(this.scene, this.x - 16, this.y + Phaser.Math.Between(-10, 10),  50, -1, this.block.color)    
         } else {
             this.scene.blockContact()
@@ -56,9 +56,9 @@ class Block extends Phaser.GameObjects.Sprite {
     }
 
     left () {      
-        if (this.checkNextCell(this.coords.x - 1, this.coords.y)) {
+        if (this.checkNextCell(this.coords.x, this.coords.y - 1)) {
             this.x -= 32;
-            this.coords.x--;
+            this.coords.y--;
             new Bubble(this.scene, this.x + 16, this.y + Phaser.Math.Between(-10, 10),  50, -1, this.block.color)
         } else {
             this.scene.blockContact()
@@ -66,9 +66,9 @@ class Block extends Phaser.GameObjects.Sprite {
     }
 
     up () { 
-        if (this.checkNextCell(this.coords.x, this.coords.y - 1)) {       
+        if (this.checkNextCell(this.coords.x - 1, this.coords.y)) {       
             this.y -= 32;
-            this.coords.y--;
+            this.coords.x--;
             new Bubble(this.scene, this.x + Phaser.Math.Between(-10, 10), this.y + 16,  50, -1, this.block.color)
         } else {
             this.scene.blockContact()
@@ -76,9 +76,9 @@ class Block extends Phaser.GameObjects.Sprite {
     }
 
     down () { 
-        if (this.checkNextCell(this.coords.x, this.coords.y + 1)) {    
+        if (this.checkNextCell(this.coords.x + 1, this.coords.y)) {    
             this.y += 32;
-            this.coords.y++;
+            this.coords.x++;
             new Bubble(this.scene, this.x + Phaser.Math.Between(-10, 10), this.y - 16,  50, -1, this.block.color)
         } else {
             this.scene.blockContact()
@@ -87,6 +87,7 @@ class Block extends Phaser.GameObjects.Sprite {
 
     checkNextCell (nextx, nexty) {
         console.log("NEXT: ", this.coords, nextx, nexty, this.scene.wall.cell[nextx][nexty])
+
         const free = this.scene.wall.cell[nextx][nexty].content === "";
         if (!free) {
             let {x, y} = this.scene.wall.cell[nextx][nexty];

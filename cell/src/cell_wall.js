@@ -29,6 +29,7 @@ class CellWall {
             })
         )
         console.log(this.cell)
+       // this.evolve()
     }
 
     get center () {
@@ -36,10 +37,15 @@ class CellWall {
     }
 
     evolve () {
-        this.cell.forEach( (row, x) => {
-            for (let y = 0;y < row.length; y++) {
+        console.log(this.cell)
+        this.setCell(6, 7, "red")
+        this.setCell(8, 5, "yellow")
+       /* for (let x = 0; x < this.cell.length; x++) {
+            for (let y = 0;y < this.cell[x].length; y++) {
                 if (this.cell[x][y].content === "") {
-                    this.cell[x][y] = new Block(
+                    console.log("About to update!", x, y)
+                    this.cell[x][y] = {content: "purple", x: this.cell[x][y].x, y: this.cell[x][y].y  }
+                    new Block(
                         this.scene,
                         this.cell[x][y].x + 50,
                         this.cell[x][y].y + 12, 
@@ -50,9 +56,11 @@ class CellWall {
                     break;
                 }
             }
-            for (let y = row.length - 1;y >= 0; y--) {
+            for (let y = this.cell[x].length - 1;y >= 0; y--) {
                 if (this.cell[x][y].content === "") {
-                    this.cell[x][y] = new Block(
+                    console.log("About to update!", x, y)
+                    this.cell[x][y] = {content: "purple", x: this.cell[x][y].x, y: this.cell[x][y].y  }
+                    new Block(
                         this.scene,
                         this.cell[x][y].x + 50,
                         this.cell[x][y].y + 12, 
@@ -63,8 +71,21 @@ class CellWall {
                     break;
                 }
             }
+        }*/
+        //console.log(this.cell)
+    }
 
-        })
+    setCell(x, y, color) {
+        this.cell[x][y] = { content: color, x: this.cell[x][y].x, y: this.cell[x][y].y};
+        new Block(
+            this.scene,
+            this.cell[x][y].x + 50,
+            this.cell[x][y].y + 12, 
+            { "type": color, "color": 0xffffff },
+            {x, y},
+            false
+        );
+        console.log("Se cell: ", x, y, this.cell[x][y])
     }
 
     update () {

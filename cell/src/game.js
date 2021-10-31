@@ -146,7 +146,7 @@ export default class Game extends Phaser.Scene {
         this.current = null;
         this.generateBlock();
         this.updateIncoming();
-       // this.wall.evolve()
+        this.wall.evolve()
     }
 
     blockContact2 () {
