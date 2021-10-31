@@ -7,12 +7,13 @@ export default class BlockGenerator {
         this.block
     }
 
-    generate () {
+    generate (center) {
         return new Block(
             this.scene,
-            this.scene.center_width,
-            this.scene.center_height, 
-            this.getRandomType()
+            center.x + 50,
+            center.y + 12, 
+            this.getRandomType(),
+            {x: 12, y: 12}
         );
     }
 

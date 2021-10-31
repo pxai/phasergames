@@ -9,7 +9,7 @@ const config = {
         mode: Phaser.Scale.FIT,
         parent: "phaser-example",
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: 1000,
+        width: 868,
         height: 800
     },
     physics: {

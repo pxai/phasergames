@@ -34,6 +34,7 @@ export default class Bootloader extends Phaser.Scene {
             this.load.image(i.type, `assets/images/${i.type}.png`);
         });
        
+        this.load.image("purple", "assets/images/purple.png");
        /* this.load.image("logo", "assets/images/logo.png");
         this.load.image("pello", "assets/images/pello.png");
         this.load.audio("beam", "assets/sounds/beam.mp3");*/
@@ -41,7 +42,6 @@ export default class Bootloader extends Phaser.Scene {
 
         this.load.bitmapFont("arcade", "assets/fonts/arcade.png", "assets/fonts/arcade.xml");
        // this.load.spritesheet("chopper", "assets/images/chopper.png", { frameWidth: 128, frameHeight: 128 });
-
         this.registry.set("score", 0);
         this.registry.set("health", 100);
     }

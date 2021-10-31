@@ -19,7 +19,7 @@ export default class Game extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
 
-        this.setGroups()
+        this.setGroups();
         this.blockGenerator = new BlockGenerator(this);
         this.setScores();
         this.setKeys();
@@ -28,9 +28,23 @@ export default class Game extends Phaser.Scene {
     }
 
     generateBlock () {
-        this.current = this.blockGenerator.generate();
+        this.current = this.blockGenerator.generate(this.wall.center);
         this.current.body.setCollideWorldBounds(true);
         this.blockGroup.add(this.current);
+        this.colliderActivated = true;
+       //  this.physics.world.enable([ this.current ]);
+        this.wallCollider = this.physics.add.collider(this.current, this.platform, () => this.blockContact(), ()=>{
+            return this.colliderActivated;
+          }, this);
+        
+       /* this.physics.add.collider(this.current, this.blockGroup, () => this.blockContact2(), ()=>{
+        return this.colliderActivated;
+        }, this);*/
+    }
+
+    moveBlock () {
+        this.current.moveDefault()
+        console.log("Moved!")
     }
 
     generateWall () {
@@ -46,16 +60,16 @@ export default class Game extends Phaser.Scene {
         this.SPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.ESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
         this.input.keyboard.on('keyup-LEFT', () => {
-            this.current.x -= 32;
+            //this.current.x -= this.current.x % 32;
         });
         this.input.keyboard.on('keyup-RIGHT', () => {
-            this.current.x += 32;
+            //this.current.x += this.current.x % 32;
         });
         this.input.keyboard.on('keyup-UP', () => {
-            this.current.y -= 32;
+            //this.current.y -= this.current.y % 32;
         });
         this.input.keyboard.on('keyup-DOWN', () => {
-            this.current.y += 32;
+            //this.current.y += this.current.y % 32;
         });
     }
 
@@ -78,26 +92,26 @@ export default class Game extends Phaser.Scene {
       
         if (this.current) {
             //if (Phaser.Input.Keyboard.JustDown(this.cursor.left) || this.A.isDown) {
-            if (this.cursor.left.getDuration() > 100) {
+            if (Phaser.Input.Keyboard.JustDown(this.cursor.left)) {
                 this.current.stopSpeed();
                 this.current.defaultDirection = 1;
                 this.current.left();
-            }  else if (this.cursor.right.getDuration() > 100) {
+            }  else if (Phaser.Input.Keyboard.JustDown(this.cursor.right)) { // this.cursor.right.getDuration() > 100
                 this.current.stopSpeed();
                 this.current.defaultDirection = 0;
                 this.current.right();
-            } else if (this.cursor.up.getDuration() > 100) {
+            } else if (Phaser.Input.Keyboard.JustDown(this.cursor.up)) {
                 this.current.stopSpeed();
                 this.current.defaultDirection = 3;
                 this.current.up();
-            } else if (this.cursor.down.getDuration() > 100) {
+            } else if (Phaser.Input.Keyboard.JustDown(this.cursor.down)) {
                 this.current.stopSpeed();
                 this.current.defaultDirection = 2;
                 this.current.down();
             } else if (this.SPACE.isDown) {
                 this.current.speedUp();
             } else {
-                this.current.moveDefault();
+               // this.current.moveDefault();
             }
             this.current.correctPosition()
         }
@@ -132,8 +146,18 @@ export default class Game extends Phaser.Scene {
     }
 
     blockContact () {
+        this.current.setBlock()
+        this.physics.world.removeCollider(this.wallCollider);
         console.log("Block contact!")
         // TODO remove block from group
         this.current = null;
+        this.generateBlock();
+    }
+
+    blockContact2 () {
+        this.current.setBlock()
+        console.log("Block contact!")
+        this.current = null;
+        this.generateBlock();
     }
 }
