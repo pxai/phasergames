@@ -25,21 +25,13 @@ export default class Game extends Phaser.Scene {
         this.setKeys();
         this.generateWall();
         this.generateBlock();
+        this.updateIncoming()
     }
 
     generateBlock () {
         this.current = this.blockGenerator.generate(this.wall.center);
         this.current.body.setCollideWorldBounds(true);
         this.blockGroup.add(this.current);
-        this.colliderActivated = true;
-       //  this.physics.world.enable([ this.current ]);
-        this.wallCollider = this.physics.add.collider(this.current, this.platform, () => this.blockContact(), ()=>{
-            return this.colliderActivated;
-          }, this);
-        
-       /* this.physics.add.collider(this.current, this.blockGroup, () => this.blockContact2(), ()=>{
-        return this.colliderActivated;
-        }, this);*/
     }
 
     moveBlock () {
@@ -152,6 +144,7 @@ export default class Game extends Phaser.Scene {
         // TODO remove block from group
         this.current = null;
         this.generateBlock();
+        this.updateIncoming();
     }
 
     blockContact2 () {
@@ -159,5 +152,12 @@ export default class Game extends Phaser.Scene {
         console.log("Block contact!")
         this.current = null;
         this.generateBlock();
+    }
+
+    updateIncoming () {
+        this.blockGenerator.incoming.forEach( (block, i) => {
+            console.log(block)
+            this.add.image(this.width - 40, 240 - (i * 32), block.type)
+        })
     }
 }
