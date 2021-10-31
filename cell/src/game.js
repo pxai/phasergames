@@ -68,6 +68,7 @@ export default class Game extends Phaser.Scene {
     setScores() {
         this.scoreText = this.add.bitmapText(100, 16, "arcade", "0", 20).setOrigin(0.5).setScrollFactor(0)
         this.healthText = this.add.bitmapText(this.width - 100, 16, "arcade", this.registry.get("health"), 20).setOrigin(0.5).setScrollFactor(0)
+        this.nextBlock = this.add.bitmapText(this.width - 80, 60, "arcade", "Next:", 18)
     }
 
     setGroups () {
@@ -145,6 +146,7 @@ export default class Game extends Phaser.Scene {
         this.current = null;
         this.generateBlock();
         this.updateIncoming();
+       // this.wall.evolve()
     }
 
     blockContact2 () {
@@ -156,7 +158,6 @@ export default class Game extends Phaser.Scene {
 
     updateIncoming () {
         this.blockGenerator.incoming.forEach( (block, i) => {
-            console.log(block)
             this.add.image(this.width - 40, 240 - (i * 32), block.type)
         })
     }

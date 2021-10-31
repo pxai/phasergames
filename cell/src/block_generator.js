@@ -8,9 +8,7 @@ export default class BlockGenerator {
     }
 
     generate (center) {
-        console.log("Before update: ", this.incoming)
         const nextBlock = this.updateIncoming();
-        console.log("After update: ", this.incoming, nextBlock)
         return new Block(
             this.scene,
             center.x + 50,
@@ -25,9 +23,7 @@ export default class BlockGenerator {
     }
 
     updateIncoming () {
-        console.log(this.incoming);
         this.incoming.unshift(this.getRandomType())
-        console.log("Now:",this.incoming)
         return this.incoming.pop();
     }
 

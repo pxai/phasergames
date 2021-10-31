@@ -86,10 +86,12 @@ class Block extends Phaser.GameObjects.Sprite {
     }
 
     checkNextCell (nextx, nexty) {
-        console.log("NEXT: ", this.scene.wall.cell[nextx][nexty])
+        console.log("NEXT: ", this.coords, nextx, nexty, this.scene.wall.cell[nextx][nexty])
         const free = this.scene.wall.cell[nextx][nexty].content === "";
         if (!free) {
-            this.scene.wall.cell[this.coords.x][this.coords.y] = this.block.type;
+            let {x, y} = this.scene.wall.cell[nextx][nexty];
+            this.scene.wall.cell[this.coords.x][this.coords.y] = {content: this.block.type, x, y}
+            console.log("Set block! : ", this.block, this.scene.wall.cell[nextx][nexty])
         }
         return free;
     }
@@ -125,7 +127,6 @@ class Block extends Phaser.GameObjects.Sprite {
 
     setBlock () {
         this.setScale(1)
-        console.log("HERE WE AREEE PISCHA");
         this.locked = true;
         this.stopSpeed()
         if (this.tween) this.tween.stop();
