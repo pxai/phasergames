@@ -9,29 +9,58 @@ export default class Splash extends Phaser.Scene {
     }
 
     create () {
-        // this.logo = this.physics.add.sprite(100, 50, "logo");
+        this.width = this.sys.game.config.width;
+        this.height = this.sys.game.config.height;
+        this.center_width = this.width / 2;
+        this.center_height = this.height / 2;
 
-        this.label = this.add.bitmapText(10, 50, "arcade", "cell, press any key to start", 24);
-        this.dynamic = this.add.bitmapText(0, 50, "arcade", "");
+        this.title = this.add.bitmapText(this.center_width, 250, "arcade", "METABOLIK", 114).setOrigin(0.5);
+        this.startTween()
         this.input.keyboard.on("keydown-ENTER", () => this.startGame(), this);
+        this.playMusic();
+        this.showInstructions();
     }
 
+    startTween () {
+        this.tweens.add({
+            targets: this.title,
+            duration: 300,
+            scale: {from: 0.7, to: 1},
+            repeat: -1,
+            yoyo: true
+        });
+    }
     startGame () {
-        // this.theme.stop();
+        this.theme.stop();
         this.scene.start("game");
     }
 
     playMusic () {
         if (this.theme) this.theme.stop()
-        this.theme = this.sound.add("music", {
+        this.theme = this.sound.add("cellheart", {
             mute: false,
-            volume: 1,
+            volume: 1.5,
             rate: 1,
             detune: 0,
             seek: 0,
             loop: true,
             delay: 0
         });
-        this.sound.play("music");
+        this.theme.play();
+    }
+
+    showInstructions() {
+        this.add.bitmapText(this.center_width, 500, "arcade", "ARROWS to MOVE", 30).setOrigin(0.5);
+        // this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: speed up", 30).setOrigin(0.5);
+              this.space = this.add.bitmapText(this.center_width, 570, "arcade", "Press ENTER to start", 25).setOrigin(0.5);
+        this.tweens.add({
+            targets: this.space,
+            duration: 300,
+            alpha: {from: 0, to: 1},
+            repeat: -1,
+            yoyo: true
+        });
+        this.add.sprite(this.center_width - 70, 740, "pello").setOrigin(0.5).setScale(0.3)
+        this.add.bitmapText(this.center_width + 40, 740, "arcade", "By PELLO", 25).setOrigin(0.5);
     }
 }

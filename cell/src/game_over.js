@@ -15,8 +15,9 @@ export default class Splash extends Phaser.Scene {
         this.center_height = this.height / 2;
 
         this.label = this.add.bitmapText(this.center_width, this.center_height, "arcade", "GAME OVER", 50).setOrigin(0.5);
-        this.label = this.add.bitmapText(this.center_width, this.center_height + 100, "arcade", "Points: " + this.registry.get("score"), 50).setOrigin(0.5);
-        this.dynamic = this.add.bitmapText(this.center_width, this.height - 200, "arcade", "Press ENTER to try again", 20).setOrigin(0.5);
+        this.label = this.add.bitmapText(this.center_width, this.center_height + 100, "arcade", "Time: " + this.registry.get("time"), 50).setOrigin(0.5);
+        this.label = this.add.bitmapText(this.center_width, this.center_height + 200, "arcade", "Points: " + this.registry.get("score"), 50).setOrigin(0.5);
+        this.dynamic = this.add.bitmapText(this.center_width, this.height - 150, "arcade", "Press ENTER to try again", 20).setOrigin(0.5);
         this.input.keyboard.on("keydown-ENTER", () => this.startGame(), this);
     }
 

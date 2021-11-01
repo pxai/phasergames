@@ -10,6 +10,7 @@ export default class Game extends Phaser.Scene {
     preload () {
         this.registry.set("score", 0);
         this.registry.set("health", 100);
+        this.registry.set("time", 0);
     }
 
     create () {
@@ -17,6 +18,7 @@ export default class Game extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
+        this.clockText = this.add.bitmapText(this.center_width, this.center_height, "arcade", "00:00", 60).setAlpha(0.3).setOrigin(0.5)
         this.loadAudios();
         this.playMusic();
         this.setGroups();
@@ -27,6 +29,7 @@ export default class Game extends Phaser.Scene {
         this.generateBlock();
         this.updateIncoming()
         this.updateHealth();
+        this.startClock();
     }
 
     generateBlock () {
@@ -43,6 +46,17 @@ export default class Game extends Phaser.Scene {
         this.wall = new CellWall(this);
         this.wall.evolve()
         this.evolveId = setInterval(() => this.wall.evolve(), 10000);
+    }
+
+    startClock () {
+        this.time = 0;
+        this.clockId = setInterval(() => this.updateClock(), 1000);
+    }
+
+    updateClock () {
+        this.time++;
+        this.elapsed = `${Math.round(this.time / 60)}`.padStart(2, 0) + ":" + `${this.time % 60}`.padStart(2, 0);
+        this.clockText.setText(this.elapsed)
     }
 
     setKeys () {
@@ -81,8 +95,7 @@ export default class Game extends Phaser.Scene {
 
     update () {
         if (this.ESC.isDown) {
-           // this.theme.stop()
-            this.scene.start('splash')
+            this.changeScreen("splash")
         }
       
         if (this.current) {
@@ -144,7 +157,7 @@ export default class Game extends Phaser.Scene {
       }
 
     playAudio(key) {
-    this.audios[key].play();
+        this.audios[key].play();
     }
 
     updateScore (points = 0) {
@@ -190,10 +203,16 @@ export default class Game extends Phaser.Scene {
         this.playAudio("destroy");
     }
 
-    gameOver () {
+    changeScreen(name) {
+        this.gameOver("splash")
+    }
+
+    gameOver (name = "game_over") {
         if (this.theme) this.theme.stop();
         clearInterval(this.evolveId )
-        this.scene.start("game_over");
+        clearInterval(this.clockId);
+        this.registry.set("time", this.elapsed);
+        this.scene.start(name);
     }
 
     blockContact2 () {
