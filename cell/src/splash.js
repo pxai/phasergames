@@ -50,7 +50,8 @@ export default class Splash extends Phaser.Scene {
     }
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 500, "arcade", "ARROWS to MOVE", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 400, "arcade", "Join components of the same color!!", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 500, "arcade", "Use ARROWS to move", 30).setOrigin(0.5);
         // this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: speed up", 30).setOrigin(0.5);
               this.space = this.add.bitmapText(this.center_width, 570, "arcade", "Press ENTER to start", 25).setOrigin(0.5);
         this.tweens.add({
