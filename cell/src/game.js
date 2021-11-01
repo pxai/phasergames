@@ -8,9 +8,8 @@ export default class Game extends Phaser.Scene {
     }
 
     preload () {
-        this.load.image("logo", "assets/images/logo.png");
-        this.load.audio("music", "assets/sounds/muzik.mp3");
-        this.load.bitmapFont("pixelFont", "assets/fonts/font.png", "assets/fonts/font.xml");
+        this.registry.set("score", 0);
+        this.registry.set("health", 100);
     }
 
     create () {
@@ -18,7 +17,8 @@ export default class Game extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-
+        this.loadAudios();
+        this.playMusic();
         this.setGroups();
         this.blockGenerator = new BlockGenerator(this);
         this.setScores();
@@ -26,6 +26,7 @@ export default class Game extends Phaser.Scene {
         this.generateWall();
         this.generateBlock();
         this.updateIncoming()
+        this.updateHealth();
     }
 
     generateBlock () {
@@ -36,11 +37,12 @@ export default class Game extends Phaser.Scene {
 
     moveBlock () {
         this.current.moveDefault()
-        console.log("Moved!")
     }
 
     generateWall () {
         this.wall = new CellWall(this);
+        this.wall.evolve()
+        this.evolveId = setInterval(() => this.wall.evolve(), 10000);
     }
 
     setKeys () {
@@ -89,20 +91,25 @@ export default class Game extends Phaser.Scene {
                 this.current.stopSpeed();
                 this.current.defaultDirection = 1;
                 this.current.left();
+                this.playAudio("move");
             }  else if (Phaser.Input.Keyboard.JustDown(this.cursor.right)) { // this.cursor.right.getDuration() > 100
                 this.current.stopSpeed();
                 this.current.defaultDirection = 0;
                 this.current.right();
+                this.playAudio("move");
             } else if (Phaser.Input.Keyboard.JustDown(this.cursor.up)) {
                 this.current.stopSpeed();
                 this.current.defaultDirection = 3;
                 this.current.up();
+                this.playAudio("move");
             } else if (Phaser.Input.Keyboard.JustDown(this.cursor.down)) {
                 this.current.stopSpeed();
                 this.current.defaultDirection = 2;
                 this.current.down();
+                this.playAudio("move");
             } else if (this.SPACE.isDown) {
                 this.current.speedUp();
+                this.playAudio("move");
             } else {
                // this.current.moveDefault();
             }
@@ -114,7 +121,7 @@ export default class Game extends Phaser.Scene {
 
     playMusic () {
         if (this.theme) this.theme.stop()
-        this.theme = this.sound.add("music", {
+        this.theme = this.sound.add("muzik", {
             mute: false,
             volume: 1,
             rate: 1,
@@ -123,7 +130,21 @@ export default class Game extends Phaser.Scene {
             loop: true,
             delay: 0
         });
-        this.sound.play("music");
+        this.theme.play()
+    }
+
+    loadAudios () {
+        this.audios = {
+          "move": this.sound.add("move"),
+          "bump": this.sound.add("bump"),
+          "cellheart": this.sound.add("cellheart"),
+          "destroy": this.sound.add("destroy"),
+          "evolve": this.sound.add("evolve"),
+        };
+      }
+
+    playAudio(key) {
+    this.audios[key].play();
     }
 
     updateScore (points = 0) {
@@ -132,21 +153,47 @@ export default class Game extends Phaser.Scene {
         this.scoreText.setText(Number(score).toLocaleString());
     }
 
-    updateHealth (points = 0) {
-        const health = +this.registry.get("health") + points;
-        this.registry.set("health", health);
-        this.healtText.setText(Number(health).toLocaleString());
+    updateHealth () {
+        let points = this.wall.freePositions;
+        this.registry.set("health", points);
+        this.healthText.setText(Number(points).toLocaleString());
+        if (points < 80) {
+            this.gameOver();
+        }
     }
 
     blockContact () {
         this.current.setBlock()
         this.physics.world.removeCollider(this.wallCollider);
+        this.wall.removeBlocks(this.current.coords.x, this.current.coords.y, this.current.block.type)
+        this.cleanBlocks(this.wall.toRemove);
         console.log("Block contact!")
         // TODO remove block from group
         this.current = null;
+        this.updateHealth()
         this.generateBlock();
         this.updateIncoming();
-        this.wall.evolve()
+    }
+
+    cleanBlocks (blocks) {
+        if (blocks.length < 2) {
+            this.playAudio("bump");
+            return;
+        } 
+        blocks.forEach( block => {
+            let [x, y, color] = block.split(":");
+            this.wall.cell[x][y].content = "";
+            if (this.wall.cell[x][y].block) this.wall.cell[x][y].block.vanish()
+        })
+        this.current.vanish()
+        this.updateScore(blocks.length);
+        this.playAudio("destroy");
+    }
+
+    gameOver () {
+        if (this.theme) this.theme.stop();
+        clearInterval(this.evolveId )
+        this.scene.start("game_over");
     }
 
     blockContact2 () {

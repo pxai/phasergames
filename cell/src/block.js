@@ -132,6 +132,20 @@ class Block extends Phaser.GameObjects.Sprite {
         this.stopSpeed()
         if (this.tween) this.tween.stop();
     }
+
+    vanish () {
+        if (this.scene)
+            this.scene.tweens.add({
+                targets: this,
+                duration: 50,
+                alpha: { from: 0, to: 1},
+                repeat: 5,
+                yoyo: true,
+                onComplete: () => {
+                    this.destroy()
+                }
+            })
+    }
 }
 
 export default Block;

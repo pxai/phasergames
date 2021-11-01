@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import Splash from "./splash";
 import Game from "./game";
 import Bootloader from "./bootloader";
+import GameOver from "./game_over";
 
 const config = {
     type: Phaser.AUTO,
@@ -19,7 +20,7 @@ const config = {
             debug: false
         }
     },
-    scene: [Bootloader, Splash, Game]
+    scene: [Bootloader, Splash, Game, GameOver]
 };
 
 new Phaser.Game(config);
