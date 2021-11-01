@@ -128,6 +128,9 @@ class Block extends Phaser.GameObjects.Sprite {
         this.locked = true;
         this.stopSpeed()
         if (this.tween) this.tween.stop();
+        if (this.coords.x === 12 && this.coords.y === 12) {
+            this.scene.gameOver();
+        }
     }
 
     vanish () {
