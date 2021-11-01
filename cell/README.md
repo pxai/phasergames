@@ -1,4 +1,4 @@
-# Phaser Games template
+# Metabolik
 
 Template for games using Phaser.
 

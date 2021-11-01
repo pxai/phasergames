@@ -27,7 +27,7 @@ class Block extends Phaser.GameObjects.Sprite {
 
     moveDefault () {
            if (this.locked) return;
-           console.log("Default direction: ", this.defaultDirection, this.coords)
+
             switch (this.defaultDirection) {
                 case 0:
                     this.right();
@@ -86,13 +86,10 @@ class Block extends Phaser.GameObjects.Sprite {
     }
 
     checkNextCell (nextx, nexty) {
-        console.log("NEXT: ", this.coords, nextx, nexty, this.scene.wall.cell[nextx][nexty])
-
         const free = this.scene.wall.cell[nextx][nexty].content === "";
         if (!free) {
             let {x, y} = this.scene.wall.cell[nextx][nexty];
             this.scene.wall.cell[this.coords.x][this.coords.y] = {content: this.block.type, x, y}
-            console.log("Set block! : ", this.block, this.scene.wall.cell[nextx][nexty])
         }
         return free;
     }
@@ -102,16 +99,16 @@ class Block extends Phaser.GameObjects.Sprite {
         if (this.locked) return;
         switch (this.defaultDirection) {
             case 0:
-                this.body.setVelocityX(300)
+                while (!this.locked) { this.right() }
                 break;
             case 1: 
-                this.body.setVelocityX(-300)
+            while (!this.locked) { this.left() }
                 break;
             case 2:
-                this.body.setVelocityY(300)
+                while (!this.locked) { this.down() }
                 break;
             case 3: 
-                this.body.setVelocityY(-300)
+            while (!this.locked) { this.up() }
                 break;
             default: break;
         }

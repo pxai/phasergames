@@ -29,8 +29,6 @@ class CellWall {
                 return {content: "purple", ...block};
             })
         )
-        console.log(this.cell)
-       // this.evolve()
     }
 
     get center () {
@@ -38,7 +36,6 @@ class CellWall {
     }
 
     evolve () {
-        console.log(this.cell)
         for (let x = 0; x < this.cell.length; x++) {
             if (Phaser.Math.Between(0, 1) > 0) {
                 for (let y = 0;y < this.cell[x].length; y++) {
@@ -89,10 +86,8 @@ class CellWall {
     removeBlocks (x, y, color) {
         this.toRemove = [];
         if (color === "black") return [];
-        console.log("To Remove: ", x, y, color)
         this.toRemove = [`${x}:${y}:${color}`];
         this.searchAdjacents(x, y, color);
-        console.log(this.toRemove)
         return this.toRemove;
     }
 

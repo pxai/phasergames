@@ -30,7 +30,6 @@ export default class Bootloader extends Phaser.Scene {
         });*/
 
         blockTypes.forEach(i => {
-            console.log(i.color)
             this.load.image(i.type, `assets/images/${i.type}.png`);
         });
        
