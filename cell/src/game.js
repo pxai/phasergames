@@ -18,7 +18,7 @@ export default class Game extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.clockText = this.add.bitmapText(this.center_width, this.center_height, "arcade", "00:00", 60).setAlpha(0.3).setOrigin(0.5)
+        this.clockText = this.add.bitmapText(this.center_width, this.center_height, "arcade", "00:00", 80).setAlpha(0.1).setOrigin(0.5)
         this.loadAudios();
         this.playMusic();
         this.setGroups();
@@ -30,6 +30,7 @@ export default class Game extends Phaser.Scene {
         this.updateIncoming()
         this.updateHealth();
         this.startClock();
+        this.showInstructions();
     }
 
     generateBlock () {
@@ -71,6 +72,35 @@ export default class Game extends Phaser.Scene {
         this.nextBlock = this.add.bitmapText(this.width - 80, 60, "arcade", "Next:", 18)
     }
 
+    showInstructions() {
+        this.instructions = this.add.bitmapText(this.center_width, this.center_height - 200, "arcade", "Move the component\n with the ARROWS!", 30).setOrigin(0.5).setScrollFactor(0)
+        this.tweens.add({
+            targets: this.instructions,
+            duration: 300,
+            alpha: {from: 0, to: 1},
+            repeat: 5,
+            yoyo: true,
+            onComplete: () => {
+                this.instructions.destroy()
+                this.showSpaceInstructions()
+            }
+        });
+    }
+
+    showSpaceInstructions() {
+        this.spaceInstructions = this.add.bitmapText(this.center_width, this.center_height + 200, "arcade", "Use SPACE for\nspeed drop!", 30).setOrigin(0.5).setScrollFactor(0)
+        this.tweens.add({
+            targets: this.spaceInstructions,
+            duration: 300,
+            alpha: {from: 0, to: 1},
+            repeat: 5,
+            yoyo: true,
+            onComplete: () => {
+                this.spaceInstructions.destroy()
+            }
+        });
+    }
+
     setGroups () {
         this.sicknessGroup = this.add.group();
         this.blockGroup = this.add.group();
@@ -105,7 +135,7 @@ export default class Game extends Phaser.Scene {
                 this.playAudio("move");
             } else if (Phaser.Input.Keyboard.JustDown(this.SPACE)) {
                 this.current.speedUp();
-                this.playAudio("move");
+                this.playAudio("speed");
             } 
             this.current.correctPosition()
         }
@@ -130,6 +160,7 @@ export default class Game extends Phaser.Scene {
     loadAudios () {
         this.audios = {
           "move": this.sound.add("move"),
+          "speed": this.sound.add("speed"),
           "bump": this.sound.add("bump"),
           "cellheart": this.sound.add("cellheart"),
           "destroy": this.sound.add("destroy"),
