@@ -51,7 +51,7 @@ class Block extends Phaser.GameObjects.Sprite {
             this.coords.y++;
             new Bubble(this.scene, this.x - 16, this.y + Phaser.Math.Between(-10, 10),  50, -1, this.block.color)    
         } else {
-            this.scene.blockContact()
+            this.scene.blockContact(this.coords.x, this.coords.y, this.block.type)
         }
     }
 
@@ -61,7 +61,7 @@ class Block extends Phaser.GameObjects.Sprite {
             this.coords.y--;
             new Bubble(this.scene, this.x + 16, this.y + Phaser.Math.Between(-10, 10),  50, -1, this.block.color)
         } else {
-            this.scene.blockContact()
+            this.scene.blockContact(this.coords.x, this.coords.y, this.block.type)
         }
     }
 
@@ -71,7 +71,8 @@ class Block extends Phaser.GameObjects.Sprite {
             this.coords.x--;
             new Bubble(this.scene, this.x + Phaser.Math.Between(-10, 10), this.y + 16,  50, -1, this.block.color)
         } else {
-            this.scene.blockContact()
+            console.log("About to block: ", this.coords.x, this.coords.y)
+            this.scene.blockContact(this.coords.x, this.coords.y, this.block.type)
         }
     }
 
@@ -81,7 +82,7 @@ class Block extends Phaser.GameObjects.Sprite {
             this.coords.x++;
             new Bubble(this.scene, this.x + Phaser.Math.Between(-10, 10), this.y - 16,  50, -1, this.block.color)
         } else {
-            this.scene.blockContact()
+            this.scene.blockContact(this.coords.x, this.coords.y, this.block.type)
         }
     }
 
@@ -89,7 +90,7 @@ class Block extends Phaser.GameObjects.Sprite {
         const free = this.scene.wall.cell[nextx][nexty].content === "";
         if (!free) {
             let {x, y} = this.scene.wall.cell[nextx][nexty];
-            this.scene.wall.cell[this.coords.x][this.coords.y] = {content: this.block.type, x, y}
+            this.scene.wall.cell[this.coords.x][this.coords.y] = {content: this.block.type, x, y, block: this}
         }
         return free;
     }

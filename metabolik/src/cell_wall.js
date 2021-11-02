@@ -60,6 +60,7 @@ class CellWall {
         if (x === 12 && y === 12) {
             this.scene.gameOver()
         } else {
+            console.log("About to set cell: ", x, y, color);
             this.cell[x][y] = { 
                 content: color, 
                 x: this.cell[x][y].x, 
@@ -88,6 +89,7 @@ class CellWall {
         this.toRemove = [];
         this.toRemove = [`${x}:${y}:${color}`];
         this.searchAdjacents(x, y, color);
+        console.log("Blocks to remove: ", this.toRemove)
         return this.toRemove;
     }
 
@@ -96,7 +98,7 @@ class CellWall {
             this.toRemove.push(`${x - 1}:${y}:${color}`)
             this.searchAdjacents(x - 1, y, color);
         } 
-        if (x < 25 && this.cell[x + 1][y].content === color && !this.isIncluded(x + 1, y, color)) {
+        if (x < 24 && this.cell[x + 1][y].content === color && !this.isIncluded(x + 1, y, color)) {
             this.toRemove.push(`${x + 1}:${y}:${color}`)
             this.searchAdjacents(x + 1, y, color);
         } 
@@ -104,7 +106,7 @@ class CellWall {
             this.toRemove.push(`${x}:${y - 1}:${color}`)
             this.searchAdjacents(x, y - 1, color);
         } 
-        if (y < 25 && this.cell[x][y + 1].content === color && !this.isIncluded(x, y + 1, color)) {
+        if (y < 24 && this.cell[x][y + 1].content === color && !this.isIncluded(x, y + 1, color)) {
             this.toRemove.push(`${x}:${y + 1}:${color}`)
             this.searchAdjacents(x, y + 1, color);
         }

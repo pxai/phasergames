@@ -187,9 +187,8 @@ export default class Game extends Phaser.Scene {
         }
     }
 
-    blockContact () {
+    blockContact (x, y, color) {
         this.current.setBlock()
-        this.physics.world.removeCollider(this.wallCollider);
         this.wall.removeBlocks(this.current.coords.x, this.current.coords.y, this.current.block.type)
         this.cleanBlocks(this.wall.toRemove);
 
@@ -208,7 +207,7 @@ export default class Game extends Phaser.Scene {
         blocks.forEach( block => {
             let [x, y, color] = block.split(":");
             this.wall.cell[x][y].content = "";
-            if (this.wall.cell[x][y].block) this.wall.cell[x][y].block.vanish()
+            this.wall.cell[x][y].block.vanish()
         })
         this.current.vanish()
         this.updateScore(blocks.length);
