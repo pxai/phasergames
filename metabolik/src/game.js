@@ -204,6 +204,7 @@ export default class Game extends Phaser.Scene {
             this.playAudio("bump");
             return;
         } 
+        this.showPoints(blocks)
         blocks.forEach( block => {
             let [x, y, color] = block.split(":");
             this.wall.cell[x][y].content = "";
@@ -212,6 +213,19 @@ export default class Game extends Phaser.Scene {
         this.current.vanish()
         this.updateScore(blocks.length);
         this.playAudio("destroy");
+    }
+
+    showPoints (blocks) {
+        let text = this.add.bitmapText(this.current.x, this.current.y - 10, "arcade", "+"+blocks.length,20, 0xff0000).setOrigin(0.5)
+        this.tweens.add({
+            targets: text,
+            duration: 1000,
+            alpha: {from: 1, to: 0},
+            y: {from: this.current.y - 10, to: this.current.y - 60},
+            onComplete: () => {
+                text.destroy()
+            }
+        });
     }
 
     changeScreen(name) {

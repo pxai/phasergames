@@ -12,16 +12,19 @@ class CellWall {
     generateWall () {
         this.cell = Cell.map( (row, x) => 
             row.map( (block, y) => {
-                if (block.content === "purple")
-                new Block(
-                    this.scene,
-                    block.x + 50,
-                    block.y + 12, 
-                    { "type": "purple", "color": 0xffffff },
-                    {x, y},
-                    false
-                );
-                return {content: "purple", ...block};
+                let b = null;
+                if (block.content === "purple") {
+                    b = new Block(
+                        this.scene,
+                        block.x + 50,
+                        block.y + 12, 
+                        { "type": "purple", "color": 0xffffff },
+                        {x, y},
+                        false
+                    );
+                }
+
+                return {content: "purple", ...block, block: b};
             })
         )
     }
