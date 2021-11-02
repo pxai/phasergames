@@ -187,7 +187,7 @@ export default class Game extends Phaser.Scene {
         }
     }
 
-    blockContact (x, y, color) {
+    blockContact () {
         this.current.setBlock()
         this.wall.removeBlocks(this.current.coords.x, this.current.coords.y, this.current.block.type)
         this.cleanBlocks(this.wall.toRemove);

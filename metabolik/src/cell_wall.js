@@ -60,7 +60,6 @@ class CellWall {
         if (x === 12 && y === 12) {
             this.scene.gameOver()
         } else {
-            console.log("About to set cell: ", x, y, color);
             this.cell[x][y] = { 
                 content: color, 
                 x: this.cell[x][y].x, 
