@@ -33,9 +33,8 @@ class Player extends Phaser.GameObjects.Sprite {
        // if (this.shooting) return;
         //this.shooting = true;
         console.log(pointer.x, pointer.y, 'logo');
-        let speed_x = Math.cos(this.rotation + Math.PI/2) * 20;
-        let speed_y = Math.sin(this.rotation + Math.PI/2) * 20;
-        new Shot(this.scene, this.x, this.y)
+        this.getSpeeds();
+        this.scene.shots.add(new Shot(this.scene, this.x, this.y, this.speed_x, this.speed_y))
     }
 
     release(pointer) {
@@ -46,27 +45,20 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     update () {
-        this.directionX = this.body.velocity.x > 0 ? 1 : -1;
-        this.directionY = this.body.velocity.y > 0 ? 1 : -1;
         // Lerp rotation towards mouse
-        let dx = (this.scene.input.mousePointer.x + this.scene.cameras.main.x) - this.x;
-        let dy = (this.scene.input.mousePointer.y + this.scene.cameras.main.y) - this.y;
-        let angle = Math.atan2(dy, dx) - Math.PI/2;
-        let dir = (angle - this.rotation) / (Math.PI * 2);
-        dir -= Math.round(dir);
-        dir = dir * Math.PI * 2;
-        this.rotation += dir * 0.1;
+        this.getSpeeds()
 
         // Move forward
         if(this.W.isDown || this.cursor.up.isDown){
 
             this.speed_x += Math.cos(this.rotation + Math.PI/2) * this.speed;
             this.speed_y += Math.sin(this.rotation + Math.PI/2) * this.speed;
+
             console.log("Rotation: ", this.rotation, this.speed_x, this.speed_y)
             if (Phaser.Math.Between(1, 4) > 1) {
-                new Particle(this.scene, this.x - (this.speed_x * 3), this.y - (this.speed_y * 3),  50, -1)
-                new Particle(this.scene, this.x - (this.speed_x * 5), this.y - (this.speed_y * 5),  50, -1)
-                new Particle(this.scene, this.x - (this.speed_x * 8), this.y - (this.speed_y * 8),  50, -1)
+                new Particle(this.scene, this.x - (this.speed_x * 7), this.y - (this.speed_y * 3),  50, -1)
+                new Particle(this.scene, this.x - (this.speed_x * 8), this.y - (this.speed_y * 5),  50, -1)
+                new Particle(this.scene, this.x - (this.speed_x * 9), this.y - (this.speed_y * 8),  50, -1)
             }
         }
         
@@ -87,6 +79,15 @@ class Player extends Phaser.GameObjects.Sprite {
         //// this.socket.emit('move-player',{x:this.x,y:this.y,angle:this.rotation})
     }
         
+    getSpeeds () {
+        let dx = (this.scene.input.mousePointer.x + this.scene.cameras.main.x) - this.x;
+        let dy = (this.scene.input.mousePointer.y + this.scene.cameras.main.y) - this.y;
+        let angle = Math.atan2(dy, dx) - Math.PI/2;
+        let dir = (angle - this.rotation) / (Math.PI * 2);
+        dir -= Math.round(dir);
+        dir = dir * Math.PI * 2;
+        this.body.rotation += dir * 10;
+    }
       
 }
 

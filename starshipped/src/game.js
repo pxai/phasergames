@@ -17,6 +17,7 @@ export default class Game extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
+        this.shots = this.add.group();
         this.player = new Player(this, 40, 40)
         this.cameras.main.setBackgroundColor(0x494d7e);
        // this.loadAudios();
@@ -25,6 +26,14 @@ export default class Game extends Phaser.Scene {
 
     update () {
         this.player.update();
+        this.shots.children.entries.forEach(shot => { 
+            if(shot.x < -10 || shot.x > 1000 || shot.y < -10 || shot.y > 1000){
+                this.shots.remove(shot);
+                shot.destroy;
+            } else {
+                shot.update();
+            }
+        });
     }
 
     playMusic () {

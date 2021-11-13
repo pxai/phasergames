@@ -1,18 +1,16 @@
 import Particle from "./particle";
 
 class Shot extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, name = "shot", velocity = 1, direction) {
-        super(scene, x, y, name);
-        this.name = name;
+    constructor (scene, x, y, speed_x, speed_y) {
+        super(scene, x, y, "shot");
         this.scene = scene;
         this.setOrigin(0.5)
-
+        this.speed_x = speed_x;
+        this.speed_y = speed_y;
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
-        this.direction = direction || Phaser.Math.Between(0, 1) ? -1 : 1;
-        this.body.setVelocityX(300 * this.direction * velocity);
-        this.flipX = this.direction > 0;
+        this.init();
 
         //this.collider = this.scene.physics.add.overlap(this.scene.player, this, this.scene.player.hit, null, this.scene.player);
         //this.overlapBulletBeam = this.scene.physics.add.overlap(this.scene.player.beamGroup, this, this.scene.player.destroyBeam);
@@ -21,8 +19,8 @@ class Shot extends Phaser.GameObjects.Sprite {
     init () {
         this.scene.tweens.add({
             targets: this,
-            duration: 100,
-            scale: {from: Phaser.Math.Between(0.5, 1), to: 0.1},
+            duration: 200,
+            scale: {from: 0.6, to: 1},
             repeat: -1
         });
 
@@ -33,17 +31,20 @@ class Shot extends Phaser.GameObjects.Sprite {
             origin: 0.5
           });
           // this.on('animationcomplete', this.animationComplete, this);
-          this.anims.play("fly", true)
+          this.anims.play("shot", true)
     }
 
     update () {
         if (Phaser.Math.Between(1, 2) > 1) {
-            new Particle(this.scene, this.x - (this.direction * 34), this.y,  50, -1)
+            new Particle(this.scene, this.x, this.y,  50, 0x3e6875)
         }
+
+        this.x += this.speed_x; 
+        this.y += this.speed_y; 
     }
 
     explode() {
-        Array(5).fill(0).forEach(a => { new Bubble(this.scene, this.x, this.y,  50, -1) });
+        Array(5).fill(0).forEach(a => { new Particle(this.scene, this.x, this.y,  50, -1) });
         
         this.destroy();
     }
