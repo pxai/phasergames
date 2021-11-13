@@ -7,6 +7,7 @@ class Crab extends Phaser.GameObjects.Sprite {
         this.setOrigin(0.5);
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
+        this.body.setSize(32, 20)
         this.jumping = false;
         this.right = true;
         this.init();
@@ -56,8 +57,38 @@ class Crab extends Phaser.GameObjects.Sprite {
         new Dust(this.scene, this.x, this.y, "0x902406")
     }
 
+    hitSurface () {
+        this.body.stop();
+        new Dust(this.scene, this.x, this.y, "0x902406")
+        this.scene.tweens.add({
+            targets: this,
+            duration: 500,
+            alpha: {from: 1, to: 0},
+            onComplete: () => {
+                this.restart();
+            }
+        });
+    }
+
     redirect(velocityX) {
         this.body.setVelocityX(velocityX);
+    }
+
+    restart () {
+        this.y = 200;
+        this.body.enable = false;
+        this.readyText = this.scene.add.bitmapText(this.x, this.y + 300, "arcade", "READY?", 30)
+        this.scene.tweens.add({
+            targets: [this, this.readyText],
+            duration: 200,
+            alpha: {from: 1, to: 0},
+            repeat: 5,
+            yoyo: true,
+            onComplete: () => {
+                this.body.enable = true;
+                this.readyText.destroy();
+            }
+        });
     }
 
     animationComplete(animation, frame) {

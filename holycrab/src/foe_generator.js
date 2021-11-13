@@ -10,7 +10,6 @@ export default class FoeGenerator {
 }
 
   generate () {
-      this.add()
       this.generationIntervalId = setInterval(() => this.add(), 2000)
   }
 

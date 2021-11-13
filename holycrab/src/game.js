@@ -4,6 +4,7 @@ import Block from "./block";
 import Shell from "./shell";
 import Sky from "./sky";
 import FoeGenerator from "./foe_generator";
+import Water from "./water";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -26,13 +27,14 @@ export default class Game extends Phaser.Scene {
         this.cameras.main.setBackgroundColor(0x3E6875);
         this.addSky();
         this.crab = new Crab(this, 60, 20);
+        this.cameras.main.startFollow(this.crab);
         this.setStartBlock();
         this.setShells();
         this.setKeys();
-        this.playMusic();
-        this.playBackground();
-        this.foeGenerator = new FoeGenerator(this);
-        this.foeGenerator.generate()
+        //this.playMusic();
+        //this.playBackground();
+        this.addFoes();
+        this.addWater();
         /*   this.loadAudios();
         
         this.setGroups();
@@ -45,8 +47,30 @@ export default class Game extends Phaser.Scene {
         this.updateHealth();
         this.startClock();
        */
-        this.cameras.main.startFollow(this.crab);
+
         this.showInstructions();
+    }
+
+    addWater() {
+        this.water = new Water(this);
+        this.colliderActivated = true;
+        this.waterCollider = this.physics.add.collider(this.crab, this.water.surface, this.hitSurface, () => {
+            return this.colliderActivated;
+        }, this);
+    }
+
+    addFoes () {
+        this.foeGenerator = new FoeGenerator(this);
+
+        this.physics.add.collider(this.crab, this.foeGenerator.foeGroup, this.hitFoe, () => {
+            return true;
+        }, this);
+
+        this.physics.add.collider(this.shells, this.foeGenerator.foeGroup, this.foeHitShell, () => {
+            return true;
+        }, this);
+
+        this.time.delayedCall(2000, () => {  this.foeGenerator.generate() })
     }
 
     setStartBlock () {
@@ -78,13 +102,26 @@ export default class Game extends Phaser.Scene {
         shell.touched(crab);
     }
 
+    foeHitShell(shell, foe) {
+        foe.turn();
+        shell.destroy();
+    }
+
+    hitSurface(crab, surface) {
+        crab.hitSurface();
+    }
+
+    hitFoe(crab, foe) {
+        crab.hitSurface();
+        foe.turn();
+    }
+
 
     addSky() {
         this.sky = new Sky(this);
     }
 
     setBlock (pointer) {
-        console.log("Len:", this.shells.children.entries.length);
         if (this.shells.children.entries.length === 2) return;
         const shell = new Shell(this, pointer.worldX, pointer.worldY, "shell");
         this.shells.add(shell)
@@ -123,10 +160,8 @@ export default class Game extends Phaser.Scene {
         this.instructions = this.add.bitmapText(this.center_width, this.center_height - 200, "arcade", "Place a shell with the mouse\nbelow the crab!", 30).setOrigin(0.5).setScrollFactor(0)
         this.tweens.add({
             targets: this.instructions,
-            duration: 300,
-            alpha: {from: 0, to: 1},
-            repeat: 5,
-            yoyo: true,
+            duration: 3000,
+            alpha: {from: 1, to: 0},
             onComplete: () => {
                 this.instructions.destroy()
                 this.showSpaceInstructions()
@@ -136,14 +171,15 @@ export default class Game extends Phaser.Scene {
 
     showSpaceInstructions() {
         this.spaceInstructions = this.add.bitmapText(this.center_width, this.center_height + 200, "arcade", "Keep on doing it\nuntil the end!", 30).setOrigin(0.5).setScrollFactor(0)
+        this.arrow = this.add.image(this.center_width, this.center_height - 100, "arrow").setOrigin(0.5).setScrollFactor(0)
+
         this.tweens.add({
-            targets: this.spaceInstructions,
-            duration: 300,
-            alpha: {from: 0, to: 1},
-            repeat: 5,
-            yoyo: true,
+            targets: [this.spaceInstructions, this.arrow],
+            duration: 3000,
+            alpha: {from: 1, to: 0},
             onComplete: () => {
-                this.spaceInstructions.destroy()
+                this.spaceInstructions.destroy();
+                this.arrow.destroy();
             }
         });
     }
@@ -221,33 +257,6 @@ export default class Game extends Phaser.Scene {
         }
     }
 
-    blockContact () {
-        this.current.setBlock()
-        this.wall.removeBlocks(this.current.coords.x, this.current.coords.y, this.current.block.type)
-        this.cleanBlocks(this.wall.toRemove);
-
-        this.current = null;
-        this.updateHealth()
-        this.generateBlock();
-        this.updateIncoming();
-    }
-
-    cleanBlocks (blocks) {
-        if (blocks.length < 2) {
-            this.playAudio("bump");
-            return;
-        }
-        this.showPoints(blocks)
-        blocks.forEach( block => {
-            let [x, y, color] = block.split(":");
-            this.wall.cell[x][y].content = "";
-            this.wall.cell[x][y].block.vanish()
-        })
-        this.current.vanish()
-        this.updateScore(blocks.length);
-        this.playAudio("destroy");
-    }
-
     showPoints (blocks) {
         let text = this.add.bitmapText(this.current.x, this.current.y - 10, "arcade", "+"+blocks.length,20, 0xff0000).setOrigin(0.5)
         this.tweens.add({
@@ -272,17 +281,5 @@ export default class Game extends Phaser.Scene {
         clearInterval(this.clockId);
         this.registry.set("time", this.elapsed);
         this.scene.start(name);
-    }
-
-    blockContact2 () {
-        this.current.setBlock()
-        this.current = null;
-        this.generateBlock();
-    }
-
-    updateIncoming () {
-        this.blockGenerator.incoming.forEach( (block, i) => {
-            this.add.image(this.width - 40, 240 - (i * 32), block.type)
-        })
     }
 }
