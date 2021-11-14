@@ -1,9 +1,10 @@
 class Bubble extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, velocity = 1, direction, color = 0x902406) {
-        super(scene, x, y, 4, 4, color);
+        super(scene, x, y, 10, 10, color);
         this.name = "bubble";
         this.scene = scene;
-        this.setOrigin(0.5)
+        this.setOrigin(0.5);
+        this.setAlpha(0.5);
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -17,9 +18,10 @@ class Bubble extends Phaser.GameObjects.Rectangle {
     init () {
         this.scene.tweens.add({
             targets: this,
-            duration: Phaser.Math.Between(600, 1000),
-            y: {from: this.y, to: this.y + (this.direction * Phaser.Math.Between(20, 40))},
-            alpha: { from: 1, to: 0 },
+            duration: 900,
+            //y: {from: this.y, to: this.y + (this.direction * Phaser.Math.Between(20, 40))},
+            alpha: { from: 0.5, to: 0 },
+            scale: { from: 1, to: 0},
             onComplete: () => { this.destroy() }
         });
     }

@@ -36,8 +36,7 @@ class Crab extends Phaser.GameObjects.Sprite {
             repeat: 1
         });
         this.anims.play(this.name + "fall", true);
-        this.debugTxt = this.scene.add.bitmapText(this.x, this.y - 10, "wendy", `x: ${this.x} y: ${this.y}`, 20, 0xffffff).setOrigin(0.5);
-
+ 
         this.on('animationcomplete', this.animationComplete, this);
     }
 
@@ -46,14 +45,23 @@ class Crab extends Phaser.GameObjects.Sprite {
             this.anims.play(this.name + "hit", true);
         } else if (this.body.velocity.y < 0) {
             this.anims.play(this.name + "jump", true);
-            new Bubble(this.scene, this.x, this.y + Phaser.Math.Between(-10, 10),  50, -1)    
+            new Bubble(this.scene, this.x, this.y,  50, -1)    
             this.scene.blockCollider.active = false;
         } else {
-            new Bubble(this.scene, this.x, this.y - Phaser.Math.Between(-10, 10),  50, -1)    
+            new Bubble(this.scene, this.x, this.y,  50, -1)    
             this.anims.play(this.name + "fall", true)
             this.scene.blockCollider.active = true;
         }
-        this.debugPosition();
+        //this.debugPosition();
+        if (this.scene.crab2) this.updateCrab2();
+    }
+
+    updateCrab2 () {
+        if (this.link) this.link.destroy();
+        this.scene.crab2.x = this.x;
+        this.scene.crab2.y = this.y - 24;
+        this.scene.crab2.body.x = this.body.x;
+        this.scene.crab2.body.y = this.body.y - 24;
     }
 
     debugPosition () {

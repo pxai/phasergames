@@ -1,8 +1,8 @@
 export default class Water {
     constructor(scene){
         this.scene = scene;
-        this.water = this.scene.add.rectangle(0, this.scene.initial.y + 600, this.scene.width, 800, 0x008080).setAlpha(0.5).setOrigin(0).setScrollFactor(0, 1)
-        this.surface = this.scene.add.rectangle(0, this.scene.initial.y + 600, this.scene.width * 100, 4, 0x008888).setAlpha(0.5).setOrigin(0).setScrollFactor(0, 1)
+        this.water = this.scene.add.rectangle(0, this.scene.seaInitial.y + 400, this.scene.width, 800, 0x008080).setAlpha(0.5).setOrigin(0).setScrollFactor(0, 1)
+        this.surface = this.scene.add.rectangle(0, this.scene.seaInitial.y + 400, this.scene.width * 100, 4, 0x008888).setAlpha(0.5).setOrigin(0).setScrollFactor(0, 1)
 
         this.scene.physics.world.enable(this.surface);
         this.surface.body.immovable = true;
@@ -14,7 +14,7 @@ export default class Water {
     generate () {
         console.log("WATER CREATED-------------------")
         this.shines = [];
-        this.generationIntervalId = setInterval(() => this.add(this.scene), 100)
+        this.generationIntervalId = setInterval(() => this.add(), 100)
     }
 
     stop () {
@@ -23,11 +23,10 @@ export default class Water {
         this.shines.forEach(shine => clearInterval(shine));
     }
 
-    add (scene) {
-        if (!scene) return;
+    add () {
         const x = Phaser.Math.Between(this.scene.crab.x - 500, this.scene.crab.x + 500);
         const y = Phaser.Math.Between(this.surface.y + 2, this.surface.y + 200)
-        const shine = scene.add.rectangle(x, y, 10, 4, 0xffffff)
+        const shine = this.scene.add.rectangle(x, y, 10, 4, 0xffffff)
         this.waterLayer.add(shine);
         this.shines.push(setTimeout(() => shine.destroy(), 500))
     }

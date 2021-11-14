@@ -12,6 +12,7 @@ export default class Stage1 extends Phaser.Scene {
         this.next = next;
         this.playerLimited = true;
         this.initial = { x: 0, y: 0 };
+        this.seaInitial = { x: 0, y: 0 };
         this.cameraSize = { w: 10920 * 2, h: 10080 * 2 }
         this.worldBounds = false;
         this.startBlock = { x: 0, y: 400 }
@@ -70,7 +71,6 @@ export default class Stage1 extends Phaser.Scene {
     }
 
     addWater() {
-        if (this.water) return;
         this.water = new Water(this);
         this.colliderActivated = true;
         this.waterCollider = this.physics.add.collider(this.crabs, this.water.surface, this.hitSurface, () => {
@@ -99,7 +99,7 @@ export default class Stage1 extends Phaser.Scene {
             this.blocks.add(new Block(this, x + (i * 32), y))
         });
         this.colliderActivated = true;
-        this.blockCollider = this.physics.add.collider(this.crab, this.blocks, this.hitBlock, () => {
+        this.blockCollider = this.physics.add.collider(this.crabs, this.blocks, this.hitBlock, () => {
             return this.colliderActivated;
         }, this);
 
