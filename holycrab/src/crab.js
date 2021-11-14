@@ -1,7 +1,7 @@
 import Dust from "./dust";
 
 class Crab extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, name = "crab") {
+    constructor(scene, x, y, name = "crab", limited = true) {
         super(scene, x, y, name);
         this.scene = scene;
         this.setOrigin(0.5);
@@ -10,6 +10,7 @@ class Crab extends Phaser.GameObjects.Sprite {
         this.body.setSize(32, 20)
         this.jumping = false;
         this.right = true;
+        this.limited = limited;
         this.init();
     }
 
@@ -48,17 +49,41 @@ class Crab extends Phaser.GameObjects.Sprite {
 
     hitShell (shell) {
         console.log(this.body.speed)
-        this.body.setVelocityY(this.body.speed > 330 ? -330 : -this.body.speed);
-        new Dust(this.scene, this.x, this.y, "0xede46e")
+        const score = Math.round(Math.abs(this.body.speed));
+        this.showPoints(`+${score}`);
+        this.scene.updateScore(score);
+        const velocity = this.limited ? (this.body.speed > 330 ? -330 : -this.body.speed) : -330;
+        this.body.setVelocityY(velocity);
+        new Dust(this.scene, this.x, this.y, "0xede46e");
+    }
+
+    showPoints (score, color = 0xff0000) {
+        let text = this.scene.add.bitmapText(this.x, this.y - 10, "wendy", score, 20, color).setOrigin(0.5);
+        this.scene.tweens.add({
+            targets: text,
+            duration: 1000,
+            alpha: {from: 1, to: 0},
+            y: {from: this.y - 10, to: this.y - 60},
+            onComplete: () => {
+                text.destroy()
+            }
+        });
     }
 
     hitGround () {
+        this.body.setVelocityX(0);
         this.body.setVelocityY(-330);
         new Dust(this.scene, this.x, this.y, "0x902406")
     }
 
-    hitSurface () {
+    hit (score = 0) {
+        this.body.enable = false;
         this.body.stop();
+        if (score !== 0) {
+            this.showPoints(`${score}`);
+            this.scene.updateScore(-1000);
+        }
+
         new Dust(this.scene, this.x, this.y, "0x902406")
         this.scene.tweens.add({
             targets: this,
@@ -82,11 +107,11 @@ class Crab extends Phaser.GameObjects.Sprite {
             targets: [this, this.readyText],
             duration: 200,
             alpha: {from: 1, to: 0},
-            repeat: 5,
+            repeat: 3,
             yoyo: true,
             onComplete: () => {
                 this.body.enable = true;
-                this.readyText.destroy();
+                this.readyText.setText("");
             }
         });
     }

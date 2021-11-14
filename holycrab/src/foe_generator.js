@@ -6,11 +6,14 @@ export default class FoeGenerator {
     this.foeLayer = this.scene.add.layer();
     this.foe = [];
     this.foeGroup = this.scene.add.group()
-    this.generate()
 }
 
   generate () {
-      this.generationIntervalId = setInterval(() => this.add(), 2000)
+      this.generationIntervalId = setInterval(() => this.add(), 3000)
+  }
+
+  pause () {
+    clearInterval(this.generationIntervalId);
   }
 
   stop () {
@@ -21,7 +24,8 @@ export default class FoeGenerator {
   }
 
   add () {
-      this.foeGroup.add(new Seagull(this.scene, this.scene.crab.x + 500, this.scene.crab.y + Phaser.Math.Between(-200, 200)));
+      this.foeGroup.add(new Seagull(this.scene, this.scene.crab.x + Phaser.Math.Between(500, 600), this.scene.crab.y + Phaser.Math.Between(-200, 200)));
+      this.foeGroup.add(new Seagull(this.scene, this.scene.crab.x + Phaser.Math.Between(500, 600), this.scene.crab.y + Phaser.Math.Between(-200, 200)));
   }
 
   update () {

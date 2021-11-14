@@ -18,6 +18,7 @@ export default class Splash extends Phaser.Scene {
         this.startTween()
         this.input.keyboard.on("keydown-ENTER", () => this.startGame(), this);
        // this.playMusic();
+        this.playBackground();
         this.showInstructions();
     }
 
@@ -32,7 +33,7 @@ export default class Splash extends Phaser.Scene {
     }
     startGame () {
         //this.theme.stop();
-        this.scene.start("game");
+        this.scene.start("transition", {next: "stage1", name: "STAGE"});
     }
 
     playMusic () {
@@ -47,6 +48,20 @@ export default class Splash extends Phaser.Scene {
             delay: 0
         });
         this.theme.play();
+    }
+
+    playBackground() {
+        if (this.background) this.background.stop()
+        this.background = this.sound.add("background", {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+        });
+        this.background.play()
     }
 
     showInstructions() {

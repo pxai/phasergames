@@ -1,15 +1,15 @@
 class Block extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, name = "block", fixed = true) {
-        super(scene, x, y, name);
+    constructor(scene, x, y, finish = false) {
+        super(scene, x, y, "block");
         this.scene = scene;
-        this.name = name;
+        this.name = "block";
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.setOrigin(0.5);
         this.body.immovable = true;
         this.body.moves = false;
 
-        if (!fixed) this.init();
+        this.finish = finish;
     }
 
     init () {

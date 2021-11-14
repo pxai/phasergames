@@ -5,50 +5,24 @@ import Shell from "./shell";
 import Sky from "./sky";
 import FoeGenerator from "./foe_generator";
 import Water from "./water";
+import Stage1 from "./stage1";
 
-export default class Game extends Phaser.Scene {
-    constructor () {
-        super({ key: "game" });
+export default class Stage2 extends Stage1 {
+    constructor (key = "stage2", next = "stage3") {
+        super(key);
+        this.next = next;
+        this.playerLimited = false;
+        this.initialBlock = { x: 400, y: 400};
+    }
+
+    init (data) {
+        this.name = data.name;
     }
 
     preload () {
         this.registry.set("score", 0);
         this.registry.set("health", 100);
         this.registry.set("time", 0);
-    }
-
-    create () {
-        this.width = this.sys.game.config.width;
-        this.height = this.sys.game.config.height;
-        this.center_width = this.width / 2;
-        this.center_height = this.height / 2;
-        this.clockText = this.add.bitmapText(this.center_width, this.center_height, "arcade", "00:00", 80).setAlpha(0.1).setOrigin(0.5)
-        this.cameras.main.setBounds(0, 0, 10920 * 2, 10080 * 2);
-        this.cameras.main.setBackgroundColor(0x3E6875);
-        this.addSky();
-        this.crab = new Crab(this, 60, 20);
-        this.cameras.main.startFollow(this.crab);
-        this.setStartBlock();
-        this.setShells();
-        this.setKeys();
-        //this.playMusic();
-        //this.playBackground();
-        this.addFoes();
-        this.addWater();
-        /*   this.loadAudios();
-        
-        this.setGroups();
-        this.blockGenerator = new BlockGenerator(this);
-        this.setScores();
-
-        this.generateWall();
-        this.generateBlock();
-        this.updateIncoming()
-        this.updateHealth();
-        this.startClock();
-       */
-
-        this.showInstructions();
     }
 
     addWater() {
@@ -70,7 +44,7 @@ export default class Game extends Phaser.Scene {
             return true;
         }, this);
 
-        this.time.delayedCall(2000, () => {  this.foeGenerator.generate() })
+        this.time.delayedCall(5000, () => {  this.foeGenerator.generate() })
     }
 
     setStartBlock () {
@@ -82,6 +56,13 @@ export default class Game extends Phaser.Scene {
         this.physics.add.collider(this.crab, this.blocks, this.hitBlock, () => {
             return this.colliderActivated;
         }, this);
+        this.time.delayedCall(10000, () => {  this.setFinishBlock() })
+    }
+
+    setFinishBlock() {
+        [0, 1, 2, 3].forEach( (block, i) => {
+            this.blocks.add(new Block(this, this.crab.x + 400 + (i * 32), 400, true))
+        });
     }
 
     setShells () {
@@ -95,6 +76,9 @@ export default class Game extends Phaser.Scene {
     hitBlock(crab, block) {
         block.touched(crab);
         crab.hitGround()
+        if (block.finish) {
+            this.stageCompleted()
+        }
     }
 
     hitShell(crab, shell) {
@@ -108,14 +92,17 @@ export default class Game extends Phaser.Scene {
     }
 
     hitSurface(crab, surface) {
-        crab.hitSurface();
+        crab.hit(-1000);
+        this.foeGenerator.pause();
+        this.time.delayedCall(3000, () => {  this.foeGenerator.generate() })
     }
 
     hitFoe(crab, foe) {
-        crab.hitSurface();
+        crab.hit();
         foe.turn();
+        this.foeGenerator.pause();
+        this.time.delayedCall(3000, () => {  this.foeGenerator.generate() })
     }
-
 
     addSky() {
         this.sky = new Sky(this);
@@ -128,32 +115,13 @@ export default class Game extends Phaser.Scene {
         this.time.delayedCall(1000, () => {  this.shells.remove(shell);shell.destroy(); })
     }
 
-    generateWall () {
-        this.wall = new CellWall(this);
-        this.wall.evolve()
-        this.evolveId = setInterval(() => this.wall.evolve(), 10000);
-    }
-
-    startClock () {
-        this.time = 0;
-        this.clockId = setInterval(() => this.updateClock(), 1000);
-    }
-
-    updateClock () {
-        this.time++;
-        this.elapsed = `${Math.round(this.time / 60)}`.padStart(2, 0) + ":" + `${this.time % 60}`.padStart(2, 0);
-        this.clockText.setText(this.elapsed)
-    }
-
     setKeys () {
         this.ESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
         this.input.on('pointerdown', (pointer) => this.setBlock(pointer), this);
     }
 
     setScores() {
-        this.scoreText = this.add.bitmapText(100, 16, "arcade", "Points: 0", 20).setOrigin(0.5).setScrollFactor(0)
-        this.healthText = this.add.bitmapText(this.width - 100, 16, "arcade", "Health: " + this.registry.get("health"), 20).setOrigin(0.5).setScrollFactor(0)
-        this.nextBlock = this.add.bitmapText(this.width - 80, 60, "arcade", "Next:", 18)
+        this.scoreText = this.add.bitmapText(this.center_width, 20, "arcade", "SCORE: 0", 20).setOrigin(0.5).setScrollFactor(0)
     }
 
     showInstructions() {
@@ -170,7 +138,7 @@ export default class Game extends Phaser.Scene {
     }
 
     showSpaceInstructions() {
-        this.spaceInstructions = this.add.bitmapText(this.center_width, this.center_height + 200, "arcade", "Keep on doing it\nuntil the end!", 30).setOrigin(0.5).setScrollFactor(0)
+        this.spaceInstructions = this.add.bitmapText(this.center_width, this.center_height + 100, "arcade", "Keep on doing it\nuntil the end!", 30).setOrigin(0.5).setScrollFactor(0)
         this.arrow = this.add.image(this.center_width, this.center_height - 100, "arrow").setOrigin(0.5).setScrollFactor(0)
 
         this.tweens.add({
@@ -213,20 +181,6 @@ export default class Game extends Phaser.Scene {
         this.theme.play()
     }
 
-    playBackground() {
-        if (this.background) this.background.stop()
-        this.background = this.sound.add("background", {
-            mute: false,
-            volume: 1,
-            rate: 1,
-            detune: 0,
-            seek: 0,
-            loop: true,
-            delay: 0
-        });
-        this.background.play()
-    }
-
     loadAudios () {
         this.audios = {
           "move": this.sound.add("move"),
@@ -245,41 +199,29 @@ export default class Game extends Phaser.Scene {
     updateScore (points = 0) {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
-        this.scoreText.setText("Points: "+Number(score).toLocaleString());
+        this.scoreText.setText("SCORE: "+Number(score).toLocaleString());
     }
 
-    updateHealth () {
-        let points = this.wall.freePositions;
-        this.registry.set("health", points);
-        this.healthText.setText("Health: " + Number(points).toLocaleString());
-        if (points < 80) {
-            this.gameOver();
-        }
-    }
-
-    showPoints (blocks) {
-        let text = this.add.bitmapText(this.current.x, this.current.y - 10, "arcade", "+"+blocks.length,20, 0xff0000).setOrigin(0.5)
+    stageCompleted () {
+        this.foeGenerator.stop();
+        let text = this.add.bitmapText(this.crab.x, this.crab.y - 300, "arcade", "STAGE COMPLETED!!\nSCORE: " + this.registry.get("score"),40, 0xff0000).setOrigin(0.5)
         this.tweens.add({
             targets: text,
-            duration: 1000,
+            duration: 300,
             alpha: {from: 1, to: 0},
-            y: {from: this.current.y - 10, to: this.current.y - 60},
+            repeat: 5,
+            yoyo: true,
             onComplete: () => {
                 text.destroy()
+                this.finishScene();
             }
         });
     }
 
-    changeScreen(name) {
-        this.gameOver("splash")
-    }
-
-    gameOver (name = "game_over") {
+    finishScene () {
         if (this.theme) this.theme.stop();
-        if (this.background) this.background.stop();
-        clearInterval(this.evolveId )
-        clearInterval(this.clockId);
-        this.registry.set("time", this.elapsed);
-        this.scene.start(name);
-    }
+        this.water.stop();
+        this.sky.stop();
+        this.scene.start("transition", {next: this.next, name: "STAGE"});
+      }
 }
