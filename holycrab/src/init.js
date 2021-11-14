@@ -19,7 +19,7 @@ const config = {
         default: "arcade",
         arcade: {
             gravity: { y: 350 },
-            debug: true
+            debug: false
         }
     },
     scene: [Bootloader, Splash, Stage1, Stage2, GameOver, Transition]

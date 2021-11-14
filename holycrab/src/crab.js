@@ -1,4 +1,5 @@
 import Dust from "./dust";
+import Bubble from "./bubble";
 
 class Crab extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, name = "crab", limited = true) {
@@ -44,10 +45,13 @@ class Crab extends Phaser.GameObjects.Sprite {
             this.anims.play("crabhit", true);
         } else if (this.body.velocity.y < 0) {
             this.anims.play("crabjump", true);
+            new Bubble(this.scene, this.x, this.y + Phaser.Math.Between(-10, 10),  50, -1)    
+            this.scene.blockCollider.active = false;
         } else {
+            new Bubble(this.scene, this.x, this.y - Phaser.Math.Between(-10, 10),  50, -1)    
             this.anims.play("crabfall", true)
+            this.scene.blockCollider.active = true;
         }
-
         this.debugPosition();
     }
 
@@ -125,8 +129,9 @@ class Crab extends Phaser.GameObjects.Sprite {
     }
 
     restart () {
-        this.body.y = this.body.y - 400
-        this.y = this.y - 400
+        const {x, y} = this.scene.midPoint;
+        this.body.y = y
+        this.y = y - 300
         this.body.enable = false;
         this.readyText = this.scene.add.bitmapText(this.x, this.y + 100, "arcade", "READY?", 30)
         this.scene.tweens.add({
@@ -144,7 +149,6 @@ class Crab extends Phaser.GameObjects.Sprite {
 
     animationComplete(animation, frame) {
         if (animation.key === "crabhit") {
-            console.log("Change:");
             this.anims.play("crabjump", true)
         }
     }

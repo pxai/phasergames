@@ -18,7 +18,7 @@ export default class Splash extends Phaser.Scene {
         this.startTween()
         this.input.keyboard.on("keydown-ENTER", () => this.startGame(), this);
        // this.playMusic();
-        this.playBackground();
+        //this.playBackground();
         this.showInstructions();
     }
 

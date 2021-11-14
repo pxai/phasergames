@@ -11,16 +11,16 @@ export default class Sky {
         this.clouds = [];
         this.stopped = false;
 
-        this.generationIntervalId = setInterval(() => this.add(), 3000)
+        this.timer = this.scene.time.addEvent({ delay: 2000, callback: this.addCloud, callbackScope: this, loop: true });
     }
 
     stop () {
-        clearInterval(this.generationIntervalId);
+        this.timer.remove();
         this.stopped = true;
     }
 
-    add (x = 1200) {
-        const cloud = new Cloud(this.scene, this.scene.crab.x + 800, this.scene.crab.y);
+    addCloud (x = 1200) {
+        const cloud = new Cloud(this.scene, this.scene.crab.x + 700, this.scene.crab.y);
         this.cloudLayer.add(cloud);
         this.clouds.push(cloud);
     }

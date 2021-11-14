@@ -73,7 +73,7 @@ export default class Stage1 extends Phaser.Scene {
         if (this.water) return;
         this.water = new Water(this);
         this.colliderActivated = true;
-        this.waterCollider = this.physics.add.collider(this.crab, this.water.surface, this.hitSurface, () => {
+        this.waterCollider = this.physics.add.collider(this.crabs, this.water.surface, this.hitSurface, () => {
             return this.colliderActivated;
         }, this);
     }
@@ -81,7 +81,7 @@ export default class Stage1 extends Phaser.Scene {
     addFoes () {
         this.foeGenerator = new FoeGenerator(this);
 
-        this.foeCollider = this.physics.add.collider(this.crab, this.foeGenerator.foeGroup, this.hitFoe, () => {
+        this.foeCollider = this.physics.add.collider(this.crabs, this.foeGenerator.foeGroup, this.hitFoe, () => {
             return true;
         }, this);
 
@@ -116,7 +116,7 @@ export default class Stage1 extends Phaser.Scene {
     setShells () {
         this.shells = this.add.group();
         this.colliderActivated = true;
-        this.physics.add.collider(this.crab, this.shells, this.hitShell, () => {
+        this.physics.add.collider(this.crabs, this.shells, this.hitShell, () => {
             return this.colliderActivated;
         }, this);
     }
@@ -176,7 +176,8 @@ export default class Stage1 extends Phaser.Scene {
     }
 
     showInstructions() {
-        this.instructions = this.add.bitmapText(this.center_width, this.center_height - 200, "arcade", "Place a shell with the mouse\nbelow the crab!", 30).setOrigin(0.5).setScrollFactor(0)
+        const {x, y} = this.midPoint;
+        this.instructions = this.add.bitmapText(x, y - 200, "arcade", "Place a shell with the mouse\nbelow the crab!", 30).setOrigin(0.5).setScrollFactor(0)
         this.tweens.add({
             targets: this.instructions,
             duration: 3000,
@@ -189,8 +190,9 @@ export default class Stage1 extends Phaser.Scene {
     }
 
     showSpaceInstructions() {
-        this.spaceInstructions = this.add.bitmapText(this.center_width, this.center_height + 100, "arcade", "Keep on doing it\nuntil the end!", 30).setOrigin(0.5).setScrollFactor(0)
-        this.arrow = this.add.image(this.center_width, this.center_height - 100, "arrow").setOrigin(0.5).setScrollFactor(0)
+        const {x, y} = this.midPoint;
+        this.spaceInstructions = this.add.bitmapText(x, y + 100, "arcade", "Keep on doing it\nuntil the end!", 30).setOrigin(0.5).setScrollFactor(0)
+        this.arrow = this.add.image(x, y - 100, "arrow").setOrigin(0.5).setScrollFactor(0)
 
         this.tweens.add({
             targets: [this.spaceInstructions, this.arrow],
@@ -203,11 +205,6 @@ export default class Stage1 extends Phaser.Scene {
         });
     }
 
-    setGroups () {
-        this.sicknessGroup = this.add.group();
-        this.blockGroup = this.add.group();
-        this.physics.add.overlap(this.sicknessGroup, this.blockGroup, this.blockContact);
-    }
 
     update () {
         if (this.ESC.isDown) {
@@ -215,11 +212,7 @@ export default class Stage1 extends Phaser.Scene {
         }
 
         this.sky.update();
-        this.crab.update();
-    }
-
-    midPoint () {
-        return this.cameras.main.midPoint;
+        this.crabs.children.entries.forEach( crab => crab.update() );
     }
 
     playMusic () {
@@ -259,7 +252,8 @@ export default class Stage1 extends Phaser.Scene {
 
     stageCompleted () {
         if (this.stageCompletedText) return;
-        const {x, y} = this.midPoint();
+
+        const {x, y} = this.midPoint;
         this.foeGenerator.stop();
         this.foeCollider.active = false;
         this.stageCompletedText = this.add.bitmapText(x, y - 200, "arcade", "STAGE COMPLETED!!\nSCORE: " + this.registry.get("score"),40, 0xff0000).setOrigin(0.5)
@@ -281,5 +275,11 @@ export default class Stage1 extends Phaser.Scene {
         this.water.stop();
         this.sky.stop();
         this.scene.start("transition", {next: this.next, name: "STAGE"});
-      }
+    }
+
+    get midPoint () {
+        return{ x: this.cameras.main.worldView.x + this.cameras.main.width / 2,
+                y: this.cameras.main.worldView.y + this.cameras.main.height / 2
+        };
+    }
 }
