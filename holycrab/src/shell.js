@@ -39,7 +39,7 @@ class Shell extends Phaser.GameObjects.Sprite {
             targets: this,
             duration: 300,
             y: {from: this.y, to: this.y - 10},
-            onComplete: () => crab.redirect(this.redirectX)
+            onComplete: () => crab.redirect(this)
         })  
         timeline.play();
         Array(Phaser.Math.Between(8, 15)).fill(0).forEach( (sand, i) => {

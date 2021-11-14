@@ -10,9 +10,10 @@ export default class Stage1 extends Phaser.Scene {
     constructor (key = "stage1", next = "stage2") {
         super({ key });
         this.next = next;
-        this.playerLimited = false;
-        this.initialPosition = { x: 0, y : 20 }
+        this.playerLimited = true;
         this.initial = { x: 0, y: 0 };
+        this.cameraSize = { w: 10920 * 2, h: 10080 * 2 }
+        this.worldBounds = false;
     }
 
     init (data) {
@@ -30,12 +31,12 @@ export default class Stage1 extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.clockText = this.add.bitmapText(this.center_width, this.center_height, "arcade", "00:00", 80).setAlpha(0.1).setOrigin(0.5)
-        this.cameras.main.setBounds(0, 0, 10920 * 2, 10080 * 2);
+        this.cameras.main.setBounds(0, 0, this.cameraSize.w, this.cameraSize.h);
         this.cameras.main.setBackgroundColor(0x3E6875);
         this.addSky();
         this.crab = new Crab(this, this.initial.x + 60,  this.initial.y + 20, "crab", this.playerLimited);
-        this.physics.world.setBoundsCollision(true, true, true, true);
+
+        this.setWorldBounds();
         this.setStartBlock();
         this.setShells();
         this.setKeys();
@@ -49,6 +50,14 @@ export default class Stage1 extends Phaser.Scene {
         this.cameras.main.startFollow(this.crab, true);
     }
 
+    setWorldBounds () {
+        if (this.worldBounds) {
+            this.crab.body.setCollideWorldBounds(true);
+            this.crab.body.setBounce(1);
+        }
+        this.physics.world.setBoundsCollision(true, true, false, false);
+    }
+
     addWater() {
         this.water = new Water(this);
         this.colliderActivated = true;
@@ -60,7 +69,7 @@ export default class Stage1 extends Phaser.Scene {
     addFoes () {
         this.foeGenerator = new FoeGenerator(this);
 
-        this.physics.add.collider(this.crab, this.foeGenerator.foeGroup, this.hitFoe, () => {
+        this.foeCollider = this.physics.add.collider(this.crab, this.foeGenerator.foeGroup, this.hitFoe, () => {
             return true;
         }, this);
 
@@ -85,7 +94,7 @@ export default class Stage1 extends Phaser.Scene {
     }
 
     setFinishBlock() {
-        [0, 1, 2, 3].forEach( (block, i) => {
+        Array(20).fill(0).forEach( (block, i) => {
             this.blocks.add(new Block(this, this.crab.x + 400 + (i * 32), 400, true))
         });
     }
@@ -235,6 +244,7 @@ export default class Stage1 extends Phaser.Scene {
         if (this.stageCompletedText) return;
         const {x, y} = this.midPoint();
         this.foeGenerator.stop();
+        this.foeCollider.active = false;
         this.stageCompletedText = this.add.bitmapText(x, y - 200, "arcade", "STAGE COMPLETED!!\nSCORE: " + this.registry.get("score"),40, 0xff0000).setOrigin(0.5)
         this.tweens.add({
             targets: this.stageCompletedText,

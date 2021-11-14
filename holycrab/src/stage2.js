@@ -12,9 +12,10 @@ export default class Stage2 extends Stage1 {
         super(key);
         this.next = next;
         this.playerLimited = false;
-        this.initialPosition = { x: 0, y : 20 }
         this.initial = { x: 0, y: 10080 };
+        this.cameraSize = { w: 800, h: 10080 * 2 };
+        this.worldBounds = true;
     }
 
-    
+
 }

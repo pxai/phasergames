@@ -12,6 +12,7 @@ export default class Water {
     }
 
     generate () {
+        console.log("WATER CREATED-------------------")
         this.shines = [];
         this.generationIntervalId = setInterval(() => this.add(this.scene), 100)
     }

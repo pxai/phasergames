@@ -34,6 +34,8 @@ class Crab extends Phaser.GameObjects.Sprite {
             repeat: 1
         });
         this.anims.play("crabfall", true);
+        this.debugTxt = this.scene.add.bitmapText(this.x, this.y - 10, "wendy", `x: ${this.x} y: ${this.y}`, 20, 0xffffff).setOrigin(0.5);
+
         this.on('animationcomplete', this.animationComplete, this);
     }
 
@@ -45,20 +47,43 @@ class Crab extends Phaser.GameObjects.Sprite {
         } else {
             this.anims.play("crabfall", true)
         }
+
+        this.debugPosition();
+    }
+
+    debugPosition () {
+        this.debugTxt.setX(this.x);
+        this.debugTxt.setY(this.y);
+        this.debugTxt.setText(`x: ${Math.round(this.x)} y: ${Math.round(this.y)}`)
     }
 
     hitShell (shell) {
         console.log(this.body.speed)
         const score = Math.round(Math.abs(this.body.speed));
         this.showPoints(`+${score}`);
+        shell.body.enable = false;
         this.scene.updateScore(score);
-        const velocity = this.limited ? (this.body.speed > 330 ? -330 : -this.body.speed) : -330;
-        this.body.setVelocityY(velocity);
+        this.body.setVelocityY(this.calculateYHitVelocity());
         new Dust(this.scene, this.x, this.y, "0xede46e");
     }
 
+    calculateXHitVelocity (shell) {
+        if (this.limited) {
+            return this.body.speed > 150 ? 150 : this.body.speed
+        } else {
+            const direction = (this.x - shell.x) < 8 ? -1 : 1;
+            return direction * 150;
+        }
+    }
+
+    calculateYHitVelocity () {
+        return (this.limited)
+            ? this.body.speed > 400 ? -400 : -this.body.speed
+            : -400;
+    }
+
     showPoints (score, color = 0xff0000) {
-        let text = this.scene.add.bitmapText(this.x, this.y - 10, "wendy", score, 20, color).setOrigin(0.5);
+        let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "wendy", score, 20, color).setOrigin(0.5);
         this.scene.tweens.add({
             targets: text,
             duration: 1000,
@@ -72,7 +97,7 @@ class Crab extends Phaser.GameObjects.Sprite {
 
     hitGround () {
         this.body.setVelocityX(0);
-        this.body.setVelocityY(-330);
+        this.body.setVelocityY(-400);
         new Dust(this.scene, this.x, this.y, "0x902406")
     }
 
@@ -95,14 +120,15 @@ class Crab extends Phaser.GameObjects.Sprite {
         });
     }
 
-    redirect(velocityX) {
-        this.body.setVelocityX(velocityX);
+    redirect(shell) {
+        this.body.setVelocityX(this.calculateXHitVelocity(shell));
     }
 
     restart () {
-        this.y = this.y + 200;
+        this.body.y = this.body.y - 400
+        this.y = this.y - 400
         this.body.enable = false;
-        this.readyText = this.scene.add.bitmapText(this.x, this.y + 300, "arcade", "READY?", 30)
+        this.readyText = this.scene.add.bitmapText(this.x, this.y + 100, "arcade", "READY?", 30)
         this.scene.tweens.add({
             targets: [this, this.readyText],
             duration: 200,
