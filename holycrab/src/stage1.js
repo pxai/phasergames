@@ -6,9 +6,12 @@ import Sky from "./sky";
 import FoeGenerator from "./foe_generator";
 import Water from "./water";
 
+const ALIGN_CENTER = Phaser.GameObjects.BitmapText.ALIGN_CENTER;
+
 export default class Stage1 extends Phaser.Scene {
     constructor (key = "stage1", next = "stage2") {
         super({ key });
+        this.key = key;
         this.next = next;
         this.playerLimited = true;
         this.initial = { x: 0, y: 0 };
@@ -17,16 +20,13 @@ export default class Stage1 extends Phaser.Scene {
         this.worldBounds = false;
         this.startBlock = { x: 0, y: 400 }
         this.finishBlock = { x: 2000, y: 400 };
+        this.finishSize = 20;
+        this.arrowAngle = 0;
+        this.music = "music0";
     }
 
     init (data) {
         this.name = data.name;
-    }
-
-    preload () {
-        this.registry.set("score", 0);
-        this.registry.set("health", 100);
-        this.registry.set("time", 0);
     }
 
     create () {
@@ -42,10 +42,10 @@ export default class Stage1 extends Phaser.Scene {
         this.setStartBlock();
         this.setShells();
         this.setKeys();
-        //this.playMusic();
+        this.playMusic();
         this.addFoes();
         this.addWater();
-        //this.loadAudios();
+        this.loadAudios();
         this.setScores();
 
         this.showInstructions();
@@ -108,7 +108,7 @@ export default class Stage1 extends Phaser.Scene {
 
     setFinishBlock() {
         const { x, y } = this.finishBlock;
-        Array(10).fill(0).forEach( (block, i) => {
+        Array(this.finishSize).fill(0).forEach( (block, i) => {
             this.blocks.add(new Block(this, x + (i * 32), y, true))
         });
     }
@@ -126,23 +126,28 @@ export default class Stage1 extends Phaser.Scene {
             crab.hitGround()
             if (block.finish) {
                 block.touched(crab);
+                console.log("Completed?");
                 this.stageCompleted()
             }
         }
     }
 
     hitShell(crab, shell) {
+        this.playAudio("shell");
         crab.hitShell(shell);
         shell.touched(crab);
+        this.playAudio("jump");
     }
 
     foeHitShell(shell, foe) {
+        this.playAudio("hit");
         foe.turn();
         shell.destroy();
     }
 
     hitSurface(crab, surface) {
         this.cameras.main.shake(500);
+        this.playAudio("explosion");
         crab.hit(-1000);
         this.foeGenerator.pause();
         this.time.delayedCall(3000, () => {  this.foeGenerator.generate() })
@@ -150,6 +155,7 @@ export default class Stage1 extends Phaser.Scene {
 
     hitFoe(crab, foe) {
         this.cameras.main.shake(500);
+        this.playAudio("hit");
         crab.hit(-500);
         foe.turn();
         this.foeGenerator.pause();
@@ -162,6 +168,7 @@ export default class Stage1 extends Phaser.Scene {
 
     setBlock (pointer) {
         if (this.shells.children.entries.length === 2) return;
+        this.playAudio("block");
         const shell = new Shell(this, pointer.worldX, pointer.worldY, "shell");
         this.shells.add(shell)
         this.time.delayedCall(1000, () => {  this.shells.remove(shell);shell.destroy(); })
@@ -178,7 +185,7 @@ export default class Stage1 extends Phaser.Scene {
 
     showInstructions() {
         const {x, y} = this.midPoint;
-        this.instructions = this.add.bitmapText(x, y - 200, "arcade", "Place a shell with the mouse\nbelow the crab!", 30).setOrigin(0.5).setScrollFactor(0)
+        this.instructions = this.add.bitmapText(x, y - 200, "arcade", "Click to place a shell\nbelow the crab!", 30, ALIGN_CENTER).setOrigin(0.5).setScrollFactor(0)
         this.tweens.add({
             targets: this.instructions,
             duration: 3000,
@@ -192,8 +199,8 @@ export default class Stage1 extends Phaser.Scene {
 
     showSpaceInstructions() {
         const {x, y} = this.midPoint;
-        this.spaceInstructions = this.add.bitmapText(x, y + 100, "arcade", "Keep on doing it\nuntil the end!", 30).setOrigin(0.5).setScrollFactor(0)
-        this.arrow = this.add.image(x, y - 100, "arrow").setOrigin(0.5).setScrollFactor(0)
+        this.spaceInstructions = this.add.bitmapText(x, y + 100, "arcade", "Keep on doing it\nuntil the platform!", 30, ALIGN_CENTER).setOrigin(0.5).setScrollFactor(0)
+        this.arrow = this.add.image(x, y - 100, "arrow").setOrigin(0.5).setScrollFactor(0).setAngle(this.arrowAngle).setScale(3)
 
         this.tweens.add({
             targets: [this.spaceInstructions, this.arrow],
@@ -218,7 +225,7 @@ export default class Stage1 extends Phaser.Scene {
 
     playMusic () {
         if (this.theme) this.theme.stop()
-        this.theme = this.sound.add("music0", {
+        this.theme = this.sound.add(this.music, {
             mute: false,
             volume: 1,
             rate: 1,
@@ -232,12 +239,12 @@ export default class Stage1 extends Phaser.Scene {
 
     loadAudios () {
         this.audios = {
-          "move": this.sound.add("move"),
-          "speed": this.sound.add("speed"),
-          "bump": this.sound.add("bump"),
-          "cellheart": this.sound.add("cellheart"),
-          "destroy": this.sound.add("destroy"),
-          "evolve": this.sound.add("evolve"),
+          "block": this.sound.add("block"),
+          "end": this.sound.add("end"),
+          "explosion": this.sound.add("explosion"),
+          "hit": this.sound.add("hit"),
+          "jump": this.sound.add("jump"),
+          "shell": this.sound.add("hit"),
         };
       }
 
@@ -253,7 +260,7 @@ export default class Stage1 extends Phaser.Scene {
 
     stageCompleted () {
         if (this.stageCompletedText) return;
-
+        this.playAudio("end");
         const {x, y} = this.midPoint;
         this.foeGenerator.stop();
         this.foeCollider.active = false;
@@ -266,16 +273,20 @@ export default class Stage1 extends Phaser.Scene {
             yoyo: true,
             onComplete: () => {
                 this.stageCompletedText.destroy()
-                this.finishScene();
+                this.finishScene(this.next);
             }
         });
     }
 
-    finishScene () {
+    restartScene () {
+        this.finishScene(this.key);
+    }
+
+    finishScene (nextScene) {
         if (this.theme) this.theme.stop();
         this.water.stop();
         this.sky.stop();
-        this.scene.start("transition", {next: this.next, name: "STAGE"});
+        this.scene.start("transition", {next: nextScene, name: "STAGE"});
     }
 
     get midPoint () {

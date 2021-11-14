@@ -57,7 +57,6 @@ class Crab extends Phaser.GameObjects.Sprite {
     }
 
     updateCrab2 () {
-        if (this.link) this.link.destroy();
         this.scene.crab2.x = this.x;
         this.scene.crab2.y = this.y - 24;
         this.scene.crab2.body.x = this.body.x;
@@ -111,7 +110,7 @@ class Crab extends Phaser.GameObjects.Sprite {
     hitGround () {
         this.body.setVelocityX(0);
         this.body.setVelocityY(-400);
-        new Dust(this.scene, this.x, this.y, "0x902406")
+        new Dust(this.scene, this.x, this.y - 4, "0x902406")
     }
 
     hit (score = 0) {
@@ -141,6 +140,7 @@ class Crab extends Phaser.GameObjects.Sprite {
         const {x, y} = this.scene.midPoint;
         this.body.y = y
         this.y = y - 300
+        if (this.scene.crab2) this.updateCrab2();
         this.body.enable = false;
         this.readyText = this.scene.add.bitmapText(this.x, this.y + 100, "arcade", "READY?", 30)
         this.scene.tweens.add({

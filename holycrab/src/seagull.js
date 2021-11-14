@@ -1,30 +1,30 @@
 class Seagull extends Phaser.Physics.Arcade.Sprite {
-    constructor (scene, x, y, scale = 0.7) {
+    constructor (scene, x, y, direction = -1) {
         super(scene, x, y, "seagull");
         this.name = "seagull";
         this.scene = scene;
         this.scene.physics.add.existing(this);
         this.scene.physics.world.enable(this);
-        //this.setScale(scale)
         this.body.setAllowGravity(false);
         this.body.setSize(64, 20)
-        this.direction = -1;
+        this.direction = direction;
         this.scene.add.existing(this);
 
         this.init();
     }
 
     init () {
-        this.scene.anims.create({
-            key: this.name,
-            frames: this.scene.anims.generateFrameNumbers(this.name),
-            frameRate: 5,
-            repeat: -1
-          });
-  
-          this.anims.play(this.name, true)
-          this.body.setVelocityX(this.direction * Phaser.Math.Between(150, 200));
-          this.on('animationcomplete', this.animationComplete, this);
+      if (this.direction > 0) this.flipX = true;
+      this.scene.anims.create({
+          key: this.name,
+          frames: this.scene.anims.generateFrameNumbers(this.name),
+          frameRate: 5,
+          repeat: -1
+        });
+
+        this.anims.play(this.name, true)
+        this.body.setVelocityX(this.direction * Phaser.Math.Between(150, 200));
+        this.on('animationcomplete', this.animationComplete, this);
     }
 
 

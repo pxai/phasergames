@@ -26,6 +26,7 @@ export default class FoeGenerator {
   add () {
       this.foeGroup.add(new Seagull(this.scene, this.scene.crab.x + Phaser.Math.Between(500, 600), this.scene.crab.y + Phaser.Math.Between(-200, 200)));
       this.foeGroup.add(new Seagull(this.scene, this.scene.crab.x + Phaser.Math.Between(500, 600), this.scene.crab.y + Phaser.Math.Between(-200, 200)));
+      this.foeGroup.add(new Seagull(this.scene, this.scene.crab.x - Phaser.Math.Between(500, 600), this.scene.crab.y + Phaser.Math.Between(-200, 200), 1));
   }
 
   update () {

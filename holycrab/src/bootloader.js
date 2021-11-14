@@ -27,23 +27,22 @@ export default class Bootloader extends Phaser.Scene {
             this.load.audio(`music${i}`,`assets/sounds/music${i}.mp3`)
         });
 
-      /*  blockTypes.forEach(i => {
-            this.load.image(i.type, `assets/images/${i.type}.png`);
-        });*/
-       
-
        this.load.audio("background", "assets/sounds/background.mp3");
        this.load.image("pello", "assets/images/pello.png");
        this.load.image("block", "assets/images/block.png");
        this.load.image("shell", "assets/images/shell.png");
        this.load.image("cloud", "assets/images/cloud.png");
        this.load.image("arrow", "assets/images/arrow.png");
-       /*  this.load.audio("beam", "assets/sounds/beam.mp3");*/
+       this.load.audio("block", "assets/sounds/block.mp3");
+       this.load.audio("end", "assets/sounds/end.mp3");
+       this.load.audio("explosion", "assets/sounds/explosion.mp3");
+       this.load.audio("hit", "assets/sounds/hit.mp3");
+       this.load.audio("jump", "assets/sounds/jump.mp3");
 
        this.load.bitmapFont("wendy", "assets/fonts/wendy.png", "assets/fonts/wendy.xml");
         this.load.bitmapFont("arcade", "assets/fonts/arcade.png", "assets/fonts/arcade.xml");
         this.load.spritesheet("crab", "assets/images/crab.png", { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet("crab2", "assets/images/cra2.png", { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet("crab2", "assets/images/crab2.png", { frameWidth: 48, frameHeight: 48 });
 
         this.load.spritesheet("seagull", "assets/images/seagull.png", { frameWidth: 64, frameHeight: 48 });
     }

@@ -1,10 +1,4 @@
-import Phaser from "phaser";
 import Crab from "./crab";
-import Block from "./block";
-import Shell from "./shell";
-import Sky from "./sky";
-import FoeGenerator from "./foe_generator";
-import Water from "./water";
 import Stage1 from "./stage1";
 
 export default class Stage3 extends Stage1 {
@@ -17,13 +11,23 @@ export default class Stage3 extends Stage1 {
         this.worldBounds = true;
         this.startBlock = { x: 300, y: 8000 + 300 };
         this.finishBlock = { x: 300, y: (10080 * 2) - 500 };
+        this.finishSize = 2;
+        this.arrowAngle = 90;
+        this.music = "music2";
     }
 
     setCrabs () {
         super.setCrabs();
 
-        this.crab2 = new Crab(this, this.initial.x + 90,  this.initial.y + 20, "crab", this.playerLimited);
+        this.crab2 = new Crab(this, this.initial.x + 90,  this.initial.y + 20, "crab2", this.playerLimited);
         this.crabs.add(this.crab2);
+        this.ending = this.add.rectangle(0, this.finishBlock.y + 200 , 10000, 4, 0x008888).setOrigin(0).setAlpha(0)
+        this.physics.world.enable(this.ending);
+        this.ending.body.immovable = true;
+        this.ending.body.moves = false;
+        this.physics.add.collider(this.crabs, this.ending, this.restartScene, () => {
+            return true;
+        }, this);
     }
 
 }
