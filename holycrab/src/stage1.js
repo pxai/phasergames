@@ -10,8 +10,9 @@ export default class Stage1 extends Phaser.Scene {
     constructor (key = "stage1", next = "stage2") {
         super({ key });
         this.next = next;
-        this.playerLimited = true;
-        this.initialBlock = { x: 0, y: 400};
+        this.playerLimited = false;
+        this.initialPosition = { x: 0, y : 20 }
+        this.initial = { x: 0, y: 0 };
     }
 
     init (data) {
@@ -33,8 +34,8 @@ export default class Stage1 extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 10920 * 2, 10080 * 2);
         this.cameras.main.setBackgroundColor(0x3E6875);
         this.addSky();
-        this.crab = new Crab(this, 60, 20, "crab", this.playerLimited);
-        this.cameras.main.startFollow(this.crab);
+        this.crab = new Crab(this, this.initial.x + 60,  this.initial.y + 20, "crab", this.playerLimited);
+        this.physics.world.setBoundsCollision(true, true, true, true);
         this.setStartBlock();
         this.setShells();
         this.setKeys();
@@ -45,6 +46,7 @@ export default class Stage1 extends Phaser.Scene {
         this.setScores();
 
         this.showInstructions();
+        this.cameras.main.startFollow(this.crab, true);
     }
 
     addWater() {
@@ -71,9 +73,9 @@ export default class Stage1 extends Phaser.Scene {
 
     setStartBlock () {
         this.blocks = this.add.group();
-        const {x, y} = this.initialBlock;
-        [0, 1, 2, 3].forEach( (block, i) => {
-            this.blocks.add(new Block(this, x + (i * 32), y))
+        const {x, y} = this.initial;
+        [0, 1, 2, 3, 4, 5].forEach( (block, i) => {
+            this.blocks.add(new Block(this, x + (i * 32), y + 400))
         });
         this.colliderActivated = true;
         this.physics.add.collider(this.crab, this.blocks, this.hitBlock, () => {
@@ -190,6 +192,10 @@ export default class Stage1 extends Phaser.Scene {
         this.crab.update();
     }
 
+    midPoint () {
+        return this.cameras.main.midPoint;
+    }
+
     playMusic () {
         if (this.theme) this.theme.stop()
         this.theme = this.sound.add("music0", {
@@ -226,16 +232,18 @@ export default class Stage1 extends Phaser.Scene {
     }
 
     stageCompleted () {
+        if (this.stageCompletedText) return;
+        const {x, y} = this.midPoint();
         this.foeGenerator.stop();
-        let text = this.add.bitmapText(this.crab.x, this.crab.y - 300, "arcade", "STAGE COMPLETED!!\nSCORE: " + this.registry.get("score"),40, 0xff0000).setOrigin(0.5)
+        this.stageCompletedText = this.add.bitmapText(x, y - 200, "arcade", "STAGE COMPLETED!!\nSCORE: " + this.registry.get("score"),40, 0xff0000).setOrigin(0.5)
         this.tweens.add({
-            targets: text,
+            targets: this.stageCompletedText,
             duration: 300,
             alpha: {from: 1, to: 0},
             repeat: 5,
             yoyo: true,
             onComplete: () => {
-                text.destroy()
+                this.stageCompletedText.destroy()
                 this.finishScene();
             }
         });

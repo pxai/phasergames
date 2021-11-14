@@ -100,7 +100,7 @@ class Crab extends Phaser.GameObjects.Sprite {
     }
 
     restart () {
-        this.y = 200;
+        this.y = this.y + 200;
         this.body.enable = false;
         this.readyText = this.scene.add.bitmapText(this.x, this.y + 300, "arcade", "READY?", 30)
         this.scene.tweens.add({
