@@ -122,7 +122,6 @@ export default class Stage1 extends Phaser.Scene {
     }
 
     hitBlock(crab, block) {
-        console.log("CRAB v: ", crab.body.velocity, crab.body.speed)
         if (crab.body.speed > 0) {
             crab.hitGround()
             if (block.finish) {
@@ -143,13 +142,15 @@ export default class Stage1 extends Phaser.Scene {
     }
 
     hitSurface(crab, surface) {
+        this.cameras.main.shake(500);
         crab.hit(-1000);
         this.foeGenerator.pause();
         this.time.delayedCall(3000, () => {  this.foeGenerator.generate() })
     }
 
     hitFoe(crab, foe) {
-        crab.hit();
+        this.cameras.main.shake(500);
+        crab.hit(-500);
         foe.turn();
         this.foeGenerator.pause();
         this.time.delayedCall(3000, () => {  this.foeGenerator.generate() })

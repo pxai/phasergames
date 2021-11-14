@@ -43,6 +43,8 @@ export default class Bootloader extends Phaser.Scene {
        this.load.bitmapFont("wendy", "assets/fonts/wendy.png", "assets/fonts/wendy.xml");
         this.load.bitmapFont("arcade", "assets/fonts/arcade.png", "assets/fonts/arcade.xml");
         this.load.spritesheet("crab", "assets/images/crab.png", { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet("crab2", "assets/images/cra2.png", { frameWidth: 48, frameHeight: 48 });
+
         this.load.spritesheet("seagull", "assets/images/seagull.png", { frameWidth: 64, frameHeight: 48 });
     }
 wendy

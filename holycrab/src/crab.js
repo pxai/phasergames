@@ -5,6 +5,7 @@ class Crab extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, name = "crab", limited = true) {
         super(scene, x, y, name);
         this.scene = scene;
+        this.name = name;
         this.setOrigin(0.5);
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
@@ -17,24 +18,24 @@ class Crab extends Phaser.GameObjects.Sprite {
 
     init () {
         this.scene.anims.create({
-            key: "crabjump",
-            frames: this.scene.anims.generateFrameNumbers("crab", { start: 0, end: 0 }),
+            key: this.name + "jump",
+            frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 0 }),
             frameRate: 5,
             repeat: -1
         });
         this.scene.anims.create({
-            key: "crabfall",
-            frames: this.scene.anims.generateFrameNumbers("crab", { start: 1, end: 1 }),
+            key: this.name + "fall",
+            frames: this.scene.anims.generateFrameNumbers(this.name, { start: 1, end: 1 }),
             frameRate: 5,
             repeat: -1
         });
         this.scene.anims.create({
-            key: "crabhit",
-            frames: this.scene.anims.generateFrameNumbers("crab", { start: 2, end: 2 }),
+            key: this.name + "hit",
+            frames: this.scene.anims.generateFrameNumbers(this.name, { start: 2, end: 2 }),
             frameRate: 1,
             repeat: 1
         });
-        this.anims.play("crabfall", true);
+        this.anims.play(this.name + "fall", true);
         this.debugTxt = this.scene.add.bitmapText(this.x, this.y - 10, "wendy", `x: ${this.x} y: ${this.y}`, 20, 0xffffff).setOrigin(0.5);
 
         this.on('animationcomplete', this.animationComplete, this);
@@ -42,14 +43,14 @@ class Crab extends Phaser.GameObjects.Sprite {
 
     update () {
         if (this.body.blocked.down) {
-            this.anims.play("crabhit", true);
+            this.anims.play(this.name + "hit", true);
         } else if (this.body.velocity.y < 0) {
-            this.anims.play("crabjump", true);
+            this.anims.play(this.name + "jump", true);
             new Bubble(this.scene, this.x, this.y + Phaser.Math.Between(-10, 10),  50, -1)    
             this.scene.blockCollider.active = false;
         } else {
             new Bubble(this.scene, this.x, this.y - Phaser.Math.Between(-10, 10),  50, -1)    
-            this.anims.play("crabfall", true)
+            this.anims.play(this.name + "fall", true)
             this.scene.blockCollider.active = true;
         }
         this.debugPosition();
@@ -148,8 +149,8 @@ class Crab extends Phaser.GameObjects.Sprite {
     }
 
     animationComplete(animation, frame) {
-        if (animation.key === "crabhit") {
-            this.anims.play("crabjump", true)
+        if (animation.key === this.name + "hit") {
+            this.anims.play(this.name + "jump", true)
         }
     }
 }
