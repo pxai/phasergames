@@ -20,7 +20,7 @@ export default class Sky {
     }
 
     add (x = 1200) {
-        const cloud = new Cloud(this.scene, this.scene.crab.x + 1000);
+        const cloud = new Cloud(this.scene, this.scene.crab.x + 800, this.scene.crab.y);
         this.cloudLayer.add(cloud);
         this.clouds.push(cloud);
     }

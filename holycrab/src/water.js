@@ -26,7 +26,7 @@ export default class Water {
     add (scene) {
         if (!scene) return;
         const x = Phaser.Math.Between(this.scene.crab.x - 500, this.scene.crab.x + 500);
-        const y = Phaser.Math.Between(scene.height - 196, scene.height + 200)
+        const y = Phaser.Math.Between(this.surface.y + 2, this.surface.y + 200)
         const shine = scene.add.rectangle(x, y, 10, 4, 0xffffff)
         this.waterLayer.add(shine);
         this.shines.push(setTimeout(() => shine.destroy(), 500))

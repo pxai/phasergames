@@ -14,6 +14,8 @@ export default class Stage1 extends Phaser.Scene {
         this.initial = { x: 0, y: 0 };
         this.cameraSize = { w: 10920 * 2, h: 10080 * 2 }
         this.worldBounds = false;
+        this.startBlock = { x: 0, y: 400 }
+        this.finishBlock = { x: 2000, y: 400 };
     }
 
     init (data) {
@@ -34,8 +36,7 @@ export default class Stage1 extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, this.cameraSize.w, this.cameraSize.h);
         this.cameras.main.setBackgroundColor(0x3E6875);
         this.addSky();
-        this.crab = new Crab(this, this.initial.x + 60,  this.initial.y + 20, "crab", this.playerLimited);
-
+        this.setCrabs();
         this.setWorldBounds();
         this.setStartBlock();
         this.setShells();
@@ -50,15 +51,26 @@ export default class Stage1 extends Phaser.Scene {
         this.cameras.main.startFollow(this.crab, true);
     }
 
+    setCrabs () {
+        this.crabs = this.add.group();
+        this.crab = new Crab(this, this.initial.x + 60,  this.initial.y + 20, "crab", this.playerLimited);
+        this.crabs.add(this.crab);
+    }
+
     setWorldBounds () {
         if (this.worldBounds) {
             this.crab.body.setCollideWorldBounds(true);
             this.crab.body.setBounce(1);
+            if (this.crab2) {
+                this.crab2.body.setCollideWorldBounds(true);
+                this.crab2.body.setBounce(1); 
+            }
         }
         this.physics.world.setBoundsCollision(true, true, false, false);
     }
 
     addWater() {
+        if (this.water) return;
         this.water = new Water(this);
         this.colliderActivated = true;
         this.waterCollider = this.physics.add.collider(this.crab, this.water.surface, this.hitSurface, () => {
@@ -82,20 +94,22 @@ export default class Stage1 extends Phaser.Scene {
 
     setStartBlock () {
         this.blocks = this.add.group();
-        const {x, y} = this.initial;
+        const {x, y} = this.startBlock;
         [0, 1, 2, 3, 4, 5].forEach( (block, i) => {
-            this.blocks.add(new Block(this, x + (i * 32), y + 400))
+            this.blocks.add(new Block(this, x + (i * 32), y))
         });
         this.colliderActivated = true;
-        this.physics.add.collider(this.crab, this.blocks, this.hitBlock, () => {
+        this.blockCollider = this.physics.add.collider(this.crab, this.blocks, this.hitBlock, () => {
             return this.colliderActivated;
         }, this);
-        this.time.delayedCall(10000, () => {  this.setFinishBlock() })
+
+        this.setFinishBlock();
     }
 
     setFinishBlock() {
-        Array(20).fill(0).forEach( (block, i) => {
-            this.blocks.add(new Block(this, this.crab.x + 400 + (i * 32), 400, true))
+        const { x, y } = this.finishBlock;
+        Array(10).fill(0).forEach( (block, i) => {
+            this.blocks.add(new Block(this, x + (i * 32), y, true))
         });
     }
 
@@ -108,10 +122,13 @@ export default class Stage1 extends Phaser.Scene {
     }
 
     hitBlock(crab, block) {
-        block.touched(crab);
-        crab.hitGround()
-        if (block.finish) {
-            this.stageCompleted()
+        console.log("CRAB v: ", crab.body.velocity, crab.body.speed)
+        if (crab.body.speed > 0) {
+            crab.hitGround()
+            if (block.finish) {
+                block.touched(crab);
+                this.stageCompleted()
+            }
         }
     }
 

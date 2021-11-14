@@ -52,9 +52,9 @@ class Crab extends Phaser.GameObjects.Sprite {
     }
 
     debugPosition () {
-        this.debugTxt.setX(this.x);
-        this.debugTxt.setY(this.y);
-        this.debugTxt.setText(`x: ${Math.round(this.x)} y: ${Math.round(this.y)}`)
+        this.debugTxt.setX(this.x + 30);
+        this.debugTxt.setY(this.y - 20);
+        this.debugTxt.setText(`x: ${Math.round(this.x)} y: ${Math.round(this.y)} speed: ${this.body.gravity.y}`)
     }
 
     hitShell (shell) {
