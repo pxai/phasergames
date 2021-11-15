@@ -70,9 +70,14 @@ class Crab extends Phaser.GameObjects.Sprite {
     }
 
     hitShell (shell) {
-        const score = Math.round(Math.abs(this.body.speed));
+        let score = Math.round(Math.abs(this.body.speed));
         this.showPoints(`+${score}`);
+
         shell.body.enable = false;
+        if (this.scene.streak % 5 === 0) { 
+            this.showStreakPoints(this.scene.streak);
+            score = score * this.scene.streak;
+        } 
         this.scene.updateScore(score);
         this.body.setVelocityY(this.calculateYHitVelocity());
         new Dust(this.scene, this.x, this.y, "0xede46e");
@@ -100,6 +105,20 @@ class Crab extends Phaser.GameObjects.Sprite {
             duration: 1000,
             alpha: {from: 1, to: 0},
             y: {from: this.y - 10, to: this.y - 60},
+            onComplete: () => {
+                text.destroy()
+            }
+        });
+    }
+
+    showStreakPoints (streak, color = 0x00ff00) {
+        this.scene.playAudio("streak")
+        let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "wendy", "BONUS x" + streak, 40, color).setOrigin(0.5);
+        this.scene.tweens.add({
+            targets: text,
+            duration: 2000,
+            alpha: {from: 1, to: 0},
+            y: {from: this.y - 10, to: this.y - 100},
             onComplete: () => {
                 text.destroy()
             }

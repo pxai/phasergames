@@ -50,6 +50,7 @@ export default class Stage1 extends Phaser.Scene {
 
         this.showInstructions();
         this.cameras.main.startFollow(this.crab, true);
+        this.streak = 0;
     }
 
     setCrabs () {
@@ -146,6 +147,7 @@ export default class Stage1 extends Phaser.Scene {
     }
 
     hitShell(crab, shell) {
+        this.streak++;
         this.playAudio("shell");
         crab.hitShell(shell);
         shell.touched(crab);
@@ -159,6 +161,7 @@ export default class Stage1 extends Phaser.Scene {
     }
 
     hitSurface(crab, surface) {
+        this.streak = 0;
         this.cameras.main.shake(500);
         this.playAudio("explosion");
         crab.hit(-1000);
@@ -167,6 +170,7 @@ export default class Stage1 extends Phaser.Scene {
     }
 
     hitFoe(crab, foe) {
+        this.streak = 0;
         this.cameras.main.shake(500);
         this.playAudio("hit");
         crab.hit(-500);
@@ -258,6 +262,7 @@ export default class Stage1 extends Phaser.Scene {
           "hit": this.sound.add("hit"),
           "jump": this.sound.add("jump"),
           "shell": this.sound.add("hit"),
+          "streak": this.sound.add("streak"),
         };
       }
 
