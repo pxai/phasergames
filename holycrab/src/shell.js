@@ -11,7 +11,7 @@ class Shell extends Phaser.GameObjects.Sprite {
         this.setOrigin(0.5);
         this.body.immovable = true;
         this.body.moves = false;
-        this.body.setSize(32, 10)
+        this.body.setSize(32, 20)
         this.body.y -= 10;
         this.init();
     }

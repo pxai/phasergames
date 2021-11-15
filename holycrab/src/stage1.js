@@ -111,6 +111,20 @@ export default class Stage1 extends Phaser.Scene {
         Array(this.finishSize).fill(0).forEach( (block, i) => {
             this.blocks.add(new Block(this, x + (i * 32), y, true))
         });
+
+        if (this.key === "stage1") {
+            this.ending = this.add.rectangle(x + ((this.finishSize -1) * 32), this.finishBlock.y - 500 , 32, 10000, 0x008888).setOrigin(0).setAlpha(0)
+            this.physics.world.enable(this.ending);
+            this.ending.body.immovable = true;
+            this.ending.body.moves = false;
+            this.physics.add.collider(this.crabs, this.ending, this.goBack, () => {
+                return true;
+            }, this);
+        }
+    }
+
+    goBack () {
+        this.crab.setVelocityX(-330);
     }
 
     setShells () {

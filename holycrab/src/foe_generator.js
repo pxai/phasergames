@@ -13,7 +13,7 @@ export default class FoeGenerator {
   }
 
   pause () {
-    clearInterval(this.generationIntervalId);
+    this.stop();
   }
 
   stop () {
