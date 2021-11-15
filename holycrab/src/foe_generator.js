@@ -19,8 +19,10 @@ export default class FoeGenerator {
   stop () {
       clearInterval(this.generationIntervalId);
       this.foeGroup.children.entries.forEach(foe => {
+          this.foeGroup.remove(foe);
           foe.destroy();
       });
+      console.log("Foes left:", this.foeGroup.children.entries.length);
   }
 
   add () {

@@ -19,7 +19,7 @@ export default class Stage1 extends Phaser.Scene {
         this.cameraSize = { w: 10920 * 2, h: 10080 * 2 }
         this.worldBounds = false;
         this.startBlock = { x: 0, y: 400 }
-        this.finishBlock = { x: 8000, y: 400 };
+        this.finishBlock = { x: 6000, y: 400 };
         this.finishSize = 20;
         this.arrowAngle = 0;
         this.music = "music0";
@@ -124,7 +124,7 @@ export default class Stage1 extends Phaser.Scene {
     }
 
     goBack () {
-        this.crab.setVelocityX(-330);
+        this.crab.body.setVelocityX(-330);
     }
 
     setShells () {
