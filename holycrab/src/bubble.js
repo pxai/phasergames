@@ -19,7 +19,7 @@ class Bubble extends Phaser.GameObjects.Rectangle {
         this.scene.tweens.add({
             targets: this,
             duration: 900,
-            //y: {from: this.y, to: this.y + (this.direction * Phaser.Math.Between(20, 40))},
+        
             alpha: { from: 0.5, to: 0 },
             scale: { from: 1, to: 0},
             onComplete: () => { this.destroy() }

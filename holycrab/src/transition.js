@@ -30,13 +30,14 @@ export default class Transition extends Phaser.Scene {
             this.add.bitmapText(this.center_width, this.center_height + 100, "arcade", "Ready?", 30).setOrigin(0.5)
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
         this.input.on('pointerdown', (pointer) => this.loadNext(), this);
-        setTimeout(() => this.loadNext(), 5000);
+        this.clearTimeoutId = setTimeout(() => this.loadNext(), 5000);
     }
 
     update () {
     }
 
     loadNext () {
+        clearTimeout(this.clearTimeoutId);
         this.scene.start(this.next, { name: this.name });
     }
 }
