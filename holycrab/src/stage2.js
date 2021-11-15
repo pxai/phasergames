@@ -10,7 +10,7 @@ export default class Stage2 extends Stage1 {
         this.cameraSize = { w: 800, h: 10080 * 2 };
         this.worldBounds = true;
         this.startBlock = { x: 300, y: 10080 + 300 };
-        this.finishBlock = { x: 300, y: 8000 };
+        this.finishBlock = { x: 300, y: 4000 };
         this.finishSize = 7;
         this.arrowAngle = -90;
         this.music = "music1";

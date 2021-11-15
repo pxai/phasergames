@@ -70,7 +70,6 @@ class Crab extends Phaser.GameObjects.Sprite {
     }
 
     hitShell (shell) {
-        console.log(this.body.speed)
         const score = Math.round(Math.abs(this.body.speed));
         this.showPoints(`+${score}`);
         shell.body.enable = false;

@@ -16,7 +16,7 @@ export default class Splash extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
         this.cameras.main.setBackgroundColor(0x3E6875);
-        this.title = this.add.bitmapText(this.center_width, 250, "arcade", "Holy Crab!", 114).setOrigin(0.5);
+        this.title = this.add.image(this.center_width, 200, "holycrab", 114).setOrigin(0.5);
         this.startTween()
         this.input.keyboard.on("keydown-ENTER", () => this.startGame(), this);
         this.input.on('pointerdown', (pointer) => this.startGame(), this);
@@ -88,8 +88,8 @@ export default class Splash extends Phaser.Scene {
     }
 
     generateSeagulls () {
-        new Seagull(this, 900, Phaser.Math.Between(20, 800));
-        new Seagull(this, 900, Phaser.Math.Between(20, 800));
-        new Seagull(this, -50, Phaser.Math.Between(20, 800), 1);
+        new Seagull(this, 900, Phaser.Math.Between(20, 800)).setAlpha(0.6);
+        new Seagull(this, 900, Phaser.Math.Between(20, 800)).setAlpha(0.6);
+        new Seagull(this, -50, Phaser.Math.Between(20, 800), 1).setAlpha(0.6);
      }
 }

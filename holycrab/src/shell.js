@@ -13,7 +13,6 @@ class Shell extends Phaser.GameObjects.Sprite {
         this.body.moves = false;
         this.body.setSize(32, 10)
         this.body.y -= 10;
-        console.log(this.rotation)
         this.init();
     }
 
