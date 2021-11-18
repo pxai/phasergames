@@ -1,11 +1,13 @@
 import Cell from "./cell";
 import Block from "./block";
 import blockTypes from "./block_types";
+import evolution from "./evolutions";
 
 class CellWall {
     constructor (scene, difficulty = 0) {
         this.scene = scene;
         this.difficulty = difficulty;
+        this.coords = [9, 3, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 9];
         this.generateWall();
     }
 
@@ -34,6 +36,25 @@ class CellWall {
     }
 
     evolve () {
+        this.coords.forEach( (y, i) => {
+            let x = i + 1;
+            if (this.cell[x][y].content === "") {
+                this.setCell(x, y, this.getRandomColor())
+            }
+
+            if (this.cell[x][this.cell.length - 1 - y].content === "") {
+                this.setCell(x, this.cell.length -1 - y, this.getRandomColor())
+            }
+        });
+
+        this.coords.forEach( (c, i) => this.coords[i] = c + 1 );
+
+
+        this.scene.playAudio("evolve");
+        this.scene.updateHealth()
+    }
+
+    firstEvolution () {
         for (let x = 0; x < this.cell.length; x++) {
             if (Phaser.Math.Between(0, 1) > 0) {
                 for (let y = 0;y < this.cell[x].length; y++) {
@@ -51,9 +72,6 @@ class CellWall {
                 }
             }
         }
-
-        this.scene.playAudio("evolve");
-        this.scene.updateHealth()
     }
 
     setCell(x, y, color) {

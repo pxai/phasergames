@@ -45,8 +45,8 @@ export default class Game extends Phaser.Scene {
 
     generateWall () {
         this.wall = new CellWall(this);
-        this.wall.evolve()
-        this.evolveId = setInterval(() => this.wall.evolve(), 10000);
+        this.wall.firstEvolution()
+        this.evolveId = setInterval(() => this.wall.evolve(), 5000);
     }
 
     startClock () {
@@ -182,7 +182,7 @@ export default class Game extends Phaser.Scene {
         let points = this.wall.freePositions;
         this.registry.set("health", points);
         this.healthText.setText("Health: " + Number(points).toLocaleString());
-        if (points < 80) {
+        if (points < 1) {
             this.gameOver();
         }
     }
