@@ -18,9 +18,10 @@ export default class Game extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.clockText = this.add.bitmapText(this.center_width, this.center_height, "arcade", "00:00", 80).setAlpha(0.1).setOrigin(0.5)
+        this.clockText = this.add.bitmapText(this.center_width, this.center_height, "arcade", "01:00", 80).setAlpha(0.1).setOrigin(0.5)
+        this.back = this.add.layer();
         this.loadAudios();
-        this.playMusic();
+       // this.playMusic();
         this.setGroups();
         this.blockGenerator = new BlockGenerator(this);
         this.setScores();
@@ -46,18 +47,19 @@ export default class Game extends Phaser.Scene {
     generateWall () {
         this.wall = new CellWall(this);
         this.wall.firstEvolution()
-        this.evolveId = setInterval(() => this.wall.evolve(), 5000);
+        this.evolveId = setInterval(() => this.wall.evolve(), 10000);
     }
 
     startClock () {
-        this.time = 0;
+        this.time = 60;
         this.clockId = setInterval(() => this.updateClock(), 1000);
     }
 
     updateClock () {
-        this.time++;
-        this.elapsed = `${Math.round(this.time / 60)}`.padStart(2, 0) + ":" + `${this.time % 60}`.padStart(2, 0);
-        this.clockText.setText(this.elapsed)
+        if (this.time === 0) { this.gameOver(); }
+        this.time--;
+        this.elapsed = `${this.time % 60}`.padStart(2, 0);
+        this.clockText.setText("00:" + this.elapsed)
     }
 
     setKeys () {
@@ -136,11 +138,10 @@ export default class Game extends Phaser.Scene {
             } else if (Phaser.Input.Keyboard.JustDown(this.SPACE)) {
                 this.current.speedUp();
                 this.playAudio("speed");
-            } 
-            this.current.correctPosition()
+            }
         }
 
-        this.wall.update();
+        // this.wall.update();
     }
 
     playMusic () {
@@ -206,10 +207,11 @@ export default class Game extends Phaser.Scene {
         this.showPoints(blocks)
         blocks.forEach( block => {
             let [x, y, color] = block.split(":");
-            this.wall.cell[x][y].content = "";
             this.wall.cell[x][y].block.vanish()
+            this.wall.cell[x][y] = null;
         })
-        this.current.vanish()
+        let {x, y} = this.current.coords;
+
         this.updateScore(blocks.length);
         this.playAudio("destroy");
     }

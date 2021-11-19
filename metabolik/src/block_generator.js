@@ -11,8 +11,8 @@ export default class BlockGenerator {
         const nextBlock = this.updateIncoming();
         return new Block(
             this.scene,
-            center.x + 50,
-            center.y + 12, 
+            (12 * 32) + 50,
+            (12 * 32) + 12, 
             nextBlock,
             {x: 12, y: 12}
         );

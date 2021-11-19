@@ -24,9 +24,9 @@ class CellWall {
                         {x, y},
                         false
                     );
+                    return {content: "purple", ...block, block: b};
                 }
-
-                return {content: "purple", ...block, block: b};
+                return null;
             })
         )
     }
@@ -38,11 +38,11 @@ class CellWall {
     evolve () {
         this.coords.forEach( (y, i) => {
             let x = i + 1;
-            if (this.cell[x][y].content === "") {
+            if (!this.cell[x][y]) {
                 this.setCell(x, y, this.getRandomColor())
             }
 
-            if (this.cell[x][this.cell.length - 1 - y].content === "") {
+            if (!this.cell[x][this.cell.length - 1 - y]) {
                 this.setCell(x, this.cell.length -1 - y, this.getRandomColor())
             }
         });
@@ -55,23 +55,18 @@ class CellWall {
     }
 
     firstEvolution () {
-        for (let x = 0; x < this.cell.length; x++) {
+        this.coords.forEach( (y, i) => {
+            let x = i + 1;
             if (Phaser.Math.Between(0, 1) > 0) {
-                for (let y = 0;y < this.cell[x].length; y++) {
-                    if (this.cell[x][y].content === "") {
-                        this.setCell(x, y, this.getRandomColor())
-                        break;
-                    }
+                if (!this.cell[x][y]) {
+                    this.setCell(x, y, this.getRandomColor())
                 }
             } else {
-                for (let y = this.cell[x].length - 1;y >= 0; y--) {
-                    if (this.cell[x][y].content === "") {
-                        this.setCell(x, y, this.getRandomColor())
-                        break;
-                    }
+                if (!this.cell[x][this.cell.length - 1 - y]) {
+                    this.setCell(x, this.cell.length -1 - y, this.getRandomColor())
                 }
             }
-        }
+        });
     }
 
     setCell(x, y, color) {
@@ -80,12 +75,12 @@ class CellWall {
         } else {
             this.cell[x][y] = { 
                 content: color, 
-                x: this.cell[x][y].x, 
-                y: this.cell[x][y].y,
+                x: x * 32, 
+                y: x,
                 block: new Block(
                     this.scene,
-                    this.cell[x][y].x + 50,
-                    this.cell[x][y].y + 12, 
+                    Cell[x][y].x + 50,
+                    Cell[x][y].y + 12, 
                     { "type": color, "color": 0xffffff },
                     {x, y},
                     false
@@ -95,7 +90,6 @@ class CellWall {
     }
 
     update () {
-
     }
 
     getRandomColor () {
@@ -111,19 +105,19 @@ class CellWall {
     }
 
     searchAdjacents (x, y, color) {
-        if (x > 0 && this.cell[x - 1][y].content === color && !this.isIncluded(x - 1, y, color)) {
+        if (x > 0 && this.cell[x - 1][y]?.content === color && !this.isIncluded(x - 1, y, color)) {
             this.toRemove.push(`${x - 1}:${y}:${color}`)
             this.searchAdjacents(x - 1, y, color);
         } 
-        if (x < 24 && this.cell[x + 1][y].content === color && !this.isIncluded(x + 1, y, color)) {
+        if (x < 24 && this.cell[x + 1][y]?.content === color && !this.isIncluded(x + 1, y, color)) {
             this.toRemove.push(`${x + 1}:${y}:${color}`)
             this.searchAdjacents(x + 1, y, color);
         } 
-        if (y > 0 && this.cell[x][y - 1].content === color && !this.isIncluded(x, y - 1, color)) {
+        if (y > 0 && this.cell[x][y - 1]?.content === color && !this.isIncluded(x, y - 1, color)) {
             this.toRemove.push(`${x}:${y - 1}:${color}`)
             this.searchAdjacents(x, y - 1, color);
         } 
-        if (y < 24 && this.cell[x][y + 1].content === color && !this.isIncluded(x, y + 1, color)) {
+        if (y < 24 && this.cell[x][y + 1]?.content === color && !this.isIncluded(x, y + 1, color)) {
             this.toRemove.push(`${x}:${y + 1}:${color}`)
             this.searchAdjacents(x, y + 1, color);
         }
@@ -138,7 +132,7 @@ class CellWall {
         let _freePositions = 0;
         for (let x = 0; x < this.cell.length; x++) {
             for (let y = 0; y < this.cell[x].length; y++) {
-                if (this.cell[x][y].content === "")
+                if (!this.cell[x][y])
                     _freePositions++;
             }
         }

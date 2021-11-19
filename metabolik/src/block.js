@@ -71,7 +71,6 @@ class Block extends Phaser.GameObjects.Sprite {
             this.coords.x--;
             new Bubble(this.scene, this.x + Phaser.Math.Between(-10, 10), this.y + 16,  50, -1, this.block.color)
         } else {
-            console.log("About to block: ", this.coords.x, this.coords.y)
             this.scene.blockContact()
         }
     }
@@ -87,9 +86,11 @@ class Block extends Phaser.GameObjects.Sprite {
     }
 
     checkNextCell (nextx, nexty) {
-        const free = this.scene.wall.cell[nextx][nexty].content === "";
+        console.log("Content of next: ", this.scene.wall.cell[nextx][nexty]?.content, this.scene.wall.cell[nextx][nexty]);
+        const free = !this.scene.wall.cell[nextx][nexty];
         if (!free) {
             let {x, y} = this.scene.wall.cell[nextx][nexty];
+            console.log("Setting block! ", this.block.type)
             this.scene.wall.cell[this.coords.x][this.coords.y] = {content: this.block.type, x, y, block: this}
         }
         return free;
@@ -113,10 +114,6 @@ class Block extends Phaser.GameObjects.Sprite {
                 break;
             default: break;
         }
-    }
-
-    correctPosition () {
-
     }
 
     stopSpeed () {
