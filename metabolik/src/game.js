@@ -47,7 +47,7 @@ export default class Game extends Phaser.Scene {
     generateWall () {
         this.wall = new CellWall(this);
         this.wall.firstEvolution()
-        this.evolveId = setInterval(() => this.wall.evolve(), 10000);
+        this.evolveId = setInterval(() => this.wall.evolve(), 5000);
     }
 
     startClock () {
