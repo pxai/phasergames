@@ -35,7 +35,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     startGame () {
-        clearInterval(this.countingId); 
+        this.timer.remove();
         this.theme.stop();
         this.scene.start("game");
     }
@@ -55,7 +55,8 @@ export default class Splash extends Phaser.Scene {
     }
 
     updatePoints() {
-        this.countingId = setInterval(() => this.increment(), 50)
+        let health = +this.registry.get("health")
+        this.timer = this.time.addEvent({ delay: 50, callback: this.increment, callbackScope: this, repeat: health });
     }
 
     increment () {
@@ -63,7 +64,7 @@ export default class Splash extends Phaser.Scene {
         let score = +this.registry.get("score")
 
         if (health === 0) { 
-            clearInterval(this.countingId);
+            this.timer.remove();
             this.bonus.play();
             this.tweens.add({
                 targets: this.labelPoints,
@@ -74,9 +75,9 @@ export default class Splash extends Phaser.Scene {
             });
             return; 
         }
-        let minus = health >= 10 ? 10 : 1;
-        health -= minus;
-        score += 10 * minus;
+        //let minus = health >= 10 ? 10 : 1;
+        health--; // -= minus;
+        score += 100;
 
         this.labelHealth.setText("Empty cells: " + health);
         this.labelPoints.setText("Points: " + score)

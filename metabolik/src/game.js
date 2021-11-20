@@ -21,7 +21,7 @@ export default class Game extends Phaser.Scene {
         this.clockText = this.add.bitmapText(this.center_width, this.center_height, "arcade", "01:00", 80).setAlpha(0.1).setOrigin(0.5)
         this.back = this.add.layer();
         this.loadAudios();
-       // this.playMusic();
+        this.playMusic();
         this.setGroups();
         this.blockGenerator = new BlockGenerator(this);
         this.setScores();

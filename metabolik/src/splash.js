@@ -14,7 +14,7 @@ export default class Splash extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
 
-        this.title = this.add.bitmapText(this.center_width, 100, "arcade", "METABOLIK", 114).setOrigin(0.5);
+        this.title = this.add.image(this.center_width, 200, "metabolik").setOrigin(0.5);
         this.startTween()
         this.setBlocks();
         this.input.keyboard.on("keydown-ENTER", () => this.startGame(), this);
@@ -26,7 +26,7 @@ export default class Splash extends Phaser.Scene {
         this.tweens.add({
             targets: this.title,
             duration: 300,
-            scale: {from: 0.7, to: 1},
+            scale: {from: 0.8, to: 0.9},
             repeat: -1,
             yoyo: true
         });
@@ -42,11 +42,11 @@ export default class Splash extends Phaser.Scene {
         Array(3).fill(0).forEach( (r, j) => {
             Array(3).fill(0).forEach( (row, i) => {
                 lastColor = Phaser.Math.Between(0, 2)
-                this.add.image(300 + (i * 32), 200 + (j * 32), color[lastColor]).setOrigin(0.5)
+                this.add.image(300 + (i * 32), 420 + (j * 32), color[lastColor]).setOrigin(0.5)
             }) 
         })
 
-        this.block = this.add.image(592, 264, color[lastColor]);
+        this.block = this.add.image(592, 484, color[lastColor]);
         this.tweens.add({
             targets: this.block,
             duration: 1000,
@@ -70,11 +70,11 @@ export default class Splash extends Phaser.Scene {
     }
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 400, "arcade", "Join components of the same color!!", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 500, "arcade", "Use ARROWS to move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "arcade", "SPACE for speed drop!", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 550, "arcade", "Join components of the same color!!", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 600, "arcade", "Use ARROWS to move", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 650, "arcade", "SPACE for speed drop!", 30).setOrigin(0.5);
         // this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: speed up", 30).setOrigin(0.5);
-              this.space = this.add.bitmapText(this.center_width, 600, "arcade", "Press ENTER to start", 25).setOrigin(0.5);
+              this.space = this.add.bitmapText(this.center_width, 700, "arcade", "Press ENTER to start", 25).setOrigin(0.5);
         this.tweens.add({
             targets: this.space,
             duration: 300,
