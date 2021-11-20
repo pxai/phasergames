@@ -14,8 +14,9 @@ export default class Splash extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
 
-        this.title = this.add.bitmapText(this.center_width, 250, "arcade", "METABOLIK", 114).setOrigin(0.5);
+        this.title = this.add.bitmapText(this.center_width, 100, "arcade", "METABOLIK", 114).setOrigin(0.5);
         this.startTween()
+        this.setBlocks();
         this.input.keyboard.on("keydown-ENTER", () => this.startGame(), this);
         this.playMusic();
         this.showInstructions();
@@ -33,6 +34,25 @@ export default class Splash extends Phaser.Scene {
     startGame () {
         this.theme.stop();
         this.scene.start("game");
+    }
+
+    setBlocks () {
+        const color = ["red", "blue", "green"]
+        let lastColor = "red";
+        Array(3).fill(0).forEach( (r, j) => {
+            Array(3).fill(0).forEach( (row, i) => {
+                lastColor = Phaser.Math.Between(0, 2)
+                this.add.image(300 + (i * 32), 200 + (j * 32), color[lastColor]).setOrigin(0.5)
+            }) 
+        })
+
+        this.block = this.add.image(592, 264, color[lastColor]);
+        this.tweens.add({
+            targets: this.block,
+            duration: 1000,
+            x: {from: 592, to: 398},
+            repeat: -1
+        })
     }
 
     playMusic () {
