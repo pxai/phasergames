@@ -11,6 +11,7 @@ class Block extends Phaser.GameObjects.Sprite {
         this.defaultDirection = Phaser.Math.Between(0, 3);
         this.locked = false;
         this.coords = coords;
+        this.rectangles = Array(4).fill();
         this.init(tween);
     }
 
@@ -27,7 +28,7 @@ class Block extends Phaser.GameObjects.Sprite {
 
     moveDefault () {
            if (this.locked) return;
-
+           this.showHint();
             switch (this.defaultDirection) {
                 case 0:
                     this.right();
@@ -46,7 +47,18 @@ class Block extends Phaser.GameObjects.Sprite {
     }
 
     showHint () {
-
+        console.log("So?");
+        this.rectangles.forEach( rectangle => { 
+            console.log("Go: ", rectangle)
+            this.scene.back.removeAll();
+            if (rectangle) {
+                rectangle.destroy()
+            } 
+            //rectangle = new Phaser.GameObjects.Rectangle(this.scene, this.x, this.y, 32, 400, 0xff0000, 0.5);
+            rectangle = this.scene.add.rectangle(this.x, this.y, 32, 400, 0xff0000, 0.5);
+            this.scene.back.add(rectangle)
+        });
+        
     }
 
     right () {

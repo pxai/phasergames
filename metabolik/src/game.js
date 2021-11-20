@@ -56,7 +56,7 @@ export default class Game extends Phaser.Scene {
     }
 
     updateClock () {
-        if (this.time === 0) { this.gameOver(); }
+        if (this.time === 0) { this.gameOver(this.wall.freePositions); }
         if (this.time === 10) {
             this.clockText.setTint(0xff0000)
             this.clockText.setAlpha(0.6)
@@ -200,7 +200,7 @@ export default class Game extends Phaser.Scene {
         this.registry.set("health", points);
         this.healthText.setText("Health: " + Number(points).toLocaleString());
         if (points < 1) {
-            this.gameOver();
+            this.gameOver(points);
         }
     }
 
@@ -272,7 +272,8 @@ export default class Game extends Phaser.Scene {
         this.gameOver("splash")
     }
 
-    gameOver (name = "game_over") {
+    gameOver (points, name = "game_over") {
+        this.registry.set("health", points);
         if (this.theme) this.theme.stop();
         clearInterval(this.evolveId )
         clearInterval(this.clockId);
