@@ -77,7 +77,6 @@ export default class Splash extends Phaser.Scene {
         let minus = health >= 10 ? 10 : 1;
         health -= minus;
         score += 10 * minus;
-        console.log(score, health)
 
         this.labelHealth.setText("Empty cells: " + health);
         this.labelPoints.setText("Points: " + score)

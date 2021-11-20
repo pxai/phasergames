@@ -40,10 +40,6 @@ export default class Game extends Phaser.Scene {
         this.blockGroup.add(this.current);
     }
 
-    moveBlock () {
-        this.current.moveDefault()
-    }
-
     generateWall () {
         this.wall = new CellWall(this);
         this.wall.firstEvolution()
@@ -129,6 +125,7 @@ export default class Game extends Phaser.Scene {
         }
       
         if (this.current) {
+            this.current.showHints();
             if (Phaser.Input.Keyboard.JustDown(this.cursor.left)) {
                 this.current.stopSpeed();
                 this.current.defaultDirection = 1;
@@ -269,7 +266,7 @@ export default class Game extends Phaser.Scene {
     }
 
     changeScreen(name) {
-        this.gameOver("splash")
+        this.gameOver(0, "splash")
     }
 
     gameOver (points, name = "game_over") {

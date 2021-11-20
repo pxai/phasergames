@@ -26,37 +26,23 @@ class Block extends Phaser.GameObjects.Sprite {
         })
     }
 
-    moveDefault () {
-           if (this.locked) return;
-           this.showHint();
-            switch (this.defaultDirection) {
-                case 0:
-                    this.right();
-                    break;
-                case 1: 
-                    this.left();
-                    break;
-                case 2:
-                    this.down();
-                    break;
-                case 3: 
-                    this.up();
-                    break;
-                default: break;
-            }
-    }
-
-    showHint () {
-        console.log("So?");
+    showHints () {
+        const directions = [
+            {x: this.x, y: this.y, w: 1800, h: 32, ox: 0, oy: 0.5}, // 0
+            {x: 0, y: this.y, w: -this.x * 2, h: 32, ox: 0.5, oy: 0.5}, // 1
+            {x: this.x, y: this.y, w: 32, h: 1800, ox: 0.5, oy: 0}, // 2
+            {x: this.x, y: this.y, w: 32, h: -1800, ox: 0.5, oy: 0}, // 3
+        ];
         this.rectangles.forEach( rectangle => { 
-            console.log("Go: ", rectangle)
             this.scene.back.removeAll();
             if (rectangle) {
                 rectangle.destroy()
             } 
-            //rectangle = new Phaser.GameObjects.Rectangle(this.scene, this.x, this.y, 32, 400, 0xff0000, 0.5);
-            rectangle = this.scene.add.rectangle(this.x, this.y, 32, 400, 0xff0000, 0.5);
-            this.scene.back.add(rectangle)
+            
+            this.scene.back.add(this.scene.add.rectangle(this.x, this.y, 32, 1800, this.block.color, 0.2).setOrigin(0.5, 0.5))
+            this.scene.back.add(this.scene.add.rectangle(this.x, this.y, 1800, 32, this.block.color, 0.2).setOrigin(0.5, 0.5))
+            let { x, y, w, h, ox, oy } = directions[this.defaultDirection];
+            this.scene.back.add(this.scene.add.rectangle(x, y, w, h, this.block.color, 0.4).setOrigin(ox, oy))
         });
         
     }

@@ -1,7 +1,6 @@
 import Cell from "./cell";
 import Block from "./block";
 import blockTypes from "./block_types";
-import evolution from "./evolutions";
 
 class CellWall {
     constructor (scene, difficulty = 0) {
