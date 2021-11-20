@@ -157,7 +157,6 @@ class CellWall {
         for (let x = 0; x < this.cell.length; x++) 
             for (let y = 0; y < this.cell[x].length; y++) 
                 if (!this.cell[x][y]) {
-                    console.log("This is free!! ", this.cell[x][y], _freePositions)
                     _freePositions++;
                 }
             
