@@ -1,6 +1,6 @@
 class Bubble extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, velocity = 1, direction, color = 0xffffff) {
-        super(scene, x, y, 4, 4, color);
+        super(scene, x, y, 10, 10, color);
         this.name = "bubble";
         this.scene = scene;
         this.setOrigin(0.5)

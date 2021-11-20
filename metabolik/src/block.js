@@ -45,11 +45,15 @@ class Block extends Phaser.GameObjects.Sprite {
             }
     }
 
+    showHint () {
+
+    }
+
     right () {
         if (this.checkNextCell(this.coords.x, this.coords.y + 1)) {
             this.x += 32;
             this.coords.y++;
-            new Bubble(this.scene, this.x - 16, this.y + Phaser.Math.Between(-10, 10),  50, -1, this.block.color)    
+            this.addBubbles(this.x - 16, this.y + Phaser.Math.Between(-10, 10))    
         } else {
             this.scene.blockContact()
         }
@@ -59,7 +63,7 @@ class Block extends Phaser.GameObjects.Sprite {
         if (this.checkNextCell(this.coords.x, this.coords.y - 1)) {
             this.x -= 32;
             this.coords.y--;
-            new Bubble(this.scene, this.x + 16, this.y + Phaser.Math.Between(-10, 10),  50, -1, this.block.color)
+            this.addBubbles(this.x + 16, this.y + Phaser.Math.Between(-10, 10))
         } else {
             this.scene.blockContact()
         }
@@ -69,7 +73,7 @@ class Block extends Phaser.GameObjects.Sprite {
         if (this.checkNextCell(this.coords.x - 1, this.coords.y)) {       
             this.y -= 32;
             this.coords.x--;
-            new Bubble(this.scene, this.x + Phaser.Math.Between(-10, 10), this.y + 16,  50, -1, this.block.color)
+            this.addBubbles(this.x + Phaser.Math.Between(-10, 10), this.y + 16)
         } else {
             this.scene.blockContact()
         }
@@ -79,10 +83,17 @@ class Block extends Phaser.GameObjects.Sprite {
         if (this.checkNextCell(this.coords.x + 1, this.coords.y)) {    
             this.y += 32;
             this.coords.x++;
-            new Bubble(this.scene, this.x + Phaser.Math.Between(-10, 10), this.y - 16,  50, -1, this.block.color)
+
+            this.addBubbles(this.x + Phaser.Math.Between(-10, 10), this.y - 16)
         } else {
             this.scene.blockContact()
         }
+    }
+
+    addBubbles (x, y) {
+        Array(10).fill(0).forEach( i => {
+            new Bubble(this.scene, x, y, 50, -1, this.block.color)
+        })
     }
 
     checkNextCell (nextx, nexty) {

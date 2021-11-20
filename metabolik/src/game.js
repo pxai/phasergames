@@ -57,6 +57,20 @@ export default class Game extends Phaser.Scene {
 
     updateClock () {
         if (this.time === 0) { this.gameOver(); }
+        if (this.time === 10) {
+            this.clockText.setTint(0xff0000)
+            this.clockText.setAlpha(0.6)
+            this.add.tween({
+                targets: this.clockText,
+                duration: 200,
+                alpha: {from: 0, to: 1},
+                repeat: 5,
+                yoyo: true
+            });
+        }
+        if (this.time <= 10) { 
+            this.playAudio("blip");
+        }
         this.time--;
         this.elapsed = `${this.time % 60}`.padStart(2, 0);
         this.clockText.setText("00:" + this.elapsed)
@@ -164,6 +178,10 @@ export default class Game extends Phaser.Scene {
           "cellheart": this.sound.add("cellheart"),
           "destroy": this.sound.add("destroy"),
           "evolve": this.sound.add("evolve"),
+          "bonus": this.sound.add("bonus"),
+          "blip": this.sound.add("blip"),
+          "yeah": this.sound.add("yeah"),
+          "toasty": this.sound.add("toasty"),
         };
       }
 
@@ -190,7 +208,6 @@ export default class Game extends Phaser.Scene {
         this.current.setBlock()
         this.wall.removeBlocks(this.current.coords.x, this.current.coords.y, this.current.block.type)
         this.cleanBlocks(this.wall.toRemove);
-
         this.current = null;
         this.updateHealth()
         this.generateBlock();
@@ -210,10 +227,32 @@ export default class Game extends Phaser.Scene {
         })
         let {x, y} = this.current.coords;
 
-        this.wall.moveDownHanging();
+        // this.wall.moveDownHanging();
 
-        this.updateScore(blocks.length);
         this.playAudio("destroy");
+        const bonusMultiplier = blocks.length >= 5 ? Math.floor(blocks.length/5) * 5 : 1;
+        this.playBonus(blocks.length, bonusMultiplier)
+
+        this.updateScore(blocks.length * bonusMultiplier);
+    }
+
+    playBonus(cells, multiplier) {
+        const audios = ["bonus", "toasty", "yeah"]
+        if (cells > 4) {
+            this.playAudio("bonus");
+            this.cameras.main.shake(100, cells * 0.001);
+            this.playAudio(audios[multiplier/5] || "yeah")
+            this.bonusText = this.add.bitmapText(this.center_width, this.height - 200, "arcade", "BONUS x"+multiplier, 50).setOrigin(0.5)
+            this.tweens.add({
+                targets: this.bonusText,
+                duration: 1000,
+                y: {from: this.height - 200, to: 100 },
+                alpha: {from: 0, to: 1},
+                onComplete: () => {
+                    this.bonusText.destroy()
+                }
+            });
+        }
     }
 
     showPoints (blocks) {
