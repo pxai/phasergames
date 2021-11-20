@@ -86,11 +86,9 @@ class Block extends Phaser.GameObjects.Sprite {
     }
 
     checkNextCell (nextx, nexty) {
-        console.log("Content of next: ", this.scene.wall.cell[nextx][nexty]?.content, this.scene.wall.cell[nextx][nexty]);
-        const free = !this.scene.wall.cell[nextx][nexty];
+         const free = !this.scene.wall.cell[nextx][nexty];
         if (!free) {
             let {x, y} = this.scene.wall.cell[nextx][nexty];
-            console.log("Setting block! ", this.block.type)
             this.scene.wall.cell[this.coords.x][this.coords.y] = {content: this.block.type, x, y, block: this}
         }
         return free;

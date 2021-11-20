@@ -100,7 +100,7 @@ class CellWall {
         this.toRemove = [];
         this.toRemove = [`${x}:${y}:${color}`];
         this.searchAdjacents(x, y, color);
-        console.log("Blocks to remove: ", this.toRemove)
+
         return this.toRemove;
     }
 
@@ -122,6 +122,30 @@ class CellWall {
             this.searchAdjacents(x, y + 1, color);
         }
         return;
+    }
+
+    moveDownHanging() {
+        const removeSpaces = (a, b) => !a ? 1 : !b ? -1 : 0;
+        this.coords.forEach( (y, i) => {
+            let x = i + 1;
+            
+            let begin = this.cell[x].slice(0, y)
+            let middle1 = this.cell[x].slice(y, 12).sort(removeSpaces)
+            let middle2 = this.cell[x].slice(13, this.cell[x].length - y).reverse().sort(removeSpaces).reverse()
+            let end = this.cell[x].slice(this.cell[x].length - y, this.cell[x].length)
+            this.cell[x] = [...begin, ...middle1, this.cell[x][12], ...middle2, ...end]
+            this.repaintRow(x);
+            // console.log(`Row: ${i} ${[...begin, ...middle1, ...middle2, ...end]}`)
+        });
+    }
+
+    repaintRow(x) {
+        this.cell[x].forEach((element, i) => {
+            if (element && element.content !== "purple") {
+                element.block.x = (i * 32) + 50;
+                element.block.y = (x * 32) + 12;
+            }
+        })
     }
 
     isIncluded(x, y, color) {

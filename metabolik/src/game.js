@@ -140,8 +140,6 @@ export default class Game extends Phaser.Scene {
                 this.playAudio("speed");
             }
         }
-
-        // this.wall.update();
     }
 
     playMusic () {
@@ -211,6 +209,8 @@ export default class Game extends Phaser.Scene {
             this.wall.cell[x][y] = null;
         })
         let {x, y} = this.current.coords;
+
+        this.wall.moveDownHanging();
 
         this.updateScore(blocks.length);
         this.playAudio("destroy");
