@@ -71,7 +71,9 @@
      inkscape:window-height="776"
      inkscape:window-x="0"
      inkscape:window-y="23"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -88,58 +90,178 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <rect
-       style="fill:#000000;stroke-width:0.322177"
-       id="rect67"
-       width="293.30951"
-       height="229.80951"
-       x="-49.136906"
-       y="-21.166662" />
-    <text
-       xml:space="preserve"
-       id="text10"
-       style="font-style:normal;font-weight:normal;font-size:10.58329999999999949px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect12);fill:#5599ff;fill-opacity:1;stroke:none;"
-       x="29.672138"
-       y="0"
-       transform="matrix(2.1773914,0,0,2.2808333,-117.81581,-62.898267)"><tspan
-         x="61.029816"
-         y="60.021925"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.7556px;font-family:'Super Mario Bros. 2';-inkscape-font-specification:'Super Mario Bros. 2, ';text-align:center;text-anchor:middle;fill:#5599ff">META
-</tspan></tspan><tspan
-         x="51.152016"
-         y="85.820635"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.7556px;font-family:'Super Mario Bros. 2';-inkscape-font-specification:'Super Mario Bros. 2, ';text-align:center;text-anchor:middle;fill:#5599ff">BOLIK</tspan></tspan></text>
     <text
        xml:space="preserve"
        id="text25"
        style="fill:black;fill-opacity:1;line-height:1.25;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:10.58333333000000032px;white-space:pre;shape-inside:url(#rect27);" />
-    <text
-       xml:space="preserve"
-       id="text10-4-2"
-       style="font-style:normal;font-weight:normal;font-size:10.58329999999999949px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect12-1-7);fill:#ffe680;fill-opacity:1;stroke:none;"
-       x="29.672138"
-       y="0"
-       transform="matrix(2.1773914,0,0,2.2808333,-119.49685,-64.810398)"><tspan
-         x="61.029816"
-         y="60.021925"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.7556px;font-family:'Super Mario Bros. 2';-inkscape-font-specification:'Super Mario Bros. 2, ';text-align:center;text-anchor:middle;fill:#ffe680">META
+    <g
+       id="g780"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96">
+      <g
+         id="g387">
+        <text
+           xml:space="preserve"
+           id="text10"
+           style="font-style:normal;font-weight:normal;font-size:10.58329999999999949px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect12);fill:#5599ff;fill-opacity:1;stroke:none;"
+           x="29.672138"
+           y="0"
+           transform="matrix(2.1773914,0,0,2.2808333,-117.81581,-62.898267)"><tspan
+             x="61.029816"
+             y="60.021925"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.7556px;font-family:'Super Mario Bros. 2';-inkscape-font-specification:'Super Mario Bros. 2, ';text-align:center;text-anchor:middle;fill:#5599ff">META
 </tspan></tspan><tspan
-         x="51.152016"
-         y="85.820635"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.7556px;font-family:'Super Mario Bros. 2';-inkscape-font-specification:'Super Mario Bros. 2, ';text-align:center;text-anchor:middle;fill:#ffe680">BOLIK</tspan></tspan></text>
-    <text
-       xml:space="preserve"
-       id="text10-4"
-       style="font-style:normal;font-weight:normal;font-size:10.58329999999999949px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect12-1);fill:#aad400;fill-opacity:1;stroke:none;"
-       x="29.672138"
-       y="0"
-       transform="matrix(2.1773914,0,0,2.2808333,-121.73462,-66.476918)"><tspan
-         x="61.029816"
-         y="60.021925"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.7556px;font-family:'Super Mario Bros. 2';-inkscape-font-specification:'Super Mario Bros. 2, ';text-align:center;text-anchor:middle;fill:#aad400">META
+             x="51.152016"
+             y="85.820635"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.7556px;font-family:'Super Mario Bros. 2';-inkscape-font-specification:'Super Mario Bros. 2, ';text-align:center;text-anchor:middle;fill:#5599ff">BOLIK</tspan></tspan></text>
+        <text
+           xml:space="preserve"
+           id="text10-4-2"
+           style="font-style:normal;font-weight:normal;font-size:10.58329999999999949px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect12-1-7);fill:#ffe680;fill-opacity:1;stroke:none;"
+           x="29.672138"
+           y="0"
+           transform="matrix(2.1773914,0,0,2.2808333,-119.49685,-64.810398)"><tspan
+             x="61.029816"
+             y="60.021925"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.7556px;font-family:'Super Mario Bros. 2';-inkscape-font-specification:'Super Mario Bros. 2, ';text-align:center;text-anchor:middle;fill:#ffe680">META
 </tspan></tspan><tspan
-         x="51.152016"
-         y="85.820635"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.7556px;font-family:'Super Mario Bros. 2';-inkscape-font-specification:'Super Mario Bros. 2, ';text-align:center;text-anchor:middle;fill:#aad400">BOLIK</tspan></tspan></text>
+             x="51.152016"
+             y="85.820635"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.7556px;font-family:'Super Mario Bros. 2';-inkscape-font-specification:'Super Mario Bros. 2, ';text-align:center;text-anchor:middle;fill:#ffe680">BOLIK</tspan></tspan></text>
+        <text
+           xml:space="preserve"
+           id="text10-4"
+           style="font-style:normal;font-weight:normal;font-size:10.58329999999999949px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect12-1);fill:#aad400;fill-opacity:1;stroke:none;"
+           x="29.672138"
+           y="0"
+           transform="matrix(2.1773914,0,0,2.2808333,-121.73462,-66.476918)"><tspan
+             x="61.029816"
+             y="60.021925"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.7556px;font-family:'Super Mario Bros. 2';-inkscape-font-specification:'Super Mario Bros. 2, ';text-align:center;text-anchor:middle;fill:#aad400">META
+</tspan></tspan><tspan
+             x="51.152016"
+             y="85.820635"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.7556px;font-family:'Super Mario Bros. 2';-inkscape-font-specification:'Super Mario Bros. 2, ';text-align:center;text-anchor:middle;fill:#aad400">BOLIK</tspan></tspan></text>
+      </g>
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-2"
+         width="4.4111948"
+         height="4.7505174"
+         x="39.191769"
+         y="106.20799" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-8"
+         width="4.4111948"
+         height="4.7505174"
+         x="41.567028"
+         y="62.096046" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-21"
+         width="4.4111948"
+         height="4.7505174"
+         x="14.081892"
+         y="61.4174" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-87"
+         width="4.4111948"
+         height="4.7505174"
+         x="113.50343"
+         y="60.738754" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-3"
+         width="4.4111948"
+         height="4.7505174"
+         x="86.696945"
+         y="95.34967" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-21-5"
+         width="4.4111948"
+         height="4.7505174"
+         x="135.22008"
+         y="95.688988" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-21-2"
+         width="4.4111948"
+         height="4.7505174"
+         x="134.88075"
+         y="120.12022" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-21-3"
+         width="4.4111948"
+         height="4.7505174"
+         x="167.11641"
+         y="95.010345" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-21-50"
+         width="4.4111948"
+         height="4.7505174"
+         x="166.7771"
+         y="120.45955" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-21-4"
+         width="4.4111948"
+         height="4.7505174"
+         x="-5.2595"
+         y="118.0843" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-21-4-4"
+         width="4.4111948"
+         height="4.7505174"
+         x="-4.9201798"
+         y="96.706963" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-21-7"
+         width="4.4111948"
+         height="4.7505174"
+         x="145.06044"
+         y="53.61298" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-21-7-9"
+         width="4.4111948"
+         height="4.7505174"
+         x="113.16411"
+         y="40.040073" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-21-8"
+         width="4.4111948"
+         height="4.7505174"
+         x="27.315475"
+         y="46.147877" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-21-9"
+         width="4.4111948"
+         height="4.7505174"
+         x="60.229774"
+         y="38.682785" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-21-8-2"
+         width="4.4111948"
+         height="4.7505174"
+         x="59.89045"
+         y="61.078075" />
+      <rect
+         style="fill:#ffe680;stroke-width:0.264583"
+         id="rect523-21-8-1"
+         width="4.4111948"
+         height="4.7505174"
+         x="86.35762"
+         y="119.78089" />
+    </g>
   </g>
 </svg>
