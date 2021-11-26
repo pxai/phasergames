@@ -1,5 +1,7 @@
 import Phaser from "phaser";
 import Player from "./player";
+import Background from "./background";
+import Items from "./items";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -18,10 +20,24 @@ export default class Game extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
         this.shots = this.add.group();
+        this.addBackground();
+        this.addItems();
         this.player = new Player(this, 40, 40)
-        this.cameras.main.setBackgroundColor(0x494d7e);
+        // this.cameras.main.setBackgroundColor(0x494d7e);
+
        // this.loadAudios();
        // this.playMusic();
+    }
+
+    addBackground () {
+        this.backgroundLayer = this.add.layer();
+        this.background = new Background(this)
+    }
+
+    addItems () {
+        this.asteroids = this.add.group()
+        this.boxes = this.add.group();
+        this.items = new Items(this)
     }
 
     update () {
