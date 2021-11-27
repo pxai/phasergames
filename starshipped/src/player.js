@@ -5,6 +5,7 @@ class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, name = "ship1_1") {
         super(scene, x, y, name);
         this.scene = scene;
+        this.id = Math.random();
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
@@ -26,15 +27,13 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     shoot (pointer) {
-        console.log(pointer.x, pointer.y, 'logo');
         this.getSpeeds();
-        this.scene.shots.add(new Shot(this.scene, this.x, this.y, this.speed_x, this.speed_y))
+        this.scene.shots.add(new Shot(this.scene, this.x, this.y, this.speed_x, this.speed_y, this.id))
     }
 
     release(pointer) {
         if (pointer.leftButtonReleased()) {
             this.shooting = false;
-            console.log("Release!")
         }
     }
 
@@ -46,7 +45,6 @@ class Player extends Phaser.GameObjects.Sprite {
             this.speed_x += Math.cos(this.rotation + Math.PI/2) * this.speed;
             this.speed_y += Math.sin(this.rotation + Math.PI/2) * this.speed;
 
-            console.log("Rotation: ", this.rotation, this.speed_x, this.speed_y)
             if (Phaser.Math.Between(1, 4) > 1) {
                 this.scene.thrust.add(new Particle(this.scene, this.x , this.y ,  50, -1, 10, 0.3))
                 //new Particle(this.scene, this.x , this.y ,  50, -1)
@@ -80,14 +78,11 @@ class Player extends Phaser.GameObjects.Sprite {
         dir = dir * Math.PI * 2;
 
         this.newSpeed = (Math.abs(dx) + Math.abs(dy)/2)/100
-        console.log(dx, dy, "SPEED: ", this.newSpeed)
-
         this.body.rotation += dir * 100
     }
 
     destroy () {
         this.death = true;
-        console.log("About to destroy: ", this.scene);
         super.destroy();
     }
       

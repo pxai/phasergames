@@ -1,20 +1,18 @@
 import Particle from "./particle";
 
 class Shot extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, speed_x, speed_y) {
+    constructor (scene, x, y, speed_x, speed_y, id) {
         super(scene, x, y, "shot");
         this.scene = scene;
         this.setOrigin(0.5)
+        this.id = id;
         this.speed_x = speed_x;
         this.speed_y = speed_y;
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
         this.init();
-
-        //this.collider = this.scene.physics.add.overlap(this.scene.player, this, this.scene.player.hit, null, this.scene.player);
-        //this.overlapBulletBeam = this.scene.physics.add.overlap(this.scene.player.beamGroup, this, this.scene.player.destroyBeam);
-    }
+   }
 
     init () {
         this.scene.tweens.add({

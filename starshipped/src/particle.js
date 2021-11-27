@@ -13,7 +13,6 @@ class Particle extends Phaser.GameObjects.Rectangle {
     }
 
     init () {
-        console.log("Alpha: ", this.alpha)
         this.scene.tweens.add({
             targets: this,
             duration: Phaser.Math.Between(600, 1000),

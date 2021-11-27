@@ -32,6 +32,7 @@ export default class Game extends Phaser.Scene {
 
        // this.loadAudios();
        // this.playMusic();
+       this.cameras.main.startFollow(this.player, true);
     }
 
     addPlayer() {
@@ -51,11 +52,21 @@ export default class Game extends Phaser.Scene {
         this.items = new Items(this)
 
         this.physics.add.overlap(this.player, this.asteroids, this.crashAsteroid.bind(this));
-        this.physics.add.overlap(this.shots, this.asteroids, this.destroyAsteroid);
+        this.physics.add.overlap(this.shots, this.asteroids, this.destroyAsteroid.bind(this));
+        this.physics.add.overlap(this.shots, this.ship, this.shotShip.bind(this));
+    }
+
+    shotShip(shot, ship) {
+        console.log("SHIP SHOT!", shot.id, ship.id)
+        if (shot.id === ship.id) return;
+        console.log("DOWN SHIP SHOT!", shot.id, ship.id)
+        shot.destroy();
+        ship.destroy()
     }
 
     destroyAsteroid(shot, asteroid) {
         shot.destroy();
+        new Explosion(this, asteroid.x, asteroid.y, "0xcccccc", 15)
         asteroid.destroy();
     }
 
@@ -91,7 +102,6 @@ export default class Game extends Phaser.Scene {
         if (!this.checkWorld) return;
 
         const worldView = this.cameras.main.worldView;
-        // console.log("Contains? ", worldView.contains(this.player.x, this.player.y))
         if (!worldView.contains(this.player.x, this.player.y)) { this.destroyPlayer(); }
     }
 
