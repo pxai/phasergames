@@ -1,7 +1,7 @@
 {
-  "name": "brinko",
+  "name": "starshipped",
   "version": "0.0.1",
-  "description": "Brinko phaser game",
+  "description": "Starshipped phaser game",
   "scripts": {
     "start": "npx webpack-cli serve -c webpack.dev.js --mode development",
     "build": "webpack --config webpack.prod.js",

@@ -1,9 +1,10 @@
 class Hex extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, tween = true) {
+    constructor (scene, x, y, tween = true, colors = {from: 0x494d7e, to: 0x494d9f}) {
         super(scene, x, y, "hex");
         this.scene = scene;
         this.scene.add.existing(this)
-        this.tint = 0x0000ff;
+        this.tint = Phaser.Math.Between(0x494d7e, 0x494d9f);
+        this.colors = colors;
         this.setOrigin(0.5)
         this.init(tween);
     }

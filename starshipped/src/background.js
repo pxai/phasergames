@@ -6,7 +6,7 @@ export default class Background {
         this.generate();
     }
 
-    generate (center) {
+    generate () {
         Array(20).fill(0).forEach( (row, i) => {
             Array(20).fill(0).forEach( (e, j) => {
                 let offset = j % 2 === 0 ?  32 : 0; 

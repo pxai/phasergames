@@ -6,7 +6,9 @@ class Asteroid extends Phaser.GameObjects.Sprite {
         this.scene.physics.world.enable(this);
         this.scene.add.existing(this)
         this.setOrigin(0.5)
-        this.body.rotation = 14;
+        this.body.rotate = 14;
+        this.body.setCircle(26);
+        this.body.setOffset(6, 11)
     }
 }
 

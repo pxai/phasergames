@@ -8,30 +8,24 @@ class Player extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
-        this.rotation = 0;
-        //this.anchor.setTo(0.5,0.5);
+        this.rotation = 15;
+        this.body.setCircle(26);
+        this.body.setOffset(6, 9)
+
         this.speed_x = 0;// This is the speed it's currently moving at
-        this.speed_y =0;
-        this.speed = 0.5; // This is the parameter for how fast it should move 
+        this.speed_y = 0;
+        this.speed = 0.35; // This is the parameter for how fast it should move 
         this.friction = .95;
-        this.shooting = false;
+        this.death = false;
         this.init();
     }
 
     init () {
-        this.W = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-        this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-        this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-        this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        this.cursor = this.scene.input.keyboard.createCursorKeys();
-
         this.scene.input.on('pointerdown', (pointer) => this.shoot(pointer), this);
         this.scene.input.on('pointerup', (pointer) => this.release(pointer), this);
     }
 
     shoot (pointer) {
-       // if (this.shooting) return;
-        //this.shooting = true;
         console.log(pointer.x, pointer.y, 'logo');
         this.getSpeeds();
         this.scene.shots.add(new Shot(this.scene, this.x, this.y, this.speed_x, this.speed_y))
@@ -45,22 +39,20 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     update () {
+        if (this.death) return;
         // Lerp rotation towards mouse
         this.getSpeeds()
-
-        // Move forward
-        if(this.W.isDown || this.cursor.up.isDown){
 
             this.speed_x += Math.cos(this.rotation + Math.PI/2) * this.speed;
             this.speed_y += Math.sin(this.rotation + Math.PI/2) * this.speed;
 
             console.log("Rotation: ", this.rotation, this.speed_x, this.speed_y)
             if (Phaser.Math.Between(1, 4) > 1) {
-                new Particle(this.scene, this.x - (this.speed_x * 7), this.y - (this.speed_y * 3),  50, -1)
-                new Particle(this.scene, this.x - (this.speed_x * 8), this.y - (this.speed_y * 5),  50, -1)
-                new Particle(this.scene, this.x - (this.speed_x * 9), this.y - (this.speed_y * 8),  50, -1)
+                this.scene.thrust.add(new Particle(this.scene, this.x , this.y ,  50, -1, 10, 0.3))
+                //new Particle(this.scene, this.x , this.y ,  50, -1)
+                //new Particle(this.scene, this.x , this.y,  50, -1)
             }
-        }
+       // }
         
         this.x += this.speed_x;
         this.y += this.speed_y;
@@ -86,7 +78,17 @@ class Player extends Phaser.GameObjects.Sprite {
         let dir = (angle - this.rotation) / (Math.PI * 2);
         dir -= Math.round(dir);
         dir = dir * Math.PI * 2;
-        this.body.rotation += dir * 10;
+
+        this.newSpeed = (Math.abs(dx) + Math.abs(dy)/2)/100
+        console.log(dx, dy, "SPEED: ", this.newSpeed)
+
+        this.body.rotation += dir * 100
+    }
+
+    destroy () {
+        this.death = true;
+        console.log("About to destroy: ", this.scene);
+        super.destroy();
     }
       
 }

@@ -1,5 +1,3 @@
-import blockTypes from "./block_types";
-
 export default class Bootloader extends Phaser.Scene {
     constructor () {
         super({ key: "bootloader" });
@@ -29,19 +27,20 @@ export default class Bootloader extends Phaser.Scene {
             this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
         });*/
 
-       /* blockTypes.forEach(i => {
-            this.load.image(i.type, `assets/images/${i.type}.png`);
-        });*/
+       Array(6).fill(0).forEach((_,i) => {
+            this.load.audio(`muzik${i}`, `assets/sounds/muzik${i}.mp3`);
+        });
 
        // this.load.audio("muzik", "assets/sounds/muzik.mp3");
-        this.load.image("ship1_1", "assets/images/breadship.png");
+        this.load.image("ship1_1", "assets/images/starship.png");
         this.load.image("pello", "assets/images/pello.png");
         this.load.image("hex", "assets/images/hex64.png");
         this.load.image("asteroid", "assets/images/asteroid.png");
-       /*  this.load.audio("beam", "assets/sounds/beam.mp3");*/
-
+        this.load.audio("splash", "assets/sounds/splash.mp3");
+        this.load.audio("game-over", "assets/sounds/game-over.mp3");
 
         this.load.bitmapFont("arcade", "assets/fonts/arcade.png", "assets/fonts/arcade.xml");
+        this.load.bitmapFont("starshipped", "assets/fonts/starshipped.png", "assets/fonts/starshipped.xml");
         this.load.spritesheet("shot", "assets/images/shot.png", { frameWidth: 32, frameHeight: 32 });
     }
 

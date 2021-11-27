@@ -1,5 +1,5 @@
 # Starshipped
 
-Template for games using Phaser.
+Source code for starshipped
 
 Pello Xabier Altadill Izura - http://pello.io
