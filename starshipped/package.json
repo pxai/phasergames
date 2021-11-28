@@ -10,6 +10,7 @@
     "unit": "mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js"
   },
   "dependencies": {
+    "easystarjs": "^0.4.4",
     "phaser": "^3.52.0",
     "socket.io": "^4.1.3"
   },

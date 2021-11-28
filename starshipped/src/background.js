@@ -1,14 +1,14 @@
 import Hex from "./hex";
 
 export default class Background {
-    constructor (scene, dificulty = 0) {
+    constructor (scene, gridSize = 40, dificulty = 0) {
         this.scene = scene;
-        this.generate();
+        this.generate(gridSize);
     }
 
-    generate () {
-        Array(40).fill(0).forEach( (row, i) => {
-            Array(40).fill(0).forEach( (e, j) => {
+    generate (gridSize) {
+        Array(gridSize).fill(0).forEach( (row, i) => {
+            Array(gridSize).fill(0).forEach( (e, j) => {
                 let offset = j % 2 === 0 ?  32 : 0; 
                 new Hex(this.scene, (i * 64) + offset, j * 55)
             });

@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import Player from "./player";
+import Foe from "./foe";
 import Background from "./background";
 import Items from "./items";
 import Explosion from "./explosion";
@@ -22,22 +23,40 @@ export default class Game extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.shots = this.add.group();
         this.checkWorld = false;
-
+        this.setCamera();
         this.addBackground();
-        this.addPlayer()
         this.addItems();
-
+        this.addPlayer()
+        this.addColliders();
 
         // this.cameras.main.setBackgroundColor(0x494d7e);
 
        // this.loadAudios();
        // this.playMusic();
-       this.cameras.main.startFollow(this.player, true);
+       // this.cameras.main.startFollow(this.player, true);
+    }
+
+    setCamera () {
+        this.cameras.main.setBounds(0, 0, 64 * 40, 64 * 33);
+        this.cameras.main.setZoom(1);
+        this.cameras.main.centerOn(64 * 20, 64 * 20);
+        this.cameraX = 64 * 20;
+        this.cameraY = 64 * 20;
+    }
+
+    updateCamera() {
+        
+        this.cameraX += 2;
+        this.cameras.main.pan(this.cameraX, this.cameraY)
+        // this.cameras.main.x = x + 1
     }
 
     addPlayer() {
         this.thrust = this.add.layer();
-        this.player = new Player(this, this.center_width, this.center_height)
+        const x = 64 * 20;
+        const y = 64 * 20;
+        this.player = new Player(this, x, y)
+        this.foe = new Foe(this, x + 200, y + 200, this.items.grid)
         this.time.delayedCall(300, () => { this.checkWorld = true; });
     }
 
@@ -51,7 +70,9 @@ export default class Game extends Phaser.Scene {
         this.boxes = this.add.group();
         this.energies = this.add.group();
         this.items = new Items(this)
+    }
 
+    addColliders () {
         this.physics.add.overlap(this.player, this.asteroids, this.crashAsteroid.bind(this));
         this.physics.add.overlap(this.player, this.energies, this.pickEnergy.bind(this));
         this.physics.add.overlap(this.shots, this.asteroids, this.destroyAsteroid.bind(this));
@@ -104,6 +125,9 @@ export default class Game extends Phaser.Scene {
         this.shots.children.entries.forEach(shot => { 
             shot.update();
         });
+
+        this.foe.update();
+        this.updateCamera();
     }
 
     checkPlayerInside () {
