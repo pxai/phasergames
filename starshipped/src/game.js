@@ -42,13 +42,57 @@ export default class Game extends Phaser.Scene {
         this.cameras.main.centerOn(64 * 20, 64 * 20);
         this.cameraX = 64 * 20;
         this.cameraY = 64 * 20;
+        this.panDirection = Date.now() % 8; // right, left, up, down
+        console.log("A ver jambo:; ",  this.panDirection)
     }
 
     updateCamera() {
-        
-        this.cameraX += 2;
+        const {x, y} = this.cameras.main.worldView;
+    
+        if (this.cameraX > 1680) {
+            this.panDirection = Date.now() % 8; 
+        } else if (this.cameraX < 64) {
+            this.panDirection = Date.now() % 8; 
+        } else if (this.cameraY < 64) {
+            this.panDirection = Date.now() % 8; 
+        } else if (this.cameraY > (64 * 33) - 100) {
+            this.panDirection = Date.now() % 8; 
+        }
+
+        switch (this.panDirection) {
+            case 0:
+                this.cameraX += 2;
+                break;
+            case 1:
+                this.cameraX -= 2;
+                break;
+            case 2:
+                this.cameraY -= 2;
+                break;
+            case 3:
+                this.cameraY += 2;
+                break;
+            case 4:
+                this.cameraX += 2;
+                this.cameraY += 2;
+                break;
+            case 5:
+                this.cameraX += 2;
+                this.cameraY -= 2;
+                break;
+            case 6:
+                this.cameraX -= 2;
+                this.cameraY -= 2;
+                break;
+            case 7:
+                this.cameraX -= 2;
+                this.cameraY += 2;
+                break;
+            default:
+                break;
+        }
+
         this.cameras.main.pan(this.cameraX, this.cameraY)
-        // this.cameras.main.x = x + 1
     }
 
     addPlayer() {
@@ -126,8 +170,8 @@ export default class Game extends Phaser.Scene {
             shot.update();
         });
 
-        this.foe.update();
-        this.updateCamera();
+       this.foe.update();
+       this.updateCamera();
     }
 
     checkPlayerInside () {
