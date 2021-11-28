@@ -49,17 +49,29 @@ export default class Game extends Phaser.Scene {
     addItems () {
         this.asteroids = this.add.group()
         this.boxes = this.add.group();
+        this.energies = this.add.group();
         this.items = new Items(this)
 
         this.physics.add.overlap(this.player, this.asteroids, this.crashAsteroid.bind(this));
+        this.physics.add.overlap(this.player, this.energies, this.pickEnergy.bind(this));
         this.physics.add.overlap(this.shots, this.asteroids, this.destroyAsteroid.bind(this));
         this.physics.add.overlap(this.shots, this.ship, this.shotShip.bind(this));
+        this.physics.add.overlap(this.shots, this.energies, this.destroyEnergy.bind(this));
+    }
+
+    destroyEnergy(shot, energy) {
+        shot.destroy();
+        energy.destroy();
+    }
+
+    pickEnergy(ship, energy) {
+        ship.addEnergy(energy.power);
+        energy.destroy();
     }
 
     shotShip(shot, ship) {
-        console.log("SHIP SHOT!", shot.id, ship.id)
         if (shot.id === ship.id) return;
-        console.log("DOWN SHIP SHOT!", shot.id, ship.id)
+
         shot.destroy();
         ship.destroy()
     }
@@ -89,12 +101,7 @@ export default class Game extends Phaser.Scene {
             this.checkPlayerInside();
         }
         this.shots.children.entries.forEach(shot => { 
-            if(shot.x < -10 || shot.x > 1000 || shot.y < -10 || shot.y > 1000){
-                this.shots.remove(shot);
-                shot.destroy;
-            } else {
-                shot.update();
-            }
+            shot.update();
         });
     }
 

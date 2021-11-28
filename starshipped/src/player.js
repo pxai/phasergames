@@ -12,6 +12,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.rotation = 15;
         this.body.setCircle(26);
         this.body.setOffset(6, 9)
+        this.power = 0;
 
         this.speed_x = 0;// This is the speed it's currently moving at
         this.speed_y = 0;
@@ -27,8 +28,12 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     shoot (pointer) {
-        this.getSpeeds();
-        this.scene.shots.add(new Shot(this.scene, this.x, this.y, this.speed_x, this.speed_y, this.id))
+        //if (this.power > 0) {
+            this.getSpeeds();
+            
+            this.scene.shots.add(new Shot(this.scene, this.x, this.y, this.speed_x, this.speed_y, this.id))
+            // this.power--;
+       // }
     }
 
     release(pointer) {
@@ -46,7 +51,7 @@ class Player extends Phaser.GameObjects.Sprite {
             this.speed_y += Math.sin(this.rotation + Math.PI/2) * this.speed;
 
             if (Phaser.Math.Between(1, 4) > 1) {
-                this.scene.thrust.add(new Particle(this.scene, this.x , this.y ,  50, -1, 10, 0.3))
+                this.scene.thrust.add(new Particle(this.scene, this.x , this.y , 0xffffff, 10))
                 //new Particle(this.scene, this.x , this.y ,  50, -1)
                 //new Particle(this.scene, this.x , this.y,  50, -1)
             }
@@ -70,8 +75,8 @@ class Player extends Phaser.GameObjects.Sprite {
     }
         
     getSpeeds () {
-        let dx = (this.scene.input.mousePointer.x + this.scene.cameras.main.x) - this.x;
-        let dy = (this.scene.input.mousePointer.y + this.scene.cameras.main.y) - this.y;
+        let dx = (this.scene.input.mousePointer.x + this.scene.cameras.main.worldView.x) - this.x;
+        let dy = (this.scene.input.mousePointer.y + this.scene.cameras.main.worldView.y) - this.y;
         let angle = Math.atan2(dy, dx) - Math.PI/2;
         let dir = (angle - this.rotation) / (Math.PI * 2);
         dir -= Math.round(dir);
@@ -81,11 +86,25 @@ class Player extends Phaser.GameObjects.Sprite {
         this.body.rotation += dir * 100
     }
 
+    addEnergy(power) {
+        this.power = this.power + power;
+        this.showPoints("+" + power)
+    }
+
+    showPoints (score, color = 0xff0000) {
+        let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "starshipped", score, 20, 0xfffd37).setOrigin(0.5);
+        this.scene.tweens.add({
+            targets: text,
+            duration: 2000,
+            alpha: {from: 1, to: 0},
+            y: {from: text.y - 10, to: text.y - 100}
+        });
+    }
+
     destroy () {
         this.death = true;
         super.destroy();
-    }
-      
+    }      
 }
 
 export default Player;

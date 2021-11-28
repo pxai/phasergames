@@ -11,23 +11,23 @@ class Hex extends Phaser.GameObjects.Sprite {
 
     init (tween) {
         if (!tween) return;
-        /*this.scene.tweens.addCounter({
-            from: 255,
-            to: 0,
-            duration: 5000,
-            repeat: -1
-            onUpdate: function (tween)
-            {
-                this.tint = Phaser.Math.Between(0xaede01, 0x01aede)
-            }
-        });*/
-       this.tween = this.scene.tweens.add({
-            targets: this,
-            duration: Phaser.Math.Between(10000, 30000),
-            tint: {from: 0x494d7e, to: 0x494d9f},
-            repeat: -1,
-            ease: 'Linear',
+
+        this.scene.tweens.timeline({
+            tweens: [{
+                targets: this,
+                duration: Phaser.Math.Between(1000, 5000),
+                tint: {from: 0x494d7e, to: 0x494d9f},
+                repeat: 3,
+                ease: 'Linear',
+            },{
+                targets: this,
+                duration: Phaser.Math.Between(10000, 20000),
+                tint: {from: 0x494d7e, to: 0x494d9f},
+                repeat: -1,
+                ease: 'Linear',
+            }]
         })
+
     }
 }
 
