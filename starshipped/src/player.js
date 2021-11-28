@@ -32,7 +32,7 @@ class Player extends Phaser.GameObjects.Sprite {
             this.getSpeeds();
             
             this.scene.shots.add(new Shot(this.scene, this.x, this.y, this.speed_x, this.speed_y, this.id))
-            // this.power--;
+            this.power--;
        // }
     }
 

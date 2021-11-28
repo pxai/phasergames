@@ -34,11 +34,11 @@ class Shot extends Phaser.GameObjects.Sprite {
 
     update () {
         if (Phaser.Math.Between(1, 2) > 1) {
-            new Particle(this.scene, this.x, this.y,  50, 0x3e6875)
+            new Particle(this.scene, this.x, this.y, 0x3e6875, 4)
         }
 
-        this.x += this.speed_x; 
-        this.y += this.speed_y; 
+        this.x += this.speed_x * 2; 
+        this.y += this.speed_y * 2; 
     }
 
     explode() {

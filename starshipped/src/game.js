@@ -89,6 +89,7 @@ export default class Game extends Phaser.Scene {
     }
 
     destroyPlayer () {
+        this.cameras.main.shake(500);
         new Explosion(this, this.player.x, this.player.y, "0xffffff", 10)
         this.player.destroy();
 
