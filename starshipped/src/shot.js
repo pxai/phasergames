@@ -11,6 +11,8 @@ class Shot extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
+        this.particle = this.id === "FOE" ? 0xff083e : 0x3e6875;
+        this.animName = this.id === "FOE" ? "shotfoe" : "shot";
         this.init();
    }
 
@@ -21,22 +23,25 @@ class Shot extends Phaser.GameObjects.Sprite {
             scale: {from: 0.6, to: 1},
             repeat: -1
         });
-
         this.scene.anims.create({
-            key: "shot",
-            frames: this.scene.anims.generateFrameNumbers("shot"),
+            key: this.animName,
+            frames: this.scene.anims.generateFrameNumbers(this.animName),
             frameRate: 5,
             origin: 0.5
           });
-          // this.on('animationcomplete', this.animationComplete, this);
-          this.anims.play("shot", true)
+
+          this.anims.play(this.animName, true)
+          if (this.id === "FOE") {
+            this.scene.physics.moveTo(this, this.scene.player.x, this.scene.player.y, 200);
+          } 
     }
 
     update () {
         if (Phaser.Math.Between(1, 2) > 1) {
-            new Particle(this.scene, this.x, this.y, 0x3e6875, 4)
+            new Particle(this.scene, this.x, this.y, this.particle, 4)
         }
 
+        if (this.id === "FOE") return;
         this.x += this.speed_x * 2; 
         this.y += this.speed_y * 2; 
     }

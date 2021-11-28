@@ -7,7 +7,7 @@ class Foe extends Phaser.GameObjects.Sprite {
         super(scene, x, y, name);
         this.scene = scene;
         this.grid = grid;
-        this.id = Math.random();
+        this.id = "FOE";
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
@@ -19,7 +19,7 @@ class Foe extends Phaser.GameObjects.Sprite {
 
         this.speed_x = 0;// This is the speed it's currently moving at
         this.speed_y = 0;
-        this.speed = 20; // This is the parameter for how fast it should move 
+        this.speed = 0.35; // This is the parameter for how fast it should move 
         this.friction = .95;
         this.death = false;
         this.easystar = new EasyStar.js();
@@ -29,17 +29,30 @@ class Foe extends Phaser.GameObjects.Sprite {
     init () {
         this.easystar.setGrid(this.grid);
         this.easystar.setAcceptableTiles([0]);
+
+        this.launchMove();
+    }
+
+    launchMove() {
         this.move();
+        if (!this.scene) return;
+        this.delayedMove = this.scene.time.addEvent({
+            delay: 3000,                // ms
+            callback: this.move.bind(this),
+            startAt: 0,
+            callbackScope: this,
+            loop: true
+        });
     }
 
     move () {
         try {
+            if (this.moveTimeline) this.moveTimeline.destroy();
             this.easystar.findPath(Math.floor(this.x), Math.floor(this.y), Math.floor(this.scene.player.x), Math.floor(this.scene.player.y), this.moveIt.bind(this));
             this.easystar.setIterationsPerCalculation(10000);
             this.easystar.enableSync();
             this.easystar.enableDiagonals();
             this.easystar.calculate();
-            this.scene.time.delayedCall(2000, () => this.move())
         } catch (err) {
             console.log("Cant move yet: ", err)
         }
@@ -50,7 +63,6 @@ class Foe extends Phaser.GameObjects.Sprite {
         if (path === null) {
             console.log("Path was not found.");
         } else {
-            console.log("Path was found. "+  path.length +", The first Point is " + path[0].x + " " + path[0].y, "Last: ", path[path.length-1].x + " " + path[path.length-1].y);
             let tweens = [];
             this.i = 0;
             this.path = path;
@@ -59,48 +71,40 @@ class Foe extends Phaser.GameObjects.Sprite {
                 let ey = path[i+1].y;
                 tweens.push({
                     targets: this,
-                    duration: 10,
+                    duration: 8,
                     x: ex,
                     y: ey
                 });
             }
         
-            this.scene.tweens.timeline({
-                tweens: tweens
+            this.moveTimeline = this.scene.tweens.timeline({
+                tweens: tweens,
+                onComplete: () => {
+                    this.delayedMove.remove()
+                    this.launchMove();
+                }
             });
         }
     }
 
     shoot (pointer) {
-        //if (this.power > 0) {
             this.getSpeeds();
-            
+            this.scene.playAudio("foeshot")
             this.scene.shots.add(new Shot(this.scene, this.x, this.y, this.speed_x, this.speed_y, this.id))
             this.power--;
-       // }
     }
 
 
     update () {
         if (this.death) return;
-        // Lerp rotation towards mouse
         this.getSpeeds()
-        /*if (this.i < this.path.length - 5) {
-            this.speed_x = Math.cos(this.rotation + Math.PI/2) * this.speed * 2;
-            this.speed_y = Math.sin(this.rotation + Math.PI/2) * this.speed * 2;
+        this.speed_x += Math.cos(this.rotation + Math.PI/2) * this.speed;
+        this.speed_y += Math.sin(this.rotation + Math.PI/2) * this.speed;
 
-            this.x = this.path[this.i].x;
-            this.y = this.path[this.i].y;
-            this.i += 5;
-
-        }*/
-
-        //console.log("HEre is foo: ", this.x, this.y);
+        if (Phaser.Math.Between(1, 101) > 100 ) this.shoot();
 
             if (Phaser.Math.Between(1, 4) > 1) {
                 this.scene.thrust.add(new Particle(this.scene, this.x , this.y , 0xffffff, 10))
-                //new Particle(this.scene, this.x , this.y ,  50, -1)
-                //new Particle(this.scene, this.x , this.y,  50, -1)
             }
         // Tell the server we've moved 
         //// this.socket.emit('move-player',{x:this.x,y:this.y,angle:this.rotation})
@@ -134,6 +138,7 @@ class Foe extends Phaser.GameObjects.Sprite {
     }
 
     destroy () {
+        this.delayedMove.remove()
         this.death = true;
         super.destroy();
     }      

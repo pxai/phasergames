@@ -41,6 +41,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("game-over", "assets/sounds/game-over.mp3");
         this.load.audio("explosion", "assets/sounds/explosion.mp3");
         this.load.audio("shot", "assets/sounds/shot.mp3");
+        this.load.audio("foeshot", "assets/sounds/foeshot.mp3");
         this.load.audio("pick", "assets/sounds/pick.mp3");
         this.load.audio("asteroid", "assets/sounds/asteroid.mp3");
 
@@ -48,6 +49,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.bitmapFont("wendy", "assets/fonts/arcade.png", "assets/fonts/wendy.xml");
         this.load.bitmapFont("starshipped", "assets/fonts/starshipped.png", "assets/fonts/starshipped.xml");
         this.load.spritesheet("shot", "assets/images/shot.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("shotfoe", "assets/images/shotfoe.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("energy", "assets/images/energy.png", { frameWidth: 32, frameHeight: 32 });
     }
 
