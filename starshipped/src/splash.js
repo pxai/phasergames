@@ -19,7 +19,8 @@ export default class Splash extends Phaser.Scene {
         this.registry.set("playerScore", "0");
         this.registry.set("foeScore", "0");
         this.input.keyboard.on("keydown-ENTER", () => this.startGame(), this);
-       // this.playMusic();
+        this.input.on('pointerdown', () => this.startGame(), this);
+        this.playMusic();
         this.showInstructions();
     }
 
@@ -43,7 +44,7 @@ export default class Splash extends Phaser.Scene {
         })
     }
     startGame () {
-        // this.theme.stop();
+        this.theme.stop();
         this.scene.start("game");
     }
 
@@ -51,21 +52,21 @@ export default class Splash extends Phaser.Scene {
         if (this.theme) this.theme.stop()
         this.theme = this.sound.add("splash", {
             mute: false,
-            volume: 1.5,
+            volume: 0.6,
             rate: 1,
             detune: 0,
             seek: 0,
             loop: true,
             delay: 0
         });
-        this.theme.play();
+        this.theme.play({volume: 0.6});
     }
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 500, "arcade", "Use ARROWS to move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "arcade", "SPACE for speed drop!", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 500, "arcade", "Use MOUSE to move and shoot", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 550, "arcade", "Stay inside the camera view!", 30).setOrigin(0.5);
         // this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: speed up", 30).setOrigin(0.5);
-              this.space = this.add.bitmapText(this.center_width, 600, "arcade", "Press ENTER to start", 25).setOrigin(0.5);
+              this.space = this.add.bitmapText(this.center_width, 600, "arcade", "Click to START!", 25).setOrigin(0.5);
         this.tweens.add({
             targets: this.space,
             duration: 300,
@@ -78,11 +79,6 @@ export default class Splash extends Phaser.Scene {
     }
 
     addBackground () {
-        /*Array(12).fill(0).forEach( (row, i) => {
-            Array(5).fill(0).forEach( (e, j) => {
-                this.createHexes(i, j)
-            });
-        });*/
         Array(3).fill(0).forEach( (e, i) => { this.createHexes(i, 0) });
         Array(8).fill(0).forEach( (e, i) => { this.createHexes(i, 1) });
         Array(12).fill(0).forEach( (e, i) => { this.createHexes(i, 2) });

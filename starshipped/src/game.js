@@ -39,7 +39,6 @@ export default class Game extends Phaser.Scene {
         this.cameraX = 64 * 20;
         this.cameraY = 64 * 20;
         this.panDirection = Date.now() % 8; // right, left, up, down
-        console.log("A ver jambo:; ",  this.panDirection)
     }
 
     updateCamera() {
@@ -127,6 +126,7 @@ export default class Game extends Phaser.Scene {
     }
 
     destroyEnergy(shot, energy) {
+        this.playAudio("asteroid")
         shot.destroy();
         energy.destroy();
     }
@@ -151,12 +151,14 @@ export default class Game extends Phaser.Scene {
     }
 
     destroyAsteroid(shot, asteroid) {
+        this.playAudio("asteroid")
         shot.destroy();
         new Explosion(this, asteroid.x, asteroid.y, "0xcccccc", 15)
         asteroid.destroy();
     }
 
     crashAsteroid (player, asteroid) {
+        this.playAudio("asteroid")
         new Explosion(this, asteroid.x, asteroid.y, "0xcccccc", 15)
         asteroid.destroy();
         this.destroyPlayer()
@@ -207,7 +209,7 @@ export default class Game extends Phaser.Scene {
         const themes = Array(6).fill(0).map((_,i)=> {
             return this.sound.add(`muzik${i}`, {
                 mute: false,
-                volume: 0.8,
+                volume: 1,
                 rate: 1,
                 detune: 0,
                 seek: 0,
@@ -218,7 +220,7 @@ export default class Game extends Phaser.Scene {
 
         this.theme = themes[Phaser.Math.Between(0, 5)];
 
-        this.theme.play()
+        this.theme.play( {volume: 0.5})
     }
 
     loadAudios () {
@@ -226,6 +228,7 @@ export default class Game extends Phaser.Scene {
           "pick": this.sound.add("pick"),
           "shot": this.sound.add("shot"),
           "explosion": this.sound.add("explosion"),
+          "asteroid": this.sound.add("asteroid"),
         };
       }
 

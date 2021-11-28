@@ -16,8 +16,7 @@ export default class Splash extends Phaser.Scene {
 
         this.showScore();
         this.label = this.add.bitmapText(this.center_width, this.center_height - 300, "starshipped", "GAME OVER", 100).setOrigin(0.5);
-        this.shit = this.add.bitmapText(this.center_width, this.center_height + 300, "starshipped", "Yeah, you need more of this shit so...", 30).setOrigin(0.5);
-        this.dynamic = this.add.bitmapText(this.center_width, this.center_height + 350, "starshipped", "Press ENTER to try again", 30).setOrigin(0.5);
+        this.dynamic = this.add.bitmapText(this.center_width, this.center_height + 350, "starshipped", "Click to try again", 30).setOrigin(0.5);
         this.tweens.add({
             targets: this.dynamic,
             duration: 300,
@@ -28,26 +27,26 @@ export default class Splash extends Phaser.Scene {
         this.playMusic();
         this.registry.set("playerScore", "0");
         this.registry.set("foeScore", "0");
-        this.input.keyboard.on("keydown-ENTER", () => this.startGame(), this);
+        this.input.on('pointerdown', (pointer) => this.startGame(), this);
     }
 
     startGame () {
         this.theme.stop();
-        this.scene.start("game");
+        this.scene.start("splash");
     }
 
     playMusic () {
         if (this.theme) this.theme.stop()
         this.theme = this.sound.add("game-over", {
             mute: false,
-            volume: 1,
+            volume: 0.6,
             rate: 1,
             detune: 0,
             seek: 0,
             loop: true,
             delay: 0
         });
-        this.theme.play()
+        this.theme.play({volume: 0.5})
     }
 
     showScore () {
