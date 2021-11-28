@@ -5,7 +5,7 @@ class Energy extends Phaser.GameObjects.Sprite {
         super(scene, x, y, "energy");
         this.scene = scene;
         this.setOrigin(0.5)
-        this.power = Phaser.Math.Between(3, 10);
+        this.power = Phaser.Math.Between(1, 3);
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
@@ -25,7 +25,6 @@ class Energy extends Phaser.GameObjects.Sprite {
             key: "energy",
             frames: this.scene.anims.generateFrameNumbers("energy", { start: 0, end: 3 }),
             frameRate: 5,
-            origin: 0.5
           });
           // this.on('animationcomplete', this.animationComplete, this);
           this.anims.play("energy", true)

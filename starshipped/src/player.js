@@ -13,7 +13,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.body.setCircle(26);
         this.body.setOffset(6, 9)
         this.power = 0;
-
+        this.body.setBounce(0.8)
         this.speed_x = 0;// This is the speed it's currently moving at
         this.speed_y = 0;
         this.speed = 0.35; // This is the parameter for how fast it should move 
@@ -28,12 +28,12 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     shoot (pointer) {
-        //if (this.power > 0) {
+        if (this.power > 0) {
             this.getSpeeds();
-            
+            this.scene.playAudio("shot")
             this.scene.shots.add(new Shot(this.scene, this.x, this.y, this.speed_x, this.speed_y, this.id))
             this.power--;
-       // }
+        }
     }
 
     release(pointer) {

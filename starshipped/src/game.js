@@ -11,9 +11,6 @@ export default class Game extends Phaser.Scene {
     }
 
     preload () {
-        this.registry.set("score", 0);
-        this.registry.set("health", 100);
-        this.registry.set("time", 0);
     }
 
     create () {
@@ -30,8 +27,8 @@ export default class Game extends Phaser.Scene {
         this.addColliders();
         this.cameras.main.setBackgroundColor(0x494d7e);
 
-       // this.loadAudios();
-       // this.playMusic();
+        this.loadAudios();
+        this.playMusic();
        // this.cameras.main.startFollow(this.player, true);
     }
 
@@ -99,7 +96,7 @@ export default class Game extends Phaser.Scene {
         const x = 64 * 20;
         const y = 64 * 20;
         this.player = new Player(this, x, y)
-        this.foe = new Foe(this, x + 200, y + 200, this.items.grid)
+        this.foe = new Foe(this, x + 100, y + 100, this.items.grid)
         this.time.delayedCall(300, () => { this.checkWorld = true; });
     }
 
@@ -120,7 +117,13 @@ export default class Game extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.energies, this.pickEnergy.bind(this));
         this.physics.add.overlap(this.shots, this.asteroids, this.destroyAsteroid.bind(this));
         this.physics.add.overlap(this.shots, this.ship, this.shotShip.bind(this));
+        this.physics.add.overlap(this.shots, this.foe, this.shotFoe.bind(this));
         this.physics.add.overlap(this.shots, this.energies, this.destroyEnergy.bind(this));
+        this.physics.add.collider(this.player, this.foe, this.foeCollision.bind(this));
+    }
+
+    foeCollision(player, foe) {
+        console.log("Collision!!!");
     }
 
     destroyEnergy(shot, energy) {
@@ -129,15 +132,22 @@ export default class Game extends Phaser.Scene {
     }
 
     pickEnergy(ship, energy) {
+        this.playAudio("pick")
         ship.addEnergy(energy.power);
         energy.destroy();
     }
 
     shotShip(shot, ship) {
         if (shot.id === ship.id) return;
-
+        this.playAudio("explosion")
         shot.destroy();
         ship.destroy()
+    }
+
+    shotFoe(shot, foe) {
+        this.playAudio("explosion")
+        shot.destroy();
+        this.destroyFoe();
     }
 
     destroyAsteroid(shot, asteroid) {
@@ -153,6 +163,7 @@ export default class Game extends Phaser.Scene {
     }
 
     destroyPlayer () {
+        this.playAudio("explosion")
         this.cameras.main.shake(500);
         new Explosion(this, this.player.x, this.player.y, "0xffffff", 10)
         this.player.destroy();
@@ -162,6 +173,7 @@ export default class Game extends Phaser.Scene {
     }
 
     destroyFoe() {
+        this.playAudio("explosion")
         this.cameras.main.shake(500);
         new Explosion(this, this.foe.x, this.foe.y, "0xffffff", 10)
         this.foe.destroy();
@@ -192,21 +204,28 @@ export default class Game extends Phaser.Scene {
 
     playMusic () {
         if (this.theme) this.theme.stop()
-        this.theme = this.sound.add("muzik", {
-            mute: false,
-            volume: 1,
-            rate: 1,
-            detune: 0,
-            seek: 0,
-            loop: true,
-            delay: 0
-        });
+        const themes = Array(6).fill(0).map((_,i)=> {
+            return this.sound.add(`muzik${i}`, {
+                mute: false,
+                volume: 0.8,
+                rate: 1,
+                detune: 0,
+                seek: 0,
+                loop: true,
+                delay: 0
+            });
+        })
+
+        this.theme = themes[Phaser.Math.Between(0, 5)];
+
         this.theme.play()
     }
 
     loadAudios () {
         this.audios = {
-          // "move": this.sound.add("move"),
+          "pick": this.sound.add("pick"),
+          "shot": this.sound.add("shot"),
+          "explosion": this.sound.add("explosion"),
         };
       }
 
@@ -224,22 +243,22 @@ export default class Game extends Phaser.Scene {
         let foeScore = +this.registry.get("foeScore");
         let outcome = "";
         if (playerWin) {
-            outcome = ["You won!!", "YAY!!", "Awesome!!"][Phaser.Math.Between(0, 2)];
+            outcome = ["You won!!", "YAY!!", "Awesome!!", "Amazing!!", "Yeah!", "You rule!!"][Phaser.Math.Between(0, 5)];
             playerScore++;
             this.registry.set("playerScore",`${playerScore}`)
         } else {
-            outcome = ["You lose!!", "You suck!!", "Loser!!"][Phaser.Math.Between(0, 2)];
+            outcome = ["You lost!!", "You suck!!", "Loser!!", "Still live with mom?", "Boo!!", "Yikes!!", "LOL!!"][Phaser.Math.Between(0, 6)];
             foeScore++;
             this.registry.set("foeScore",`${foeScore}`)
         }
 
-        if (playerScore === 10 || foeScore === 10) {
+        if (playerScore === 5 || foeScore === 5) {
             this.time.delayedCall(2000, () => this.gameOver());
         }
 
         const x = this.cameras.main.worldView.centerX;
         const y = this.cameras.main.worldView.centerY;
-        this.score1 = this.add.bitmapText(x, y - 200, "starshipped", outcome, 80).setOrigin(0.5);
+        this.score1 = this.add.bitmapText(x, y - 100, "starshipped", outcome, 80).setOrigin(0.5);
         this.score2 = this.add.bitmapText(x, y + 100, "starshipped", `You: ${playerScore} - Foe: ${foeScore}`, 60).setOrigin(0.5);
     }
 

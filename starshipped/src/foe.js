@@ -15,6 +15,7 @@ class Foe extends Phaser.GameObjects.Sprite {
         this.body.setCircle(26);
         this.body.setOffset(6, 9)
         this.power = 0;
+        this.body.setBounce(0.8)
 
         this.speed_x = 0;// This is the speed it's currently moving at
         this.speed_y = 0;
