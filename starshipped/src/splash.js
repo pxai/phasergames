@@ -14,6 +14,8 @@ export default class Splash extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
+        this.registry.set("playerScore", "0");
+        this.registry.set("foeScore", "0");
         this.addBackground()
         this.createTitle()
  

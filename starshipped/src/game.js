@@ -28,8 +28,7 @@ export default class Game extends Phaser.Scene {
         this.addItems();
         this.addPlayer()
         this.addColliders();
-
-        // this.cameras.main.setBackgroundColor(0x494d7e);
+        this.cameras.main.setBackgroundColor(0x494d7e);
 
        // this.loadAudios();
        // this.playMusic();
@@ -158,20 +157,29 @@ export default class Game extends Phaser.Scene {
         new Explosion(this, this.player.x, this.player.y, "0xffffff", 10)
         this.player.destroy();
 
-        this.time.delayedCall(2000, () => this.startGame());
+        this.updateScore(false)
+        this.time.delayedCall(4000, () => this.startGame());
+    }
+
+    destroyFoe() {
+        this.cameras.main.shake(500);
+        new Explosion(this, this.foe.x, this.foe.y, "0xffffff", 10)
+        this.foe.destroy();
+
+        this.updateScore(true)
+        this.time.delayedCall(4000, () => this.startGame());
     }
 
     update () {
-        if (!this.player.death) { 
+        if (!this.player.death && !this.foe.death) { 
             this.player.update();
+            this.foe.update();
+            this.updateCamera();
             this.checkPlayerInside();
         }
         this.shots.children.entries.forEach(shot => { 
             shot.update();
         });
-
-       this.foe.update();
-       this.updateCamera();
     }
 
     checkPlayerInside () {
@@ -179,6 +187,7 @@ export default class Game extends Phaser.Scene {
 
         const worldView = this.cameras.main.worldView;
         if (!worldView.contains(this.player.x, this.player.y)) { this.destroyPlayer(); }
+        if (!worldView.contains(this.foe.x, this.foe.y)) { this.destroyFoe(); }
     }
 
     playMusic () {
@@ -208,5 +217,34 @@ export default class Game extends Phaser.Scene {
     startGame () {
         if (this.theme) this.theme.stop();
         this.scene.start("game");
+    }
+
+    updateScore (playerWin) {
+        let playerScore = +this.registry.get("playerScore");
+        let foeScore = +this.registry.get("foeScore");
+        let outcome = "";
+        if (playerWin) {
+            outcome = ["You won!!", "YAY!!", "Awesome!!"][Phaser.Math.Between(0, 2)];
+            playerScore++;
+            this.registry.set("playerScore",`${playerScore}`)
+        } else {
+            outcome = ["You lose!!", "You suck!!", "Loser!!"][Phaser.Math.Between(0, 2)];
+            foeScore++;
+            this.registry.set("foeScore",`${foeScore}`)
+        }
+
+        if (playerScore === 10 || foeScore === 10) {
+            this.time.delayedCall(2000, () => this.gameOver());
+        }
+
+        const x = this.cameras.main.worldView.centerX;
+        const y = this.cameras.main.worldView.centerY;
+        this.score1 = this.add.bitmapText(x, y - 200, "starshipped", outcome, 80).setOrigin(0.5);
+        this.score2 = this.add.bitmapText(x, y + 100, "starshipped", `You: ${playerScore} - Foe: ${foeScore}`, 60).setOrigin(0.5);
+    }
+
+    gameOver () {
+        if (this.theme) this.theme.stop();
+        this.scene.start("game-over");
     }
 }
