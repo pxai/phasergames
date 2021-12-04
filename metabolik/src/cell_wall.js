@@ -134,7 +134,6 @@ class CellWall {
             let end = this.cell[x].slice(this.cell[x].length - y, this.cell[x].length)
             this.cell[x] = [...begin, ...middle1, this.cell[x][12], ...middle2, ...end]
             this.repaintRow(x);
-            // console.log(`Row: ${i} ${[...begin, ...middle1, ...middle2, ...end]}`)
         });
     }
 
