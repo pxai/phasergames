@@ -28,7 +28,7 @@ export default class Game extends Phaser.Scene {
         this.cameras.main.setBackgroundColor(0x494d7e);
 
         this.loadAudios();
-        this.playMusic();
+        //this.playMusic();
        // this.cameras.main.startFollow(this.player, true);
     }
 
@@ -40,7 +40,7 @@ export default class Game extends Phaser.Scene {
         this.cameraY = 64 * 20;
         this.zoomIn = false;
         this.panDirection = Date.now() % 8; // right, left, up, down
-        this.time.delayedCall(12000, () => this.increaseZoom())
+        this.time.delayedCall(120000, () => this.increaseZoom())
     }
 
     increaseZoom () {
@@ -104,7 +104,7 @@ export default class Game extends Phaser.Scene {
         const x = 64 * 20;
         const y = 64 * 20;
         this.player = new Player(this, x, y)
-        this.foe = new Foe(this, x + 100, y + 100, this.items.grid)
+       // this.foe = new Foe(this, x + 100, y + 100, this.items.grid)
         this.time.delayedCall(300, () => { this.checkWorld = true; });
     }
 
@@ -123,12 +123,12 @@ export default class Game extends Phaser.Scene {
     addColliders () {
         this.physics.add.overlap(this.player, this.asteroids, this.crashAsteroid.bind(this));
         this.physics.add.overlap(this.player, this.energies, this.pickEnergy.bind(this));
-        this.physics.add.overlap(this.foe, this.energies, this.foeEnergy.bind(this));
+        //this.physics.add.overlap(this.foe, this.energies, this.foeEnergy.bind(this));
         this.physics.add.overlap(this.shots, this.asteroids, this.destroyAsteroid.bind(this));
         this.physics.add.overlap(this.shots, this.player, this.shotShip.bind(this));
-        this.physics.add.overlap(this.shots, this.foe, this.shotFoe.bind(this));
+        //this.physics.add.overlap(this.shots, this.foe, this.shotFoe.bind(this));
         this.physics.add.overlap(this.shots, this.energies, this.destroyEnergy.bind(this));
-        this.physics.add.collider(this.player, this.foe, this.foeCollision.bind(this));
+        //this.physics.add.collider(this.player, this.foe, this.foeCollision.bind(this));
     }
 
     foeCollision(player, foe) {
@@ -202,10 +202,10 @@ export default class Game extends Phaser.Scene {
     }
 
     update () {
-        if (!this.player.death && !this.foe.death) { 
+        if (!this.player.death) { //&& !this.foe.death) { 
             this.player.update();
-            this.foe.update();
-            this.updateCamera();
+            //this.foe.update();
+            //this.updateCamera();
             this.checkPlayerInside();
         }
         this.shots.children.entries.forEach(shot => { 
@@ -218,7 +218,7 @@ export default class Game extends Phaser.Scene {
 
         const worldView = this.cameras.main.worldView;
         if (!worldView.contains(this.player.x, this.player.y)) { this.destroyPlayer(); }
-        if (!worldView.contains(this.foe.x, this.foe.y)) { this.destroyFoe(); }
+        // if (!worldView.contains(this.foe.x, this.foe.y)) { this.destroyFoe(); }
     }
 
     playMusic () {

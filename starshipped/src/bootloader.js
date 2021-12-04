@@ -20,7 +20,7 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("splash");
+            this.scene.start("game");
         },this);
 
        /* Array(7).fill(0).forEach((_,i) => {

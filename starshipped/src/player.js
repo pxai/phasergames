@@ -9,27 +9,36 @@ class Player extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
-        this.rotation = 15;
         this.body.setCircle(26);
         this.body.setOffset(6, 9)
         this.power = 0;
         this.body.setBounce(0.8)
         this.speed_x = 0;// This is the speed it's currently moving at
         this.speed_y = 0;
-        this.speed = 0.35; // This is the parameter for how fast it should move 
+        this.angle = 0;
+        this.speed = 0; // This is the parameter for how fast it should move 
         this.friction = .95;
         this.death = false;
         this.init();
     }
 
     init () {
-        this.scene.input.on('pointerdown', (pointer) => this.shoot(pointer), this);
-        this.scene.input.on('pointerup', (pointer) => this.release(pointer), this);
+        //this.scene.input.on('pointerdown', (pointer) => this.shoot(pointer), this);
+        //this.scene.input.on('pointerup', (pointer) => this.release(pointer), this);
+        this.SPACE = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.cursor = this.scene.input.keyboard.createCursorKeys();
+        this.W = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        this.body.setDrag(300);
+        this.body.setAngularDrag(400);
+        this.body.setMaxVelocity(600);
     }
 
-    shoot (pointer) {
+    shoot () {
         if (this.power > 0) {
-            this.getSpeeds();
+            // this.getSpeeds();
             this.scene.playAudio("shot")
             this.scene.shots.add(new Shot(this.scene, this.x, this.y, this.speed_x, this.speed_y, this.id))
             this.power--;
@@ -43,6 +52,34 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     update () {
+        if (this.death) return;
+        if (this.cursor.left.isDown) {
+            this.body.setAngularVelocity(-150);
+        } else if (this.cursor.right.isDown) {
+            this.body.setAngularVelocity(150);
+        } else {
+            this.body.setAngularVelocity(0);
+        }
+    
+        if (this.cursor.up.isDown) {
+            this.body.setVelocity(Math.cos(this.rotation) * 300, Math.sin(this.rotation) * 300);
+            //this.scene.physics.velocityFromRotation(this.rotation, 200, this.body.acceleration);
+        } else {
+            this.body.setAcceleration(0);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.SPACE)) {
+            this.shoot();
+        }
+
+        if (Phaser.Math.Between(1, 4) > 1) {
+            this.scene.thrust.add(new Particle(this.scene, this.x , this.y , 0xffffff, 10))
+            //new Particle(this.scene, this.x , this.y ,  50, -1)
+            //new Particle(this.scene, this.x , this.y,  50, -1)
+        }
+    }
+
+    update2 () {
         if (this.death) return;
         // Lerp rotation towards mouse
         this.getSpeeds()
