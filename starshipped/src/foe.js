@@ -101,7 +101,7 @@ class Foe extends Phaser.GameObjects.Sprite {
         this.speed_x += Math.cos(this.rotation + Math.PI/2) * this.speed;
         this.speed_y += Math.sin(this.rotation + Math.PI/2) * this.speed;
 
-        if (Phaser.Math.Between(1, 101) > 100 ) this.shoot();
+        //if (Phaser.Math.Between(1, 101) > 100 ) this.shoot();
 
             if (Phaser.Math.Between(1, 4) > 1) {
                 this.scene.thrust.add(new Particle(this.scene, this.x , this.y , 0xffffff, 10))
@@ -111,8 +111,8 @@ class Foe extends Phaser.GameObjects.Sprite {
     }
         
     getSpeeds () {
-        let dx = (this.scene.player.x + this.scene.cameras.main.worldView.x) - this.x;
-        let dy = (this.scene.player.y + this.scene.cameras.main.worldView.y) - this.y;
+        let dx = (this.path[this.i].x + this.scene.cameras.main.worldView.x) - this.x;
+        let dy = (this.path[this.i].y + this.scene.cameras.main.worldView.y) - this.y;
         let angle = Math.atan2(dy, dx) - Math.PI/2;
         let dir = (angle - this.rotation) / (Math.PI * 2);
         dir -= Math.round(dir);
@@ -120,6 +120,7 @@ class Foe extends Phaser.GameObjects.Sprite {
 
         this.newSpeed = (Math.abs(dx) + Math.abs(dy)/2)/100
         this.body.rotation += dir * 100
+        this.i++;
     }
 
     addEnergy(power) {
