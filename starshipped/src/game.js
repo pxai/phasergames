@@ -25,7 +25,7 @@ export default class Game extends Phaser.Scene {
         this.addItems();
         this.addPlayer()
         this.addColliders();
-        this.cameras.main.setBackgroundColor(0x494d7e);
+        // this.cameras.main.setBackgroundColor(0x494d7e);
 
         this.loadAudios();
         //this.playMusic();
@@ -33,11 +33,11 @@ export default class Game extends Phaser.Scene {
     }
 
     setCamera () {
-        this.cameras.main.setBounds(0, 0, 64 * 40, 64 * 33);
-        this.cameras.main.setZoom(1);
-        this.cameras.main.centerOn(64 * 20, 64 * 20);
-        this.cameraX = 64 * 20;
-        this.cameraY = 64 * 20;
+        //this.cameras.main.setBounds(0, 0, 64 * 40, 64 * 33);
+        this.cameras.main.setZoom(0.5);
+        //this.cameras.main.centerOn(64 * 20, 64 * 20);
+        //this.cameraX = 64 * 20;
+        //this.cameraY = 64 * 20;
         this.zoomIn = false;
         this.panDirection = Date.now() % 8; // right, left, up, down
         this.time.delayedCall(120000, () => this.increaseZoom())
@@ -101,8 +101,8 @@ export default class Game extends Phaser.Scene {
 
     addPlayer() {
         this.thrust = this.add.layer();
-        const x = 64 * 20;
-        const y = 64 * 20;
+        const x = 400//64 * 20;
+        const y = 400//64 * 20;
         this.player = new Player(this, x, y)
        // this.foe = new Foe(this, x + 100, y + 100, this.items.grid)
         this.time.delayedCall(300, () => { this.checkWorld = true; });
@@ -110,7 +110,7 @@ export default class Game extends Phaser.Scene {
 
     addBackground () {
         this.backgroundLayer = this.add.layer();
-        this.background = new Background(this)
+        this.background = new Background(this, 16)
     }
 
     addItems () {
@@ -201,9 +201,9 @@ export default class Game extends Phaser.Scene {
         this.time.delayedCall(3000, () => this.startGame());
     }
 
-    update () {
+    update (timestep, delta) {
         if (!this.player.death) { //&& !this.foe.death) { 
-            this.player.update();
+            this.player.update(timestep, delta);
             //this.foe.update();
             //this.updateCamera();
             this.checkPlayerInside();

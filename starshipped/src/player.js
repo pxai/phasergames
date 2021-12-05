@@ -34,6 +34,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.body.setDrag(300);
         this.body.setAngularDrag(400);
         this.body.setMaxVelocity(600);
+        this.upDelta = 0;
     }
 
     shoot () {
@@ -51,7 +52,7 @@ class Player extends Phaser.GameObjects.Sprite {
         }
     }
 
-    update () {
+    update (timestep, delta) {
         if (this.death) return;
         if (this.cursor.left.isDown) {
             this.body.setAngularVelocity(-150);
@@ -62,6 +63,11 @@ class Player extends Phaser.GameObjects.Sprite {
         }
     
         if (this.cursor.up.isDown) {
+            this.upDelta += delta;
+            if (this.upDelta > 200) {
+                this.scene.background.up()
+                this.upDelta = 0;
+            }
             this.body.setVelocity(Math.cos(this.rotation) * 300, Math.sin(this.rotation) * 300);
             //this.scene.physics.velocityFromRotation(this.rotation, 200, this.body.acceleration);
         } else {

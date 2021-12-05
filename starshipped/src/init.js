@@ -6,6 +6,7 @@ import GameOver from "./game_over";
 
 const config = {
     type: Phaser.AUTO,
+    useTicker: true,
     scale: {
         mode: Phaser.Scale.FIT,
         parent: "phaser-example",
