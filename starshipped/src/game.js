@@ -34,13 +34,18 @@ export default class Game extends Phaser.Scene {
 
     setCamera () {
         //this.cameras.main.setBounds(0, 0, 64 * 40, 64 * 33);
-        this.cameras.main.setZoom(0.5);
+        this.cameras.main.setZoom(1);
         //this.cameras.main.centerOn(64 * 20, 64 * 20);
-        //this.cameraX = 64 * 20;
-        //this.cameraY = 64 * 20;
+        this.cameraX = 450//64 * 20;
+        this.cameraY = 450//64 * 20;
+        this.accumulatedX = 0;
+        this.accumulatedY = 0;
         this.zoomIn = false;
-        this.panDirection = Date.now() % 8; // right, left, up, down
+        this.panDirection = -1; // right, left, up, down
+        this.cameras.main.pan(this.cameraX, this.cameraY)
         this.time.delayedCall(120000, () => this.increaseZoom())
+        this.time.delayedCall(3000, () => { this.panDirection = Date.now() % 4; })
+        
     }
 
     increaseZoom () {
@@ -48,51 +53,50 @@ export default class Game extends Phaser.Scene {
     }
 
     updateCamera() {
+        if (this.panDirection === -1) return;
         const {x, y} = this.cameras.main.worldView;
     
-        if (this.cameraX > 1680) {
-            this.panDirection = Date.now() % 8; 
-        } else if (this.cameraX < 64) {
-            this.panDirection = Date.now() % 8; 
-        } else if (this.cameraY < 64) {
-            this.panDirection = Date.now() % 8; 
-        } else if (this.cameraY > (64 * 33) - 100) {
-            this.panDirection = Date.now() % 8; 
-        }
+        let moveX = 0;
+        let moveY = 0;
 
         switch (this.panDirection) {
             case 0:
-                this.cameraX += 2;
+                moveX = 1;
                 break;
             case 1:
-                this.cameraX -= 2;
+                moveX = -1;
                 break;
             case 2:
-                this.cameraY -= 2;
+                moveY = -1;
                 break;
             case 3:
-                this.cameraY += 2;
-                break;
-            case 4:
-                this.cameraX += 2;
-                this.cameraY += 2;
-                break;
-            case 5:
-                this.cameraX += 2;
-                this.cameraY -= 2;
-                break;
-            case 6:
-                this.cameraX -= 2;
-                this.cameraY -= 2;
-                break;
-            case 7:
-                this.cameraX -= 2;
-                this.cameraY += 2;
+                moveY = 1;
                 break;
             default:
                 break;
         }
 
+        this.cameraX += moveX;
+        this.cameraY += moveY;
+        this.accumulatedX = this.accumulatedX + moveX;
+        this.accumulatedY = this.accumulatedY + moveY;
+
+        if (this.accumulatedX > 60) {
+            this.background.right();
+            this.accumulatedX = 0;
+        } else if (this.accumulatedX < -60) {
+            this.background.left();
+            this.accumulatedX = 0;
+        }
+
+        if (this.accumulatedY > 60) {
+            this.background.down();
+            this.accumulatedY = 0;
+        } else if (this.accumulatedY < -60) {
+            this.background.up();
+            this.accumulatedY = 0;
+        }
+        console.log("CAMERA PAN: ", this.cameraX, this.cameraY);
         this.cameras.main.pan(this.cameraX, this.cameraY)
         if (this.zoomIn) {
             this.cameras.main.zoomTo(8, 120000)
@@ -101,8 +105,8 @@ export default class Game extends Phaser.Scene {
 
     addPlayer() {
         this.thrust = this.add.layer();
-        const x = 400//64 * 20;
-        const y = 400//64 * 20;
+        const x = 600//64 * 20;
+        const y = 500//64 * 20;
         this.player = new Player(this, x, y)
        // this.foe = new Foe(this, x + 100, y + 100, this.items.grid)
         this.time.delayedCall(300, () => { this.checkWorld = true; });
@@ -110,7 +114,7 @@ export default class Game extends Phaser.Scene {
 
     addBackground () {
         this.backgroundLayer = this.add.layer();
-        this.background = new Background(this, 16)
+        this.background = new Background(this, 18)
     }
 
     addItems () {
@@ -121,7 +125,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addColliders () {
-        this.physics.add.overlap(this.player, this.asteroids, this.crashAsteroid.bind(this));
+        // this.physics.add.overlap(this.player, this.asteroids, this.crashAsteroid.bind(this));
         this.physics.add.overlap(this.player, this.energies, this.pickEnergy.bind(this));
         //this.physics.add.overlap(this.foe, this.energies, this.foeEnergy.bind(this));
         this.physics.add.overlap(this.shots, this.asteroids, this.destroyAsteroid.bind(this));
@@ -177,7 +181,6 @@ export default class Game extends Phaser.Scene {
     crashAsteroid (player, asteroid) {
         this.playAudio("asteroid")
         new Explosion(this, asteroid.x, asteroid.y, "0xcccccc", 15)
-        asteroid.destroy();
         this.destroyPlayer()
     }
 
@@ -205,7 +208,7 @@ export default class Game extends Phaser.Scene {
         if (!this.player.death) { //&& !this.foe.death) { 
             this.player.update(timestep, delta);
             //this.foe.update();
-            //this.updateCamera();
+            this.updateCamera();
             this.checkPlayerInside();
         }
         this.shots.children.entries.forEach(shot => { 

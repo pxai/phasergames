@@ -65,7 +65,6 @@ class Player extends Phaser.GameObjects.Sprite {
         if (this.cursor.up.isDown) {
             this.upDelta += delta;
             if (this.upDelta > 200) {
-                this.scene.background.up()
                 this.upDelta = 0;
             }
             this.body.setVelocity(Math.cos(this.rotation) * 300, Math.sin(this.rotation) * 300);
