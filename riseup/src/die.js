@@ -1,4 +1,5 @@
 import Dust from "./dust";
+import Shot from "./shot";
 
 export default class Die extends Phaser.GameObjects.Sprite {
     constructor(scene, player, name = "d3") {
@@ -52,8 +53,14 @@ export default class Die extends Phaser.GameObjects.Sprite {
     delayedDestroy(scene, die) {
         scene.time.delayedCall(200, () => {
             new Dust(scene, die.x, die.y)
+            this.shot(scene)
             this.destroy()
         }, null, this);
+    }
+
+    shot (scene) {
+        scene.shots.add(new Shot(scene, this.x, this.y, 300, 0))
+        
     }
 
     destroy() {

@@ -103,6 +103,8 @@ export default class Stage0 extends Phaser.Scene {
         }
       });
 
+      this.shots = this.add.group();
+
       this.physics.add.collider(this.player, this.batGroup, this.hitPlayer, ()=>{
         return true;
       }, this);
@@ -135,6 +137,9 @@ export default class Stage0 extends Phaser.Scene {
         return true;
       }, this);
 
+      this.physics.add.collider(this.foesGroup, this.shots, this.foeHitShot, ()=>{
+        return true;
+      }, this);
 
       this.physics.add.collider(this.foesGroup, this.dice, this.foeHitDie, ()=>{
         return true;
@@ -204,6 +209,12 @@ export default class Stage0 extends Phaser.Scene {
 
       turnFoe (foe, platform) {
         foe.turn();
+      }
+
+      foeHitShot (foe, shot) {
+        console.log("HIT FOE ", shot, foe)
+        foe.destroy();
+        shot.destroy();
       }
 
     update() {
