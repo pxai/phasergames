@@ -26,16 +26,76 @@ export default class Transition extends Phaser.Scene {
         this.center_height = this.height / 2;
 
         this.add.bitmapText(this.center_width, this.center_height - 20, "wizardFont", messages[this.next], 40).setOrigin(0.5)
-        this.add.bitmapText(this.center_width, this.center_height + 20, "wizardFont", "Ready?", 30).setOrigin(0.5)
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
+        this.playMusic();
+        this.setText();
+        this.showHistory();
+        this.showPlayer();
 
-        setTimeout(() => this.loadNext(), 300);
+        this.time.delayedCall(20000, () => this.loadNext(), null, this);
     }
 
     update () {
     }
 
+    playMusic () {
+        this.theme = this.sound.add("music4");
+        this.theme.stop();
+        this.theme.play({
+          mute: false,
+          volume: 1,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+      })
+      }
+
     loadNext () {
+        this.theme.stop();
         this.scene.start(this.next, { name: this.name, number: 0 });
+    }
+
+    setText () {
+        this.text = [ 
+            "You are trapped in the temple of Bool",
+            "Find your wait out!",
+            "You'll escape if you're lucky",
+            "But you have to create your own luck!",
+            "Jump when the dice has the number you need!",
+            "Press enter to start!"
+        ];
+    }
+
+    showHistory () {
+        this.text.forEach((line, i) => {
+                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this); 
+        });
+        this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
+    }
+
+    showPlayer() {
+        this.player = this.add.sprite(this.center_width, 600, "wizard");
+        this.anims.create({
+            key: "playeridle",
+            frames: this.anims.generateFrameNumbers("wizard", { start: 0, end: 1 }),
+            frameRate: 1,
+            repeat: -1
+        });
+        this.player.anims.play("playeridle", true)
+        const dice = [1, 2, 3, 4, 5, 6]
+        dice.forEach( die => {
+            this.add.image(150 + (die*100), 670, `d${die}`)
+        })
+    }
+
+    showLine(text, y) {
+        let line = this.add.bitmapText(this.center_width, y, "wizardFont", text, 25).setOrigin(0.5).setAlpha(0);
+        this.tweens.add({
+            targets: line,
+            duration: 2000,
+            alpha: 1
+        })
     }
 }

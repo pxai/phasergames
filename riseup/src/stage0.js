@@ -10,6 +10,7 @@ import Spikes from "./spikes";
 export default class Stage0 extends Phaser.Scene {
     constructor (key = "stage0") {
         super({ key });
+        this.key = key;
         this.player = null;
         this.score = 0;
         this.scoreText = null;
@@ -32,18 +33,18 @@ export default class Stage0 extends Phaser.Scene {
       this.addPlayer();
       this.addColliders();
       this.showData();
-      //this.showDie()
-      //this.loadAudios(); 
+      this.loadAudios(); 
       this.playMusic();
     }
 
     addMap() {
-      this.tileMap = this.make.tilemap({ key: "scene0" , tileWidth: 32, tileHeight: 32 });
+      console.log("Adding map: ", `scene${this.number}`)
+      this.tileMap = this.make.tilemap({ key: `scene${this.number}` , tileWidth: 32, tileHeight: 32 });
       this.tileSetBg = this.tileMap.addTilesetImage("riseup_tileset_bg");
       this.tileMap.createStaticLayer('background', this.tileSetBg)
   
       this.tileSet = this.tileMap.addTilesetImage("riseup_tileset_fg");
-      this.platform = this.tileMap.createLayer('scene0', this.tileSet);
+      this.platform = this.tileMap.createLayer(`scene${this.number}`, this.tileSet);
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
       this.platform.setCollisionByExclusion([-1]);
 
@@ -165,7 +166,12 @@ export default class Stage0 extends Phaser.Scene {
     }
       loadAudios () {
         this.audios = {
-          "beam": this.sound.add("beam"),
+          "appear": this.sound.add("appear"),
+          "boom": this.sound.add("boom"),
+          "ground": this.sound.add("ground"),
+          "hit": this.sound.add("hit"),
+          "jump": this.sound.add("jump"),
+          "pick": this.sound.add("pick"),
         };
       }
 
@@ -192,7 +198,6 @@ export default class Stage0 extends Phaser.Scene {
       }
 
       touchExit(player, exit) {
-
         this.finishScene(exit.type)
       }
 
@@ -211,9 +216,9 @@ export default class Stage0 extends Phaser.Scene {
       }
 
       hitPlayer (player, foe) {
-        console.log("HIT PLAYER: ", player, foe)
         if (foe.name !== "drop") foe.turn();
         new Dust(player.scene, player.x, player.y, "0xff0000");
+        this.playAudio("hit");
         player.hit();
         this.updateHealth(player.health)
         this.time.delayedCall(1000, () => this.respawnPlayer(), null, this);
@@ -221,6 +226,7 @@ export default class Stage0 extends Phaser.Scene {
 
       spikePlayer(player, spike) {
         console.log("SPIKE? ", player, spike)
+        this.playAudio("hit");
         new Dust(player.scene, player.x, player.y, "0xff0000");
         player.hit();
         this.updateHealth(player.health)
@@ -231,6 +237,7 @@ export default class Stage0 extends Phaser.Scene {
         foe.turn();
         new Dust(foe.scene, die.x, die.y)
         die.destroy();
+        this.playAudio("boom");
       }
 
       turnFoe (foe, platform) {
@@ -239,12 +246,14 @@ export default class Stage0 extends Phaser.Scene {
 
       foeHitShot (foe, shot) {
         console.log("HIT FOE ", shot, foe)
+        this.playAudio("hit");
         foe.destroy();
         shot.destroy();
       }
 
       pickHeart (player, heart) {
         player.health++;
+        this.playAudio("pick");
         this.updateHealth(player.health)
         heart.destroy();
       }
@@ -261,13 +270,8 @@ export default class Stage0 extends Phaser.Scene {
     respawnPlayer() {
       this.player.x = this.playerInitialPosition.x;
       this.player.y = this.playerInitialPosition.y;
-      /*this.tweens.add({
-        targets: this.player,
-        duration: 1000,
-        alpha: {from: 0.5, to: 1},
-        repeat: 20,
-    }) */
-    this.player.body.enable = true;
+      this.playAudio("appear");
+      this.player.body.enable = true;
     }
 
     gameOver () {
@@ -282,7 +286,7 @@ export default class Stage0 extends Phaser.Scene {
 
       this.hearts = this.add.image(this.center_width - 200, this.height - 175, "heart")
       this.heartsText = this.add.bitmapText(this.center_width - 150, this.height - 150, "wizardFont", this.player.health, 22).setOrigin(0.5)
-      this.room = this.add.bitmapText(this.center_width + 200, this.height - 150, "wizardFont", "Room: " + this.registry.get("room"), 22).setOrigin(0.5)
+      this.room = this.add.bitmapText(this.center_width + 200, this.height - 150, "wizardFont", "Room: " + this.number, 22).setOrigin(0.5)
     }
 
     updateScore (points = 0) {

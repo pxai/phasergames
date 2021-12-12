@@ -61,6 +61,7 @@ export default class Die extends Phaser.GameObjects.Sprite {
 
     shot (scene) {
         if (this.shooting) return;
+        scene.playAudio("boom");
         this.shooting = true;
         scene.shots.add(new Shot(scene, this.x, this.y, 300, 0))
         scene.shots.add(new Shot(scene, this.x, this.y, -300, 0))

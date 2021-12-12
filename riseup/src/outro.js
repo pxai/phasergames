@@ -1,3 +1,5 @@
+import Die from "./die";
+
 export default class Outro extends Phaser.Scene {
     constructor () {
         super({ key: "outro" });
@@ -5,7 +7,6 @@ export default class Outro extends Phaser.Scene {
 
     preload () {
         this.failed = this.registry.get("health") == "0";
-        console.log("FAILE_?=", this.registry.get("health"), this.failed)
     }
 
     create () {
@@ -27,26 +28,41 @@ export default class Outro extends Phaser.Scene {
         if (this.failed)
             return [ 
                 "You failed!",
-                "After a terrible fishing day,",
-                "they decided to move to Europa moon,",
-                "to fish under the ice",
-                "But that is another story..."
+                "You will be trapped forever",
+                "in this terrible castle",
+                "with nothing to play",
+                "unless you try again..."
             ];
 
         return [ 
-            "You Won",
-            "After a terrible fishing day,",
-            "they decided to move to Europa moon,",
-            "to fish under the ice",
-            "But that is another story..."
+            "You Won!!",
+            "Your skills are worthy!",
+            "Now you can leave this game",
+            "and get a life.",
+            "unless you want to try again..."
         ];
     }
 
     showHistory () {
         this.text.forEach((line, i) => {
-                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this); 
+                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 100), null, this); 
         });
-        // this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
+        this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
+    }
+    
+    showPlayer() {
+        this.player = this.add.sprite(this.center_width, 600, "wizard");
+        this.anims.create({
+            key: "playeridle",
+            frames: this.anims.generateFrameNumbers("wizard", { start: 0, end: 1 }),
+            frameRate: 1,
+            repeat: -1
+        });
+        this.player.anims.play("playeridle", true)
+        const dice = [1, 2, 3, 4, 5, 6]
+        dice.forEach( die => {
+            this.add.image(150 + (die*100), 670, `d${die}`)
+        })
     }
 
     playMusic () {
@@ -75,7 +91,7 @@ export default class Outro extends Phaser.Scene {
 
 
     startSplash () {
-        // this.theme.stop();
+        this.theme.stop();
         this.scene.start("splash");
     }
 }

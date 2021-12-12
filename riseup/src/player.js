@@ -67,7 +67,7 @@ class Player extends Phaser.GameObjects.Sprite {
         if (this.cursor.up.isDown && this.body.blocked.down) {
             this.body.setVelocityY(-350);
             this.anims.play("playerjump" + this.number, true);
-            // this.scene.playAudio("jump")
+            this.scene.playAudio("jump")
             this.spawnDie();
             this.jumping = true;
         } else if (this.cursor.right.isDown) {

@@ -39,7 +39,7 @@ export default class Drop extends Phaser.Physics.Arcade.Sprite {
     death () {
       this.dead = true;
       this.body.enable = false;
-
+      this.scene.playAudio("ground");
       this.anims.play(this.name + "death")
     }
 

@@ -140,6 +140,17 @@
                  "width":50.03,
                  "x":869.07,
                  "y":544.11
+                }, 
+                {
+                 "height":0,
+                 "id":43,
+                 "name":"exit",
+                 "rotation":0,
+                 "type":"stage1",
+                 "visible":true,
+                 "width":0,
+                 "x":164.277661459172,
+                 "y":547.592204863907
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -148,7 +159,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":43,
+ "nextobjectid":44,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.2",
