@@ -60,10 +60,12 @@ export default class Transition extends Phaser.Scene {
     setText () {
         this.text = [ 
             "You are trapped in the temple of Bool",
-            "Find your wait out!",
+            "Find your wait out through 7 rooms!",
             "You'll escape if you're lucky",
-            "But you have to create your own luck!",
+            "But you have to CREATE YOUR OWN LUCK!",
             "Jump when the dice has the number you need!",
+            "Each die has unique properties.",
+            "Stand on the die and jump again.",
             "Press enter to start!"
         ];
     }
@@ -76,7 +78,8 @@ export default class Transition extends Phaser.Scene {
     }
 
     showPlayer() {
-        this.player = this.add.sprite(this.center_width, 600, "wizard");
+        this.player = this.add.sprite(this.center_width, 580, "wizard");
+        this.add.image(this.center_width, 630, `d3`)
         this.anims.create({
             key: "playeridle",
             frames: this.anims.generateFrameNumbers("wizard", { start: 0, end: 1 }),
