@@ -14,6 +14,7 @@ export default class Die extends Phaser.GameObjects.Sprite {
         this.setOrigin(0.5);
         this.body.immovable = true;
         this.body.moves = false;
+        this.shooting = false;
         this.init();
     }
 
@@ -59,8 +60,16 @@ export default class Die extends Phaser.GameObjects.Sprite {
     }
 
     shot (scene) {
+        if (this.shooting) return;
+        this.shooting = true;
         scene.shots.add(new Shot(scene, this.x, this.y, 300, 0))
-        
+        scene.shots.add(new Shot(scene, this.x, this.y, -300, 0))
+        scene.shots.add(new Shot(scene, this.x, this.y, 0, 300))
+        scene.shots.add(new Shot(scene, this.x, this.y, 0, -300))
+        scene.shots.add(new Shot(scene, this.x, this.y, 300, 300))
+        scene.shots.add(new Shot(scene, this.x, this.y, -300, -300))
+        scene.shots.add(new Shot(scene, this.x, this.y, -300, 300))
+        scene.shots.add(new Shot(scene, this.x, this.y, 300, -300))
     }
 
     destroy() {

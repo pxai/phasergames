@@ -18,7 +18,7 @@ export default class Outro extends Phaser.Scene {
         this.text = this.setText();
         this.showHistory();
         //this.showPlayer();
-        //this.playMusic();
+        this.playMusic();
         this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
     }
@@ -49,7 +49,8 @@ export default class Outro extends Phaser.Scene {
         // this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
     }
 
-    playMusic (theme="outro") {
+    playMusic () {
+        const theme = this.failed ? "gameover" : "win";
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({

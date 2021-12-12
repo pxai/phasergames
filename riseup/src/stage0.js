@@ -4,10 +4,12 @@ import Snake from "./snake";
 import Drop from "./drop";
 import Turn from "./turn";
 import Dust from "./dust";
+import Heart from "./heart";
+import Spikes from "./spikes";
 
 export default class Stage0 extends Phaser.Scene {
-    constructor () {
-        super({ key: "stage0" });
+    constructor (key = "stage0") {
+        super({ key });
         this.player = null;
         this.score = 0;
         this.scoreText = null;
@@ -32,7 +34,7 @@ export default class Stage0 extends Phaser.Scene {
       this.showData();
       //this.showDie()
       //this.loadAudios(); 
-      // this.playMusic();
+      this.playMusic();
     }
 
     addMap() {
@@ -40,7 +42,7 @@ export default class Stage0 extends Phaser.Scene {
       this.tileSetBg = this.tileMap.addTilesetImage("riseup_tileset_bg");
       this.tileMap.createStaticLayer('background', this.tileSetBg)
   
-      this.tileSet = this.tileMap.addTilesetImage("weezard_tileset_fg");
+      this.tileSet = this.tileMap.addTilesetImage("riseup_tileset_fg");
       this.platform = this.tileMap.createLayer('scene0', this.tileSet);
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
       this.platform.setCollisionByExclusion([-1]);
@@ -75,6 +77,7 @@ export default class Stage0 extends Phaser.Scene {
       this.snakeGroup = this.add.group();
       this.dropGroup = this.add.group();
       this.exitGroup = this.add.group();
+      this.spikesGroup = this.add.group();
       this.objectsLayer.objects.forEach( object => {
         if (object.name === "bat") {
           let bat = new Bat(this, object.x, object.y, object.type);
@@ -99,7 +102,18 @@ export default class Stage0 extends Phaser.Scene {
         }
 
         if (object.name === "exit") {
-          this.exitGroup.add(new Turn(this, object.x, object.y, object.width, object.height, object.type))
+          this.exitGroup.add(new Turn(this, object.x, object.y, object.width, object.height, object.type).setOrigin(0.5))
+        }
+
+        if (object.name === "spikes") {
+          this.spikesGroup.add(new Spikes(this, object.x, object.y, object.width, object.height, object.type))
+        }
+
+        if (object.name === "heart") {
+          this.heart = new Heart(this, object.x, object.y)
+          this.physics.add.overlap(this.player, this.heart, this.pickHeart, ()=>{
+            return true;
+          }, this);
         }
       });
 
@@ -114,6 +128,10 @@ export default class Stage0 extends Phaser.Scene {
       }, this);
 
       this.physics.add.collider(this.player, this.dropGroup, this.hitPlayer, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.player, this.spikesGroup, this.spikePlayer, ()=>{
         return true;
       }, this);
 
@@ -156,7 +174,7 @@ export default class Stage0 extends Phaser.Scene {
       }
 
       playMusic (theme="game") {
-        this.theme = this.sound.add(theme);
+        this.theme = this.sound.add("music" + this.number);
         this.theme.stop();
         this.theme.play({
           mute: false,
@@ -201,6 +219,14 @@ export default class Stage0 extends Phaser.Scene {
         this.time.delayedCall(1000, () => this.respawnPlayer(), null, this);
       }
 
+      spikePlayer(player, spike) {
+        console.log("SPIKE? ", player, spike)
+        new Dust(player.scene, player.x, player.y, "0xff0000");
+        player.hit();
+        this.updateHealth(player.health)
+        this.time.delayedCall(1000, () => this.respawnPlayer(), null, this);
+      }
+
       foeHitDie(foe, die) {
         foe.turn();
         new Dust(foe.scene, die.x, die.y)
@@ -217,12 +243,18 @@ export default class Stage0 extends Phaser.Scene {
         shot.destroy();
       }
 
+      pickHeart (player, heart) {
+        player.health++;
+        this.updateHealth(player.health)
+        heart.destroy();
+      }
+
     update() {
       this.player.update();
     }
 
     finishScene (next) {
-      //this.theme.stop();
+      this.theme.stop();
       this.scene.start(next, {next: next, name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 
@@ -239,7 +271,7 @@ export default class Stage0 extends Phaser.Scene {
     }
 
     gameOver () {
-      //this.theme.stop();
+      this.theme.stop();
       this.scene.start("outro", {next: "", name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 
@@ -248,9 +280,9 @@ export default class Stage0 extends Phaser.Scene {
       this.die = 1;
       this.timer = this.time.addEvent({ delay: 1000, callback: this.showDieEvent, callbackScope: this, loop: true });
 
-      this.hearts = this.add.image(20, this.height - 125, "heart")
-      this.heartsText = this.add.bitmapText(60, this.height - 100, "wizardFont", this.player.health, 22).setOrigin(0.5)
-      this.room = this.add.bitmapText(this.width - 200, this.height - 100, "wizardFont", "Room: " + this.registry.get("room"), 22).setOrigin(0.5)
+      this.hearts = this.add.image(this.center_width - 200, this.height - 175, "heart")
+      this.heartsText = this.add.bitmapText(this.center_width - 150, this.height - 150, "wizardFont", this.player.health, 22).setOrigin(0.5)
+      this.room = this.add.bitmapText(this.center_width + 200, this.height - 150, "wizardFont", "Room: " + this.registry.get("room"), 22).setOrigin(0.5)
     }
 
     updateScore (points = 0) {

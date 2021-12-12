@@ -24,7 +24,7 @@ export default class Splash extends Phaser.Scene {
 
     startGame () {
         if (this.theme) this.theme.stop();
-        this.scene.start("transition", {next: "stage0", name: "STAGE", number: 1, time: 30})
+        this.scene.start("transition", {next: "stage0", name: "Bayes", number: 0})
     }
 
     showLogo() {
@@ -64,8 +64,6 @@ export default class Splash extends Phaser.Scene {
 
     showInstructions() {
         this.add.bitmapText(this.center_width, 450, "wizardFont", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 500, "wizardFont", "SPACE: track beam", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "wizardFont", "B: shoot coins", 30).setOrigin(0.5);
         this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
         this.add.bitmapText(this.center_width + 40, 620, "wizardFont", "By PELLO", 15).setOrigin(0.5);
         this.space = this.add.bitmapText(this.center_width, 670, "wizardFont", "Press SPACE to start", 30).setOrigin(0.5);

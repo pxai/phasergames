@@ -23,10 +23,12 @@ export default class Bootloader extends Phaser.Scene {
             this.scene.start("splash");
         },this);
 
-       /* Array(7).fill(0).forEach((_,i) => {
-            this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
-        });*/
+        Array(6).fill(0).forEach((_,i) => {
+            this.load.audio(`music${i}`,`assets/sounds/music${i}.mp3`)
+        });
 
+        this.load.audio("win", "assets/sounds/win.mp3");
+        this.load.audio("gameover", "assets/sounds/gameover.mp3");
         //this.load.image("logo", "assets/images/logo.png");
         // this.load.audio("beam", "assets/sounds/beam.mp3");
         Array(6).fill(0).forEach((_,i) => {
@@ -39,9 +41,14 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("bat", "assets/images/bat.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("drop", "assets/images/drop.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("snake", "assets/images/snake.png", { frameWidth: 64, frameHeight: 32 });
+        this.load.image('riseup_tileset_fg', 'assets/maps/riseup_tileset_fg.png');
         this.load.image('riseup_tileset_bg', 'assets/maps/riseup_tileset_bg.png');
-        this.load.image('weezard_tileset_fg', 'assets/maps/weezard_tileset_fg.png');
-        this.load.tilemapTiledJSON("scene0", "assets/maps/scene0.json");
+        // this.load.image('weezard_tileset_fg', 'assets/maps/weezard_tileset_fg.png');
+
+        Array(7).fill(0).forEach((_,i) => {
+            this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`);
+        });
+     
 
 
         this.registry.set("score", 0);

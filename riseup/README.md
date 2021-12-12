@@ -6,4 +6,4 @@ A *rising* adventure
 Bitmap font generator:
 https://snowb.org/
 
-Music: RiseUp
+Music: Danie Santiago opengameart.org
