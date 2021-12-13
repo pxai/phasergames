@@ -28,14 +28,10 @@ export default class Splash extends Phaser.Scene {
     }
 
     showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.8).setOrigin(0.5)
+        this.gameLogo = this.add.image(this.center_width, -200, "logo").setScale(0.8).setOrigin(0.5)
         this.tweens.add({
             targets: this.gameLogo,
             duration: 1000,
-            x: {
-              from: this.center_width * 2,
-              to: this.center_width
-            },
             y: {
                 from: -200,
                 to: 300

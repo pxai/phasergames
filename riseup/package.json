@@ -1,9 +1,9 @@
 {
-  "name": "generic",
-  "productName": "Generic",
+  "name": "chancelord",
+  "productName": "ChanceLord",
   "main": "index.html",
   "window": {
-    "title": "Generic - by Pello",
+    "title": "ChanceLord - by Pello",
     "width": 800,
     "height": 600,
     "fullscreen": false,
@@ -11,7 +11,7 @@
     "icon": "customIcon.png"
   },
   "version": "0.0.1",
-  "description": "TrackTruck game for tu juego a juicio jam",
+  "description": "ChanceLord game for minijam",
   "chromium-args": "--data-path='./saves/' --in-process-gpu --disable-transparency",
   "scripts": {
     "start": "npx webpack-cli serve -c webpack.dev.js --mode development",

@@ -286,7 +286,7 @@ export default class Stage0 extends Phaser.Scene {
 
       this.hearts = this.add.image(this.center_width - 200, this.height - 175, "heart")
       this.heartsText = this.add.bitmapText(this.center_width - 150, this.height - 150, "wizardFont", this.player.health, 22).setOrigin(0.5)
-      this.room = this.add.bitmapText(this.center_width + 200, this.height - 150, "wizardFont", "Room: " + this.number, 22).setOrigin(0.5)
+      this.room = this.add.bitmapText(this.center_width + 200, this.height - 150, "wizardFont", "Room: " + (parseInt(this.number) + 1), 22).setOrigin(0.5)
     }
 
     updateScore (points = 0) {
