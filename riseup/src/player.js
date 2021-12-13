@@ -11,7 +11,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.cursor = this.scene.input.keyboard.createCursorKeys();
       this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
       this.down = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
-      this.right = false;
+      this.right = true;
       this.init();
       this.jumping = false;
       this.health = health;
@@ -123,7 +123,6 @@ class Player extends Phaser.GameObjects.Sprite {
 
     hit () {
         this.health--;
-        console.log("HERE WE GO")
         this.anims.play("playerdead" + this.number, true);
         this.body.enable = false;
         if (this.health === 0) {

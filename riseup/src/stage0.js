@@ -35,10 +35,10 @@ export default class Stage0 extends Phaser.Scene {
       this.showData();
       this.loadAudios(); 
       this.playMusic();
+      this.showTutorial();
     }
 
     addMap() {
-      console.log("Adding map: ", `scene${this.number}`)
       this.tileMap = this.make.tilemap({ key: `scene${this.number}` , tileWidth: 32, tileHeight: 32 });
       this.tileSetBg = this.tileMap.addTilesetImage("riseup_tileset_bg");
       this.tileMap.createStaticLayer('background', this.tileSetBg)
@@ -225,7 +225,6 @@ export default class Stage0 extends Phaser.Scene {
       }
 
       spikePlayer(player, spike) {
-        console.log("SPIKE? ", player, spike)
         this.playAudio("hit");
         new Dust(player.scene, player.x, player.y, "0xff0000");
         player.hit();
@@ -245,7 +244,6 @@ export default class Stage0 extends Phaser.Scene {
       }
 
       foeHitShot (foe, shot) {
-        console.log("HIT FOE ", shot, foe)
         this.playAudio("hit");
         foe.destroy();
         shot.destroy();
@@ -287,6 +285,17 @@ export default class Stage0 extends Phaser.Scene {
       this.hearts = this.add.image(this.center_width - 200, this.height - 175, "heart")
       this.heartsText = this.add.bitmapText(this.center_width - 150, this.height - 150, "wizardFont", this.player.health, 22).setOrigin(0.5)
       this.room = this.add.bitmapText(this.center_width + 200, this.height - 150, "wizardFont", "Room: " + (parseInt(this.number) + 1), 22).setOrigin(0.5)
+    }
+
+    showTutorial () {
+      if (this.number > 0) return;
+
+      this.tutorialText = this.add.bitmapText(this.player.x + 300, this.player.y - 100, "wizardFont", "JUMP to generate a block!", 22).setOrigin(0.5)
+      this.time.delayedCall(5000, () => {
+        this.tutorialText.destroy();
+        this.add.bitmapText(this.player.x + 300, this.player.y - 100, "wizardFont", "Use blocks to reach the exit!", 22).setOrigin(0.5)
+
+      }, null, this)
     }
 
     updateScore (points = 0) {
