@@ -4,6 +4,10 @@ export default class Splash extends Phaser.Scene {
     }
 
     preload () {
+        this.registry.set("score", 0);
+        this.registry.set("coins", 0);
+        this.registry.set("health", 10);
+        this.registry.set("room", 0);
     }
 
     create () {
