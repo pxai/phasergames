@@ -182,7 +182,7 @@ class Bootloader extends Phaser.Scene {
         this.load.image("aim", "assets/images/aim.png");
         this.load.image("stage1", "assets/images/stage1.jpg");
         this.load.spritesheet("hunter", "assets/images/hunter.png", { frameWidth: 48, frameHeight: 64 });
-        // this.load.audio("beam", "assets/sounds/beam.mp3");
+        this.load.audio("music", "assets/sounds/music.mp3");
 
 
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");

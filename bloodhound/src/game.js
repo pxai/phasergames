@@ -32,7 +32,7 @@ export default class Game extends Phaser.Scene {
     this.hunter = new Hunter(this, this.center_width, this.center_height)
 
     //this.loadAudios(); 
-    // this.playMusic();
+    this.playMusic();
   }
 
   setBackground () {
@@ -53,7 +53,7 @@ export default class Game extends Phaser.Scene {
     this.audios[key].play();
   }
 
-  playMusic (theme="game") {
+  playMusic (theme="music") {
     this.theme = this.sound.add(theme);
     this.theme.stop();
     this.theme.play({
@@ -72,15 +72,15 @@ export default class Game extends Phaser.Scene {
     
     if (this.Z.isDown) {
       console.log("FIRE!!", delta, this.shoot);
-      this.hunter.anims.play("shoot", true);
+      this.shotAnimation()
       new Shot(this, this.aim.x, this.aim.y)
       this.shoot = 0;
     } 
 
     if (this.cursor.left.isDown) {
       this.aim.x -= 3;
-      this.hunter.flipX = false;
       if (this.shoot > 200) {
+        this.hunter.flipX = false;
         this.hunter.anims.play("walk", true);
         this.hunter.x -= 3
       }
@@ -88,8 +88,8 @@ export default class Game extends Phaser.Scene {
 
     if (this.cursor.right.isDown) {
       this.aim.x += 3;
-      this.hunter.flipX = true;
       if (this.shoot > 200) {
+        this.hunter.flipX = true;
         this.hunter.anims.play("walk", true);
         this.hunter.x += 3
       } 
@@ -106,6 +106,22 @@ export default class Game extends Phaser.Scene {
     if (this.cursor.down.isDown) {  
       this.aim.y += 3;
     }
+  }
+
+  shotAnimation () {
+    const distance = this.aim.x - this.hunter.x;
+    const absDistance = Math.abs(distance);
+  
+    if (absDistance < 100) {
+      this.hunter.anims.play("shoot0", true);
+    } else if (absDistance >= 100 && absDistance < 250) {
+      this.hunter.anims.play("shoot1", true);
+    } else {
+      this.hunter.anims.play("shoot2", true);
+    }
+
+    this.hunter.flipX = distance < 0;
+
   }
 
   finishScene () {
@@ -150,8 +166,22 @@ class Hunter extends Phaser.GameObjects.Sprite {
     });
 
     this.scene.anims.create({
-      key: "shoot",
+      key: "shoot0",
       frames: this.scene.anims.generateFrameNumbers("hunter", { start: 5, end: 6 }),
+      frameRate: 5,
+      repeat: -1
+    });
+
+    this.scene.anims.create({
+      key: "shoot1",
+      frames: this.scene.anims.generateFrameNumbers("hunter", { start: 7, end: 8 }),
+      frameRate: 5,
+      repeat: -1
+    });
+
+    this.scene.anims.create({
+      key: "shoot2",
+      frames: this.scene.anims.generateFrameNumbers("hunter", { start: 9, end: 10 }),
       frameRate: 5,
       repeat: -1
     });
