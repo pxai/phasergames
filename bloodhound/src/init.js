@@ -13,6 +13,7 @@ class Game extends Phaser.Scene {
       this.name = data.name;
       this.number = data.number;
       this.time = data.time;
+      this.bloodValue = data.bloodValue || 40;
   }
   
     preload () {
@@ -35,6 +36,7 @@ class Game extends Phaser.Scene {
 
       this.aim = new Aim(this, this.center_width, this.center_height)
       this.hunter = new Hunter(this, this.center_width, this.center_height)
+      this.bloodUpdate();
       this.foes = this.add.group();
       this.shots = this.add.group();
       this.foeGenerator = new FoeGenerator(this)
@@ -48,7 +50,9 @@ class Game extends Phaser.Scene {
 
     hitFoe(shot, foe) {
         shot.destroy();
+        this.bloodUpdate(foe.value);
         foe.destroy();
+
     }
   
     setBackground () {
@@ -149,6 +153,14 @@ class Game extends Phaser.Scene {
   
       this.hunter.flipX = distance < 0;
   
+    }
+
+    bloodUpdate(value = 0) {
+      this.bloodValue -= (value/4);
+
+      if (this.bloodValue <= 0) this.finishScene();
+      if (this.drops) this.drops.forEach(drop => drop.destroy());
+      this.drops = Array(Math.floor(this.bloodValue/4)).fill(0).map((_,i) => this.add.image(this.center_width + (30 * i) , 20, "blood"))
     }
   
     finishScene () {
@@ -373,6 +385,7 @@ class Outro extends Phaser.Scene {
             "But that is another story..."
         ];
         this.showHistory();
+
         //this.showPlayer();
         //this.playMusic();
         this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
@@ -450,7 +463,7 @@ class Bootloader extends Phaser.Scene {
         this.load.image("stage1", "assets/images/stage1.jpg");
         this.load.spritesheet("hunter", "assets/images/hunter.png", { frameWidth: 48, frameHeight: 64 });
         this.load.audio("music", "assets/sounds/music.mp3");
-
+        this.load.image("blood", "assets/images/blood.png");
 
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
         this.load.spritesheet("chopper", "assets/images/chopper.png", { frameWidth: 128, frameHeight: 128 });
@@ -514,6 +527,7 @@ class Seagull extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, "seagull");
         this.name = "seagull";
         this.scene = scene;
+        this.value = 1;
         this.scene.physics.add.existing(this);
         this.scene.physics.world.enable(this);
         this.body.setAllowGravity(false);
@@ -571,6 +585,7 @@ class Chopper extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, name);
         this.name = name;
         this.scene = scene;
+        this.value = 5;
         this.scene.physics.add.existing(this);
         this.scene.physics.world.enable(this);
         this.setScale(scale);
