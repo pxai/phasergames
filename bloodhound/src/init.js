@@ -628,6 +628,7 @@ class Bootloader extends Phaser.Scene {
         this.load.image("blood", "assets/images/blood.png");
 
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
+        this.load.spritesheet("duck", "assets/images/duck.png", { frameWidth: 74, frameHeight: 48 });
         this.load.spritesheet("shotgun", "assets/images/shotgun.png", { frameWidth: 128, frameHeight: 64 });
         this.load.spritesheet("minigun", "assets/images/minigun.png", { frameWidth: 128, frameHeight: 64 });
         this.load.spritesheet("chopper", "assets/images/chopper.png", { frameWidth: 128, frameHeight: 128 });
@@ -675,6 +676,10 @@ class FoeGenerator {
         if (Phaser.Math.Between(1, 101) > 100) {
             this.addFoe(new Seagull(this.scene));
         }
+
+        if (Phaser.Math.Between(1, 101) > 100) {
+          this.addFoe(new Duck(this.scene));
+      }
     }
 
     addFoe(foe) {
@@ -761,6 +766,87 @@ class Seagull extends Phaser.Physics.Arcade.Sprite {
           this.destroy()
         }
     }
+}
+
+
+class Duck extends Phaser.Physics.Arcade.Sprite {
+  constructor (scene) {
+      const x = Phaser.Math.Between(0, 1) ? - 64 : scene.width + 64;
+      const y = Phaser.Math.Between(200, 300);
+      const direction = Phaser.Math.Between(-1, 1) > 0 ? 1 : -1;
+      super(scene, x, y, "duck");
+      this.name = "duck";
+      this.scene = scene;
+      this.value = 1;
+      this.scene.physics.add.existing(this);
+      this.scene.physics.world.enable(this);
+      this.body.setAllowGravity(false);
+      this.body.setSize(74, 20)
+      this.direction = direction;
+      this.scene.add.existing(this);
+      this.dead = false;
+      this.init();
+  }
+
+  init () {
+    if (this.direction > 0) this.flipX = true;
+    this.scene.anims.create({
+        key: this.name,
+        frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 2 }),
+        frameRate: 5,
+        repeat: -1
+      });
+
+      this.scene.anims.create({
+        key: this.name + "death",
+        frames: this.scene.anims.generateFrameNumbers(this.name, { start: 3, end: 4 }),
+        frameRate: 5,
+      });
+
+      this.anims.play(this.name, true)
+      this.body.setVelocityX(this.direction * Phaser.Math.Between(150, 200));
+      this.on('animationcomplete', this.animationComplete, this);
+  }
+
+
+  update () {
+  }
+
+  hit (value) {
+    this.value -= value;
+    new Dust(this.scene, this.x, this.y, 5);
+    this.scene.playAudio(`impact${Phaser.Math.Between(0, 6)}`)
+
+    if (this.value <= 0) { this.death();}
+  }
+
+  turn () {
+      this.flipX = this.direction < 0;
+      this.direction = -this.direction;
+      this.body.setVelocityX(this.direction * Phaser.Math.Between(150, 200));
+  }
+
+  death () {
+    this.dead = true;
+    Array(30).fill().forEach(i => new Blood(this.scene, this.x, this.y));
+    this.body.rotation = 15;
+    this.scene.tweens.add({
+      targets: this,
+      duration: 250,
+      y: {from: this.y, to: this.scene.aim.y + 100},
+    })  
+      this.dead = true;
+      this.body.enable = false;
+      this.anims.play(this.name + "death")
+    }
+
+    animationComplete(animation, frame) {
+      console.log("completed", animation.key)
+      if (animation.key === this.name + "death") {
+        console.log("DEATH")
+        this.destroy()
+      }
+  }
 }
 
 
