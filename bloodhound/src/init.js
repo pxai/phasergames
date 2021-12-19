@@ -98,7 +98,9 @@ class Game extends Phaser.Scene {
         "deadseagull": this.sound.add("deadseagull"),
         "boar": this.sound.add("boar"),
         "deadboar": this.sound.add("deadboar"),
-        "chopper": this.sound.add("chopper"),
+        "bunny": this.sound.add("bunny"),
+        "deadbunny": this.sound.add("deadbunny"),
+        "choppah": this.sound.add("choppah"),
         "deadhunter": this.sound.add("deadhunter"),
         "die": this.sound.add("die"),
       };
@@ -247,13 +249,14 @@ class Game extends Phaser.Scene {
     }
   
     finishScene () {
+      this.playAudio("die")
       this.stageClear = true;
       this.foes.children.entries.forEach( foe => {
         console.log("Status: ", foe)
           this.playAudio(`explosion${Phaser.Math.Between(0, 2)}`)
           foe.destroy();
       })
-      this.playAudio("die")
+
       this.theme.stop();
       this.shotSound.stop();
       this.time.delayedCall(2000, () => this.scene.start("transition", {next: "stage", name: "STAGE", number: this.number + 1, time: this.timePassed * 2}), null, this);
@@ -676,7 +679,7 @@ class Bootloader extends Phaser.Scene {
         this.load.audio("bunny", "assets/sounds/bunny.mp3");
         this.load.audio("deadbunny", "assets/sounds/deadbunny.mp3");
 
-        this.load.audio("chopper", "assets/sounds/chopper.mp3");
+        this.load.audio("choppah", "assets/sounds/chopper.mp3");
 
         this.load.audio("deadhunter", "assets/sounds/deadhunter.mp3")
         this.load.audio("die", "assets/sounds/die.mp3")
@@ -729,7 +732,7 @@ class FoeGenerator {
     update () {
         if (Phaser.Math.Between(1, 401) > 400) {
             this.addFoe(new Chopper(this.scene));
-
+            this.scene.playAudio("choppah")
         }
 
         if (Phaser.Math.Between(1, 101) > 100) {
@@ -744,6 +747,7 @@ class FoeGenerator {
 
         if (Phaser.Math.Between(1, 101) > 100) {
           this.addFoe(new Bunny(this.scene));
+          this.scene.playAudio("bunny")
         }
 
         if (Phaser.Math.Between(1, 101) > 100) {
@@ -1140,7 +1144,6 @@ class Chopper extends Phaser.Physics.Arcade.Sprite {
         if (Phaser.Math.Between(0, 11) > 10) {
           this.scene.powerups.add(new PowerUp(this.scene, this.x, this.y));
         }
-        console.log("Hit value to choppah ", this.value, value, this.value - value);
         this.value -= value;
         if (this.value <= 0) { this.death();}
       }
@@ -1192,6 +1195,7 @@ class Dust {
 
 class Blood extends Phaser.GameObjects.Rectangle {
   constructor (scene, x, y) {
+    if (!scene) return
     super(scene, x, y, 5, 5, 0xff0000);
       this.scene = scene;
       this.scene.physics.add.existing(this);
