@@ -107,6 +107,7 @@ class Game extends Phaser.Scene {
       this.shoot += time; 
       this.foeGenerator.update();
       
+      if (this.hunter.jumping) return;
       if (this.Z.isDown && this.canShoot()) {
         this.shotAnimation()
         new Shot(this, this.aim.x, this.aim.y)
@@ -142,6 +143,9 @@ class Game extends Phaser.Scene {
   
       if (this.cursor.down.isDown) {  
         this.aim.y += 3;
+        if (this.shoot > 200) {
+          this.hunter.jump()
+        } 
       }
     }
 
@@ -211,6 +215,7 @@ class Game extends Phaser.Scene {
       this.scene.physics.world.enable(this);
       this.body.setAllowGravity(true);
       this.right = true;
+      this.jumping = false;
       this.init();
     }
   
@@ -251,11 +256,40 @@ class Game extends Phaser.Scene {
         repeat: -1
       });
   
+      this.scene.anims.create({
+        key: "death",
+        frames: this.scene.anims.generateFrameNumbers("hunter", { start: 11, end: 13 }),
+        frameRate: 5,
+      });
+
+      this.scene.anims.create({
+        key: "jump",
+        frames: this.scene.anims.generateFrameNumbers("hunter", { start: 14, end: 19 }),
+        frameRate: 5,
+      });
       this.anims.play("idle", true);
       // this.on("animationupdate" , this.castInTime, this);
       // this.on('animationcomplete', this.animationComplete, this);
   
       this.flipX = this.right;
+    }
+
+    jump () {
+      this.jumping = true;
+      const move = this.flipX ? 200 : -200;
+
+      const timeline = this.scene.tweens.createTimeline();
+      timeline.add({
+        targets: this,
+        duration: 1000,
+        x: {from: this.x, to: this.x + move},
+        onComplete: () => {
+          this.jumping = false;
+          this.anims.play("idle", true);
+        }
+      })  
+      timeline.play()
+      this.anims.play("jump", true);
     }
   }
 
