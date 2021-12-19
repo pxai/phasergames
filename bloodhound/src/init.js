@@ -633,6 +633,7 @@ class Bootloader extends Phaser.Scene {
         this.load.spritesheet("minigun", "assets/images/minigun.png", { frameWidth: 128, frameHeight: 64 });
         this.load.spritesheet("chopper", "assets/images/chopper.png", { frameWidth: 128, frameHeight: 128 });
         this.load.spritesheet("seagull", "assets/images/seagull.png", { frameWidth: 64, frameHeight: 48 });
+        this.load.spritesheet("bunny", "assets/images/bunny.png", { frameWidth: 64, frameHeight: 64 });
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
 
         this.registry.set("score", 0);
@@ -679,7 +680,11 @@ class FoeGenerator {
 
         if (Phaser.Math.Between(1, 101) > 100) {
           this.addFoe(new Duck(this.scene));
-      }
+        }
+
+        if (Phaser.Math.Between(1, 101) > 100) {
+          this.addFoe(new Bunny(this.scene));
+        }
     }
 
     addFoe(foe) {
@@ -849,6 +854,89 @@ class Duck extends Phaser.Physics.Arcade.Sprite {
   }
 }
 
+class Bunny extends Phaser.Physics.Arcade.Sprite {
+  constructor (scene) {
+      const x = Phaser.Math.Between(0, 1) ? - 64 : scene.width + 64;
+      const y = Phaser.Math.Between(scene.height - 20, scene.height - 400);
+      const direction = Phaser.Math.Between(-1, 1) > 0 ? 1 : -1;
+
+      super(scene, x, y, "bunny");
+      this.name = "bunny";
+      this.setScale(0.7)
+      this.scene = scene;
+      this.value = 3;
+      this.scene.physics.add.existing(this);
+      this.scene.physics.world.enable(this);
+      this.body.setAllowGravity(false);
+      this.body.setSize(74, 20)
+      this.direction = direction;
+      this.scene.add.existing(this);
+      this.dead = false;
+      this.init();
+  }
+
+  init () {
+    if (this.direction > 0) this.flipX = true;
+    this.scene.anims.create({
+        key: this.name,
+        frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 2 }),
+        frameRate: 5,
+        repeat: -1
+      });
+
+      this.scene.anims.create({
+        key: this.name + "death",
+        frames: this.scene.anims.generateFrameNumbers(this.name, { start: 3, end: 4 }),
+        frameRate: 5,
+      });
+
+      this.anims.play(this.name, true)
+      this.body.setVelocityX(this.direction * Phaser.Math.Between(150, 200));
+      this.on('animationcomplete', this.animationComplete, this);
+      this.scene.tweens.add({
+        targets: this,
+        duration: Phaser.Math.Between(300, 400),
+        y: {from: this.y, to: this.y - Phaser.Math.Between(150, 200)},
+        repeat: -1,
+        yoyo: true
+      })  
+  }
+
+
+  update () {
+  }
+
+  hit (value) {
+    this.value -= value;
+    Array(5).fill().forEach(i => new Blood(this.scene, this.x, this.y));
+    this.scene.playAudio(`impact${Phaser.Math.Between(0, 6)}`)
+
+    if (this.value <= 0) { this.death();}
+  }
+
+  turn () {
+      this.flipX = this.direction < 0;
+      this.direction = -this.direction;
+      this.body.setVelocityX(this.direction * Phaser.Math.Between(150, 200));
+  }
+
+  death () {
+    this.dead = true;
+    Array(40).fill().forEach(i => new Blood(this.scene, this.x, this.y));
+
+      this.dead = true;
+      this.body.enable = false;
+      this.anims.play(this.name + "death")
+    }
+
+    animationComplete(animation, frame) {
+      console.log("completed", animation.key)
+      if (animation.key === this.name + "death") {
+        console.log("DEATH")
+        this.destroy()
+      }
+  }
+}
 
 class Chopper extends Phaser.Physics.Arcade.Sprite {
     constructor (scene,  name = "chopper", scale = 0.5) {
