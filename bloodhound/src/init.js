@@ -36,8 +36,8 @@ class Game extends Phaser.Scene {
       this.foes = this.add.group();
       this.shots = this.add.group();
       this.powerups = this.add.group();
-      this.aim = new Aim(this, this.center_width, this.center_height)
-      this.hunter = new Hunter(this, this.center_width, this.center_height)
+      this.aim = new Aim(this, this.center_width, this.center_height, "aimgun")
+      this.hunter = new Hunter(this, this.center_width, this.height - 100)
       this.paintBlood();
       this.gunTypes = [ "gun", "gun", "shotgun", "minigun", "gun"]
       this.foeGenerator = new FoeGenerator(this)
@@ -49,6 +49,7 @@ class Game extends Phaser.Scene {
         }, this);
       this.loadAudios(); 
       this.currentGun = 1;
+      this.shotSound = null;
       this.stageClear = false;
       this.playMusic();
     }
@@ -93,6 +94,7 @@ class Game extends Phaser.Scene {
   
     playAudio(key) {
       this.audios[key].play();
+      return this.audios[key];
     }
   
     playMusic (theme="music") {
@@ -117,8 +119,6 @@ class Game extends Phaser.Scene {
       if (this.Z.isDown && this.canShoot()) {
         this.shotAnimation()
         this.shootIt();
-
-        this.playAudio(this.gunTypes[this.currentGun]);
         this.shoot = 0;
       } 
   
@@ -163,6 +163,13 @@ class Game extends Phaser.Scene {
         "minigun": [64, 32]
       }[this.gunTypes[this.currentGun]];
       new Shot(this, this.aim.x, this.aim.y, w, h)
+      console.log("A ver: ", this.shotSound?.isPlaying, " o ", this.currentGun, " or ", this.currentGun === 3);
+      if (this.shotSound?.isPlaying && this.currentGun === 3) {
+        return;
+      }
+
+
+      this.shotSound = this.playAudio(this.gunTypes[this.currentGun]);
     }
 
     canShoot() {
@@ -225,6 +232,7 @@ class Game extends Phaser.Scene {
         this.currentGun = 2;
       } else if (powerup.name === "minigun") {
         this.currentGun = 3;
+        this.time.delayedCall(20000, () => { this.currentGun = 1; this.setAim("gun")})
       }
       this.setAim(this.gunTypes[this.currentGun]);
       powerup.destroy();
@@ -596,7 +604,7 @@ class Bootloader extends Phaser.Scene {
           this.load.audio(`explosion${i}`,`assets/sounds/explosion${i}.mp3`)
       });
 
-        this.load.image("aimgun", "assets/images/aim.png");
+        this.load.image("aimgun", "assets/images/aimgun.png");
         this.load.image("aimminigun", "assets/images/aimminigun.png");
         this.load.image("aimshotgun", "assets/images/aimshotgun.png");
         this.load.image("stage1", "assets/images/stage1.jpg");
