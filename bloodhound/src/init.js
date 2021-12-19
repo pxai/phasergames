@@ -92,6 +92,15 @@ class Game extends Phaser.Scene {
         "explosion0": this.sound.add("explosion0"),
         "explosion1": this.sound.add("explosion1"),
         "explosion2": this.sound.add("explosion2"),
+        "duck": this.sound.add("duck"),
+        "deadduck": this.sound.add("deadduck"),
+        "seagull": this.sound.add("seagull"),
+        "deadseagull": this.sound.add("deadseagull"),
+        "boar": this.sound.add("boar"),
+        "deadboar": this.sound.add("deadboar"),
+        "chopper": this.sound.add("chopper"),
+        "deadhunter": this.sound.add("deadhunter"),
+        "die": this.sound.add("die"),
       };
 
 
@@ -225,6 +234,7 @@ class Game extends Phaser.Scene {
       shot.destroy();
 
       hunter.hit();
+      this.playAudio("deadhunter")
       this.time.delayedCall(1000, () => this.respawnPlayer(), null, this);
     }
 
@@ -243,6 +253,7 @@ class Game extends Phaser.Scene {
           this.playAudio(`explosion${Phaser.Math.Between(0, 2)}`)
           foe.destroy();
       })
+      this.playAudio("die")
       this.theme.stop();
       this.shotSound.stop();
       this.time.delayedCall(2000, () => this.scene.start("transition", {next: "stage", name: "STAGE", number: this.number + 1, time: this.timePassed * 2}), null, this);
@@ -652,6 +663,24 @@ class Bootloader extends Phaser.Scene {
         this.load.audio("minigun", "assets/sounds/minigun.mp3");
         this.load.audio("metal", "assets/sounds/metal.mp3");
         this.load.audio("ricochet", "assets/sounds/ricochet.mp3");
+
+        this.load.audio("duck", "assets/sounds/duck.mp3");
+        this.load.audio("deadduck", "assets/sounds/deadduck.mp3");
+
+        this.load.audio("seagull", "assets/sounds/seagull.mp3");
+        this.load.audio("deadseagull", "assets/sounds/deadseagull.mp3");
+
+        this.load.audio("boar", "assets/sounds/boar.mp3");
+        this.load.audio("deadboar", "assets/sounds/deadboar.mp3");
+
+        this.load.audio("bunny", "assets/sounds/bunny.mp3");
+        this.load.audio("deadbunny", "assets/sounds/deadbunny.mp3");
+
+        this.load.audio("chopper", "assets/sounds/chopper.mp3");
+
+        this.load.audio("deadhunter", "assets/sounds/deadhunter.mp3")
+        this.load.audio("die", "assets/sounds/die.mp3")
+
         this.load.image("blood", "assets/images/blood.png");
 
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
@@ -705,10 +734,12 @@ class FoeGenerator {
 
         if (Phaser.Math.Between(1, 101) > 100) {
             this.addFoe(new Seagull(this.scene));
+            this.scene.playAudio("seagull")
         }
 
         if (Phaser.Math.Between(1, 101) > 100) {
           this.addFoe(new Duck(this.scene));
+          this.scene.playAudio("duck")
         }
 
         if (Phaser.Math.Between(1, 101) > 100) {
@@ -717,6 +748,7 @@ class FoeGenerator {
 
         if (Phaser.Math.Between(1, 101) > 100) {
           this.addFoe(new Boar(this.scene));
+          this.scene.playAudio("boar")
         }
 
         this.scene.foes.children.entries.forEach( foe => {
@@ -802,6 +834,7 @@ class Seagull extends Phaser.Physics.Arcade.Sprite {
         duration: 250,
         y: {from: this.y, to: this.scene.aim.y + 100},
       })  
+      this.scene.playAudio("deadseagull")
         this.dead = true;
         this.body.enable = false;
         this.anims.play(this.name + "death")
@@ -883,6 +916,7 @@ class Duck extends Phaser.Physics.Arcade.Sprite {
       duration: 250,
       y: {from: this.y, to: this.scene.aim.y + 100},
     })  
+    this.scene.playAudio("deadduck")
       this.dead = true;
       this.body.enable = false;
       this.anims.play(this.name + "death")
@@ -1045,6 +1079,7 @@ class Boar extends Phaser.Physics.Arcade.Sprite {
 
       this.dead = true;
       this.body.enable = false;
+      this.scene.playAudio("deadboar")
       this.anims.play(this.name + "death")
     }
 

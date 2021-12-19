@@ -22,3 +22,25 @@ Expllosions
 https://freesound.org/people/derplayer/sounds/587194/
 https://freesound.org/people/derplayer/sounds/587198/
 https://freesound.org/people/derplayer/sounds/587193/
+
+Ducks:
+https://freesound.org/people/D4XX/sounds/607226/
+DeathDuck
+https://freesound.org/people/crazyduckman/sounds/185550/
+
+Seagull
+https://freesound.org/people/ChristianAnd/sounds/468426/
+DeadSeagull
+https://freesound.org/people/poodaddy69/sounds/496203/
+Boar
+https://freesound.org/people/rvinyard/sounds/117250/
+Rabbit
+https://freesound.org/people/pan14/sounds/334031/
+Screeches
+https://freesound.org/people/Patrick_Corra/sounds/540050/
+Chopper
+https://freesound.org/people/Thomas_Edward/sounds/268521/
+Guy die
+https://freesound.org/people/marc3122/sounds/556976/
+Die scream
+https://freesound.org/people/xtrgamr/sounds/259681/
