@@ -1,4 +1,5 @@
 import { Scene3D, ExtendedObject3D } from '@enable3d/phaser-extension' 
+import BulletHell from "./bullet_hell";
 
 export default class Game extends Scene3D {
     constructor () {
@@ -20,6 +21,8 @@ export default class Game extends Scene3D {
     }
 
     create () {      
+      this.bulletHell = new BulletHell();
+      this.x = 0;
       // creates a nice scene
       this.third.warpSpeed()
 
@@ -29,10 +32,10 @@ export default class Game extends Scene3D {
       // enable physics debugging
       this.third.physics.debug.enable()
       // adds a box
-      this.third.add.box({ x: 1, y: 2 })
+      // this.third.add.box({ x: 1, y: 2 })
 
       // adds a box with physics
-      this.third.physics.add.box({ x: -1, y: 2 })
+      // this.third.physics.add.box({ x: -1, y: 2 })
 
       // throws some random object on the scene
       //this.third.haveSomeFun()
@@ -40,6 +43,8 @@ export default class Game extends Scene3D {
       // this.playMusic();
 
       // add object3d (the monkey's name is object3d)
+      // https://catlikecoding.com/unity/tutorials/basics/mathematical-surfaces/
+      // https://github.com/enable3d/enable3d-website/blob/master/src/examples/first-phaser-game-3d-version.html
       this.third.load.gltf('/assets/objects/ship.glb').then(gltf => {
         // If you can, always use simple shapes like BOX, SPHERE, CONE etc.
         // The second most efficient shape is a COMPOUND, which merges multiple simple shapes.
@@ -51,8 +56,9 @@ export default class Game extends Scene3D {
         // (concave is an alias for concaveMesh)
         // (heightMap uses concaveMesh by default)
         // (extrude uses hacd by default)
-
-        const object3d = gltf.scene.children[0]
+        const object = new ExtendedObject3D()
+        object.add(gltf.scene)
+        //const object3d = gltf.scene.children[0]
 
         const shapes = ['box', 'compound', 'hull', 'hacd', 'convexMesh', 'concaveMesh']
 
@@ -61,14 +67,14 @@ export default class Game extends Scene3D {
 
         // compound multiple simple shape together
 
-        object3d.traverse(child => {
+        object.traverse(child => {
           if (child.isMesh && child.material.isMaterial) {
             child.material = material
           }
         })
 
         //shapes.forEach((shape, i) => { this.createObject(shape,i,  object3d) })
-        this.ship = this.createObject("hull",0,  object3d)
+        this.ship = this.createObject("hull",0,  object)
       })
 
       this.cursor = this.input.keyboard.createCursorKeys();
@@ -103,6 +109,11 @@ export default class Game extends Scene3D {
 
       this.third.add.existing(object)
       this.third.physics.add.existing(object, options)
+
+      object.body.setLinearFactor(1, 1, 0)
+      object.body.setAngularFactor(0, 0, 0)
+      object.body.setFriction(20, 20, 20)
+
       return object;
     }
 
@@ -130,17 +141,28 @@ export default class Game extends Scene3D {
       })
       }
 
-    update() {
+    update(time, delta) {
+      this.generateBullet(time, delta)
       if (this.cursor.up.isDown) {
         console.log(this.ship, this.ship.body)
-        this.ship.body.setVelocityY(1)
+        this.ship.body.setVelocityY(5)
       } else if (this.cursor.down.isDown) {
-        this.ship.body.setVelocityY(-1)
+        this.ship.body.setVelocityY(-5)
       } else if (this.cursor.left.isDown) {
-        this.ship.body.setVelocityX(-1)
+        this.ship.body.setVelocityX(-5)
       } else if (this.cursor.right.isDown) {
-        this.ship.body.setVelocityX(1)
-      }
+        this.ship.body.setVelocityX(5)
+      } 
+      console.log(this.ship?.body)
+    }
+
+    generateBullet (time, delta) {
+      const y = this.bulletHell.wave(this.x, time);
+      console.log(this.x, y)
+      let box = this.third.add.box({ x: this.x, y, height: 0.4, width: 0.4, depth: 0.4  })
+      this.third.physics.add.existing(box);
+      box.body.setVelocityZ(-15)
+     this.x =  (this.x < 1000) ? this.x + 1 : 0; 
     }
 
     finishScene () {
