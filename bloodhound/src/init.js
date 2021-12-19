@@ -143,7 +143,7 @@ class Game extends Phaser.Scene {
   
       if (this.cursor.down.isDown) {  
         this.aim.y += 3;
-        if (this.shoot > 200) {
+        if (this.shoot > 400) {
           this.hunter.jump()
         } 
       }
