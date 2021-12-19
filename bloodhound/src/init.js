@@ -13,7 +13,7 @@ class Game extends Phaser.Scene {
       this.name = data.name;
       this.number = data.number;
       this.timePassed = data.timePassed;
-      this.bloodValue = [10, 20, 20, 40, 50][this.number]
+      this.bloodValue = [20, 20, 20, 40, 50][this.number]
       console.log("Blood: ", this.bloodValue, this.number)
   }
   
@@ -33,14 +33,18 @@ class Game extends Phaser.Scene {
       this.shoot = 0;
       this.shootSpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
       this.foeLayer = this.add.layer()
-
+      this.foes = this.add.group();
+      this.shots = this.add.group();
+      this.powerups = this.add.group();
       this.aim = new Aim(this, this.center_width, this.center_height)
       this.hunter = new Hunter(this, this.center_width, this.center_height)
       this.paintBlood();
-      this.foes = this.add.group();
-      this.shots = this.add.group();
+      this.gunTypes = [ "gun", "gun", "shotgun", "minigun", "gun"]
       this.foeGenerator = new FoeGenerator(this)
       this.physics.add.collider(this.shots, this.foes, this.hitFoe, () => {
+        return true;
+        }, this);
+      this.physics.add.collider(this.hunter, this.powerups, this.pickPowerup, () => {
         return true;
         }, this);
       this.loadAudios(); 
@@ -68,6 +72,8 @@ class Game extends Phaser.Scene {
     loadAudios () {
       this.audios = {
         "gun": this.sound.add("gun"),
+        "shotgun": this.sound.add("shotgun"),
+        "minigun": this.sound.add("minigun"),
         "metal": this.sound.add("metal"),
         "ricochet": this.sound.add("ricochet"),
         "impact0": this.sound.add("impact0"),
@@ -82,7 +88,7 @@ class Game extends Phaser.Scene {
         "explosion2": this.sound.add("explosion2"),
       };
 
-      this.gunAudio = [ "gun", "gun", "gun", "gun"]
+
     }
   
     playAudio(key) {
@@ -110,8 +116,9 @@ class Game extends Phaser.Scene {
       if (this.hunter.jumping) return;
       if (this.Z.isDown && this.canShoot()) {
         this.shotAnimation()
-        new Shot(this, this.aim.x, this.aim.y)
-        this.playAudio(this.gunAudio[this.currentGun]);
+        this.shootIt();
+
+        this.playAudio(this.gunTypes[this.currentGun]);
         this.shoot = 0;
       } 
   
@@ -147,6 +154,15 @@ class Game extends Phaser.Scene {
           this.hunter.jump()
         } 
       }
+    }
+
+    shootIt () {
+      const [w, h] = {
+        "gun": [32, 32],
+        "shotgun": [48, 48],
+        "minigun": [64, 32]
+      }[this.gunTypes[this.currentGun]];
+      new Shot(this, this.aim.x, this.aim.y, w, h)
     }
 
     canShoot() {
@@ -202,6 +218,22 @@ class Game extends Phaser.Scene {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
         this.scoreText.setText(Number(score).toLocaleString());
+    }
+
+    pickPowerup (hunter, powerup) {
+      if (powerup.name === "shotgun") {
+        this.currentGun = 2;
+      } else if (powerup.name === "minigun") {
+        this.currentGun = 3;
+      }
+      this.setAim(this.gunTypes[this.currentGun]);
+      powerup.destroy();
+    }
+
+    setAim(current) {
+      this.aim.destroy();
+      console.log("Change aim: ",  "aim" + current)
+      this.aim = new Aim(this, this.center_width, this.center_height, "aim" + current)
     }
   }
   
@@ -334,8 +366,9 @@ class Game extends Phaser.Scene {
 }
   
   class Aim extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y) {
-      super(scene, x, y, "aim")
+    constructor(scene, x, y, name = "aimgun") {
+      super(scene, x, y, name)
+      this.name = name;
       this.scene = scene;
       this.scene.add.existing(this);
       this.scene.physics.add.existing(this);
@@ -563,16 +596,22 @@ class Bootloader extends Phaser.Scene {
           this.load.audio(`explosion${i}`,`assets/sounds/explosion${i}.mp3`)
       });
 
-        this.load.image("aim", "assets/images/aim.png");
+        this.load.image("aimgun", "assets/images/aim.png");
+        this.load.image("aimminigun", "assets/images/aimminigun.png");
+        this.load.image("aimshotgun", "assets/images/aimshotgun.png");
         this.load.image("stage1", "assets/images/stage1.jpg");
         this.load.spritesheet("hunter", "assets/images/hunter.png", { frameWidth: 48, frameHeight: 64 });
         this.load.audio("music", "assets/sounds/music.mp3");
         this.load.audio("gun", "assets/sounds/gun.mp3");
+        this.load.audio("shotgun", "assets/sounds/shotgun.mp3");
+        this.load.audio("minigun", "assets/sounds/minigun.mp3");
         this.load.audio("metal", "assets/sounds/metal.mp3");
         this.load.audio("ricochet", "assets/sounds/ricochet.mp3");
         this.load.image("blood", "assets/images/blood.png");
 
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
+        this.load.spritesheet("shotgun", "assets/images/shotgun.png", { frameWidth: 128, frameHeight: 64 });
+        this.load.spritesheet("minigun", "assets/images/minigun.png", { frameWidth: 128, frameHeight: 64 });
         this.load.spritesheet("chopper", "assets/images/chopper.png", { frameWidth: 128, frameHeight: 128 });
         this.load.spritesheet("seagull", "assets/images/seagull.png", { frameWidth: 64, frameHeight: 48 });
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
@@ -752,6 +791,10 @@ class Chopper extends Phaser.Physics.Arcade.Sprite {
       if (this.scene) {
         this.scene.playAudio(Math.random() > 0.5 ? "metal" : "ricochet")
         new Dust(this.scene, this.x, this.y);
+       // if (Phaser.Math.Between(0, ) > 5) {
+          this.scene.powerups.add(new PowerUp(this.scene, this.x, this.y));
+        //}
+        console.log("Hit value to choppah ", this.value, value, this.value - value);
         this.value -= value;
         if (this.value <= 0) { this.death();}
       }
@@ -814,6 +857,33 @@ class Blood extends Phaser.GameObjects.Rectangle {
       if (Math.random() > 0.5)
       this.body.setVelocityX((Math.random() > 0.5 ? 1 : -1) * Phaser.Math.Between(10, 30));
       this.body.setDrag(10);
+  }
+}
+
+class PowerUp extends Phaser.GameObjects.Sprite {
+  constructor (scene, x, y) {
+      const name = (Math.random() > 0.5) ? "minigun" : "shotgun";
+    super(scene, x, y, name);
+      this.name = name;
+      this.scene = scene;
+      this.scene.physics.add.existing(this);
+      this.scene.physics.world.enable(this);
+      this.body.setAllowGravity(true);
+      this.scene.add.existing(this);
+      this.body.setCollideWorldBounds(true);
+      this.body.setVelocityY(-100);
+      this.body.setDrag(10);
+  }
+
+  init () {
+    this.scene.anims.create({
+      key: this.name,
+      frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 1 }),
+      frameRate: 5,
+      repeat: -1
+    });
+
+    this.anims.play(this.name, true)
   }
 }
 
