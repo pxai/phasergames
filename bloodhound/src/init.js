@@ -230,9 +230,12 @@ class Game extends Phaser.Scene {
     pickPowerup (hunter, powerup) {
       if (powerup.name === "shotgun") {
         this.currentGun = 2;
+        this.sound
       } else if (powerup.name === "minigun") {
         this.currentGun = 3;
-        this.time.delayedCall(20000, () => { this.currentGun = 1; this.setAim("gun")})
+      }
+      if (this.shotSound?.isPlaying) {
+        this.shotSound.stop();
       }
       this.setAim(this.gunTypes[this.currentGun]);
       powerup.destroy();
