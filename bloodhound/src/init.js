@@ -121,6 +121,12 @@ class Game extends Phaser.Scene {
         this.shootIt();
         this.shoot = 0;
       } 
+
+      if (this.Z.isDown && this.canShoot()) {
+        this.shotAnimation()
+        this.shootIt();
+        this.shoot = 0;
+      } 
   
       if (this.cursor.left.isDown) {
         this.aim.x -= 3;
@@ -157,18 +163,18 @@ class Game extends Phaser.Scene {
     }
 
     shootIt () {
-      const [w, h] = {
-        "gun": [32, 32],
-        "shotgun": [48, 48],
-        "minigun": [64, 32]
+      const [w, h, value] = {
+        "gun": [32, 32, 1],
+        "shotgun": [48, 48, 5],
+        "minigun": [64, 32, 1]
       }[this.gunTypes[this.currentGun]];
-      new Shot(this, this.aim.x, this.aim.y, w, h)
+      new Shot(this, this.aim.x, this.aim.y, w, h, value)
       console.log("A ver: ", this.shotSound?.isPlaying, " o ", this.currentGun, " or ", this.currentGun === 3);
       if (this.shotSound?.isPlaying && this.currentGun === 3) {
         return;
       }
 
-
+      if (this.shotSound) this.shotSound.stop()
       this.shotSound = this.playAudio(this.gunTypes[this.currentGun]);
     }
 
@@ -218,6 +224,7 @@ class Game extends Phaser.Scene {
           foe.destroy();
       })
       this.theme.stop();
+      this.shotSound.stop();
       this.time.delayedCall(2000, () => this.scene.start("transition", {next: "stage", name: "STAGE", number: this.number + 1, time: this.timePassed * 2}), null, this);
     }
   
@@ -395,7 +402,7 @@ class Game extends Phaser.Scene {
   } 
   
   class Shot extends Phaser.GameObjects.Rectangle {
-    constructor(scene, x, y, value = 1,w = 32, h = 32, color = 0xffffff) {
+    constructor(scene, x, y,w = 32, h = 32, value = 1, color = 0xffffff) {
       super(scene, x, y, w, h, color)
       this.setAlpha(0.0)
       this.value = value;
@@ -408,7 +415,7 @@ class Game extends Phaser.Scene {
       this.scene.physics.world.enable(this);
       this.body.setAllowGravity(false);
       this.scene.shots.add(this)
-      new Dust(this.scene, x, y, 2)
+      new Dust(this.scene, x, y - 10, value)
       this.init();
     }
   
@@ -802,9 +809,9 @@ class Chopper extends Phaser.Physics.Arcade.Sprite {
       if (this.scene) {
         this.scene.playAudio(Math.random() > 0.5 ? "metal" : "ricochet")
         new Dust(this.scene, this.x, this.y);
-       // if (Phaser.Math.Between(0, ) > 5) {
+        if (Phaser.Math.Between(0, 11) > 10) {
           this.scene.powerups.add(new PowerUp(this.scene, this.x, this.y));
-        //}
+        }
         console.log("Hit value to choppah ", this.value, value, this.value - value);
         this.value -= value;
         if (this.value <= 0) { this.death();}
@@ -884,6 +891,7 @@ class PowerUp extends Phaser.GameObjects.Sprite {
       this.body.setCollideWorldBounds(true);
       this.body.setVelocityY(-100);
       this.body.setDrag(10);
+      this.init();
   }
 
   init () {
