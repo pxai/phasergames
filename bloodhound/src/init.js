@@ -13,8 +13,7 @@ class Game extends Phaser.Scene {
       this.name = data.name;
       this.number = data.number;
       this.timePassed = data.timePassed;
-      this.bloodValue = [20, 20, 20, 40, 50][this.number]
-      console.log("Blood: ", this.bloodValue, this.number)
+      this.bloodValue = [20, 30, 40, 50][this.number]
   }
   
     preload () {
@@ -42,6 +41,7 @@ class Game extends Phaser.Scene {
       this.paintBlood();
       this.gunTypes = [ "gun", "gun", "shotgun", "minigun", "gun"]
       this.foeGenerator = new FoeGenerator(this)
+      this.scoreText = this.add.bitmapText(200, 16, "pixelFont", "0", 20).setOrigin(0.5).setScrollFactor(0)
       this.physics.add.collider(this.shots, this.foes, this.hitFoe, () => {
         return true;
         }, this);
@@ -60,9 +60,11 @@ class Game extends Phaser.Scene {
     }
 
     hitFoe(shot, foe) {
+      if (this.stageClear) return;
       if (foe.active && !this.stageClear) {
         this.bloodUpdate(foe.value);
         foe.hit(shot.value);
+        this.updateScore(foe.value * 100);
         shot.destroy();
       }
     }
@@ -249,8 +251,8 @@ class Game extends Phaser.Scene {
     }
   
     finishScene () {
-      this.playAudio("die")
       this.stageClear = true;
+      this.playAudio("die")
       this.foes.children.entries.forEach( foe => {
         console.log("Status: ", foe)
           this.playAudio(`explosion${Phaser.Math.Between(0, 2)}`)
@@ -284,8 +286,13 @@ class Game extends Phaser.Scene {
 
     setAim(current) {
       this.aim.destroy();
-      console.log("Change aim: ",  "aim" + current)
       this.aim = new Aim(this, this.center_width, this.center_height, "aim" + current)
+    }
+
+    updateScore (points = 0) {
+      const score = +this.registry.get("score") + points;
+      this.registry.set("score", score);
+      this.scoreText.setText(Number(score).toLocaleString());
     }
   }
   
@@ -398,6 +405,9 @@ class Game extends Phaser.Scene {
     }
 
     preload () {
+      if (this.number == 4) {
+        this.loadOutro();
+      }
     }
 
     create () {
@@ -422,6 +432,10 @@ class Game extends Phaser.Scene {
     loadNext () {
         this.scene.start(this.next, { name: this.name, number: this.number, timePassed: this.timePassed });
     }
+
+    loadOutro () {
+      this.scene.start("outro", { name: this.name, number: this.number, timePassed: this.timePassed });
+  }
 }
   
   class Aim extends Phaser.GameObjects.Sprite {
@@ -488,9 +502,9 @@ class Splash extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
 
-
+        this.registry.set("score", "0");
         this.cameras.main.setBackgroundColor(0x000000);
-        //this.showLogo();        ;
+        this.showLogo();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
@@ -505,6 +519,7 @@ class Splash extends Phaser.Scene {
 
     showLogo() {
         this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
+        this.boom = this.sound.add("explosion0");
         this.tweens.add({
             targets: this.gameLogo,
             duration: 1000,
@@ -514,8 +529,11 @@ class Splash extends Phaser.Scene {
             },
             y: {
                 from: -200,
-                to: 130
+                to: 230
               },
+              onComplete: () => {
+                this.boom.play()
+              }
           })
     }
 
@@ -571,10 +589,10 @@ class Outro extends Phaser.Scene {
         this.introLayer = this.add.layer();
         this.splashLayer = this.add.layer();
         this.text = [ 
-            "The U.F.I.S.H. recovered the engines.",
-            "After a terrible fishing day,",
-            "they decided to move to Europa moon,",
-            "to fish under the ice",
+            "You killed plenty!!",
+            "After a terrible hunting day,",
+            "you decide to go back home,",
+            "and have a nice salad",
             "But that is another story..."
         ];
         this.showHistory();
@@ -615,9 +633,19 @@ class Outro extends Phaser.Scene {
         })
     }
 
+    showPlayer () {
+      this.player = this.add.sprite(this.center_width, 580, "hunter").setScale(3);
+      this.anims.create({
+          key: "idle",
+          frames: this.anims.generateFrameNumbers("hunter", { start: 0, end: 1 }),
+          frameRate: 2,
+          repeat: -1
+      });
+      this.player.anims.play("idle", true)
+    }
 
     startSplash () {
-        // this.theme.stop();
+        if (this.theme) this.theme.stop();
         this.scene.start("splash");
     }
 }
@@ -634,7 +662,7 @@ class Bootloader extends Phaser.Scene {
             "progress",
             function (value) {
                 this.progressBar.clear();
-                this.progressBar.fillStyle(0x88d24c, 1);
+                this.progressBar.fillStyle(0xff0000, 1);
                 this.progressBar.fillRect(
                     this.cameras.main.width / 4,
                     this.cameras.main.height / 2 - 16,
@@ -660,7 +688,7 @@ class Bootloader extends Phaser.Scene {
         this.load.image("aimshotgun", "assets/images/aimshotgun.png");
         this.load.image("stage1", "assets/images/stage1.jpg");
         this.load.spritesheet("hunter", "assets/images/hunter.png", { frameWidth: 48, frameHeight: 64 });
-        this.load.audio("music", "assets/sounds/music.mp3");
+        this.load.audio("music", "assets/sounds/muzik.mp3");
         this.load.audio("gun", "assets/sounds/gun.mp3");
         this.load.audio("shotgun", "assets/sounds/shotgun.mp3");
         this.load.audio("minigun", "assets/sounds/minigun.mp3");
@@ -685,7 +713,8 @@ class Bootloader extends Phaser.Scene {
         this.load.audio("die", "assets/sounds/die.mp3")
 
         this.load.image("blood", "assets/images/blood.png");
-
+        this.load.image("logo", "assets/images/logo.png");
+        this.load.image("pello", "assets/images/pello.png");
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
         this.load.spritesheet("duck", "assets/images/duck.png", { frameWidth: 74, frameHeight: 48 });
         this.load.spritesheet("shotgun", "assets/images/shotgun.png", { frameWidth: 128, frameHeight: 64 });
@@ -695,7 +724,7 @@ class Bootloader extends Phaser.Scene {
         this.load.spritesheet("bunny", "assets/images/bunny.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("boar", "assets/images/boar.png", { frameWidth: 78, frameHeight: 64 });
         this.load.spritesheet("shot", "assets/images/shot.png", { frameWidth: 32, frameHeight: 32 });
-        //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
+
 
         this.registry.set("score", 0);
         this.registry.set("coins", 0);
@@ -707,7 +736,7 @@ class Bootloader extends Phaser.Scene {
 
     createBars () {
         this.loadBar = this.add.graphics();
-        this.loadBar.fillStyle(0x008483, 1);
+        this.loadBar.fillStyle(0x0094ff, 1);
         this.loadBar.fillRect(
             this.cameras.main.width / 4 - 2,
             this.cameras.main.height / 2 - 18,
@@ -831,6 +860,7 @@ class Seagull extends Phaser.Physics.Arcade.Sprite {
 
     death () {
       this.dead = true;
+      this.scene.updateScore(this.value * 1000);
       Array(30).fill().forEach(i => new Blood(this.scene, this.x, this.y));
       this.body.rotation = 15;
       this.scene.tweens.add({
@@ -913,6 +943,7 @@ class Duck extends Phaser.Physics.Arcade.Sprite {
 
   death () {
     this.dead = true;
+    this.scene.updateScore(this.value * 1000);
     Array(30).fill().forEach(i => new Blood(this.scene, this.x, this.y));
     this.body.rotation = 15;
     this.scene.tweens.add({
@@ -976,7 +1007,7 @@ class Bunny extends Phaser.Physics.Arcade.Sprite {
       this.on('animationcomplete', this.animationComplete, this);
       this.scene.tweens.add({
         targets: this,
-        duration: Phaser.Math.Between(300, 400),
+        duration: Phaser.Math.Between(500, 600),
         y: {from: this.y, to: this.y - Phaser.Math.Between(150, 200)},
         repeat: -1,
         yoyo: true
@@ -1003,6 +1034,8 @@ class Bunny extends Phaser.Physics.Arcade.Sprite {
 
   death () {
     this.dead = true;
+    this.scene.updateScore(this.value * 1000);
+    this.scene.playAudio("deadbunny");
     Array(40).fill().forEach(i => new Blood(this.scene, this.x, this.y));
 
       this.dead = true;
@@ -1079,6 +1112,7 @@ class Boar extends Phaser.Physics.Arcade.Sprite {
 
   death () {
     this.dead = true;
+    this.scene.updateScore(this.value * 1000);
     Array(40).fill().forEach(i => new Blood(this.scene, this.x, this.y));
 
       this.dead = true;
@@ -1151,6 +1185,7 @@ class Chopper extends Phaser.Physics.Arcade.Sprite {
 
     death () {
       this.dead = true;
+      this.scene.updateScore(this.value * 1000);
       this.scene.playAudio(`explosion${Phaser.Math.Between(0, 2)}`)
       new Dust(this.scene, this.x, this.y, 20);
       this.destroy();
@@ -1195,8 +1230,8 @@ class Dust {
 
 class Blood extends Phaser.GameObjects.Rectangle {
   constructor (scene, x, y) {
-    if (!scene) return
     super(scene, x, y, 5, 5, 0xff0000);
+    if (!scene) return
       this.scene = scene;
       this.scene.physics.add.existing(this);
       this.scene.physics.world.enable(this);

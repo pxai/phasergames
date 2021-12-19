@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="-280.71429"
-     inkscape:cy="520"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="-26.947389"
+     inkscape:cy="574.83983"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -52,47 +52,22 @@
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <rect
-       style="opacity:1;fill:#55ddff;fill-opacity:1;stroke:none;stroke-width:5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect4138"
-       width="751.42853"
-       height="457.14285"
-       x="-5.7142873"
-       y="375.21936" />
-    <rect
-       style="opacity:1;fill:#008080;fill-opacity:1;stroke:none;stroke-width:5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect4136"
-       width="745.71429"
-       height="182.85715"
-       x="2.8571401"
-       y="800.93365" />
-    <rect
-       style="opacity:1;fill:#ff7755;fill-opacity:1;stroke:none;stroke-width:5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect4140"
-       width="80"
-       height="45.714287"
-       x="-5.7142859"
-       y="763.79077" />
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect4142"
-       width="88.571426"
-       height="40"
-       x="57.142857"
-       y="463.79077" />
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect4142-3"
-       width="88.571426"
-       height="40"
-       x="595.71429"
-       y="555.21936" />
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect4142-6"
-       width="88.571426"
-       height="40"
-       x="104.28572"
-       y="649.50507" />
-  </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4136"
+       style="font-style:normal;font-weight:normal;font-size:179.36427307px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       transform="matrix(2.2119181,0,0,2.5038847,-2994.1207,-241.92716)"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion4138"><rect
+           id="rect4140"
+           width="2895.4519"
+           height="2037.0656"
+           x="27.753807"
+           y="188.53117"
+           style="fill:#ff0000;fill-opacity:1;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none" /></flowRegion><flowPara
+         id="flowPara4142"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:81.99999928%;font-family:Dirnaith;-inkscape-font-specification:Dirnaith;text-align:center;text-anchor:middle;fill:#ff0000;fill-opacity:1;stroke:#0094ff;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">BLOOD</flowPara><flowPara
+         id="flowPara4144"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:81.99999928%;font-family:Dirnaith;-inkscape-font-specification:Dirnaith;text-align:center;text-anchor:middle;fill:#ff0000;fill-opacity:1;stroke:#0094ff;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">HOUND</flowPara></flowRoot>  </g>
 </svg>
