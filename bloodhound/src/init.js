@@ -3,7 +3,7 @@ import Phaser from "phaser";
 
 class Game extends Phaser.Scene {
     constructor () {
-        super({ key: "game" });
+        super({ key: "stage" });
         this.player = null;
         this.score = 0;
         this.scoreText = null;
@@ -12,16 +12,16 @@ class Game extends Phaser.Scene {
     init (data) {
       this.name = data.name;
       this.number = data.number;
-      this.time = data.time;
-      this.bloodValue = data.bloodValue || 40;
+      this.timePassed = data.timePassed;
+      this.bloodValue = [10, 20, 20, 40, 50][this.number]
+      console.log("Blood: ", this.bloodValue, this.number)
   }
   
     preload () {
     }
   
     create () {
-      console.log("Created GAME!")
-      this.duration = this.time * 1000;
+      this.duration = this.timePassed * 1000;
       this.width = this.sys.game.config.width;
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
@@ -36,23 +36,25 @@ class Game extends Phaser.Scene {
 
       this.aim = new Aim(this, this.center_width, this.center_height)
       this.hunter = new Hunter(this, this.center_width, this.center_height)
-      this.bloodUpdate();
+      this.paintBlood();
       this.foes = this.add.group();
       this.shots = this.add.group();
       this.foeGenerator = new FoeGenerator(this)
       this.physics.add.collider(this.shots, this.foes, this.hitFoe, () => {
         return true;
         }, this);
-      //this.loadAudios(); 
+      this.loadAudios(); 
       this.currentGun = 1;
+      this.stageClear = false;
       this.playMusic();
     }
 
     hitFoe(shot, foe) {
-        shot.destroy();
+      if (foe.active && !this.stageClear) {
         this.bloodUpdate(foe.value);
-        foe.destroy();
-
+        foe.hit(shot.value);
+        shot.destroy();
+      }
     }
   
     setBackground () {
@@ -65,8 +67,22 @@ class Game extends Phaser.Scene {
   
     loadAudios () {
       this.audios = {
-        "beam": this.sound.add("beam"),
+        "gun": this.sound.add("gun"),
+        "metal": this.sound.add("metal"),
+        "ricochet": this.sound.add("ricochet"),
+        "impact0": this.sound.add("impact0"),
+        "impact1": this.sound.add("impact1"),
+        "impact2": this.sound.add("impact2"),
+        "impact3": this.sound.add("impact3"),
+        "impact4": this.sound.add("impact4"),
+        "impact5": this.sound.add("impact5"),
+        "impact6": this.sound.add("impact6"),
+        "explosion0": this.sound.add("explosion0"),
+        "explosion1": this.sound.add("explosion1"),
+        "explosion2": this.sound.add("explosion2"),
       };
+
+      this.gunAudio = [ "gun", "gun", "gun", "gun"]
     }
   
     playAudio(key) {
@@ -92,9 +108,9 @@ class Game extends Phaser.Scene {
       this.foeGenerator.update();
       
       if (this.Z.isDown && this.canShoot()) {
-        console.log("FIRE!!", delta, this.shoot);
         this.shotAnimation()
         new Shot(this, this.aim.x, this.aim.y)
+        this.playAudio(this.gunAudio[this.currentGun]);
         this.shoot = 0;
       } 
   
@@ -130,10 +146,9 @@ class Game extends Phaser.Scene {
     }
 
     canShoot() {
-        console.log(">", this.currentGun, [200, 200, 200, 50][this.currentGun], this.shoot ,[200,200,200,50][this.currentGun] > this.shoot)
         return [
             200,
-            50, // gun
+            200, // gun
             200, // shotgun
             50,  // machinegun
         ][this.currentGun] < this.shoot;
@@ -156,17 +171,27 @@ class Game extends Phaser.Scene {
     }
 
     bloodUpdate(value = 0) {
+      if (!value) return;
       this.bloodValue -= (value/4);
-
-      if (this.bloodValue <= 0) this.finishScene();
+      console.log("Result blood: ", this.bloodValue)
+      if (this.bloodValue <= 0) return this.finishScene();
       if (this.drops) this.drops.forEach(drop => drop.destroy());
+      this.paintBlood()
+    }
+
+    paintBlood () {
       this.drops = Array(Math.floor(this.bloodValue/4)).fill(0).map((_,i) => this.add.image(this.center_width + (30 * i) , 20, "blood"))
     }
   
     finishScene () {
-      this.sky.stop();
+      this.stageClear = true;
+      this.foes.children.entries.forEach( foe => {
+        console.log("Status: ", foe)
+          this.playAudio(`explosion${Phaser.Math.Between(0, 2)}`)
+          foe.destroy();
+      })
       this.theme.stop();
-      this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1, time: this.time * 2});
+      this.time.delayedCall(2000, () => this.scene.start("transition", {next: "stage", name: "STAGE", number: this.number + 1, time: this.timePassed * 2}), null, this);
     }
   
     updateScore (points = 0) {
@@ -233,6 +258,46 @@ class Game extends Phaser.Scene {
       this.flipX = this.right;
     }
   }
+
+  class Transition extends Phaser.Scene {
+    constructor () {
+        super({ key: "transition" });
+    }
+
+    init (data) {
+        console.log("Loading next: "), data.number;
+        this.name = "stage1";
+        this.number = data.number;
+        this.timePassed = data.time;
+        this.next = data.next;
+    }
+
+    preload () {
+    }
+
+    create () {
+      const messages = ["ARROWS: move + Z: shoot", "Do you want some more?","The blood is the price!","Kill'em all!!","You did it!!"];
+   
+        this.width = this.sys.game.config.width;
+        this.height = this.sys.game.config.height;
+        this.center_width = this.width / 2;
+        this.center_height = this.height / 2;
+        // this.transition = this.sound.add("transition");
+        // this.transition.play();
+        this.add.bitmapText(this.center_width, this.center_height - 20, "pixelFont", messages[this.number], 40).setOrigin(0.5)
+        this.add.bitmapText(this.center_width, this.center_height + 20, "pixelFont", "Ready?", 30).setOrigin(0.5)
+        this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
+
+        this.time.delayedCall(3000, () => this.loadNext());
+    }
+
+    update () {
+    }
+
+    loadNext () {
+        this.scene.start(this.next, { name: this.name, number: this.number, timePassed: this.timePassed });
+    }
+}
   
   class Aim extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y) {
@@ -252,9 +317,10 @@ class Game extends Phaser.Scene {
   } 
   
   class Shot extends Phaser.GameObjects.Rectangle {
-    constructor(scene, x, y, power = 1,w = 32, h = 32, color = 0xffffff) {
+    constructor(scene, x, y, value = 1,w = 32, h = 32, color = 0xffffff) {
       super(scene, x, y, w, h, color)
       this.setAlpha(0.0)
+      this.value = value;
       this.scene = scene;
       this.color = color;
       this.width = w;
@@ -264,6 +330,7 @@ class Game extends Phaser.Scene {
       this.scene.physics.world.enable(this);
       this.body.setAllowGravity(false);
       this.scene.shots.add(this)
+      new Dust(this.scene, x, y, 2)
       this.init();
     }
   
@@ -271,7 +338,7 @@ class Game extends Phaser.Scene {
       this.scene.tweens.add({
         targets: this.scene.aim,
         duration: 100,
-        alpha: {from: 0.3, to: 1},
+        alpha: {from: 0.8, to: 1},
         repeat: 3,
         onComplete: () => {
           this.destroy()
@@ -307,7 +374,7 @@ class Splash extends Phaser.Scene {
 
     startGame () {
         if (this.theme) this.theme.stop();
-        this.scene.start("game", {next: "game", name: "STAGE", number: 1, time: 30})
+        this.scene.start("transition", {next: "stage", name: "STAGE", number: 0, time: 30})
     }
 
     showLogo() {
@@ -455,14 +522,20 @@ class Bootloader extends Phaser.Scene {
            this.scene.start("splash");
         },this);
 
-       /* Array(7).fill(0).forEach((_,i) => {
-            this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
-        });*/
+        Array(7).fill(0).forEach((_,i) => {
+            this.load.audio(`impact${i}`,`assets/sounds/impact${i}.mp3`)
+        });
+        Array(3).fill(0).forEach((_,i) => {
+          this.load.audio(`explosion${i}`,`assets/sounds/explosion${i}.mp3`)
+      });
 
         this.load.image("aim", "assets/images/aim.png");
         this.load.image("stage1", "assets/images/stage1.jpg");
         this.load.spritesheet("hunter", "assets/images/hunter.png", { frameWidth: 48, frameHeight: 64 });
         this.load.audio("music", "assets/sounds/music.mp3");
+        this.load.audio("gun", "assets/sounds/gun.mp3");
+        this.load.audio("metal", "assets/sounds/metal.mp3");
+        this.load.audio("ricochet", "assets/sounds/ricochet.mp3");
         this.load.image("blood", "assets/images/blood.png");
 
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
@@ -503,7 +576,7 @@ class FoeGenerator {
     }
 
     update () {
-        if (Phaser.Math.Between(1, 1001) > 1000) {
+        if (Phaser.Math.Between(1, 401) > 400) {
             this.addFoe(new Chopper(this.scene));
 
         }
@@ -534,7 +607,7 @@ class Seagull extends Phaser.Physics.Arcade.Sprite {
         this.body.setSize(64, 20)
         this.direction = direction;
         this.scene.add.existing(this);
-
+        this.dead = false;
         this.init();
     }
 
@@ -547,6 +620,12 @@ class Seagull extends Phaser.Physics.Arcade.Sprite {
           repeat: -1
         });
 
+        this.scene.anims.create({
+          key: this.name + "death",
+          frames: this.scene.anims.generateFrameNumbers(this.name),
+          frameRate: 5,
+        });
+
         this.anims.play(this.name, true)
         this.body.setVelocityX(this.direction * Phaser.Math.Between(150, 200));
         this.on('animationcomplete', this.animationComplete, this);
@@ -556,6 +635,14 @@ class Seagull extends Phaser.Physics.Arcade.Sprite {
     update () {
     }
 
+    hit (value) {
+      this.value -= value;
+      new Dust(this.scene, this.x, this.y, 5);
+      this.scene.playAudio(`impact${Phaser.Math.Between(0, 6)}`)
+
+      if (this.value <= 0) { this.death();}
+    }
+
     turn () {
         this.flipX = this.direction < 0;
         this.direction = -this.direction;
@@ -563,14 +650,23 @@ class Seagull extends Phaser.Physics.Arcade.Sprite {
     }
 
     death () {
+      this.dead = true;
+      Array(30).fill().forEach(i => new Blood(this.scene, this.x, this.y));
+      this.body.rotation = 15;
+      this.scene.tweens.add({
+        targets: this,
+        duration: 250,
+        y: {from: this.y, to: this.scene.aim.y + 100},
+      })  
         this.dead = true;
         this.body.enable = false;
-        this.body.rotation = 0;
-        this.anims.play("death")
+        this.anims.play(this.name + "death")
       }
 
       animationComplete(animation, frame) {
-        if (animation.key === "death") {
+        console.log("completed", animation.key)
+        if (animation.key === this.name + "death") {
+          console.log("DEATH")
           this.destroy()
         }
     }
@@ -585,14 +681,14 @@ class Chopper extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, name);
         this.name = name;
         this.scene = scene;
-        this.value = 5;
+        this.value = 10;
         this.scene.physics.add.existing(this);
         this.scene.physics.world.enable(this);
         this.setScale(scale);
         this.body.setAllowGravity(false);
 
         this.scene.add.existing(this);
-
+        this.dead = false;
         this.init();
     }
 
@@ -616,6 +712,75 @@ class Chopper extends Phaser.Physics.Arcade.Sprite {
             //new Bullet(this.scene, this.x, this.y)
         }
     }
+
+    hit (value) {
+      if (this.dead) return
+      if (this.scene) {
+        this.scene.playAudio(Math.random() > 0.5 ? "metal" : "ricochet")
+        new Dust(this.scene, this.x, this.y);
+        this.value -= value;
+        if (this.value <= 0) { this.death();}
+      }
+    }
+
+    death () {
+      this.dead = true;
+      this.scene.playAudio(`explosion${Phaser.Math.Between(0, 2)}`)
+      new Dust(this.scene, this.x, this.y, 20);
+      this.destroy();
+    }
+}
+
+
+class Dust {
+  constructor (scene, x, y, size=10, color = "0xffffff") {
+      this.scene = scene;
+      this.x = x;
+      this.y = y;
+      this.color = Phaser.Display.Color.HexStringToColor(color).color;
+      this.dust = Array(11).fill(0).map(i => {
+          let rectangle = this.scene.add.rectangle(this.x, this.y, size, size, this.color);
+          return rectangle;
+      })
+
+      this.tweenStar(0, -20);
+      this.tweenStar(1, -15)
+      this.tweenStar(2);
+      this.tweenStar(3, 15);
+      this.tweenStar(4, 30);
+      this.tweenStar(5, -15, 0);
+      this.tweenStar(6, 15, 0)
+      this.tweenStar(7, -17.5, 3);
+      this.tweenStar(8, 17.5, 3)
+      this.tweenStar(9, -20, 7);
+      this.tweenStar(10, 20, 7)
+  }
+
+  tweenStar(i, x = 0, y = -10) {
+      this.scene.tweens.add({
+          targets: this.dust[i],
+          duration: Phaser.Math.Between(1000, 800),
+          y: {from: this.y + 20, to: this.y + 20 - y},
+          x: {from: this.x, to: this.x + x},
+          alpha: { from: 1, to: 0 }
+      });
+  }
+}
+
+class Blood extends Phaser.GameObjects.Rectangle {
+  constructor (scene, x, y) {
+    super(scene, x, y, 5, 5, 0xff0000);
+      this.scene = scene;
+      this.scene.physics.add.existing(this);
+      this.scene.physics.world.enable(this);
+      this.body.setAllowGravity(true);
+      this.scene.add.existing(this);
+      this.body.setCollideWorldBounds(true);
+      this.body.setVelocityY(Math.random() * Phaser.Math.Between(-20, -100));
+      if (Math.random() > 0.5)
+      this.body.setVelocityX((Math.random() > 0.5 ? 1 : -1) * Phaser.Math.Between(10, 30));
+      this.body.setDrag(10);
+  }
 }
 
 
@@ -638,6 +803,7 @@ const config = {
     scene: [
         Bootloader,
         Splash,
+        Transition,
         Game,
         Outro,
     ]
