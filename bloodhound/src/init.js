@@ -827,7 +827,7 @@ class Seagull extends Phaser.Physics.Arcade.Sprite {
         this.scene.anims.create({
           key: this.name + "death",
           frames: this.scene.anims.generateFrameNumbers(this.name),
-          frameRate: 5,
+          frameRate: 10,
         });
 
         this.anims.play(this.name, true)
@@ -859,14 +859,15 @@ class Seagull extends Phaser.Physics.Arcade.Sprite {
     }
 
     death () {
+      if (this.scene.stageClear) return;
       this.dead = true;
       this.scene.updateScore(this.value * 1000);
       Array(30).fill().forEach(i => new Blood(this.scene, this.x, this.y));
       this.body.rotation = 15;
       this.scene.tweens.add({
         targets: this,
-        duration: 250,
-        y: {from: this.y, to: this.scene.aim.y + 100},
+        duration: 100,
+        y: {from: this.y, to: this.scene.aim.y + 50},
       })  
       this.scene.playAudio("deadseagull")
         this.dead = true;
@@ -942,6 +943,7 @@ class Duck extends Phaser.Physics.Arcade.Sprite {
   }
 
   death () {
+    if (this.scene.stageClear) return;
     this.dead = true;
     this.scene.updateScore(this.value * 1000);
     Array(30).fill().forEach(i => new Blood(this.scene, this.x, this.y));
@@ -1033,6 +1035,7 @@ class Bunny extends Phaser.Physics.Arcade.Sprite {
   }
 
   death () {
+    if (this.scene.stageClear) return;
     this.dead = true;
     this.scene.updateScore(this.value * 1000);
     this.scene.playAudio("deadbunny");
@@ -1111,6 +1114,7 @@ class Boar extends Phaser.Physics.Arcade.Sprite {
   }
 
   death () {
+    if (this.scene.stageClear) return;
     this.dead = true;
     this.scene.updateScore(this.value * 1000);
     Array(40).fill().forEach(i => new Blood(this.scene, this.x, this.y));
@@ -1184,6 +1188,7 @@ class Chopper extends Phaser.Physics.Arcade.Sprite {
     }
 
     death () {
+      if (this.scene.stageClear) return;
       this.dead = true;
       this.scene.updateScore(this.value * 1000);
       this.scene.playAudio(`explosion${Phaser.Math.Between(0, 2)}`)
