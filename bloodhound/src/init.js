@@ -36,6 +36,7 @@ class Game extends Phaser.Scene {
       this.foes = this.add.group();
       this.shots = this.add.group();
       this.powerups = this.add.group();
+      this.foeShots = this.add.group();
       this.aim = new Aim(this, this.center_width, this.center_height, "aimgun")
       this.hunter = new Hunter(this, this.center_width, this.height - 100)
       this.paintBlood();
@@ -45,6 +46,10 @@ class Game extends Phaser.Scene {
         return true;
         }, this);
       this.physics.add.collider(this.hunter, this.powerups, this.pickPowerup, () => {
+        return true;
+        }, this);
+
+      this.physics.add.collider(this.hunter, this.foeShots, this.hitHunter, () => {
         return true;
         }, this);
       this.loadAudios(); 
@@ -115,7 +120,7 @@ class Game extends Phaser.Scene {
       this.shoot += time; 
       this.foeGenerator.update();
       
-      if (this.hunter.jumping) return;
+      if (this.hunter.jumping || this.hunter.dead) return;
       if (this.Z.isDown && this.canShoot()) {
         this.shotAnimation()
         this.shootIt();
@@ -169,7 +174,7 @@ class Game extends Phaser.Scene {
         "minigun": [64, 32, 1]
       }[this.gunTypes[this.currentGun]];
       new Shot(this, this.aim.x, this.aim.y, w, h, value)
-      console.log("A ver: ", this.shotSound?.isPlaying, " o ", this.currentGun, " or ", this.currentGun === 3);
+
       if (this.shotSound?.isPlaying && this.currentGun === 3) {
         return;
       }
@@ -214,6 +219,21 @@ class Game extends Phaser.Scene {
 
     paintBlood () {
       this.drops = Array(Math.floor(this.bloodValue/4)).fill(0).map((_,i) => this.add.image(this.center_width + (30 * i) , 20, "blood"))
+    }
+
+    hitHunter(hunter, shot) {
+      shot.destroy();
+
+      hunter.hit();
+      this.time.delayedCall(1000, () => this.respawnPlayer(), null, this);
+    }
+
+    respawnPlayer() {
+      this.hunter.x = this.center_width;
+      this.hunter.y = this.height - 100;
+      //this.playAudio("appear");
+      this.hunter.body.enable = true;
+      this.hunter.dead = false;
     }
   
     finishScene () {
@@ -266,6 +286,7 @@ class Game extends Phaser.Scene {
       this.body.setAllowGravity(true);
       this.right = true;
       this.jumping = false;
+      this.dead = false;
       this.init();
     }
   
@@ -340,6 +361,12 @@ class Game extends Phaser.Scene {
       })  
       timeline.play()
       this.anims.play("jump", true);
+    }
+
+    hit () {
+      this.dead = true;
+      this.body.enable = false;
+      this.anims.play("death", true)
     }
   }
 
@@ -635,6 +662,7 @@ class Bootloader extends Phaser.Scene {
         this.load.spritesheet("seagull", "assets/images/seagull.png", { frameWidth: 64, frameHeight: 48 });
         this.load.spritesheet("bunny", "assets/images/bunny.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("boar", "assets/images/boar.png", { frameWidth: 78, frameHeight: 64 });
+        this.load.spritesheet("shot", "assets/images/shot.png", { frameWidth: 32, frameHeight: 32 });
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
 
         this.registry.set("score", 0);
@@ -690,6 +718,11 @@ class FoeGenerator {
         if (Phaser.Math.Between(1, 101) > 100) {
           this.addFoe(new Boar(this.scene));
         }
+
+        this.scene.foes.children.entries.forEach( foe => {
+          if (foe.x < -800) foe.destroy();
+          foe.update();
+      })
     }
 
     addFoe(foe) {
@@ -739,6 +772,11 @@ class Seagull extends Phaser.Physics.Arcade.Sprite {
 
 
     update () {
+      if (Phaser.Math.Between(0, 1001) > 1000) {
+        let shot = new FoeShot(this.scene, this.x, this.y);
+        if (this.scene)
+          this.scene.foeShots.add(shot);
+      }
     }
 
     hit (value) {
@@ -1054,9 +1092,9 @@ class Chopper extends Phaser.Physics.Arcade.Sprite {
 
 
     update () {
-        if (Phaser.Math.Between(1, 1001) > 1000) {
-            //new Bullet(this.scene, this.x, this.y)
-        }
+      if (Phaser.Math.Between(0, 1001) > 1000) {
+        this.scene.foeShots.add(new FoeShot(this.scene, this.x, this.y));
+      }
     }
 
     hit (value) {
@@ -1130,6 +1168,35 @@ class Blood extends Phaser.GameObjects.Rectangle {
       if (Math.random() > 0.5)
       this.body.setVelocityX((Math.random() > 0.5 ? 1 : -1) * Phaser.Math.Between(10, 30));
       this.body.setDrag(10);
+  }
+}
+
+class FoeShot extends Phaser.GameObjects.Sprite {
+  constructor (scene, x, y) {
+    super(scene, x, y, "shot");
+      this.scene = scene;
+      this.scene.physics.add.existing(this);
+      this.scene.physics.world.enable(this);
+      this.body.setAllowGravity(true);
+      this.scene.add.existing(this);
+      this.init();
+  }
+
+  init () {
+    this.scene.tweens.add({
+      targets: this,
+      duration: 200,
+      scale: {from: 0.6, to: 1},
+      repeat: -1
+  });
+  this.scene.anims.create({
+      key: "shot",
+      frames: this.scene.anims.generateFrameNumbers("shot"),
+      frameRate: 5,
+      origin: 0.5
+    });
+
+    this.anims.play("shot", true)
   }
 }
 
