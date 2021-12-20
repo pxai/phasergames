@@ -44,3 +44,6 @@ Guy die
 https://freesound.org/people/marc3122/sounds/556976/
 Die scream
 https://freesound.org/people/xtrgamr/sounds/259681/
+
+Background
+https://opengameart.org/content/landscape-garden-and-grunge-photos-img0192png
