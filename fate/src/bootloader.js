@@ -23,7 +23,7 @@ export default class Bootloader extends Scene3D {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("splash");
+            this.scene.start("game");
         },this);
 
        /* Array(7).fill(0).forEach((_,i) => {
@@ -40,9 +40,8 @@ export default class Bootloader extends Scene3D {
 
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
 
-        this.registry.set("score", 0);
-        this.registry.set("coins", 0);
-        this.registry.set("hull", 10);
+        this.registry.set("deviation", "0")
+        this.registry.set("probes", "0")
     }
 
     create () {

@@ -1,4 +1,5 @@
 import { Scene3D, ExtendedObject3D } from '@enable3d/phaser-extension' 
+import { random16 } from 'three/src/math/MathUtils';
 import BulletHell from "./bullet_hell";
 
 export default class Game extends Scene3D {
@@ -12,9 +13,7 @@ export default class Game extends Scene3D {
     init (data) {
       this.accessThirdDimension({ gravity: { x: 0, y: 0, z: 0 } })
       this.name = data.name;
-      this.number = data.number;
-      this.time = data.time;
-
+      this.elapsedTime = data.elapsedTime;
   }
 
     preload () {
@@ -22,40 +21,26 @@ export default class Game extends Scene3D {
 
     create () {      
       this.bulletHell = new BulletHell();
-      this.x = 0;
+      this.x = -500;
       // creates a nice scene
       this.third.warpSpeed()
 
       this.third.camera.position.set(0, 5, 20)
       this.third.camera.lookAt(0, 0, 0)
-
+      this.particles = [];
+      this.waves = [];
+      this.addWave = this.time.addEvent({ delay: 3000, callback: this.addWave, callbackScope: this, loop: true });
+      this.setCenters();
       // enable physics debugging
       this.third.physics.debug.enable()
-      // adds a box
-      // this.third.add.box({ x: 1, y: 2 })
-
-      // adds a box with physics
-      // this.third.physics.add.box({ x: -1, y: 2 })
-
-      // throws some random object on the scene
-      //this.third.haveSomeFun()
+      
       //this.loadAudios(); 
       // this.playMusic();
 
-      // add object3d (the monkey's name is object3d)
       // https://catlikecoding.com/unity/tutorials/basics/mathematical-surfaces/
       // https://github.com/enable3d/enable3d-website/blob/master/src/examples/first-phaser-game-3d-version.html
       this.third.load.gltf('/assets/objects/ship.glb').then(gltf => {
-        // If you can, always use simple shapes like BOX, SPHERE, CONE etc.
-        // The second most efficient shape is a COMPOUND, which merges multiple simple shapes.
-        // Prefer HULL over CONVEX MESH.
-        // HACD is the most expensive but also the most accurate.
-        // If you need a concave shape, for a static or kinematic body, use CONCAVE MESH.
 
-        // (mesh and convex are aliases for convexMesh)
-        // (concave is an alias for concaveMesh)
-        // (heightMap uses concaveMesh by default)
-        // (extrude uses hacd by default)
         const object = new ExtendedObject3D()
         object.add(gltf.scene)
         //const object3d = gltf.scene.children[0]
@@ -64,54 +49,73 @@ export default class Game extends Scene3D {
 
         const material = this.third.add.material({ standard: { color: 0xcc0000, transparent: false, opacity: 1 } })
 
-
-        // compound multiple simple shape together
-
         object.traverse(child => {
           if (child.isMesh && child.material.isMaterial) {
             child.material = material
           }
         })
-
-        //shapes.forEach((shape, i) => { this.createObject(shape,i,  object3d) })
-        this.ship = this.createObject("hull",0,  object)
+        this.ship = this.createObject("convexMesh", 0,  object)
+       //  this.serColliderWithDetector();
+        this.setShipColliderWithParticles();
       })
 
+      this.setScores();
       this.cursor = this.input.keyboard.createCursorKeys();
+      this.W = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+      this.S = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+    }
+
+    setCenters () {
+      this.width = this.cameras.main.width;
+      this.height = this.cameras.main.height;
+      this.center_width = this.width / 2;
+      this.center_height = this.height / 2;
+    }
+
+    setScores() {
+      this.deviationText = this.add.bitmapText(175, 30, "pixelFont", "Deviation: " + this.registry.get("deviation"), 30).setOrigin(0.5);
+      this.probesText = this.add.bitmapText(this.width - 150, 30, "pixelFont", "Probes: " + this.registry.get("probes"), 30).setOrigin(0.5);
+    }
+
+    serColliderWithDetector() {
+      this.detector = this.third.add.box({ x: 0, y: 0, z: 100, width: 1000, height: 400 }, { lambert: { color: 'hotpink' } })
+      //this.third.physics.add.existing(this.detector);
+      //this.third.physics.debug.enable()
+      this.third.add.constraints.fixed(this.detector)
+      this.detector.body.on.collision((otherObject, event) => {
+        console.log("Destroyed?", otherObject)
+        if (/particle/.test(otherObject.name)) {
+          otherObject.userData.dead = true
+          otherObject.visible = false
+          this.third.physics.destroy(otherObject)
+          console.log("Destroyed!", otherObject)
+        }
+      })
+    }
+
+    setShipColliderWithParticles () {
+      this.ship.body.on.collision((otherObject, event) => {
+        if (/particle/.test(otherObject.name)) {
+          //if (!otherObject.userData.dead) {
+          this.updateDeviation(1);
+          console.log("HIT!!!", otherObject)
+        }
+      })
     }
 
     createObject (shape, i, object3d) {
-      const compoundShape = {
-        compound: [
-          // nose
-          { shape: 'box', width: 0.5, height: 1, depth: 0.4, y: -0.5, z: 0.5 },
-          // ears
-          { shape: 'box', width: 2.4, height: 0.6, depth: 0.4, z: -0.4, y: 0.2 },
-          // head back
-          { shape: 'sphere', radius: 0.65, z: -0.25, y: 0.35 },
-          // head front
-          { shape: 'box', width: 1.5, height: 0.8, depth: 1, y: 0.2, z: 0.2 }
-        ]
-      }
-      const boxShape = { shape: 'box', width: 2, height: 1.5, depth: 1.25 }
       const object = new ExtendedObject3D()
 
       object.add(object3d.clone())
       object.position.set(i, 1.2, 0)
 
-      // we se addChildren to false since we do not want
-      // to create a body from object3d's child meshes
-      // (it would create a box 1x1x1 since no matching shape would be found)
       let options = { addChildren: false, shape }
-
-      if (shape === 'box') options = { ...options, ...boxShape }
-      else if (shape === 'compound') options = { ...options, ...compoundShape }
 
       this.third.add.existing(object)
       this.third.physics.add.existing(object, options)
 
-      object.body.setLinearFactor(1, 1, 0)
-      object.body.setAngularFactor(0, 0, 0)
+      object.body.setLinearFactor(1, 0, 1)
+      object.body.setAngularFactor(5, 0, 0)
       object.body.setFriction(20, 20, 20)
 
       return object;
@@ -142,7 +146,7 @@ export default class Game extends Scene3D {
       }
 
     update(time, delta) {
-      this.generateBullet(time, delta)
+      //this.generateBullet(time, delta)
       if (this.cursor.up.isDown) {
         console.log(this.ship, this.ship.body)
         this.ship.body.setVelocityY(5)
@@ -150,30 +154,88 @@ export default class Game extends Scene3D {
         this.ship.body.setVelocityY(-5)
       } else if (this.cursor.left.isDown) {
         this.ship.body.setVelocityX(-5)
+        this.ship.body.setRotation(0, Math.PI / 2, 0)
+        this.ship.body.rotation.z += 15;
       } else if (this.cursor.right.isDown) {
         this.ship.body.setVelocityX(5)
-      } 
-      console.log(this.ship?.body)
+        this.ship.body.setRotation(0, -Math.PI / 2, 0)
+        this.ship.body.rotation.z -= 15;
+      } else if (this.W.isDown) {
+        this.ship.body.setVelocityZ(-5)
+        this.ship.rotation.z -= 15;
+      } else if (this.S.isDown) {
+        this.ship.body.setVelocityZ(5)
+        this.ship.rotation.z += 15;
+      } else if (this.ship && this.ship.body) {
+        this.ship.body.setVelocity(0, 0, 0);
+        this.ship.rotation.z = 0;
+      }
+      //this.removeParticles()
+      // console.log(this.ship?.body)
     }
 
-    generateBullet (time, delta) {
+    addWave (start = -50, zed = false) {
+      const wave = Array(100).fill(0).map((particle, i) => {
+        const x = start + i;
+        const y = this.bulletHell.wave(x,);
+        // let box = this.third.add.box({ x: this.x, y, height: 0.4, width: 0.4, depth: 0.4, z: start - this.x  })
+        const box = this.third.add.sphere({ name: 'particle' + Math.random(), radius: 0.25, x, y, z: start - (zed ? this.x : 0 )  })
+        this.third.physics.add.existing(box);
+        this.particles.push(box);
+        box.body.setVelocityZ(15)
+        // console.log("Adding particle!! ", x, y, start);
+        return box
+      })
+
+      this.waves.push(wave);
+      this.time.delayedCall(4000, () => this.removeWave(), null, this);
+    }
+
+    removeWave () {
+      console.log("About to remove: ", this.waves.length)
+      const wave = this.waves.shift();
+      wave.forEach((particle,i) => this.destroyParticle(particle,i));
+    }
+
+    generateBullet (time, delta, start = -100, zed = false) {
       const y = this.bulletHell.wave(this.x, time);
-      console.log(this.x, y)
-      let box = this.third.add.box({ x: this.x, y, height: 0.4, width: 0.4, depth: 0.4  })
+      // let box = this.third.add.box({ x: this.x, y, height: 0.4, width: 0.4, depth: 0.4, z: start - this.x  })
+      const box = this.third.add.sphere({ name: 'particle' + Math.random(), radius: 0.25, x: this.x, y, z: start - (zed ? this.x : 0 )  })
       this.third.physics.add.existing(box);
-      box.body.setVelocityZ(-15)
-     this.x =  (this.x < 1000) ? this.x + 1 : 0; 
+      this.particles.push(box);
+      box.body.setVelocityZ(15)
+     this.x =  (this.x < 100) ? this.x + 1 : -100; 
+    }
+
+    destroyParticle(particle, i) {
+      if (i === 0) console.log("Destroying particle: ", particle.name, particle)
+      particle.userData.dead = true;
+      particle.visible = false;
+      this.third.physics.destroy(particle);
+      particle = null;
+    }
+
+    removeParticlesFromGroup() {
+      console.log("Removing dead particles START: ", this.particles.length)
+      this.particles = this.particles.filter(particle => particle.visible)
+      console.log("Removing dead particles END: ", this.particles.length)
     }
 
     finishScene () {
       this.sky.stop();
       this.theme.stop();
-      this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1, time: this.time * 2});
+      this.scene.start("outro", {next: "underwater", name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 
-    updateScore (points = 0) {
-        const score = +this.registry.get("score") + points;
-        this.registry.set("score", score);
-        this.scoreText.setText(Number(score).toLocaleString());
+    updateDeviation (points = 0) {
+        const deviation = +this.registry.get("deviation") + points;
+        this.registry.set("deviation", deviation);
+        this.deviationText.setText("Deviation: " + Number(deviation).toLocaleString());
     }
+
+    updateProbes (points = 0) {
+      const probes = +this.registry.get("probes") + points;
+      this.registry.set("probes", probes);
+      this.probesText.setText("Probes: " + Number(probes).toLocaleString());
+  }
 }

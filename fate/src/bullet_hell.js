@@ -3,7 +3,11 @@ export default class BulletHell {
         return Math.sin(x);//Math.PI * (x + time));
     }
 
-    wave (x, time) {
+    flat (x) {
+        return x;
+    }
+
+    wave (x, time = 1) {
         return Math.sin(Math.PI * (x + time));
     }
 
