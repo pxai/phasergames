@@ -1,4 +1,5 @@
-import { Scene3D, ExtendedObject3D } from '@enable3d/phaser-extension' 
+import { Scene3D, ExtendedObject3D, THREE } from '@enable3d/phaser-extension' 
+import { Euler } from 'three';
 import { random16 } from 'three/src/math/MathUtils';
 import BulletHell from "./bullet_hell";
 
@@ -55,7 +56,6 @@ export default class Game extends Scene3D {
           }
         })
         this.ship = this.createObject("convexMesh", 0,  object)
-       //  this.serColliderWithDetector();
         this.setShipColliderWithParticles();
       })
 
@@ -63,6 +63,7 @@ export default class Game extends Scene3D {
       this.cursor = this.input.keyboard.createCursorKeys();
       this.W = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
       this.S = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+      this.D = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     }
 
     setCenters () {
@@ -77,26 +78,9 @@ export default class Game extends Scene3D {
       this.probesText = this.add.bitmapText(this.width - 150, 30, "pixelFont", "Probes: " + this.registry.get("probes"), 30).setOrigin(0.5);
     }
 
-    serColliderWithDetector() {
-      this.detector = this.third.add.box({ x: 0, y: 0, z: 100, width: 1000, height: 400 }, { lambert: { color: 'hotpink' } })
-      //this.third.physics.add.existing(this.detector);
-      //this.third.physics.debug.enable()
-      this.third.add.constraints.fixed(this.detector)
-      this.detector.body.on.collision((otherObject, event) => {
-        console.log("Destroyed?", otherObject)
-        if (/particle/.test(otherObject.name)) {
-          otherObject.userData.dead = true
-          otherObject.visible = false
-          this.third.physics.destroy(otherObject)
-          console.log("Destroyed!", otherObject)
-        }
-      })
-    }
-
     setShipColliderWithParticles () {
       this.ship.body.on.collision((otherObject, event) => {
         if (/particle/.test(otherObject.name)) {
-          //if (!otherObject.userData.dead) {
           this.updateDeviation(1);
           console.log("HIT!!!", otherObject)
         }
@@ -107,16 +91,17 @@ export default class Game extends Scene3D {
       const object = new ExtendedObject3D()
 
       object.add(object3d.clone())
-      object.position.set(i, 1.2, 0)
-
+      object.position.set(i, 3, 10)
+      object.rotation.set(0, Math.PI, 0)
       let options = { addChildren: false, shape }
 
       this.third.add.existing(object)
       this.third.physics.add.existing(object, options)
 
-      object.body.setLinearFactor(1, 0, 1)
-      object.body.setAngularFactor(5, 0, 0)
+      object.body.setLinearFactor(0, 0, 0)
+      object.body.setAngularFactor(1, 1, 0)
       object.body.setFriction(20, 20, 20)
+      object.body.setCollisionFlags(0) // Dynamic body
 
       return object;
     }
@@ -147,37 +132,44 @@ export default class Game extends Scene3D {
 
     update(time, delta) {
       //this.generateBullet(time, delta)
-      if (this.cursor.up.isDown) {
-        console.log(this.ship, this.ship.body)
-        this.ship.body.setVelocityY(5)
-      } else if (this.cursor.down.isDown) {
-        this.ship.body.setVelocityY(-5)
-      } else if (this.cursor.left.isDown) {
-        this.ship.body.setVelocityX(-5)
-        this.ship.body.setRotation(0, Math.PI / 2, 0)
-        this.ship.body.rotation.z += 15;
-      } else if (this.cursor.right.isDown) {
-        this.ship.body.setVelocityX(5)
-        this.ship.body.setRotation(0, -Math.PI / 2, 0)
-        this.ship.body.rotation.z -= 15;
-      } else if (this.W.isDown) {
-        this.ship.body.setVelocityZ(-5)
-        this.ship.rotation.z -= 15;
-      } else if (this.S.isDown) {
-        this.ship.body.setVelocityZ(5)
-        this.ship.rotation.z += 15;
-      } else if (this.ship && this.ship.body) {
-        this.ship.body.setVelocity(0, 0, 0);
-        this.ship.rotation.z = 0;
-      }
+      if (this.ship && this.ship.body) {
+        /*const direction = new THREE.Vector3()
+        const rotation = this.third.camera.getWorldDirection(direction)
+        const theta = Math.atan2(rotation.x, rotation.y)*/
+
+        this.ship.body.setAngularVelocityZ(0)
+
+        if (this.cursor.up.isDown) {
+          console.log(this.ship, this.ship.body)
+          this.ship.body.setVelocityY(5)
+        } else if (this.cursor.down.isDown) {
+          this.ship.body.setVelocityY(-5)
+        } else if (this.cursor.left.isDown) {
+          this.ship.body.setVelocityX(-5)
+          this.ship.body.setAngularVelocityZ(1)
+        } else if (this.cursor.right.isDown) {
+          this.ship.body.setVelocityX(5)
+          this.ship.body.setAngularVelocityZ(-1)
+        } else if (this.W.isDown) {
+          this.ship.body.setVelocityZ(-5)
+        } else if (this.S.isDown) {
+          this.ship.body.setVelocityZ(5)
+        } else if (this.D.isDown) {
+          console.log("DEW IT", this.ship)
+          this.ship.setRotationFromEuler(new Euler(Math.PI, Math.PI/2, Math.PI))
+        } else if (this.ship && this.ship.body) {
+          this.ship.body.setVelocity(0, 0, 0);
+          // this.ship.body.setAngularVelocityZ(0)
+          this.ship.setRotationFromEuler(new Euler(Math.PI, Math.PI/2, Math.PI))
+        }
+    }
       //this.removeParticles()
-      // console.log(this.ship?.body)
     }
 
     addWave (start = -50, zed = false) {
       const wave = Array(100).fill(0).map((particle, i) => {
         const x = start + i;
-        const y = this.bulletHell.wave(x,);
+        const y = this.bulletHell.wave(x,1000 + i);
         // let box = this.third.add.box({ x: this.x, y, height: 0.4, width: 0.4, depth: 0.4, z: start - this.x  })
         const box = this.third.add.sphere({ name: 'particle' + Math.random(), radius: 0.25, x, y, z: start - (zed ? this.x : 0 )  })
         this.third.physics.add.existing(box);
