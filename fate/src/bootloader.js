@@ -41,7 +41,7 @@ export default class Bootloader extends Scene3D {
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
 
         this.registry.set("deviation", "0")
-        this.registry.set("probes", "0")
+        this.registry.set("probes", "20")
     }
 
     create () {
