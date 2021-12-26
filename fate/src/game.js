@@ -40,7 +40,7 @@ export default class Game extends Scene3D {
       this.addWaveEvent = this.time.addEvent({ delay: 3000, callback: this.addWave, callbackScope: this, loop: true });
       this.addClockEvent = this.time.addEvent({ delay: 50, callback: this.updateClock, callbackScope: this, loop: true });
       this.setCenters();
-      // enable physics debugging
+      //enable physics debugging
       // this.third.physics.debug.enable()      
       this.setLightning();
       this.setNeutrinoStar();
@@ -89,6 +89,8 @@ export default class Game extends Scene3D {
     }
 
     setNeutrinoStar() {
+      // this.addRings();
+
       this.proximity = 0;
       this.star = this.third.add.sphere({ name: 'neutrinoStarBack', radius: 22, x: 0, y: 14.5, z: -150  },  { lambert: { color: 'white', transparent: true, opacity: 0.5 } })
       this.third.physics.add.existing(this.star);
@@ -96,6 +98,17 @@ export default class Game extends Scene3D {
       this.starFront = this.third.add.sphere({ name: 'neutrinoStarBack', radius: 17, x: 0, y: 12, z: -120  },  { lambert: { color: 'black', transparent: false } })
       this.third.physics.add.existing(this.starFront);
       this.starFront.body.setCollisionFlags(2)
+    }
+
+    addRings() {
+      this.rings = Array(20).fill(0).map((ring, i) => {
+        let torus = this.third.add.torus({ x: 0, y: 0, z: -120, radius: 25 * (i+1), tubularSegments: 200, tube: 0.5 }, { lambert: { color: 'white', transparent: true, opacity: 1 } })
+        torus.rotation.set((Math.PI/2), 0, 0)
+        this.third.physics.add.existing(torus, { shape: 'hacd' })
+        torus.body.setCollisionFlags(6)
+
+        return torus;
+      })
     }
 
     setCenters () {
@@ -285,9 +298,13 @@ export default class Game extends Scene3D {
           this.star.position.y + offset,
           this.star.position.z + offset + this.proximity,
         )
-        let angle = Math.atan2(this.star.position.x - this.starFront.position.x, this.starFront.position.z - this.starFront.position.z)
+
         this.star.body.needUpdate = true
         this.proximity += 0.000001;
+        /*this.rings.forEach(ring => {
+          ring.rotation.set((Math.PI/2), 0, time)
+          ring.body.needUpdate = true
+        })*/
       }
     }
 
