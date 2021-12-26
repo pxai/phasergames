@@ -2,6 +2,8 @@
 # UFISH
 
 A *fartastic* adventure
+0x03A062
+0x06E18A
 
 Bitmap font generator:
 https://snowb.org/

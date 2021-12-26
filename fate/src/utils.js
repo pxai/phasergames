@@ -17,7 +17,8 @@ export default class Utils {
         })
         const ending = this.scene.add.rectangle(x - 335 + (line * 25), 175 + (jump * size / 1.3), 25, 5, 0xcccccc).setOrigin(0.5).setAlpha(0)
         const timeline = this.scene.tweens.createTimeline();
-
+        const typeAudio = this.scene.sound.add("type")
+        
         this.characters.forEach( (character, i) => {
             timeline.add({
                 targets: character,
@@ -30,9 +31,20 @@ export default class Utils {
             alpha: { from: 0, to: 0.8},
             duration: 200,
             repeat: -1,
-            yoyo: true
+            yoyo: true,
+            onStart: () => {
+                typeAudio.stop()
+            },
+        })
+        typeAudio.play({
+            mute: false,
+            volume: 1,
+            rate: Phaser.Math.Between(1, 1.5),
+            detune: Phaser.Math.Between(-1000, 1000),
+            seek: 0,
+            loop: true,
+            delay: 0
         })
         timeline.play();
-    
     }
 }

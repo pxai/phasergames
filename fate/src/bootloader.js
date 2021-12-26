@@ -12,7 +12,7 @@ export default class Bootloader extends Scene3D {
             "progress",
             function (value) {
                 this.progressBar.clear();
-                this.progressBar.fillStyle(0x88d24c, 1);
+                this.progressBar.fillStyle(0x03A062, 1);
                 this.progressBar.fillRect(
                     this.cameras.main.width / 4,
                     this.cameras.main.height / 2 - 16,
@@ -30,8 +30,8 @@ export default class Bootloader extends Scene3D {
         Array(2).fill(0).forEach((e, i) => { this.load.audio(`passby${i}`, `./assets/sounds/passby${i}.mp3`);})
         //this.load.image("logo", "assets/images/logo.png");
         // this.load.audio("beam", "assets/sounds/beam.mp3");
-
-
+        this.load.audio("type", "assets/sounds/type.mp3");
+        Array(4).fill(0).forEach((e, i) => {this.load.video(`video${i}`, `./assets/videos/video${i}.mp4`, 'loadeddata', false, true); });
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
         this.load.bitmapFont("computer", "assets/fonts/computer.png", "assets/fonts/computer.xml");
         // this.load.spritesheet("chopper", "assets/images/chopper.png", { frameWidth: 128, frameHeight: 128 });
@@ -48,7 +48,7 @@ export default class Bootloader extends Scene3D {
 
     createBars () {
         this.loadBar = this.add.graphics();
-        this.loadBar.fillStyle(0x008483, 1);
+        this.loadBar.fillStyle(0x06E18A, 1);
         this.loadBar.fillRect(
             this.cameras.main.width / 4 - 2,
             this.cameras.main.height / 2 - 18,

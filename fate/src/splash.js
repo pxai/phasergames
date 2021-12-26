@@ -18,13 +18,14 @@ export default class Splash extends Scene3D {
         this.center_height = this.height / 2;
         this.utils = new Utils(this);
 
-
+        this.loadAudios()
         this.utils.typeText(" THIS IS A STORY\nVERY IMPORTANT ONE\nDont you agree", "computer", this.center_width)
         this.cameras.main.setBackgroundColor(0x000000);
         //this.showLogo();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
+
         //this.playMusic();
         //this.showPlayer();
     }
@@ -67,7 +68,16 @@ export default class Splash extends Scene3D {
           delay: 0
       })
       }
-  
+
+      loadAudios () {
+        this.audios = {
+          "type": this.sound.add("type"),
+        };
+      }
+
+      playAudio(key) {
+        this.audios[key].play();
+      }
 
     showInstructions() {
         this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5);
