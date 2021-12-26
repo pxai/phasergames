@@ -26,10 +26,8 @@ export default class Bootloader extends Scene3D {
             this.scene.start("game");
         },this);
 
-       /* Array(7).fill(0).forEach((_,i) => {
-            this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
-        });*/
-
+        Array(4).fill(0).forEach((e, i) => { this.load.audio(`thunder${i}`, `./assets/sounds/thunder${i}.mp3`);})
+        Array(2).fill(0).forEach((e, i) => { this.load.audio(`passby${i}`, `./assets/sounds/passby${i}.mp3`);})
         //this.load.image("logo", "assets/images/logo.png");
         // this.load.audio("beam", "assets/sounds/beam.mp3");
 

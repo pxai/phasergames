@@ -2,6 +2,7 @@ import { Scene3D, ExtendedObject3D, THREE  } from '@enable3d/phaser-extension'
 import { ThreeGraphics } from '@enable3d/three-graphics';
 import { Euler } from 'three';
 import BulletHell from "./bullet_hell";
+import Lightning from "./lightning";
 
 export default class Game extends Scene3D {
     constructor () {
@@ -40,11 +41,11 @@ export default class Game extends Scene3D {
       this.addClockEvent = this.time.addEvent({ delay: 50, callback: this.updateClock, callbackScope: this, loop: true });
       this.setCenters();
       // enable physics debugging
-      //this.third.physics.debug.enable()      
-      
+      // this.third.physics.debug.enable()      
+      this.setLightning();
       this.setNeutrinoStar();
 
-      //this.loadAudios(); 
+      this.loadAudios(); 
       // this.playMusic();
 
       // https://catlikecoding.com/unity/tutorials/basics/mathematical-surfaces/
@@ -58,15 +59,23 @@ export default class Game extends Scene3D {
 
     }
 
+    setLightning () {
+      this.lightsOut = this.add.rectangle(0, 40, this.width, this.height + 100, 0x0).setOrigin(0)
+      this.lightsOut.setAlpha(0);
+      this.lightningEffect = this.add.rectangle(0, 40, this.width, this.height + 100, 0xffffff).setOrigin(0)
+      this.lightningEffect.setAlpha(0);
+      this.lightning = new Lightning(this);
+    }
+
     setLights() {
-    // this.spot = this.third.lights.spotLight({ color: 'blue', angle: Math.PI / 8 })
-      // this.spotHelper = this.third.lights.helper.spotLightHelper(this.spot)
+      this.spot = this.third.lights.spotLight({ color: 'blue', angle: Math.PI / 8 })
+       this.spotHelper = this.third.lights.helper.spotLightHelper(this.spot)
 
       this.point = this.third.lights.pointLight({ color: 0x00ff7f, intensity: 2, distance: 10 })
       this.point.position.set(0, 5, 0)
       this.third.lights.helper.pointLightHelper(this.point)
 
-      this.directional = this.third.lights.directionalLight({ intensity: 1 })
+      this.directional = this.third.lights.directionalLight({ intensity: 0.5 })
       this.directional.position.set(5, 5, 5)
       this.third.lights.helper.directionalLightHelper(this.directional)
 
@@ -80,8 +89,13 @@ export default class Game extends Scene3D {
     }
 
     setNeutrinoStar() {
+      this.proximity = 0;
       this.star = this.third.add.sphere({ name: 'neutrinoStarBack', radius: 22, x: 0, y: 14.5, z: -150  },  { lambert: { color: 'white', transparent: true, opacity: 0.5 } })
+      this.third.physics.add.existing(this.star);
+      this.star.body.setCollisionFlags(2)
       this.starFront = this.third.add.sphere({ name: 'neutrinoStarBack', radius: 17, x: 0, y: 12, z: -120  },  { lambert: { color: 'black', transparent: false } })
+      this.third.physics.add.existing(this.starFront);
+      this.starFront.body.setCollisionFlags(2)
     }
 
     setCenters () {
@@ -166,7 +180,7 @@ export default class Game extends Scene3D {
       const object = new ExtendedObject3D()
 
       object.add(object3d.clone())
-      object.position.set(i, 0, 10)
+      object.position.set(i, -2, 10)
       object.rotation.set(0, Math.PI, 0)
       let options = { addChildren: false, shape }
 
@@ -183,12 +197,25 @@ export default class Game extends Scene3D {
 
       loadAudios () {
         this.audios = {
-          "beam": this.sound.add("beam"),
+          "thunder0": this.sound.add("thunder0"),
+          "thunder1": this.sound.add("thunder1"),
+          "thunder2": this.sound.add("thunder2"),
+          "thunder3": this.sound.add("thunder3"),
+          "passby0": this.sound.add("passby0"),
+          "passby1": this.sound.add("passby1"),
         };
       }
 
       playAudio(key) {
         this.audios[key].play();
+      }
+
+      playRandom(key) {
+        this.audios[key].play({
+          rate: Phaser.Math.Between(1, 1.5),
+          detune: Phaser.Math.Between(-1000, 1000),
+          delay: 0
+        });
       }
 
       playMusic (theme="game") {
@@ -214,14 +241,18 @@ export default class Game extends Scene3D {
         this.ship.body.setAngularVelocityZ(0)
         if (this.cursor.up.isDown && this.ship.position.y < 6/(z/5)) {
           this.ship.body.setVelocityY(5)
+          this.createWingTrails();
         } else if (this.cursor.down.isDown && this.ship.position.y > -7/(z/5)) {
           this.ship.body.setVelocityY(-5)
+          this.createWingTrails();
         } else if (this.cursor.left.isDown && this.ship.position.x > -7/(z/6) ) {
           this.ship.body.setVelocityX(-5)
           this.ship.body.setAngularVelocityZ(0.5)
+          this.createWingTrails();
         } else if (this.cursor.right.isDown && this.ship.position.x < 7/(z/6)) {
           this.ship.body.setVelocityX(5)
           this.ship.body.setAngularVelocityZ(-0.5)
+          this.createWingTrails();
         } else if (this.W.isDown && this.ship.position.z > 7) {
           this.ship.body.setVelocityZ(-5)
         } else if (this.S.isDown && this.ship.position.z < 15) {
@@ -230,34 +261,86 @@ export default class Game extends Scene3D {
           this.ship.body.setVelocity(0, 0, 0);
           this.ship.setRotationFromEuler(new Euler(Math.PI, Math.PI/2, Math.PI))
         }
+        this.createTrail();
       }
 
       if (this.ground) {
         this.ground.setRotationFromEuler(new Euler(0, 0, 1))
       }
 
-      if (this.point) {
-        // this.third.lights.hemisphereLight({ intensity: 1 / Math.sin(time * 3) })
+      if (this.star) {
         this.star.material.opacity = 0.5 / Math.sin(time * 3);
-        // this.starBack.position.set(Math.sin(time) * 2 - 8, 8, 2)
-        //this.starBack.target.position.set(-85 + Math.sin(time), 15 + Math.sin(time), -150 + Math.sin(time))
-        //this.starBack.target.updateMatrixWorld()
-       // this.pointLightHelper.update()
+        let offset = Math.sin(time)/10
+        this.starFront.position.set(
+          this.starFront.position.x + offset,
+          this.starFront.position.y + offset,
+          this.starFront.position.z + offset + this.proximity,
+        )
+        this.starFront.rotation.set(0, time, 0)
 
-        //this.starBack.position.set(Math.cos(time * 2), Math.sin(time * 3) * 3 + 3.1, Math.cos(time * 1.5))
+        this.starFront.body.needUpdate = true
+
+        this.star.position.set(
+          this.star.position.x + offset,
+          this.star.position.y + offset,
+          this.star.position.z + offset + this.proximity,
+        )
+        let angle = Math.atan2(this.star.position.x - this.starFront.position.x, this.starFront.position.z - this.starFront.position.z)
+        this.star.body.needUpdate = true
+        this.proximity += 0.000001;
       }
     }
 
+    createTrail() {
+      const color = Phaser.Math.Between(-1, 1) > 0 ? 0xADD8E6 : 0xffffff;
+      const trail = this.third.add.box({ x: this.ship.position.x, y: this.ship.position.y + 0.3, z: this.ship.position.z + 1, width: 0.2, height: 0.2, depth: 0.2 },  { lambert: { color, transparent: true, opacity: 0.4 } })
+      this.third.physics.add.existing(trail);
+      trail.body.setVelocityZ(15)
+      this.tweens.add({
+        targets: trail,
+        duration: 600,
+        scale: {from: 1, to: 0},
+        repeat: 1,
+        onComplete: () => {
+          this.destroyParticle(trail)
+        }
+      }) 
+    }
+
+    createWingTrails() {
+      const color = Phaser.Math.Between(-1, 1) > 0 ? 0xADD8E6 : 0xffffff;
+      const trail1 = this.third.add.box({ x: this.ship.position.x - 1.3, y: this.ship.position.y + 0.5, z: this.ship.position.z + 0.5, width: 0.05, height: 0.05, depth: 0.05 },  { lambert: { color, transparent: true, opacity: 0.4 } })
+      const trail2 = this.third.add.box({ x: this.ship.position.x + 1.3, y: this.ship.position.y + 0.5, z: this.ship.position.z + 0.5, width: 0.05, height: 0.05, depth: 0.05 },  { lambert: { color, transparent: true, opacity: 0.4 } })
+
+      this.third.physics.add.existing(trail1);
+      this.third.physics.add.existing(trail2);
+      trail1.body.setVelocityZ(15)
+      trail2.body.setVelocityZ(15)
+      this.tweens.add({
+        targets: [trail1, trail2],
+        duration: 600,
+        scale: {from: 1, to: 0},
+        repeat: 1,
+        onComplete: () => {
+          this.destroyParticle(trail1)
+          this.destroyParticle(trail2)
+        }
+      }) 
+    }
+
     addWave (start = -50, zed = false) {
+      this.lightning.lightning();
       const {f1, f2, c} = this.applyFunctionsInterval();
+
       for (let j = 0; j < c; j++) {
         let waveFunction = this.bulletHell.functions[Phaser.Math.Between(f1, f2)];
         let randomHeight = Phaser.Math.Between(-10, 10);
+        let color = Phaser.Math.Between(0x111111, 0xffffff);
         let wave = Array(100).fill(0).map((particle, i) => {
           let x = start + i;
           let y = waveFunction(x, 16 * i, randomHeight);
   
-          let box = this.third.add.sphere({ name: 'particle' + Math.random(), radius: 0.25, x, y, z: start - (zed ? x : 0 )  },  { lambert: { color: 0xffffff } })
+          let box = this.third.add.sphere({ name: 'particle' + Math.random(), radius: 0.25, x, y, z: start - (zed ? x : 0 )  },  { lambert: { color } })
           //this.box.set
           this.third.physics.add.existing(box);
           this.particles.push(box);
@@ -267,7 +350,8 @@ export default class Game extends Scene3D {
         })
   
         this.waves.push(wave);
-        this.time.delayedCall(4000, () => this.removeWave(), null, this);
+        this.time.delayedCall(4000, () => this.playRandom("passby" + Phaser.Math.Between(0, 1)), null, this)
+        this.time.delayedCall(6000, () => this.removeWave(), null, this);
       }
     }
 
@@ -300,10 +384,10 @@ export default class Game extends Scene3D {
 
     removeWave () {
       const wave = this.waves.shift();
-      wave.forEach((particle,i) => this.destroyParticle(particle,i));
+      wave.forEach((particle) => this.destroyParticle(particle));
     }
 
-    destroyParticle(particle, i) {
+    destroyParticle(particle) {
       particle.userData.dead = true;
       particle.visible = false;
       this.third.physics.destroy(particle);
