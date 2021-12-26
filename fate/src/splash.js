@@ -1,6 +1,7 @@
 
    
 import { Scene3D } from '@enable3d/phaser-extension'
+import Utils from "./utils";
 
 export default class Splash extends Scene3D {
     constructor () {
@@ -15,8 +16,10 @@ export default class Splash extends Scene3D {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
+        this.utils = new Utils(this);
 
 
+        this.utils.typeText(" THIS IS A STORY\nVERY IMPORTANT ONE\nDont you agree", "computer", this.center_width)
         this.cameras.main.setBackgroundColor(0x000000);
         //this.showLogo();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);

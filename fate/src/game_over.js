@@ -1,6 +1,6 @@
-export default class Outro extends Phaser.Scene {
+export default class GameOver extends Phaser.Scene {
     constructor () {
-        super({ key: "outro" });
+        super({ key: "game_over" });
     }
 
     preload () {
@@ -14,7 +14,7 @@ export default class Outro extends Phaser.Scene {
         this.introLayer = this.add.layer();
         this.splashLayer = this.add.layer();
         this.text = [ 
-            "The U.F.I.S.H. recovered the engines.",
+            "GAME OVER",
             "After a terrible fishing day,",
             "they decided to move to Europa moon,",
             "to fish under the ice",

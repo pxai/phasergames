@@ -41,7 +41,7 @@ export default class Game extends Scene3D {
       this.addClockEvent = this.time.addEvent({ delay: 50, callback: this.updateClock, callbackScope: this, loop: true });
       this.setCenters();
       //enable physics debugging
-      // this.third.physics.debug.enable()      
+      //this.third.physics.debug.enable()      
       this.setLightning();
       this.setNeutrinoStar();
 
@@ -50,7 +50,7 @@ export default class Game extends Scene3D {
 
       // https://catlikecoding.com/unity/tutorials/basics/mathematical-surfaces/
       // https://github.com/enable3d/enable3d-website/blob/master/src/examples/first-phaser-game-3d-version.html
-      this.createShip()
+      this.prepareShip()
 
       this.setScores();
       this.cursor = this.input.keyboard.createCursorKeys();
@@ -69,15 +69,11 @@ export default class Game extends Scene3D {
 
     setLights() {
       this.spot = this.third.lights.spotLight({ color: 'blue', angle: Math.PI / 8 })
-       this.spotHelper = this.third.lights.helper.spotLightHelper(this.spot)
-
-      this.point = this.third.lights.pointLight({ color: 0x00ff7f, intensity: 2, distance: 10 })
-      this.point.position.set(0, 5, 0)
-      this.third.lights.helper.pointLightHelper(this.point)
+      // this.spotHelper = this.third.lights.helper.spotLightHelper(this.spot)
 
       this.directional = this.third.lights.directionalLight({ intensity: 0.5 })
       this.directional.position.set(5, 5, 5)
-      this.third.lights.helper.directionalLightHelper(this.directional)
+      //this.third.lights.helper.directionalLightHelper(this.directional)
 
        this.third.lights.hemisphereLight({ intensity: 0.7 })
 
@@ -107,8 +103,9 @@ export default class Game extends Scene3D {
     }
 
     addRing(i) {
-      let torus = this.third.add.torus({ x: 0, y: 12, z: -120, radius: 75 * (i+1), tubularSegments: 200, tube: 0.4 }, { lambert: { color: 0xFFFFE0, transparent: true, opacity: 1 } })
-      torus.rotation.set((Math.PI/1.89), 0, 0)
+      let torus = this.third.add.cylinder({x: 0, y: 12, z: -120, height: 1, radiusSegments: 200, radiusBottom: 75 * (i+1), radiusTop: 75 * (i+1)}, { lambert: { color: 0xFFFFE0, transparent: true, opacity: 0.8 } })
+      //let torus = this.third.add.torus({ x: 0, y: 12, z: -120, radius: 75 * (i+1), tubularSegments: 200, tube: 0.4 }, { lambert: { color: 0xFFFFE0, transparent: true, opacity: 1 } })
+      torus.rotation.set(0.1, 0, 0)
       this.third.physics.add.existing(torus, { shape: 'hacd' })
       torus.body.setCollisionFlags(6)
 
@@ -121,6 +118,7 @@ export default class Game extends Scene3D {
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
     }
+
     updateClock () {
       if (this.remaining < 0) {
         console.log("DROP PROBE!")
@@ -154,12 +152,12 @@ export default class Game extends Scene3D {
     }
 
     setScores() {
-      this.deviationText = this.add.bitmapText(175, 30, "pixelFont", "Deviation: " + this.registry.get("deviation"), 30).setOrigin(0.5);
-      this.nextDropText = this.add.bitmapText(this.center_width - 100, 30, "pixelFont", "NEXT drop: " + this.remaining, 30).setOrigin(0.5);
-      this.probesText = this.add.bitmapText(this.width - 150, 30, "pixelFont", "Probes: " + this.registry.get("probes"), 30).setOrigin(0.5);
+      this.deviationText = this.add.bitmapText(175, 30, "computer", "Deviation: " + this.registry.get("deviation"), 30).setTint(0x03A062).setOrigin(0.5);
+      this.nextDropText = this.add.bitmapText(this.center_width - 100, 30, "computer", "NEXT drop: " + this.remaining, 30).setTint(0x03A062).setOrigin(0.5);
+      this.probesText = this.add.bitmapText(this.width - 150, 30, "computer", "Probes: " + this.registry.get("probes"), 30).setTint(0x03A062).setOrigin(0.5);
     }
 
-    createShip() {
+    prepareShip() {
       this.third.load.gltf('/assets/objects/ship.glb').then(gltf => {
 
         this.object = new ExtendedObject3D()
@@ -175,7 +173,7 @@ export default class Game extends Scene3D {
             child.material = material
           }
         })
-        this.ship = this.createObject("convexMesh", 0, this.object)
+        this.ship = this.createShip("convexMesh", 0, this.object)
         this.setShipColliderWithParticles();
       })
     }
@@ -187,27 +185,29 @@ export default class Game extends Scene3D {
           this.cameras.main.shake(500);
           console.log("HIT!!!", otherObject)
           this.third.destroy(this.ship)
-          this.ship = this.createObject("convexMesh", 0, this.object)
+          this.ship = this.createShip("convexMesh", 0, this.object)
           this.setShipColliderWithParticles();
         }
       })
     }
 
-    createObject (shape, i, object3d) {
+    createShip (shape, i, object3d) {
+      this.left = false;
       const object = new ExtendedObject3D()
 
       object.add(object3d.clone())
       object.position.set(i, -2, 10)
       object.rotation.set(0, Math.PI, 0)
+    
       let options = { addChildren: false, shape }
 
       this.third.add.existing(object)
       this.third.physics.add.existing(object, options)
-
+      object.body.needUpdate = true
       object.body.setLinearFactor(0, 0, 0)
       object.body.setAngularFactor(1, 1, 0)
       object.body.setFriction(20, 20, 20)
-      object.body.setCollisionFlags(0) // Dynamic body: 0, kinematic: 2
+      object.body.setCollisionFlags(2) // Dynamic body: 0, kinematic: 2
 
       return object;
     }
@@ -254,30 +254,40 @@ export default class Game extends Scene3D {
 
       //this.generateBullet(time, delta)
       if (this.ship && this.ship.body) {
-        let z = Math.abs(this.ship.position.z)
-        this.ship.body.setAngularVelocityZ(0)
+        let {x, y, z} = this.ship.position;
+        //this.ship.body.setAngularVelocityZ(0)
         if (this.cursor.up.isDown && this.ship.position.y < 6/(z/5)) {
-          this.ship.body.setVelocityY(5)
+          y = y + 0.1;
           this.createWingTrails();
-        } else if (this.cursor.down.isDown && this.ship.position.y > -7/(z/5)) {
-          this.ship.body.setVelocityY(-5)
+        }  else if (this.cursor.down.isDown && this.ship.position.y > -7/(z/5)) {
+          y = y - 0.1;
           this.createWingTrails();
-        } else if (this.cursor.left.isDown && this.ship.position.x > -7/(z/6) ) {
-          this.ship.body.setVelocityX(-5)
-          this.ship.body.setAngularVelocityZ(0.5)
-          this.createWingTrails();
-        } else if (this.cursor.right.isDown && this.ship.position.x < 7/(z/6)) {
-          this.ship.body.setVelocityX(5)
-          this.ship.body.setAngularVelocityZ(-0.5)
-          this.createWingTrails();
-        } else if (this.W.isDown && this.ship.position.z > 7) {
-          this.ship.body.setVelocityZ(-5)
-        } else if (this.S.isDown && this.ship.position.z < 15) {
-           this.ship.body.setVelocityZ(5)
-        } else if (this.ship && this.ship.body) {
-          this.ship.body.setVelocity(0, 0, 0);
-          this.ship.setRotationFromEuler(new Euler(Math.PI, Math.PI/2, Math.PI))
+        } 
+
+        if (this.cursor.left.isDown && this.ship.position.x > -7/(z/6) ) {
+          x = x - 0.1;
+          this.ship.rotation.set(0, Math.PI, -0.2)
+          this.createWingTrails(true);
+        }  else if (this.cursor.right.isDown && this.ship.position.x < 7/(z/6)) {
+          x = x + 0.1;
+          this.ship.rotation.set(0, Math.PI, 0.2);
+          this.createWingTrails(false);
+        } 
+
+        if (!this.cursor.right.isDown && !this.cursor.left.isDown) {
+          this.ship.rotation.set(0, Math.PI, 0);
         }
+
+        if (this.W.isDown && this.ship.position.z > 7) {
+          this.ship.position.set(x, y, z - 0.1)
+          z = z - 0.1;
+        } else if (this.S.isDown && this.ship.position.z < 15) {
+          this.ship.position.set(x, y, z + 0.1)
+          z = z + 0.1;
+        } 
+        
+        this.ship.position.set(x, y, z)
+        this.ship.body.needUpdate = true
         this.createTrail();
       }
 
@@ -305,8 +315,11 @@ export default class Game extends Scene3D {
 
         this.star.body.needUpdate = true
         this.proximity += 0.000001;
+
+        this.torus.rotation.set(0.1, delta, 0)
+        this.torus.body.needUpdate = true
         /*this.rings.forEach(ring => {
-          ring.rotation.set((Math.PI/2), 0, time)
+          ring.rotation.set(0, 0, time)
           ring.body.needUpdate = true
         })*/
       }
@@ -328,10 +341,12 @@ export default class Game extends Scene3D {
       }) 
     }
 
-    createWingTrails() {
+    createWingTrails(toTheLeft = null) {
       const color = Phaser.Math.Between(-1, 1) > 0 ? 0xADD8E6 : 0xffffff;
-      const trail1 = this.third.add.box({ x: this.ship.position.x - 1.3, y: this.ship.position.y + 0.5, z: this.ship.position.z + 0.5, width: 0.05, height: 0.05, depth: 0.05 },  { lambert: { color, transparent: true, opacity: 0.4 } })
-      const trail2 = this.third.add.box({ x: this.ship.position.x + 1.3, y: this.ship.position.y + 0.5, z: this.ship.position.z + 0.5, width: 0.05, height: 0.05, depth: 0.05 },  { lambert: { color, transparent: true, opacity: 0.4 } })
+      const [m1, m2] = toTheLeft  === null ? [0, 0] : (toTheLeft ? [-0.3, 0.3] : [0.3, -0.3]);
+      console.log(m1, m2)
+      const trail1 = this.third.add.box({ x: this.ship.position.x + 1.3, y: this.ship.position.y + 0.5 + m2, z: this.ship.position.z + 0.5, width: 0.05, height: 0.05, depth: 0.05 },  { lambert: { color, transparent: true, opacity: 0.4 } })
+      const trail2 = this.third.add.box({ x: this.ship.position.x - 1.3, y: this.ship.position.y + 0.5 + m1, z: this.ship.position.z + 0.5, width: 0.05, height: 0.05, depth: 0.05 },  { lambert: { color, transparent: true, opacity: 0.4 } })
 
       this.third.physics.add.existing(trail1);
       this.third.physics.add.existing(trail2);
@@ -415,9 +430,9 @@ export default class Game extends Scene3D {
       particle = null;
     }
 
-    finishScene () {
-      this.sky.stop();
-      this.theme.stop();
+    finishScene (name = "outro") {
+      //this.sky.stop();
+      //this.theme.stop();
       this.scene.start("outro", {next: "underwater", name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 
@@ -425,11 +440,17 @@ export default class Game extends Scene3D {
         const deviation = +this.registry.get("deviation") + points;
         this.registry.set("deviation", deviation);
         this.deviationText.setText("Deviation: " + Number(deviation).toLocaleString());
+        if (deviation === 5) {
+          this.finishScene("game_over")
+        }
     }
 
     updateProbes (points = 0) {
       const probes = +this.registry.get("probes") + points;
       this.registry.set("probes", probes);
       this.probesText.setText("Probes: " + Number(probes).toLocaleString());
+      if (probes === 18) {
+        this.finishScene("outro")
+      }
   }
 }

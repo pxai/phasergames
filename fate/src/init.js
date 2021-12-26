@@ -2,6 +2,7 @@ import * as Phaser from "phaser";
 import { enable3d, Canvas } from '@enable3d/phaser-extension'
 import Bootloader from "./bootloader";
 import Outro from "./outro";
+import GameOver from "./game_over";
 import Splash from "./splash";
 import Transition from "./transition";
 import Game from "./game";
@@ -21,6 +22,7 @@ const config = {
         Transition,
         Game,
         Outro,
+        GameOver
     ],
     ...Canvas()
 };

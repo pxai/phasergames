@@ -23,7 +23,7 @@ export default class Bootloader extends Scene3D {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("game");
+            this.scene.start("splash");
         },this);
 
         Array(4).fill(0).forEach((e, i) => { this.load.audio(`thunder${i}`, `./assets/sounds/thunder${i}.mp3`);})
@@ -33,6 +33,7 @@ export default class Bootloader extends Scene3D {
 
 
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
+        this.load.bitmapFont("computer", "assets/fonts/computer.png", "assets/fonts/computer.xml");
         // this.load.spritesheet("chopper", "assets/images/chopper.png", { frameWidth: 128, frameHeight: 128 });
 
 
