@@ -90,9 +90,9 @@ export default class Game extends Scene3D {
 
     setNeutrinoStar() {
       // this.addRings();
-
+      this.torus = this.addRing(0);
       this.proximity = 0;
-      this.star = this.third.add.sphere({ name: 'neutrinoStarBack', radius: 22, x: 0, y: 14.5, z: -150  },  { lambert: { color: 'white', transparent: true, opacity: 0.5 } })
+      this.star = this.third.add.sphere({ name: 'neutrinoStarBack', radius: 22, x: 0, y: 14.5, z: -150  },  { lambert: { color: 0xFFFFE0, transparent: true, opacity: 0.5 } })
       this.third.physics.add.existing(this.star);
       this.star.body.setCollisionFlags(2)
       this.starFront = this.third.add.sphere({ name: 'neutrinoStarBack', radius: 17, x: 0, y: 12, z: -120  },  { lambert: { color: 'black', transparent: false } })
@@ -102,13 +102,17 @@ export default class Game extends Scene3D {
 
     addRings() {
       this.rings = Array(20).fill(0).map((ring, i) => {
-        let torus = this.third.add.torus({ x: 0, y: 0, z: -120, radius: 25 * (i+1), tubularSegments: 200, tube: 0.5 }, { lambert: { color: 'white', transparent: true, opacity: 1 } })
-        torus.rotation.set((Math.PI/2), 0, 0)
-        this.third.physics.add.existing(torus, { shape: 'hacd' })
-        torus.body.setCollisionFlags(6)
-
-        return torus;
+        this.addRing(i);
       })
+    }
+
+    addRing(i) {
+      let torus = this.third.add.torus({ x: 0, y: 12, z: -120, radius: 75 * (i+1), tubularSegments: 200, tube: 0.4 }, { lambert: { color: 0xFFFFE0, transparent: true, opacity: 1 } })
+      torus.rotation.set((Math.PI/1.89), 0, 0)
+      this.third.physics.add.existing(torus, { shape: 'hacd' })
+      torus.body.setCollisionFlags(6)
+
+      return torus;
     }
 
     setCenters () {
