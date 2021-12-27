@@ -7,6 +7,7 @@ export default class Outro extends Phaser.Scene {
     }
 
     create () {
+        this.cameras.main.setBackgroundColor(0x000000);
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
@@ -14,11 +15,11 @@ export default class Outro extends Phaser.Scene {
         this.introLayer = this.add.layer();
         this.splashLayer = this.add.layer();
         this.text = [ 
-            "The U.F.I.S.H. recovered the engines.",
-            "After a terrible fishing day,",
-            "they decided to move to Europa moon,",
-            "to fish under the ice",
-            "But that is another story..."
+            "This feels like falling",
+            "and collapsing at the same time...",
+            "I'm glad that I succeded",
+            "By the way...",
+            "I see no god inside here."
         ];
         this.showHistory();
         //this.showPlayer();
@@ -49,7 +50,7 @@ export default class Outro extends Phaser.Scene {
       }
 
     showLine(text, y) {
-        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "pixelFont", text, 25).setOrigin(0.5).setAlpha(0));
+        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "computer", text, 35).setOrigin(0.5).setAlpha(0));
         this.tweens.add({
             targets: line,
             duration: 2000,
@@ -60,6 +61,7 @@ export default class Outro extends Phaser.Scene {
 
     startSplash () {
         // this.theme.stop();
-        this.scene.start("splash");
+        //location.reload();
+       this.scene.start("bootstrap");
     }
 }

@@ -5,21 +5,21 @@ export default class Utils {
         this.scene = scene;
     }
 
-    typeText(text, font, x, y = 150, tint = 0xffffff, size = 40) {
-        this.characters = [];
+    typeText(text, font, x, y = 150, tint = 0x06E18A, size = 40) {
+        let characters = [];
         let jump = 0;
         let line = 0;
         let last = 0;
         text.split("").forEach( (character, i) => {
             if (character === "\n") { jump++; line = 0 }
             last = i;
-            this.characters.push(this.scene.add.bitmapText(x - 350 + (line++ * 25), 150 + (jump * size / 1.3), font, character, size).setTint(tint).setAlpha(0))
+            characters.push(this.scene.add.bitmapText(x - 350 + (line++ * 25), y + (jump * size / 1.3), font, character, size).setTint(tint).setAlpha(0))
         })
-        const ending = this.scene.add.rectangle(x - 335 + (line * 25), 175 + (jump * size / 1.3), 25, 5, 0xcccccc).setOrigin(0.5).setAlpha(0)
+        const ending = this.scene.add.rectangle(x - 335 + (line * 25), y + 25 + (jump * size / 1.3), 25, 5, tint).setOrigin(0.5).setAlpha(0)
         const timeline = this.scene.tweens.createTimeline();
-        const typeAudio = this.scene.sound.add("type")
+        this.typeAudio = this.scene.sound.add("type")
         
-        this.characters.forEach( (character, i) => {
+        characters.forEach( (character, i) => {
             timeline.add({
                 targets: character,
                 alpha: { from: 0, to: 0.5},
@@ -29,22 +29,28 @@ export default class Utils {
         timeline.add({
             targets: ending,
             alpha: { from: 0, to: 0.8},
-            duration: 200,
-            repeat: -1,
+            duration: 100,
+            repeat: 5,
             yoyo: true,
             onStart: () => {
-                typeAudio.stop()
+                this.typeAudio.stop()
             },
         })
-        typeAudio.play({
+        this.typeAudio.play({
             mute: false,
             volume: 1,
-            rate: Phaser.Math.Between(1, 1.5),
-            detune: Phaser.Math.Between(-1000, 1000),
+            rate: 1,
+            detune: 0,
             seek: 0,
             loop: true,
             delay: 0
         })
         timeline.play();
+        characters.push(ending);
+        return characters;
+    }
+
+    removeTyped(texts) {
+        texts.flat().forEach( char => char.destroy())
     }
 }

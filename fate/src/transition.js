@@ -1,4 +1,5 @@
 import { Scene3D } from '@enable3d/phaser-extension' 
+import Utils from "./utils";
 
 export default class Transition extends Scene3D {
     constructor () {
@@ -8,7 +9,6 @@ export default class Transition extends Scene3D {
     init (data) {
         this.name = data.name;
         this.number = data.number;
-        this.time = data.time;
         this.next = data.next;
     }
 
@@ -16,29 +16,61 @@ export default class Transition extends Scene3D {
     }
 
     create () {
-        const messages = {
-            "game": "ARROWS/WASD + SPACE",
-            "underwater": "You lost your engine!",
-            "depth": "Time to go down!",
-            "escape": "Go up and escape!",
-            "outro": "You did it!!"
-        }
+
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-
-        this.add.bitmapText(this.center_width, this.center_height - 20, "pixelFont", messages[this.next], 40).setOrigin(0.5)
-        this.add.bitmapText(this.center_width, this.center_height + 20, "pixelFont", "Ready?", 30).setOrigin(0.5)
-        this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
-
-        setTimeout(() => this.loadNext(), 300);
+        this.utils = new Utils(this);
+        this.showLogo();
+        this.showInstructions();
+        this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
+        this.playMusic();
+        //setTimeout(() => this.loadNext(), 300);
     }
 
+    playMusic (theme="music") {
+        this.theme = this.sound.add(theme);
+        this.theme.stop();
+        this.theme.play({
+          mute: false,
+          volume: 0.7,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+      })
+    }
+    
+    showLogo () {
+        this.logo = this.add.image(this.center_width, 150, "logo").setOrigin(0.5).setScale(0.7).setAlpha(0)
+        this.tweens.add({
+            targets: this.logo,
+            duration: 3000,
+            alpha: {from: 0, to: 1}
+        })
+    }
+
+    showInstructions () {
+        let text1, text2;
+        text1 = this.utils.typeText("ARROWS + W + S", "computer", this.center_width + 190, this.center_height)
+        this.time.delayedCall(2000, () => {
+            text2 = this.utils.typeText(" PRESS SPACE", "computer", this.center_width + 190,  this.center_height + 100)
+        }, null, this);
+
+        //this.time.delayedCall(7000, () => this.playMusic(), null, this)
+        this.time.delayedCall(4000, () => {
+            let text3 = this.utils.typeText(" A GAME BY PELLO", "computer", this.center_width + 140, this.center_height + 200)
+            let pelloLogo = this.add.image(this.center_width, this.center_height + 300, "pello_logo_old").setScale(0.2).setOrigin(0.5)
+        }, null, this)
+    }
     update () {
     }
 
     loadNext () {
-        this.scene.start(this.next, { name: this.name, number: this.number, time: this.time });
+        if (this.utils.typeAudio) this.utils.typeAudio.stop();
+
+        this.scene.start("game", { name: this.name, number: this.number, time: this.time });
     }
 }

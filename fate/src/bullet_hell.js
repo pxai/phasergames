@@ -1,7 +1,7 @@
 export default class BulletHell {
 
     constructor () {
-        this._functions = [ this.flat, this.tlaf, this.horizontal, this.multiWave, this.sin]
+        this._functions = [ this.flat, this.tlaf, this.horizontal, this.multiWave, this.cos, this.tan, this.ripple]
     }
 
     get functions () {
@@ -25,11 +25,22 @@ export default class BulletHell {
     }
 
     wave (x, time) {
-        // console.log(x, Math.sin(Math.PI * (x + time)))
         return Math.sin(Math.PI * (x + time));
     }
 
     multiWave (x, time) {
         return Math.sin(Math.PI * (x + time));
     }
+
+    cos (x, time, z) {
+        return  Math.cos(x) * Phaser.Math.Between(0.1, 0.9);
+	}
+
+    tan (x, time, z) {
+        return  Math.tan(x);
+	}
+
+    ripple (x, time, z) {
+        return Math.sin( time * x * (Math.PI/360))
+	}
 }

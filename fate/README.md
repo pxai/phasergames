@@ -5,6 +5,7 @@ A *fartastic* adventure
 0x03A062
 0x06E18A
 
+Benjamin Tissot 
 Bitmap font generator:
 https://snowb.org/
 

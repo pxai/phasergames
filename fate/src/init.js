@@ -28,6 +28,6 @@ const config = {
 };
 
 window.addEventListener('load', () => {
-    enable3d(() => new Phaser.Game(config)).withPhysics('/assets/ammo')
+    enable3d(() => new Phaser.Game(config)).withPhysics('./assets/ammo')
 })
 

@@ -56,7 +56,7 @@ export default class Game extends Scene3D {
       this.cursor = this.input.keyboard.createCursorKeys();
       this.W = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
       this.S = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-
+      this.playAudio("voice_start")
     }
 
     setLightning () {
@@ -121,7 +121,6 @@ export default class Game extends Scene3D {
 
     updateClock () {
       if (this.remaining < 0) {
-        console.log("DROP PROBE!")
         this.remaining = 20000;
         this.releaseProbe();
       } else {
@@ -158,7 +157,7 @@ export default class Game extends Scene3D {
     }
 
     prepareShip() {
-      this.third.load.gltf('/assets/objects/ship.glb').then(gltf => {
+      this.third.load.gltf('./assets/objects/ship.glb').then(gltf => {
 
         this.object = new ExtendedObject3D()
         this.object.add(gltf.scene)
@@ -183,7 +182,7 @@ export default class Game extends Scene3D {
         if (/particle/.test(otherObject.name)) {
           this.updateDeviation(1);
           this.cameras.main.shake(500);
-          console.log("HIT!!!", otherObject)
+          this.playAudio(`hit${Phaser.Math.Between(1, 4)}`);
           this.third.destroy(this.ship)
           this.ship = this.createShip("convexMesh", 0, this.object)
           this.setShipColliderWithParticles();
@@ -220,6 +219,14 @@ export default class Game extends Scene3D {
           "thunder3": this.sound.add("thunder3"),
           "passby0": this.sound.add("passby0"),
           "passby1": this.sound.add("passby1"),
+          "shot": this.sound.add("shot"),
+          "hit1": this.sound.add("hit1"),
+          "hit2": this.sound.add("hit2"),
+          "hit3": this.sound.add("hit3"),
+          "hit4": this.sound.add("hit4"),
+          "voice_start": this.sound.add("voice_start"),
+          "voice_drop": this.sound.add("voice_drop"),
+          "voice_hit": this.sound.add("voice_hit"),
         };
       }
 
@@ -317,11 +324,13 @@ export default class Game extends Scene3D {
         this.proximity += 0.000001;
 
         this.torus.rotation.set(0.1, delta, 0)
+        this.torus.position.set(
+          this.torus.position.x,
+          this.torus.position.y,
+          this.star.position.z + this.proximity,
+        )
         this.torus.body.needUpdate = true
-        /*this.rings.forEach(ring => {
-          ring.rotation.set(0, 0, time)
-          ring.body.needUpdate = true
-        })*/
+
       }
     }
 
@@ -344,7 +353,7 @@ export default class Game extends Scene3D {
     createWingTrails(toTheLeft = null) {
       const color = Phaser.Math.Between(-1, 1) > 0 ? 0xADD8E6 : 0xffffff;
       const [m1, m2] = toTheLeft  === null ? [0, 0] : (toTheLeft ? [-0.3, 0.3] : [0.3, -0.3]);
-      console.log(m1, m2)
+
       const trail1 = this.third.add.box({ x: this.ship.position.x + 1.3, y: this.ship.position.y + 0.5 + m2, z: this.ship.position.z + 0.5, width: 0.05, height: 0.05, depth: 0.05 },  { lambert: { color, transparent: true, opacity: 0.4 } })
       const trail2 = this.third.add.box({ x: this.ship.position.x - 1.3, y: this.ship.position.y + 0.5 + m1, z: this.ship.position.z + 0.5, width: 0.05, height: 0.05, depth: 0.05 },  { lambert: { color, transparent: true, opacity: 0.4 } })
 
@@ -381,9 +390,10 @@ export default class Game extends Scene3D {
           this.third.physics.add.existing(box);
           this.particles.push(box);
           box.body.setVelocityZ(15)
-          // console.log("Adding particle!! ", x, y, start);
+
           return box
         })
+        this.playAudio("shot")
   
         this.waves.push(wave);
         this.time.delayedCall(4000, () => this.playRandom("passby" + Phaser.Math.Between(0, 1)), null, this)
@@ -394,26 +404,26 @@ export default class Game extends Scene3D {
     applyFunctionsInterval() {
       return {
         "20": {f1: 0, f2: 3, c: 3},
-        "19": {f1: 4, f2: 4, c: 2},
-        "18": {f1: 0, f2: 3, c: 3},
-        "17": {f1: 0, f2: 3, c: 3},
-        "16": {f1: 0, f2: 3, c: 3},
-        "15": {f1: 0, f2: 3, c: 3},
-        "14": {f1: 0, f2: 3, c: 3},
-        "13": {f1: 0, f2: 3, c: 3},
-        "12": {f1: 0, f2: 3, c: 3},
-        "11": {f1: 0, f2: 3, c: 3},
-        "10": {f1: 0, f2: 3, c: 3},
-        "9": {f1: 0, f2: 3, c: 3},
-        "8": {f1: 0, f2: 3, c: 3},
-        "7": {f1: 0, f2: 3, c: 3},       
-        "6": {f1: 0, f2: 3, c: 3},
-        "5": {f1: 0, f2: 3, c: 3},
-        "4": {f1: 0, f2: 3, c: 3},
-        "3": {f1: 0, f2: 3, c: 3},
-        "2": {f1: 0, f2: 3, c: 3},
-        "1": {f1: 0, f2: 3, c: 3},
-        "0": {f1: 0, f2: 3, c: 3},
+        "19": {f1: 0, f2: 4, c: 3},
+        "18": {f1: 0, f2: 3, c: 4},
+        "17": {f1: 0, f2: 3, c: 5},
+        "16": {f1: 0, f2: 3, c: 6},
+        "15": {f1: 0, f2: 3, c: 6},
+        "14": {f1: 0, f2: 3, c: 6},
+        "13": {f1: 0, f2: 3, c: 6},
+        "12": {f1: 0, f2: 4, c: 4},
+        "11": {f1: 0, f2: 4, c: 4},
+        "10": {f1: 0, f2: 4, c: 4},
+        "9": {f1: 0, f2: 4, c: 5},
+        "8": {f1: 0, f2: 4, c: 5},
+        "7": {f1: 0, f2: 5, c: 4},       
+        "6": {f1: 0, f2: 5, c: 5},
+        "5": {f1: 0, f2: 5, c: 5},
+        "4": {f1: 0, f2: 5, c: 6},
+        "3": {f1: 0, f2: 6, c: 5},
+        "2": {f1: 0, f2: 6, c: 5},
+        "1": {f1: 0, f2: 6, c: 6},
+        "0": {f1: 0, f2: 6, c: 6},
       }[this.registry.get("probes")]
     }
 
@@ -433,12 +443,13 @@ export default class Game extends Scene3D {
     finishScene (name = "outro") {
       //this.sky.stop();
       //this.theme.stop();
-      this.scene.start("outro", {next: "underwater", name: "STAGE", number: this.number + 1, time: this.time * 2});
+      this.scene.start(name, {next: "underwater", name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 
     updateDeviation (points = 0) {
         const deviation = +this.registry.get("deviation") + points;
         this.registry.set("deviation", deviation);
+        this.playAudio("voice_hit")
         this.deviationText.setText("Deviation: " + Number(deviation).toLocaleString());
         if (deviation === 5) {
           this.finishScene("game_over")
@@ -448,8 +459,9 @@ export default class Game extends Scene3D {
     updateProbes (points = 0) {
       const probes = +this.registry.get("probes") + points;
       this.registry.set("probes", probes);
+      this.playAudio("voice_drop")
       this.probesText.setText("Probes: " + Number(probes).toLocaleString());
-      if (probes === 18) {
+      if (probes === 0) {
         this.finishScene("outro")
       }
   }

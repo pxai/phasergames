@@ -12,6 +12,7 @@ export default class Splash extends Scene3D {
     }
 
     create () {
+        this.game.sound.stopAll();
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
@@ -19,10 +20,11 @@ export default class Splash extends Scene3D {
         this.utils = new Utils(this);
 
         this.loadAudios()
-        this.utils.typeText(" THIS IS A STORY\nVERY IMPORTANT ONE\nDont you agree", "computer", this.center_width)
+
+        this.showIntro();
         this.cameras.main.setBackgroundColor(0x000000);
-        //this.showLogo();        ;
-        this.time.delayedCall(1000, () => this.showInstructions(), null, this);
+
+        // this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
 
@@ -31,6 +33,7 @@ export default class Splash extends Scene3D {
     }
 
     startGame () {
+        if (this.utils.typeAudio) this.utils.typeAudio.stop();
         if (this.theme) this.theme.stop();
         this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
     }
@@ -55,12 +58,12 @@ export default class Splash extends Scene3D {
 
     }
 
-    playMusic (theme="splash") {
+    playMusic (theme="hymn") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.7,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -79,19 +82,117 @@ export default class Splash extends Scene3D {
         this.audios[key].play();
       }
 
-    showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: track beam", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "pixelFont", "B: shoot coins", 30).setOrigin(0.5);
-        this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Press SPACE to start", 30).setOrigin(0.5);
+    showIntro() {
+        let text1, text2;
+        text1 = this.utils.typeText(" IN 1968 YURI GAGARIN DIED\nDURING A ROUTINE FLIGHT", "computer", this.center_width, this.center_height)
+        this.time.delayedCall(5500, () => {
+            text2 = this.utils.typeText(" OR SO THEY MADE US BELIEVE...", "computer", this.center_width,  this.center_height + 100)
+        }, null, this);
+
+        this.time.delayedCall(7000, () => this.playMusic(), null, this)
+        this.time.delayedCall(10000, () => {
+            this.utils.removeTyped([text1, text2]);
+            this.aGameBy();
+        }, null, this)
+    }
+
+    aGameBy () {
+        let text2;
+        let text1 = this.utils.typeText(" A GAME BY\nPELLO", "computer", 1250, 10)
+        let pelloLogo = this.add.image(990, 120, "pello_logo_old").setScale(0.2).setOrigin(0.5)
+        let video = this.add.video(400, 300, 'video0');
+
+        this.time.delayedCall(5000, () => {
+            this.utils.removeTyped([text1]);
+            pelloLogo.destroy();
+            text2 = this.utils.typeText(" MINIJAM #96\nFATE", "computer", 1250, 400)
+        }, null, this)
+
+        this.time.delayedCall(9000, () => {
+            this.utils.removeTyped([text2]);
+            video.stop();
+            video.destroy();
+            this.tools();
+        })
+
+        video.play(true);
+    }
+
+    tools () {
+        let text2;
+        let text1 = this.utils.typeText(" TOOLS: PHASER AND ENABLE3D", "computer", 550, 10)
+        let video = this.add.video(this.center_width, 500, 'video1').setOrigin(0.5);
+
+        this.time.delayedCall(5000, () => {
+            this.utils.removeTyped([text1]);
+            text2 = this.utils.typeText(" MY FIRST 3D GAME!", "computer", 550, 50)
+        }, null, this)
+
+        this.time.delayedCall(9000, () => {
+            this.utils.removeTyped([text2]);
+            video.stop();
+            video.destroy()
+            this.otherTools();
+        })
+
+        video.play(true);
+    }
+
+    otherTools () {
+        let text2;
+        let text1 = this.utils.typeText(" VSCODE, GULP, BLENDER, FFMPEG,...", "computer", 550, 500)
+        let video = this.add.video(this.center_width, 100, 'video2').setOrigin(0.5);
+
+        this.time.delayedCall(5000, () => {
+            this.utils.removeTyped([text1]);
+            text2 = this.utils.typeText(" GAZILLIONS OF COFFEE WERE CONSUMED", "computer", 550, 600)
+        }, null, this)
+
+        this.time.delayedCall(10000, () => {
+            this.utils.removeTyped([text2]);
+            video.stop();
+            video.destroy();
+            this.lastVideo();
+        })
+
+        video.play(true);
+    }
+
+    lastVideo () {
+        let text2;
+        let text1 = this.utils.typeText(" MUSIC: SACRED WAR, BY THE RED ARMY CHOIR", "computer", 400, 50)
+        let video = this.add.video(this.center_width, 400, 'video3').setOrigin(0.5);
+
+        this.time.delayedCall(5000, () => {
+            this.utils.removeTyped([text1]);
+            text2 = this.utils.typeText(" EVOLUTION, BY BENSOUND", "computer", 550, 100)
+        }, null, this)
+
+        this.time.delayedCall(10000, () => {
+            this.utils.removeTyped([text2]);
+            video.stop();
+            video.destroy();
+            this.explanation()
+        })
+
+        video.play(true);
+    }
+
+    explanation () {
         this.tweens.add({
-            targets: this.space,
-            duration: 300,
-            alpha: {from: 0, to: 1},
-            repeat: -1,
-            yoyo: true
-        });
+            targets: this.theme,
+            volume: {from: 1, to: 0},
+            duration: 16000
+        })
+        const text = " GAGARIN WAS SENT ON A SECRET MISSION\nBEYOND THE OORT CLOUD, "+
+            "PROPELLED BY\nNUCLEAR DETONATIONS.\n\nHE HAS NOW PASSED THE FRONTIER OF\nOUR SOLAR SYSTEM\n"+
+            "HIS MISSION:\nTO SET 20 PROBES AND RECOLLECT DATA\nFROM THE DEADLIEST STELLAR OBJECT:\n" +
+            "A NEUTRINO STAR!\n\nHE HAS TO AVOID INCOMING DEBRIS\nAND GET AS CLOSE AS POSSIBLE TO THE STAR.\n" +
+            "THAT WILL MEAN CERTAIN DEATH, BUT ALSO\nA MASSIVE ACHIEVEMENT " +
+            "FOR SOVIET SCIENTISTS!\n\n" +
+            "THE FATAL FATE OF GAGARIN IS NOW TIED\nTO THE GLORIOUS FATE " + 
+            "OF MOTHER RUSSIA...\n\n\nSPACE TO CONTINUE";
+        let text1 = this.utils.typeText(text, "computer", 450, 50)
+        
     }
 }
