@@ -11,7 +11,7 @@
     "icon": "customIcon.png"
   },
   "version": "0.0.1",
-  "description": "TrackTruck game for tu juego a juicio jam",
+  "description": "Generic game for jam",
   "chromium-args": "--data-path='./saves/' --in-process-gpu --disable-transparency",
   "scripts": {
     "start": "npx webpack-cli serve -c webpack.dev.js --mode development",
