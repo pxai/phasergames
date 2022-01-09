@@ -22,6 +22,7 @@ export default class Game extends Phaser.Scene {
     }
 
     create () {
+      console.log("RESTARTED");
       this.width = this.sys.game.config.width;
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
@@ -84,17 +85,19 @@ export default class Game extends Phaser.Scene {
     }
 
     addFireballs () {
+      this.spawnPoints = this.objectsLayer.objects.filter( object => object.name === "spawn")
+
       this.fireballs = this.add.group();
       const delay = 0;
       const x = this.center_width + (this.player.x < this.center_width ? Phaser.Math.Between(100, 300) : Phaser.Math.Between(-100, -300));
       this.time.delayedCall(3000, () => {
         this.showInstructions();
-        Array(this.number + 1).fill().forEach(() => this.addFireball());
+        Array(this.number + 1).fill().forEach(i => this.addFireball(i));
         this.physics.add.collider(this.fireballs, this.lines, this.hitLine, ()=>{
           return true;
         }, this);
 
-        this.physics.add.collider(this.fireballs, this.player, this.death, ()=>{
+        this.physics.add.collider(this.player, this.fireballs, this.death, ()=>{
           return true;
         }, this);
 
@@ -106,7 +109,7 @@ export default class Game extends Phaser.Scene {
           return true;
         }, this);
 
-        this.physics.add.collider(this.fireballs, this.platform, this.hitFloor, ()=>{
+        this.physics.add.collider(this.fireballs, this.platform, this.hitFloor.bind(this), ()=>{
           return true;
         }, this);
       })
@@ -121,10 +124,10 @@ export default class Game extends Phaser.Scene {
       ball.destroy();
     }
 
-    addFireball() {
-      const launching = [[20,20], [this.width - 40, 40], [40, this.height-40], [this.width-40, this.height-40]]
-      const [x, y] = launching[Phaser.Math.Between(0, 3)]
-      const fireball = new Fireball(this, x, y);
+    addFireball(i) {
+      const selected = i ? i : Phaser.Math.Between(0, this.spawnPoints.length - 1);
+      const point = this.spawnPoints[selected]
+      const fireball = new Fireball(this, point.x, point.y);
       this.fireballs.add(fireball);
       this.physics.moveTo(fireball, this.player.x, this.player.y, 200);
     }
@@ -134,7 +137,7 @@ export default class Game extends Phaser.Scene {
     }
 
     hitFloor(fireball, platform) {
-      console.log("Platform ", platform);
+      console.log("Platform ", platform, fireball.x, fireball.y, this);
       new Explosion(this, fireball.x, fireball.y, 0x00cc00)
       platform.tint = 0xffffff;
     }
@@ -227,7 +230,9 @@ export default class Game extends Phaser.Scene {
       });
     }
 
-    update() {
+    update(time, delta) {
+      this.checkEnding();
+  
       if (this.pointer.isDown) {
         this.paintLine();
       }
@@ -239,8 +244,6 @@ export default class Game extends Phaser.Scene {
       this.fireballs.children.entries.forEach( fireball => {
         fireball.update();
       })
-
-      this.checkEnding();
     }
 
     paintLine() {
@@ -262,7 +265,7 @@ export default class Game extends Phaser.Scene {
       rectangle1.body.immovable = true;
       rectangle2.body.setAllowGravity(false);
       rectangle2.body.immovable = true;
-      this.time.delayedCall(2000 - (this.number * 110) , () => { rectangle0.destroy();rectangle1.destroy(), rectangle2.destroy() }, null, this);
+      this.time.delayedCall(1000 - (this.number * 110) , () => { rectangle0.destroy();rectangle1.destroy(), rectangle2.destroy() }, null, this);
       this.lines.add(rectangle0);
       this.lines.add(rectangle1);
       this.lines.add(rectangle2);
@@ -270,10 +273,10 @@ export default class Game extends Phaser.Scene {
     
     gotcha (fireball, wizard) {
       this.playAudio("gotcha")
+      new Explosion(this, wizard.x, wizard.y)
+      fireball.shadow.destroy();
       fireball.destroy();
       wizard.death();
-      new Explosion(this, wizard.x, wizard.y)
-      console.log("YEA!!", this.wizards.children.entries.length)
 
       this.playAudio("marble")
 
@@ -300,14 +303,15 @@ export default class Game extends Phaser.Scene {
     checkEnding() {
       if (this.wizards.children.entries.length === 0 && !this.finished) {
         this.finishScene();
-      }
+        return;
+      } 
     }
 
     finishScene () {
         this.game.sound.stopAll();
         this.finished = true;
         const totalTime = (Date.now() - +this.registry.get("startTime"))/1000;
-
+      console.log("SCENE FINISHED")
         const minutes= parseInt(totalTime/60)
         const time = String(minutes).padStart(2, '0') + "m " + String(parseInt(totalTime) % 60).padStart(2, '0') + "s";
         this.text3 = this.add.bitmapText(this.center_width, this.center_height + 55, "celtic", "TOTAL: " + time, 45).setTint(0x00e1ad).setOrigin(0.5)
@@ -321,7 +325,7 @@ export default class Game extends Phaser.Scene {
           repeat: -1
         })
 
-      if (this.number < 10) {
+      if (this.number < 3) {
         this.time.delayedCall(3000, () => {
           this.text3.destroy()
           this.text4.destroy()
@@ -345,7 +349,9 @@ export default class Game extends Phaser.Scene {
     }
 
     death(player, fireball) {
+      fireball.shadow.destroy();
       fireball.destroy()
+      player.destroy();
       this.playAudio("fail")
       new Explosion(this, player.x, player.y, 0xff0000)
       this.cameras.main.shake(100);
@@ -353,16 +359,18 @@ export default class Game extends Phaser.Scene {
       this.textBOO.setDropShadow(4, 6, 0x000000, 0.7);
 
       this.time.delayedCall(1000, () => {
-        this.textBOO.destroy();
-        this.theme.stop();
         this.restartScene();
       });
     }
 
     restartScene() {
+      this.finished = true;
+      this.textBOO.destroy();
       this.theme.stop();
       this.registry.set("startTime", Date.now())
+      console.log("About to start")
       this.scene.start("game", {number: this.number});
+      console.log("Here we go")
     }
 }
 
@@ -383,7 +391,7 @@ class Fireball extends Phaser.GameObjects.PointLight {
   }
 
   spawnShadow (x, y) {
-    this.shadow = this.scene.add.circle(x + 5, y + 5, 10, 0x000000).setAlpha(0.4)
+    this.shadow = this.scene.add.circle(x + 5, y + 5, 5, 0x000000).setAlpha(0.4)
     this.scene.add.existing(this.shadow);
    }
 
@@ -397,14 +405,9 @@ class Fireball extends Phaser.GameObjects.PointLight {
     }
 
   update() {
-    this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y, 0x0000cc));
+    this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y, 0x00cc00, 10));
     this.shadow.x = this.x + 5;
     this.shadow.y = this.y + 5;
-  }
-
-  destroy() {
-    this.shadow.destroy();
-    super.destroy();
   }
 }
 

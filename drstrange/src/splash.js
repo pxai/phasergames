@@ -23,15 +23,12 @@ export default class Splash extends Phaser.Scene {
         });
         this.load.audio("boing", "assets/sounds/boing.mp3");
         this.load.audio("marble", "assets/sounds/marble.mp3");
-
-        this.load.image('dungeon', 'assets/maps/dungeon_.png');
-        this.load.image('background', 'assets/maps/dungeonDecoration_0.png');
         this.load.image('walls', 'assets/maps/walls.png');
         this.load.image('tiles', 'assets/maps/tiles.png');
 
         this.load.spritesheet("wizard", "assets/images/wizard.png", { frameWidth: 32, frameHeight: 32 });
 
-        Array(2).fill(0).forEach((_,i) => {
+        Array(4).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`stage${i}`, `assets/maps/stage${i}.json`);
         });
     }
@@ -48,7 +45,7 @@ export default class Splash extends Phaser.Scene {
         this.text3 = this.add.bitmapText(this.center_width, 500, "celtic", "Click anywhere", 15).setTint(0x00e1ad).setOrigin(0.5)
         this.input.on('pointerdown', (pointer) => this.startGame(), this);
         this.playMusic();
-
+        this.addPlayer();
         this.tweens.add({
             targets: this.text1,
             x: {from: this.text1.x, to: this.text1.x + Phaser.Math.Between(-10, 10) },
@@ -75,6 +72,18 @@ export default class Splash extends Phaser.Scene {
       })
       }
 
+      addPlayer() {
+          const shadow = this.add.image(this.center_width, this.center_height + 100, "player").setTint(0x000000).setScale(2.5).setAlpha(0.7);
+          const player = this.add.image(this.center_width, this.center_height, "player").setScale(3);
+        
+          this.tweens.add({
+            targets: [player, shadow],
+            duration: 1000,
+            y: '-= 5',
+            repeat: -1,
+            yoyo: true
+          })
+      }
 
     startGame () {
         this.tweens.add({
