@@ -181,7 +181,7 @@ export default class Game extends Phaser.Scene {
 
     showInstructions () {
       if (this.number === 0) {
-        this.text2 = this.add.bitmapText(this.center_width, this.center_height - 200, "celtic", "DRAW PROTECTION SPELLS!\n\nREDIRECT BALLS TO WIZARDS!", 25).setTint(0x03a062).setOrigin(0.5)
+        this.text2 = this.add.bitmapText(this.center_width, this.center_height - 150, "celtic", "DRAW PROTECTION SPELLS!\n\nREDIRECT BALLS TO WIZARDS!", 25).setTint(0x03a062).setOrigin(0.5)
         this.text2.setDropShadow(4, 6, 0x000000, 0.7);
         this.tweens.add({
           targets: this.wizards,
@@ -317,6 +317,9 @@ export default class Game extends Phaser.Scene {
       const rectangle0 = this.add.pointlight(this.pointer.x-1, this.pointer.y, 0xffa700, 8, 0.5);
 
       const rectangle1 = this.add.pointlight(this.pointer.x, this.pointer.y,  0xffa700, 8, 0.5);
+      if (Phaser.Math.Between(1,2)>1) {
+        new Light(this, this.pointer.x, this.pointer.y, 0xffa700, 8, 0.7, true)
+      }
 
       const rectangle2 = this.add.pointlight(this.pointer.x+1, this.pointer.y,  0xffa700, 8, 0.5);
 
@@ -332,7 +335,9 @@ export default class Game extends Phaser.Scene {
       rectangle1.body.immovable = true;
       rectangle2.body.setAllowGravity(false);
       rectangle2.body.immovable = true;
-      this.time.delayedCall(1000 - (this.number * 110) , () => { rectangle0.destroy();rectangle1.destroy(), rectangle2.destroy() }, null, this);
+      this.time.delayedCall(1000 - (this.number * 110) , () => { 
+        rectangle0.destroy();rectangle1.destroy(), rectangle2.destroy() 
+      }, null, this);
       this.lines.add(rectangle0);
       this.lines.add(rectangle1);
       this.lines.add(rectangle2);
@@ -344,18 +349,19 @@ export default class Game extends Phaser.Scene {
       fireball.shadow.destroy();
       fireball.destroy();
       wizard.death();
-
-      this.textYAY = this.add.bitmapText(this.center_width, this.center_height + 200, "celtic", this.wizards.children.entries.length + " foes left.", 60).setTint(0x03a062).setOrigin(0.5)
-      this.textYAY.setDropShadow(4, 6, 0x000000, 0.7);
+      this.mana = 100;
+      this.updateMana();
+     // this.textYAY = this.add.bitmapText(this.center_width, this.center_height + 200, "celtic", this.wizards.children.entries.length - 1 + " foes left.", 60).setTint(0x03a062).setOrigin(0.5)
+      //this.textYAY.setDropShadow(4, 6, 0x000000, 0.7);
       this.tweens.add({
         targets: this.player,
         duration: 100,
-        tint: {from: this.player.tint, to: 0xffffff},
+        scale: {from: 1.2, to: 1},
         repeat: 4,
         ease: 'Bounce',
         onComplete: () => {
           this.registry.set("score", ""+this.score)
-          this.textYAY.destroy();
+        //  this.textYAY.destroy();
           if (this.wizards.children.entries.length === 0) {
             this.finishScene()
           } else {
@@ -417,7 +423,7 @@ export default class Game extends Phaser.Scene {
 
     updateMana () {
       this.manaBar.width = this.mana * 2;
-  }
+    }
 
     death(player, fireball) {
       if (this.finished) return;

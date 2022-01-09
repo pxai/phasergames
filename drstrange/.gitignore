@@ -1,8 +1,0 @@
-node_modules
-yarn.lock
-package-lock.json
-dist
-out
-.DS_Store
-deploy.sh
-TODO.md

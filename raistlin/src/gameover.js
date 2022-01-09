@@ -43,7 +43,7 @@ export default class GameOver extends Phaser.Scene {
     }
 
     update () {
-        new Particle(this, Phaser.Math.Between(0, this.width),Phaser.Math.Between(0, this.height), 0x03a062, Phaser.Math.Between(4, 10));
+        new Particle(this, Phaser.Math.Between(0, this.width),Phaser.Math.Between(0, this.height), 0xffa700, Phaser.Math.Between(4, 10));
     }
 
     startSplash () {
