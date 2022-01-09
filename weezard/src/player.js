@@ -12,7 +12,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.scene.physics.add.existing(this);
       this.body.collideWorldBounds = true;
       this.cursor = this.scene.input.keyboard.createCursorKeys();
-      this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+      this.spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
       this.down = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
 
       this.right = false;
