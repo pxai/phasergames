@@ -58,7 +58,7 @@ export default class Splash extends Phaser.Scene {
         this.text2 = this.add.bitmapText(this.center_width + 40, 500, "celtic", "by Pello", 25).setTint(0x03a062).setOrigin(0.5)
         this.text2.setDropShadow(2, 3, 0xBAD978, 0.7);
         this.text3 = this.add.bitmapText(this.center_width, 550, "celtic", "Click anywhere", 15).setTint(0x03a062).setOrigin(0.5)
-        this.text3.setDropShadow(2, 3, 0xBAD978, 0.7);
+        this.text3.setDropShadow(1, 2, 0xBAD978, 0.7);
         this.input.on('pointerdown', (pointer) => this.startGame(), this);
         this.playMusic();
         this.addPlayer();
@@ -84,8 +84,8 @@ export default class Splash extends Phaser.Scene {
       }
 
       addPlayer() {
-          this.shadow = this.add.image(this.center_width, this.center_height + 130, "playerlogo").setTint(0x000000).setScale(0.8).setAlpha(0.7);
-          this.player = this.add.image(this.center_width, this.center_height, "playerlogo");
+          this.shadow = this.add.image(this.center_width, this.center_height + 120, "playerlogo").setTint(0x000000).setScale(0.8).setAlpha(0.7);
+          this.player = this.add.image(this.center_width, this.center_height - 10, "playerlogo");
         
           this.tweens.add({
             targets: [this.player, this.shadow],
@@ -107,6 +107,7 @@ export default class Splash extends Phaser.Scene {
             onComplete: () => {
                 this.theme.stop();
                 this.registry.set("startTime", Date.now())
+                this.registry.set("totalTime", 0);
                 this.scene.start("game", {number: 0});
             }
         })

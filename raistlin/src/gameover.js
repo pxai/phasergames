@@ -15,9 +15,15 @@ export default class GameOver extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.cameras.main.setBackgroundColor(0x111111) //0xfef1ca
 
-        this.add.bitmapText(this.center_width, this.center_height - 100, "celtic", "YOU CLEANED THE DUNGEONS!!", 25).setTint(0x03a062).setOrigin(0.5)
-        this.add.bitmapText(this.center_width, 100, "celtic", "GAME OVER", 45).setTint(0x03a062).setOrigin(0.5)
-        this.add.bitmapText(this.center_width, this.height - 100, "celtic", "Clic anywhere", 15).setTint(0x03a062).setOrigin(0.5)
+        this.add.bitmapText(this.center_width, this.center_height - 160, "celtic", "YOU CLEANED THE DUNGEONS!!", 25).setTint(0x03a062).setOrigin(0.5).setDropShadow(2, 3, 0xBAD978, 0.7)
+        
+        const totalTime = +this.registry.get("totalTime");
+        const minutes= parseInt(totalTime/60)
+        const time = String(minutes).padStart(2, '0') + "m " + String(parseInt(totalTime) % 60).padStart(2, '0') + "s";
+        this.add.bitmapText(this.center_width, this.center_height - 75, "celtic", "TOTAL: " + time, 35).setTint(0x03a062).setOrigin(0.5).setDropShadow(2, 3, 0xBAD978, 0.7)
+
+        this.add.bitmapText(this.center_width, 90, "celtic", "GAME OVER", 45).setTint(0x03a062).setOrigin(0.5).setDropShadow(4, 6, 0xBAD978, 0.7)
+        this.add.bitmapText(this.center_width, this.height - 100, "celtic", "Clic anywhere", 15).setTint(0x03a062).setOrigin(0.5).setDropShadow(1, 2, 0xBAD978, 0.7)
         this.input.on('pointerdown', (pointer) => this.startSplash(), this);
 
         this.addPlayer();

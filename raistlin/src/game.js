@@ -18,16 +18,13 @@ export default class Game extends Phaser.Scene {
 
     preload () {
       this.score = 0;
-      console.log("NUMBER: ", this.number)
     }
 
     create () {
-      console.log("RESTARTED");
       this.width = this.sys.game.config.width;
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      //this.cameras.main.setBackgroundColor(0x000000);
       this.addMap();
       this.lines = this.add.group();
       this.loadAudios(); 
@@ -65,14 +62,17 @@ export default class Game extends Phaser.Scene {
 
     addMap() {
       this.tileMap = this.make.tilemap({ key: `stage${this.number}` , tileWidth: 16, tileHeight: 16 });
+
       this.tileSetBg = this.tileMap.addTilesetImage("tiles");
       this.tileMap.createLayer('background', this.tileSetBg)
   
-      this.tileSetItems = this.tileMap.addTilesetImage("tiles");
-      this.tileMap.createLayer('items', this.tileSetItems)
+ 
       this.tileSet = this.tileMap.addTilesetImage("walls");
       this.platform = this.tileMap.createLayer(`stage${this.number}`, this.tileSet);
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
+
+      this.tileSetItems = this.tileMap.addTilesetImage("tiles");
+      this.tileMap.createLayer('items', this.tileSetItems)
   
       this.platform.setCollisionByExclusion([-1]);
 
@@ -345,7 +345,7 @@ export default class Game extends Phaser.Scene {
       fireball.destroy();
       wizard.death();
 
-      this.textYAY = this.add.bitmapText(this.center_width, this.center_height + 200, "celtic", this.wizards.children.entries.length - 1 + " foes left.", 60).setTint(0x03a062).setOrigin(0.5)
+      this.textYAY = this.add.bitmapText(this.center_width, this.center_height + 200, "celtic", this.wizards.children.entries.length + " foes left.", 60).setTint(0x03a062).setOrigin(0.5)
       this.textYAY.setDropShadow(4, 6, 0x000000, 0.7);
       this.tweens.add({
         targets: this.player,
@@ -376,6 +376,7 @@ export default class Game extends Phaser.Scene {
         this.game.sound.stopAll();
         this.finished = true;
         const totalTime = (Date.now() - +this.registry.get("startTime"))/1000;
+        this.registry.set("totalTime", +this.registry.get("totalTime") + totalTime)
         this.playAudio("stageclear")
         this.player.body.enable = false;
         const minutes= parseInt(totalTime/60)
