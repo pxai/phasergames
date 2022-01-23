@@ -14,6 +14,8 @@ export default class Splash extends Phaser.Scene {
 
 
         this.cameras.main.setBackgroundColor(0x000000);
+        this.startSound = this.sound.add("start");
+        this.startSound.play({volume: 0.5})
         this.showLogo();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
@@ -24,6 +26,7 @@ export default class Splash extends Phaser.Scene {
 
     startGame () {
         if (this.theme) this.theme.stop();
+        this.startSound.stop();
         this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
     }
 

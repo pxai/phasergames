@@ -1,3 +1,5 @@
+import { Smoke } from "./particle";
+
 class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, number) {
       super(scene, x, y, "player")
@@ -15,6 +17,8 @@ class Player extends Phaser.GameObjects.Sprite {
       this.drilling = false;
       this.drillTime = 0;
       this.health = 10;
+      this.attack = 1;
+      this.velocity = 100;
       this.body.setGravity(100);
     }
 
@@ -84,33 +88,36 @@ class Player extends Phaser.GameObjects.Sprite {
   
     update (time, delta) {
         if (this.cursor.down.isDown) {
-            this.body.setVelocityY(100);
+            this.body.setVelocityY(this.velocity);
             this.anims.play("drilldown", true);
             this.last = "down";
             this.drillTime += delta; 
             this.drilling = this.drillTime > 100;
+            if (Phaser.Math.Between(0, 3) > 2) new Smoke(this.scene, this.x, this.y - 32)
         } else if (this.cursor.up.isDown) {
-            this.body.setVelocityY(-100);
+            this.body.setVelocityY(-this.velocity);
             //this.anims.play("playerjump", true);
             //this.scene.playAudio("jump")
             this.anims.play("drillup", true);
             this.last = "up";
             this.drillTime += delta; 
             this.drilling = this.drillTime > 100;
+            if (Phaser.Math.Between(0, 3) > 2)new Smoke(this.scene, this.x, this.y + 32)
         } else if (this.cursor.right.isDown) {
-            this.body.setVelocityX(100);
+            this.body.setVelocityX(this.velocity);
             this.anims.play("drillright", true);
             this.last = "right";
             this.drillTime += delta; 
             this.drilling = this.drillTime > 100;
+            if (Phaser.Math.Between(0, 3) > 2)new Smoke(this.scene, this.x - 32, this.y + Phaser.Math.Between(10, 16))
         } else if (this.cursor.left.isDown) {
-            this.body.setVelocityX(-100);
+            this.body.setVelocityX(-this.velocity);
             this.anims.play("drillleft", true);
             this.last = "left";
             this.drillTime += delta; 
             this.drilling = this.drillTime > 100;
+            if (Phaser.Math.Between(0, 3) > 2)new Smoke(this.scene, this.x + 32, this.y + Phaser.Math.Between(10, 16))
         } else {
-            console.log("IDLE")
             this.body.setVelocity(0);
             this.anims.play("idle" + this.last, true);
             this.drillTime = 0; 

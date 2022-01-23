@@ -28,17 +28,20 @@ export default class Bootloader extends Phaser.Scene {
         });*/
 
 
-        // this.load.audio("beam", "assets/sounds/beam.mp3");
+        this.load.audio("music", "assets/sounds/music.mp3");
+        this.load.audio("start", "assets/sounds/start.mp3");
+        this.load.audio("engine", "assets/sounds/engine.mp3");
 
         this.load.bitmapFont("wendy", "assets/fonts/wendy.png", "assets/fonts/wendy.xml");
         this.load.spritesheet("player", "assets/images/player.png", { frameWidth: 128, frameHeight: 128 });
         this.load.image('pello', 'assets/images/pello.png');
         this.load.image('logo1', 'assets/images/logo1.png');
         this.load.image('logo2', 'assets/images/logo2.png');
-
+        this.load.image('shield', 'assets/images/shield.png');
+        this.load.image('lightning', 'assets/images/lightning.png');
         this.load.tilemapTiledJSON("dungeon0", "assets/maps/dungeon0.json");
         this.load.image('brick', 'assets/maps/brick.png');
-        this.load.image('background', 'assets/maps/background.png');
+        //this.load.image('background', 'assets/maps/background.png');
 
         this.registry.set("score", 0);
         this.registry.set("coins", 0);

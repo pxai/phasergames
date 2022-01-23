@@ -30,8 +30,34 @@ export default class Transition extends Phaser.Scene {
         this.add.bitmapText(this.center_width, this.center_height + 20, "wendy", "Ready?", 30).setOrigin(0.5)
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
 
-        setTimeout(() => this.loadNext(), 3);
+        setTimeout(() => this.loadNext(), 1000);
+        this.playMusic();
     }
+
+    playMusic (theme="music") {
+        this.theme = this.sound.add(theme);
+        this.theme.stop();
+        this.theme.play({
+          mute: false,
+          volume: 0.5,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+        })
+        this.engine = this.sound.add("engine");
+        this.engine.stop();
+        this.engine.play({
+          mute: false,
+          volume: 0.5,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+        })
+      }
 
     update () {
     }
