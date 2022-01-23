@@ -52,7 +52,7 @@ export class Debris extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, color = 0xb03e00,  width, height, gravity = false ) {
         width = width || Phaser.Math.Between(20, 35)
         height = height || Phaser.Math.Between(20, 35)
-        super(scene, x, y, width, height, color)
+        super(scene, x, y + 5, width, height, color)
         this.setStrokeStyle(4, 0x000000);
         scene.add.existing(this)
         scene.physics.add.existing(this);
@@ -73,8 +73,9 @@ export class Debris extends Phaser.GameObjects.Rectangle {
 }
 
 export const elements = {
-    "gold": { color: 0xb06f00, hits: 5, points: 1000 },
-    "orange": { color: 0xb03e00, hits: 1, points: 10 },
-    "ruby":  { color: 0xa13000, hits: 15, points: 2000 },
-    "silver":  { color: 0x4d4d4d, hits: 10, points: 500 }
+    "gold": { color: 0xb06f00, hits: 5, points: 1000, rate: 0.8 },
+    "orange": { color: 0xb03e00, hits: 1, points: 10, rate: 1.1 },
+    "ruby":  { color: 0xa13000, hits: 15, points: 2000, rate: 0.7 },
+    "silver":  { color: 0x4d4d4d, hits: 10, points: 500, rate: 0.9 },
+    "oil":  { color: 0x444444, hits: 10, points: 500, rate: 1 }
 };

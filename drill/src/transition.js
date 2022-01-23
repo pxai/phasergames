@@ -4,10 +4,7 @@ export default class Transition extends Phaser.Scene {
     }
 
     init (data) {
-        this.name = data.name;
         this.number = data.number;
-        this.time = data.time;
-        this.next = data.next;
     }
 
     preload () {
@@ -25,7 +22,7 @@ export default class Transition extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-
+        console.log("LETS SEE DATA: ", this.registry.get("life"))
         this.add.bitmapText(this.center_width, this.center_height - 20, "wendy", messages[this.next], 40).setOrigin(0.5)
         this.add.bitmapText(this.center_width, this.center_height + 20, "wendy", "Ready?", 30).setOrigin(0.5)
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
@@ -39,18 +36,7 @@ export default class Transition extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 0.5,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-        })
-        this.engine = this.sound.add("engine");
-        this.engine.stop();
-        this.engine.play({
-          mute: false,
-          volume: 0.5,
+          volume: 0.2,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -63,6 +49,6 @@ export default class Transition extends Phaser.Scene {
     }
 
     loadNext () {
-        this.scene.start(this.next, { name: this.name, number: this.number, time: this.time });
+        this.scene.start("game", { number: this.number });
     }
 }

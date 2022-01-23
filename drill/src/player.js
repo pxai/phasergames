@@ -1,7 +1,8 @@
 import { Smoke } from "./particle";
+import Explosion from "./explosion";
 
 class Player extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, number) {
+    constructor (scene, x, y, number, attack, velocity, shield, life) {
       super(scene, x, y, "player")
       this.setOrigin(0.5)
       this.setScale(0.7)
@@ -17,8 +18,11 @@ class Player extends Phaser.GameObjects.Sprite {
       this.drilling = false;
       this.drillTime = 0;
       this.health = 10;
-      this.attack = 1;
-      this.velocity = 100;
+      this.attack = attack;
+      this.velocity = velocity;
+      this.shield = shield;
+      this.life = life;
+      this.death = false;
       this.body.setGravity(100);
     }
 
@@ -93,6 +97,7 @@ class Player extends Phaser.GameObjects.Sprite {
             this.last = "down";
             this.drillTime += delta; 
             this.drilling = this.drillTime > 100;
+
             if (Phaser.Math.Between(0, 3) > 2) new Smoke(this.scene, this.x, this.y - 32)
         } else if (this.cursor.up.isDown) {
             this.body.setVelocityY(-this.velocity);
@@ -118,6 +123,7 @@ class Player extends Phaser.GameObjects.Sprite {
             this.drilling = this.drillTime > 100;
             if (Phaser.Math.Between(0, 3) > 2)new Smoke(this.scene, this.x + 32, this.y + Phaser.Math.Between(10, 16))
         } else {
+            if (this.scene.drillAudio?.isPlaying) this.scene.drillAudio.stop()
             this.body.setVelocity(0);
             this.anims.play("idle" + this.last, true);
             this.drillTime = 0; 
@@ -138,6 +144,21 @@ class Player extends Phaser.GameObjects.Sprite {
             this.scene.scene.start('game_over')
         }
     }
+
+    dead () {
+        const explosion = this.scene.add.circle(this.x, this.y, 10).setStrokeStyle(40, 0xffffff);
+        this.scene.tweens.add({
+            targets: explosion,
+            radius: {from: 10, to: 512},
+            alpha: { from: 1, to: 0.3},
+            duration: 300,
+            onComplete: () => { explosion.destroy() }
+        })
+        this.scene.cameras.main.shake(500);
+        this.death = true;
+        new Explosion(this.scene, this.x, this.y, 40)
+        super.destroy();
+    }     
 
   }
 
