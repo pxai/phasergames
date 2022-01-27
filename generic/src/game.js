@@ -9,14 +9,12 @@ export default class Game extends Phaser.Scene {
     init (data) {
       this.name = data.name;
       this.number = data.number;
-      this.time = data.time;
   }
 
     preload () {
     }
 
     create () {
-      this.duration = this.time * 1000;
       this.width = this.sys.game.config.width;
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
@@ -58,7 +56,7 @@ export default class Game extends Phaser.Scene {
     finishScene () {
       this.sky.stop();
       this.theme.stop();
-      this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1, time: this.time * 2});
+      this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
     }
 
     updateScore (points = 0) {

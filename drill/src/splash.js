@@ -13,11 +13,11 @@ export default class Splash extends Phaser.Scene {
         this.center_height = this.height / 2;
 
 
-        this.cameras.main.setBackgroundColor(0x000000);
+        this.cameras.main.setBackgroundColor(0x222222);
         this.startSound = this.sound.add("start");
-        this.startSound.play({volume: 0.3})
+        this.startSound.play({volume: 0.2})
         this.showLogo();        ;
-        this.time.delayedCall(1000, () => this.showInstructions(), null, this);
+        this.time.delayedCall(10, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
         //this.playMusic();

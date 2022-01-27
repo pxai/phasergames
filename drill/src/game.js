@@ -25,7 +25,7 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      
+      this.cameras.main.setBackgroundColor(0x222222);
       
       this.createMap();
 
@@ -43,7 +43,6 @@ export default class Game extends Phaser.Scene {
     }
 
     createMap() {
-      console.log("This number: ", this.number)
       this.tileMap = this.make.tilemap({ key: "dungeon" + this.number , tileWidth: 32, tileHeight: 32 });
       this.tileSetBg = this.tileMap.addTilesetImage("brick");
       this.tileMap.createStaticLayer('background', this.tileSetBg)
@@ -57,7 +56,6 @@ export default class Game extends Phaser.Scene {
       this.rockLayer.setCollisionByExclusion([-1]);
 
       this.rocks = {};
-      console.log(this.rockLayer)
       for(let y = 0; y < this.rockLayer.height; ++y){   
         for(let x = 0; x < this.rockLayer.width; ++x){
           let rock = this.rockLayer.getTileAt(x, y);
@@ -78,6 +76,9 @@ export default class Game extends Phaser.Scene {
           this.foeActivators.add(foeActivator)
         }
           
+        if (object.name.startsWith("text")){
+          this.addText(object)
+        }
       })
 
       this.addExit();
@@ -85,9 +86,9 @@ export default class Game extends Phaser.Scene {
 
     setScore() {
       this.drillImage = this.add.image(this.width - 400, 40, "drill").setScale(0.5).setOrigin(0.5).setScrollFactor(0)
-      this.drillText = this.add.bitmapText(this.width - 350, 40, "wendy", String(this.registry.get("drill")), 40).setOrigin(0.5).setScrollFactor(0)
-      this.speedImage = this.add.image(this.width - 300, 40, "lightning").setScale(0.5).setOrigin(0.5).setScrollFactor(0)
-      this.speedText = this.add.bitmapText(this.width - 250, 40, "wendy", String(this.registry.get("speed")), 40).setOrigin(0.5).setScrollFactor(0)
+      this.drillText = this.add.bitmapText(this.width - 360, 40, "wendy", String(this.registry.get("drill")), 40).setOrigin(0.5).setScrollFactor(0)
+      this.speedImage = this.add.image(this.width - 320, 40, "lightning").setScale(0.5).setOrigin(0.5).setScrollFactor(0)
+      this.speedText = this.add.bitmapText(this.width - 270, 40, "wendy", String(this.registry.get("speed")), 40).setOrigin(0.5).setScrollFactor(0)
       this.shieldImage = this.add.image(this.width - 200, 40, "shield").setScale(0.5).setOrigin(0.5).setScrollFactor(0)
       this.shieldText = this.add.bitmapText(this.width - 150, 40, "wendy", String(this.registry.get("shield")), 40).setOrigin(0.5).setScrollFactor(0)
       this.lifeBarShadow = this.add.rectangle(this.center_width - 101, 40, 208, 34, 0x444444).setOrigin(0.5).setScrollFactor(0)
@@ -103,12 +104,12 @@ export default class Game extends Phaser.Scene {
       if (player.drilling) {
 
         const {color, hits, points, rate} = elements[rock.properties.element];
-        if (!this.drillAudio?.isPlaying) this.drillAudio.play({volume: 0.3, rate });
+        if (!this.drillAudio?.isPlaying) this.drillAudio.play({volume: 0.2, rate });
         this.rocks[`${rock.x}:${rock.y}`] -= this.player.attack;
         new RockSmoke(this, rock.pixelX, rock.pixelY + Phaser.Math.Between(-5, 5))
         if (this.rocks[`${rock.x}:${rock.y}`] < 1) {
           let stone = this.sound.add("stone");
-          stone.play({volume: 0.3, rate });
+          stone.play({volume: 0.2, rate, forceRestart: false });
           this.showPoints(rock.pixelX, rock.pixelY, points, color);
           this.updateScore(points)
           new Debris(this, rock.pixelX, rock.pixelY, color)
@@ -122,7 +123,7 @@ export default class Game extends Phaser.Scene {
     spawnElement(x, y, name) {
       if (name === "orange") return;
 
-      if (Phaser.Math.Between(0, 11) > 10) {
+      if (Phaser.Math.Between(0, 31) > 30) {
         this.time.delayedCall(2000, () => { this.elements.add(new Element(this, x, y, name));}, null, this);
       }
 
@@ -211,16 +212,23 @@ export default class Game extends Phaser.Scene {
       }, this);
     }
 
+    addText (object) {
+      this.add.bitmapText(object.x, object.y, "wendy", object.properties[0].value, 40).setTint(0xFFB709).setDropShadow(3, 4, 0x222222, 0.7).setOrigin(0.5)
+
+    }
+
     destroyShotWall(shot, tile) {
         this.addExplosion(shot.x, shot.y, 20)
         this.playAudio("hitwall");
         shot.destroy()
     }
 
-    destroyShot(shot, tile) {
-      if (tile.properties.element) {
+    destroyShot(shot, rock) {
+      if (rock.properties.element) {
         this.playAudio("hitwall");
         this.addExplosion(shot.x, shot.y, 20)
+        new RockSmoke(this, rock.pixelX, rock.pixelY + Phaser.Math.Between(-5, 5))
+        this.rockLayer.removeTileAt(rock.x, rock.y);
         shot.destroy()
       }
     }
@@ -253,13 +261,13 @@ export default class Game extends Phaser.Scene {
     spawnFoe(player, foeActivator) {
       const {x, y} = foeActivator;
       foeActivator.destroy();
-      this.time.delayedCall(3000, () => { this.addFoe(x, y) }, null, this);
+      if (Phaser.Math.Between(0, 3)>2)
+        this.time.delayedCall(3000, () => { this.addFoe(x, y) }, null, this);
     }
 
     addFoe(x, y) {
       const foe = new Foe(this, x, y);
       this.foes.add(foe); 
-      console.log(foe, this.foes.children.entries)
     }
 
     pickElement (player, element) {
@@ -272,6 +280,7 @@ export default class Game extends Phaser.Scene {
       this.playAudio("stageclear2");
       const improved = {"gold": "1 shield", "silver": "1 drill", "ruby": "LIFE", "oil":  "100 speed" }
       const {color, hits, points} = elements[element.name];
+      if (element.name === "oil") this.playAudio("yee-haw", {volume: 0.8});
       this.showPoints(this.player.x, this.player.y, improved[element.name], color);
       updateItem[element.name](1);
       element.destroy();
@@ -307,6 +316,7 @@ export default class Game extends Phaser.Scene {
           "stageclear2": this.sound.add("stageclear2"),
           "hitplayer": this.sound.add("hitplayer"),
           "hitwall": this.sound.add("hitwall"),
+          "yee-haw": this.sound.add("yee-haw"),
         };
         this.drillAudio = this.sound.add("drill");
       }
@@ -379,6 +389,7 @@ export default class Game extends Phaser.Scene {
         this.registry.set("life", score);
         this.player.life = score;
         this.lifeBar.width = score * 2;
+        //this.lifeBar.setOrigin(0.5)
         this.tweens.add({
           targets: this.lifeBar,
           duration: 50,
@@ -393,5 +404,7 @@ export default class Game extends Phaser.Scene {
       const score = 100;
       this.registry.set("life", String(score));
       this.player.life = score;
+      this.lifeBar.width = score * 2;
+      this.lifeBar.setOrigin(0.5)
     }
 }

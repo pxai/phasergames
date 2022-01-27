@@ -1,7 +1,6 @@
 class Element extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, name = "gold") {
         super(scene, x, y, name);
-        this.setScale(2)
         this.name = name;
         this.scene = scene;
         this.id = Math.random();

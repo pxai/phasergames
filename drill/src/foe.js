@@ -11,7 +11,6 @@ const TYPES = {
 class Foe extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, name = "foe0", velocityX = 0, velocityY = 0) {
         super(scene, x, y, name);
-        console.log("Added a new FOE!", x, y)
         this.name = name;
         this.points = TYPES[name].points;
         this.lives = TYPES[name].lives;

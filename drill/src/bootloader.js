@@ -41,13 +41,14 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("hitplayer", "assets/sounds/hitplayer.mp3");
         this.load.audio("drill", "assets/sounds/drill.mp3");
         this.load.audio("stone", "assets/sounds/stone.mp3");
+        this.load.audio("yee-haw", "assets/sounds/yee-haw.mp3");
 
         this.load.bitmapFont("wendy", "assets/fonts/wendy.png", "assets/fonts/wendy.xml");
         this.load.spritesheet("player", "assets/images/player.png", { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet("gold", "assets/images/gold.png", { frameWidth: 32, frameHeight: 32 });
-        this.load.spritesheet("silver", "assets/images/silver.png", { frameWidth: 32, frameHeight: 32 });
-        this.load.spritesheet("ruby", "assets/images/ruby.png", { frameWidth: 32, frameHeight: 32 });
-        this.load.spritesheet("oil", "assets/images/oil.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("gold", "assets/images/gold.png", { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet("silver", "assets/images/silver.png", { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet("ruby", "assets/images/ruby.png", { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet("oil", "assets/images/oil.png", { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet("foe0", "assets/images/foe0.png", { frameWidth: 64, frameHeight: 64 });
         this.load.image('pello', 'assets/images/pello.png');
         this.load.image('logo1', 'assets/images/logo1.png');
