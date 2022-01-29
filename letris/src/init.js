@@ -18,7 +18,7 @@ const config = {
         default: "arcade",
         arcade: {
             gravity: { y: 300 },
-            debug: false
+            debug: true
         }
     },
     scene: [
@@ -26,7 +26,7 @@ const config = {
         Splash,
         Transition,
         Game,
-        Outro,
+        Outro
     ]
 };
 

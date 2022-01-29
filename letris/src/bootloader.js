@@ -21,19 +21,17 @@ export default class Bootloader extends Phaser.Scene {
         );
         this.load.on("complete", () => {
             this.scene.start("splash");
-        },this);
+        }, this);
 
-       /* Array(7).fill(0).forEach((_,i) => {
+        /* Array(7).fill(0).forEach((_,i) => {
             this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
-        });*/
+        }); */
 
         this.load.image("letter", "assets/images/letter.png");
         // this.load.audio("beam", "assets/sounds/beam.mp3");
 
-
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
         this.load.spritesheet("chopper", "assets/images/chopper.png", { frameWidth: 128, frameHeight: 128 });
-
 
         this.load.tilemapTiledJSON("scene", "assets/maps/scene.json");
         this.load.image("brick", "assets/maps/brick.png");
@@ -43,7 +41,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     create () {
-      }
+    }
 
     createBars () {
         this.loadBar = this.add.graphics();

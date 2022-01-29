@@ -18,7 +18,7 @@
     "build": "webpack --config webpack.prod.js",
     "test": "npm run lint && npm run unit",
     "lint": "eslint src/**/*.js test/**/*.js --fix",
-    "unit": "mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js"
+    "unit": "mocha test --watch --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js"
   },
   "dependencies": {
     "phaser": "^3.52.0"
