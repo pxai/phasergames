@@ -124,7 +124,7 @@ export default class Game extends Scene3D {
         this.remaining = 20000;
         this.releaseProbe();
       } else {
-        this.nextDropText.setText("NEXT drop: " + this.remaining);
+        this.nextDropText.setText("NEXT DROP: " + this.remaining);
       }
       this.remaining -= 50;
     }
@@ -151,9 +151,9 @@ export default class Game extends Scene3D {
     }
 
     setScores() {
-      this.deviationText = this.add.bitmapText(175, 30, "computer", "Deviation: " + this.registry.get("deviation"), 30).setTint(0x03A062).setOrigin(0.5);
-      this.nextDropText = this.add.bitmapText(this.center_width - 100, 30, "computer", "NEXT drop: " + this.remaining, 30).setTint(0x03A062).setOrigin(0.5);
-      this.probesText = this.add.bitmapText(this.width - 150, 30, "computer", "Probes: " + this.registry.get("probes"), 30).setTint(0x03A062).setOrigin(0.5);
+      this.deviationText = this.add.bitmapText(175, 30, "computer", "DEVIATION: " + this.registry.get("deviation"), 30).setTint(0x03A062).setOrigin(0.5);
+      this.nextDropText = this.add.bitmapText(this.center_width, 30, "computer", "NEXT DROP: " + this.remaining, 30).setTint(0x03A062).setOrigin(0.5);
+      this.probesText = this.add.bitmapText(this.width - 150, 30, "computer", "PROBES: " + this.registry.get("probes"), 30).setTint(0x03A062).setOrigin(0.5);
     }
 
     prepareShip() {
@@ -373,7 +373,7 @@ export default class Game extends Scene3D {
       }) 
     }
 
-    addWave (start = -50, zed = false) {
+    addWave (start = -25, zed = false) {
       this.lightning.lightning();
       const {f1, f2, c} = this.applyFunctionsInterval();
 
@@ -381,7 +381,7 @@ export default class Game extends Scene3D {
         let waveFunction = this.bulletHell.functions[Phaser.Math.Between(f1, f2)];
         let randomHeight = Phaser.Math.Between(-10, 10);
         let color = Phaser.Math.Between(0x111111, 0xffffff);
-        let wave = Array(100).fill(0).map((particle, i) => {
+        let wave = Array(50).fill(0).map((particle, i) => {
           let x = start + i;
           let y = waveFunction(x, 16 * i, randomHeight);
   
@@ -450,8 +450,8 @@ export default class Game extends Scene3D {
         const deviation = +this.registry.get("deviation") + points;
         this.registry.set("deviation", deviation);
         this.playAudio("voice_hit")
-        this.deviationText.setText("Deviation: " + Number(deviation).toLocaleString());
-        if (deviation === 5) {
+        this.deviationText.setText("DEVIATION: " + Number(deviation).toLocaleString());
+        if (deviation === 10) {
           this.finishScene("game_over")
         }
     }
@@ -460,7 +460,7 @@ export default class Game extends Scene3D {
       const probes = +this.registry.get("probes") + points;
       this.registry.set("probes", probes);
       this.playAudio("voice_drop")
-      this.probesText.setText("Probes: " + Number(probes).toLocaleString());
+      this.probesText.setText("PROBES: " + Number(probes).toLocaleString());
       if (probes === 0) {
         this.finishScene("outro")
       }

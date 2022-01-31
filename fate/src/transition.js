@@ -34,7 +34,7 @@ export default class Transition extends Scene3D {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 0.7,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -44,7 +44,7 @@ export default class Transition extends Scene3D {
     }
     
     showLogo () {
-        this.logo = this.add.image(this.center_width, 150, "logo").setOrigin(0.5).setScale(0.7).setAlpha(0)
+        this.logo = this.add.image(this.center_width, 170, "logo").setOrigin(0.5).setScale(0.7).setAlpha(0)
         this.tweens.add({
             targets: this.logo,
             duration: 3000,
@@ -54,7 +54,7 @@ export default class Transition extends Scene3D {
 
     showInstructions () {
         let text1, text2;
-        text1 = this.utils.typeText("ARROWS + W + S", "computer", this.center_width + 190, this.center_height)
+        text1 = this.utils.typeText("ARROWS + W + S\nMOUSE FOR POV\n", "computer", this.center_width + 190, this.center_height)
         this.time.delayedCall(2000, () => {
             text2 = this.utils.typeText(" PRESS SPACE", "computer", this.center_width + 190,  this.center_height + 100)
         }, null, this);
