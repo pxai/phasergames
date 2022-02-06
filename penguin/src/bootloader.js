@@ -9,7 +9,7 @@ export default class Bootloader extends Phaser.Scene {
             "progress",
             function (value) {
                 this.progressBar.clear();
-                this.progressBar.fillStyle(0x88d24c, 1);
+                this.progressBar.fillStyle(0x3e6875, 1);
                 this.progressBar.fillRect(
                     this.cameras.main.width / 4,
                     this.cameras.main.height / 2 - 16,
@@ -27,7 +27,7 @@ export default class Bootloader extends Phaser.Scene {
             this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
         });*/
 
-        //this.load.image("logo", "assets/images/logo.png");
+        this.load.image("pellologo", "assets/images/pellologo.png");
         // this.load.audio("beam", "assets/sounds/beam.mp3");
 
 
@@ -38,12 +38,12 @@ export default class Bootloader extends Phaser.Scene {
             this.load.image(`ice${i}`, `assets/images/ice${i}.png`);
         });
 
+        this.load.spritesheet("water", "assets/images/water.png", { frameWidth: 64, frameHeight: 64 });
         Array(2).fill(0).forEach((_,i) => {
             this.load.image(`block${i}`, `assets/images/block${i}.png`);
         });
         this.load.image(`cloud`, `assets/images/cloud.png`);
-        this.load.image("icetiles", "assets/maps/icetiles.png");
-        this.load.tilemapTiledJSON("scene", "assets/maps/scene.json");
+        this.load.image("star", "assets/images/star.png");
 
         this.registry.set("score", 0);
         this.registry.set("coins", 0);
@@ -55,7 +55,7 @@ export default class Bootloader extends Phaser.Scene {
 
     createBars () {
         this.loadBar = this.add.graphics();
-        this.loadBar.fillStyle(0x008483, 1);
+        this.loadBar.fillStyle(0x64a7bd, 1);
         this.loadBar.fillRect(
             this.cameras.main.width / 4 - 2,
             this.cameras.main.height / 2 - 18,

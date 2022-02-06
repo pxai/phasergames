@@ -1,5 +1,7 @@
 import Cloud from "./ice";
-import Block from "./block";
+import Dust from "./dust";
+import Star from "./star";
+import Debris from "./debris";
 
 class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, health = 10) {
@@ -24,7 +26,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.wobble = null;
       this.health = health;
       this.currentIce = null;
-      this.wallGrow = 16;
+      this.dead = false;
     }
 
     init () {
@@ -73,16 +75,18 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     update () {
+        if (this.dead) return;
         if (this.jumping && Phaser.Input.Keyboard.JustDown(this.cursor.up) && this.body.velocity.y < 0 && this.extraJumps > 0) {
             this.body.velocity.y -= 200;
             console.log("Extra jump!")
-
+            new Star(this.scene, this.x, this.y + 5)
             this.extraJumps--;
             if (this.currentIce) this.currentIce.occupied = false;
         } else if (this.jumping && this.cursor.up.isDown && this.body.velocity.y >= 0 && this.extraFlap > 0) {
             this.body.setVelocityY(-50)
             this.extraFlap--;
         } else if (this.jumping ) {
+            if (Phaser.Math.Between(1,101) > 100) new Star(this.scene, this.x, this.y + 5)
             if (this.body.velocity.y >= 0) {
                 this.body.setGravityY(600)
             }
@@ -90,6 +94,7 @@ class Player extends Phaser.GameObjects.Sprite {
         //if (Phaser.Input.Keyboard.JustDown(this.down)) {
         if (Phaser.Input.Keyboard.JustDown(this.cursor.up) && this.body.blocked.down) {
             this.stopWobble();
+            new Dust(this.scene, this.x, this.y)
             this.body.setVelocityY(-600);
             this.body.setGravityY(400)
             this.anims.play("playerjump", true);
@@ -117,6 +122,7 @@ class Player extends Phaser.GameObjects.Sprite {
                     this.body.setVelocityX(100 * direction);
                     this.body.setDrag(100);
                     this.slippery = false;
+                    new Dust(this.scene, this.x, this.y)
                 }
 
                 this.jumping = false;
@@ -130,15 +136,6 @@ class Player extends Phaser.GameObjects.Sprite {
         }
 
 
-    }
-
-    growTiles () {
-        console.log("Growing tiles!")
-        for (let i = 0; i < 16; i++) {
-            this.scene.platform.add(new Block(this.scene, -7 * 64, this.wallGrow * -64, Phaser.Math.Between(0, 1)))
-            this.scene.platform.add(new Block(this.scene, 7 * 64, this.wallGrow * -64, Phaser.Math.Between(0, 1)))
-            this.wallGrow++;
-        }
     }
 
     stopWobble () {
@@ -160,8 +157,13 @@ class Player extends Phaser.GameObjects.Sprite {
         this.currentIce = ice;
 
         if (this.jumping) {
+            Array(Phaser.Math.Between(1, 4)).fill(0).forEach( debris => {
+                new Debris(this.scene, this.x + (Phaser.Math.Between(-20, 20)), this.y + (Phaser.Math.Between(64, 80)), Phaser.Math.Between(25, 50) / 100);
+            })
+
+            this.scene.updateScore();
             this.anims.play("playerground", true);
-            this.growTiles();
+            new Star(this.scene, this.x, this.y - 5, 0, -100)
         }
     }
 

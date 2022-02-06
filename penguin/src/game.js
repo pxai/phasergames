@@ -1,6 +1,7 @@
 import Player from "./player";
 import IceGenerator from "./ice_generator";
 import Block from "./block";
+import WaterPlatform from "./water_platform";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -10,9 +11,7 @@ export default class Game extends Phaser.Scene {
         this.scoreText = null;
     }
 
-    init (data) {
-      this.name = data.name;
-      this.number = data.number;
+    init () {
   }
 
     preload () {
@@ -26,12 +25,13 @@ export default class Game extends Phaser.Scene {
      // this.cameras.main.setBounds(0, 0, 10920 * 2, 10080 * 2);
      //this.cameras.main.setBounds(0, 0, 600, 600);
       this.physics.world.setBounds(0, 0, 10920 * 2, 10080 * 2);
-      //this.cameras.main.setBackgroundColor(0x0000dd)
+      this.cameras.main.setBackgroundColor(0x64a7bd)
       this.addMap();
       this.addPlayer();
       this.addIceGenerator();
 
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 0);
+      this.addScore();
       //this.loadAudios(); 
       // this.playMusic();
     }
@@ -46,6 +46,8 @@ export default class Game extends Phaser.Scene {
         this.platform.add(new Block(this, -7 * 64, i * -64, Phaser.Math.Between(0, 1)))
         this.platform.add(new Block(this, 7 * 64, i * -64, Phaser.Math.Between(0, 1)))
       }
+      this.water = this.add.group();
+      this.waterPlatform = new WaterPlatform(this)
     }
 
     addPlayer () {
@@ -55,6 +57,14 @@ export default class Game extends Phaser.Scene {
       this.physics.add.collider(this.player, this.platform, this.hitPlatform, ()=>{
         return true;
       }, this);
+
+      this.physics.add.collider(this.player, this.water, this.hitWater, ()=>{
+        return true;
+      }, this);
+    }
+
+    addScore () {
+      this.score = this.add.bitmapText(this.center_width - 200, 20, "pixelFont", String(this.registry.get("score")).padStart(8, '0') , 30).setOrigin(0.5).setScrollFactor(0)
     }
 
     addIceGenerator () {
@@ -74,6 +84,11 @@ export default class Game extends Phaser.Scene {
     }
 
     hitPlatform(player, platform) {
+    }
+
+    hitWater(player, water) {
+      player.dead = true;
+      this.time.delayedCall(2000, ()=> { this.finishScene()}, null, true)
     }
 
       loadAudios () {
@@ -105,14 +120,12 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene () {
-      this.sky.stop();
-      this.theme.stop();
-      this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
+     // this.theme.stop();
+      this.scene.start("outro");
     }
 
-    updateScore (points = 0) {
-        const score = +this.registry.get("score") + points;
-        this.registry.set("score", score);
-        this.scoreText.setText(Number(score).toLocaleString());
+    updateScore () {
+        this.registry.set("score", Math.abs(Math.round(this.player.y)));
+        this.score.setText(String(this.registry.get("score")).padStart(8, '0'));
     }
 }
