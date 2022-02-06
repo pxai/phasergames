@@ -2,6 +2,7 @@ import Player from "./player";
 import IceGenerator from "./ice_generator";
 import Block from "./block";
 import WaterPlatform from "./water_platform";
+import Star from "./star";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -26,17 +27,30 @@ export default class Game extends Phaser.Scene {
      //this.cameras.main.setBounds(0, 0, 600, 600);
       this.physics.world.setBounds(0, 0, 10920 * 2, 10080 * 2);
       this.cameras.main.setBackgroundColor(0x64a7bd)
+
       this.addMap();
       this.addPlayer();
+      this.addLittles();
       this.addIceGenerator();
+      this.addWater();
 
-      this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 0);
+      this.cameras.main.setBounds(-465, -10000000, 800, 10000000);
+      this.cameras.main.startFollow(this.player) //, true, 0.05, 0.05, 0, 0);
       this.addScore();
-      //this.loadAudios(); 
+      this.loadAudios(); 
       // this.playMusic();
     }
 
+    addWater () {
+      this.water = this.add.group();
+      this.waterPlatform = new WaterPlatform(this)
+      this.physics.add.collider(this.player, this.water, this.hitWater, ()=>{
+        return true;
+      }, this);
+    }
+
     addMap () {
+      this.icesLayer = this.add.layer();
       this.platform = this.add.group();
       for (let i = 0; i < 15; i++) {
         this.platform.add(new Block(this, 64 * (i - 7), 0))
@@ -46,19 +60,23 @@ export default class Game extends Phaser.Scene {
         this.platform.add(new Block(this, -7 * 64, i * -64, Phaser.Math.Between(0, 1)))
         this.platform.add(new Block(this, 7 * 64, i * -64, Phaser.Math.Between(0, 1)))
       }
-      this.water = this.add.group();
-      this.waterPlatform = new WaterPlatform(this)
     }
 
     addPlayer () {
 
       this.player = new Player(this, 0, -100, 1);
-
       this.physics.add.collider(this.player, this.platform, this.hitPlatform, ()=>{
         return true;
       }, this);
+    }
 
-      this.physics.add.collider(this.player, this.water, this.hitWater, ()=>{
+    addLittles () {
+      this.littles = this.add.group();
+      this.physics.add.collider(this.littles, this.platform, this.hitPlatform, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.littles, this.player, this.rescueLittle, ()=>{
         return true;
       }, this);
     }
@@ -70,7 +88,13 @@ export default class Game extends Phaser.Scene {
     addIceGenerator () {
       this.iceGenerator = new IceGenerator(this);
       this.ice = this.add.group();
+      this.iceBlock = this.add.group();
+
       this.physics.add.collider(this.player, this.ice, this.hitIce, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.player, this.iceBlock, this.hitIceBlock, ()=>{
         return true;
       }, this);
       this.iceGenerator.generate();
@@ -83,17 +107,44 @@ export default class Game extends Phaser.Scene {
       }
     }
 
+    hitIceBlock(player, ice) {
+    }
+
     hitPlatform(player, platform) {
+    }
+
+    rescueLittle (little, player) {
+      little.destroy();
+      this.playAudio("rescue")
+      this.waterPlatform.goBack();
+
+      Array(5).fill(0).forEach(star => {
+        new Star(this, this.x + star, this.y + star)
+      })
+      this.playAudio("thankyou")
     }
 
     hitWater(player, water) {
       player.dead = true;
+      player.body.enable = false;
+      this.playAudio("water");
+      this.tweens.add({
+        targets: this.player,
+        duration: 100,
+        alpha: {from: 1, to: 0},
+        repeat: -1
+      })
       this.time.delayedCall(2000, ()=> { this.finishScene()}, null, true)
     }
 
       loadAudios () {
         this.audios = {
-          "beam": this.sound.add("beam"),
+          "flap": this.sound.add("flap"),
+          "chirp": this.sound.add("chirp"),
+          "hitice": this.sound.add("hitice"),
+          "water": this.sound.add("water"),
+          "rescue": this.sound.add("rescue"),
+          "thankyou": this.sound.add("thankyou"),
         };
       }
 
@@ -117,6 +168,7 @@ export default class Game extends Phaser.Scene {
 
     update() {
       this.player.update()
+      //this.cameras.main.y = this.player.y;
     }
 
     finishScene () {

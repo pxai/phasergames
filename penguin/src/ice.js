@@ -1,14 +1,25 @@
-export default class Ice extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, name = "ice0") {
-        super(scene, x, y , name);
-        this.setPositions(name)
+export default class Ice extends Phaser.GameObjects.Rectangle {
+    constructor(scene, x, y, layer) {
+        super(scene, x, y , 60, 10, 0xff000000);
         this.scene = scene;
-        this.name = name;
-        this.scene.add.existing(this);
+        this.name = "ice0";
+        this.ground = this.scene.add.sprite(x, y, "ice0");
+        this.scene.iceBlock.add(this.ground)
+        this.setPositions(this.name)
+        this.setAlpha(0);
+
+        layer.add(this);
+        layer.add(this.ground);
         this.scene.physics.add.existing(this);
-        this.body.setSize(64, 16, true)
+        this.scene.add.existing(this.ground);
+        this.scene.physics.add.existing(this.ground);
+
+        this.body.setSize(60, 10)
+        this.ground.body.setSize(64, 16, true)
         this.body.immovable = true;
         this.body.moves = false;
+        this.ground.body.immovable = true;
+        this.ground.body.moves = false;
         this.occupied = false;
         this.used = false;
         this.init();
@@ -25,7 +36,9 @@ export default class Ice extends Phaser.GameObjects.Sprite {
         }[name];
 
         this.x += x;
-        this.y += y;
+        this.y += y - 12;
+        this.ground.x += x;
+        this.ground.y += y;
         this.tweenX = tweenX;
         this.tweenY = tweenY;
         this.tspeed = speed;
@@ -46,12 +59,11 @@ export default class Ice extends Phaser.GameObjects.Sprite {
         if (!this.used) {
             this.used = true;
             this.scene.iceGenerator.generate();
-            console.log("Touched")
 
             this.scene.tweens.add({
-                targets: this,
+                targets: this.ground,
                 duration: 150,
-                y: {from: this.y, to: this.y + 10},
+                y: {from: this.ground.y, to: this.ground.y + 10},
                 yoyo: true,
     
             });

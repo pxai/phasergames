@@ -13,12 +13,12 @@ export default class Splash extends Phaser.Scene {
         this.center_height = this.height / 2;
 
 
-        this.cameras.main.setBackgroundColor(0x000000);
-        //this.showLogo();        ;
+        this.cameras.main.setBackgroundColor(0x64a7bd);
+        this.showLogo();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
-        //this.playMusic();
+        this.playMusic();
         //this.showPlayer();
     }
 
@@ -28,18 +28,19 @@ export default class Splash extends Phaser.Scene {
     }
 
     showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
+        this.gameLogo = this.add.image(this.center_width, 200, "logo").setScale(0.3).setOrigin(0.5).setAlpha(0.1)
+        this.time.addEvent({ delay: 2000, callback: this.flickr, callbackScope: this, loop: true });
+    }
+
+    flickr () {
         this.tweens.add({
             targets: this.gameLogo,
-            duration: 1000,
-            x: {
-              from: this.center_width * 2,
-              to: this.center_width
+            duration: Phaser.Math.Between(1000, 3000),
+            alpha: {
+              from: 0.2,
+              to: 0.8
             },
-            y: {
-                from: -200,
-                to: 130
-              },
+            yoyo: true,
           })
     }
 
@@ -47,12 +48,12 @@ export default class Splash extends Phaser.Scene {
 
     }
 
-    playMusic (theme="splash") {
+    playMusic (theme="blizzard") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.7,
           rate: 1,
           detune: 0,
           seek: 0,

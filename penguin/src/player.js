@@ -1,4 +1,4 @@
-import Cloud from "./ice";
+import HealthBar from "./health_bar";
 import Dust from "./dust";
 import Star from "./star";
 import Debris from "./debris";
@@ -27,6 +27,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.health = health;
       this.currentIce = null;
       this.dead = false;
+      this.healthBar = new HealthBar(this, 64, 64, this.extraFlap);
     }
 
     init () {
@@ -78,13 +79,16 @@ class Player extends Phaser.GameObjects.Sprite {
         if (this.dead) return;
         if (this.jumping && Phaser.Input.Keyboard.JustDown(this.cursor.up) && this.body.velocity.y < 0 && this.extraJumps > 0) {
             this.body.velocity.y -= 200;
-            console.log("Extra jump!")
+            this.scene.playAudio("chirp")
             new Star(this.scene, this.x, this.y + 5)
             this.extraJumps--;
             if (this.currentIce) this.currentIce.occupied = false;
         } else if (this.jumping && this.cursor.up.isDown && this.body.velocity.y >= 0 && this.extraFlap > 0) {
             this.body.setVelocityY(-50)
+            this.scene.playAudio("flap")
             this.extraFlap--;
+
+            this.showFly(this.extraFlap);
         } else if (this.jumping ) {
             if (Phaser.Math.Between(1,101) > 100) new Star(this.scene, this.x, this.y + 5)
             if (this.body.velocity.y >= 0) {
@@ -98,8 +102,7 @@ class Player extends Phaser.GameObjects.Sprite {
             this.body.setVelocityY(-600);
             this.body.setGravityY(400)
             this.anims.play("playerjump", true);
-            console.log("Normal jump!", this.x, this.y)
-           // this.scene.playAudio("jump")
+            this.scene.playAudio("chirp")
             this.jumping = true;
 
         } else if (this.cursor.right.isDown) {
@@ -131,6 +134,7 @@ class Player extends Phaser.GameObjects.Sprite {
                if (this.anims.getName() === "playerwalk") this.anims.play("playeridle", true); 
                 this.extraJumps = 1;
                 this.extraFlap = 10;
+                this.healthBar.value = 100;
             }
 
         }
@@ -146,9 +150,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     animationComplete (animation, frame) {
-        console.log("finished?")
         if (animation.key === "playerground") {
-            console.log("Ok, lets go")
             this.anims.play("playeridle", true)
         }
     }
@@ -157,10 +159,11 @@ class Player extends Phaser.GameObjects.Sprite {
         this.currentIce = ice;
 
         if (this.jumping) {
+            this.scene.playAudio("hitice")
             Array(Phaser.Math.Between(1, 4)).fill(0).forEach( debris => {
                 new Debris(this.scene, this.x + (Phaser.Math.Between(-20, 20)), this.y + (Phaser.Math.Between(64, 80)), Phaser.Math.Between(25, 50) / 100);
             })
-
+ 
             this.scene.updateScore();
             this.anims.play("playerground", true);
             new Star(this.scene, this.x, this.y - 5, 0, -100)
@@ -193,6 +196,18 @@ class Player extends Phaser.GameObjects.Sprite {
         //this.anims.play("playerdead" + this.number)
        // this.scene.playAudio("gameover")
     }
+
+    showFly () {
+        this.healthBar.decrease(1)
+        this.scene.tweens.add({
+          targets: this.healthBar.bar,
+          duration: 1000,
+          alpha: {
+            from: 1,
+            to: 0
+          },
+        });
+      }
 
 }
 

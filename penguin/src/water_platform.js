@@ -1,4 +1,5 @@
 import Water from "./water";
+import Little from "./little";
 import Block from "./block";
 
 export default class WaterPlatform {
@@ -10,25 +11,34 @@ export default class WaterPlatform {
 
     init() {
         for (let i = 0; i < 30; i++) {
-            this.scene.water.add(new Water(this.scene, 64 * (i - 15), 64))
+            this.scene.water.add(new Water(this.scene, 64 * (i - 15), 128))
         }
-        this.sea = this.scene.add.rectangle(0, 576, 1800, 1000, 0x2f4f59).setOrigin(0.5);
-        this.timer = this.scene.time.addEvent({ delay: 3000, callback: this.grow, callbackScope: this, loop: true });
+        this.sea = this.scene.add.rectangle(0, 650, 1800, 1000, 0x2f4f59).setOrigin(0.5);
+        this.timer = this.scene.time.addEvent({ delay: 800, callback: this.grow, callbackScope: this, loop: true });
     }
 
     grow () {
         this.scene.water.children.entries.forEach((water) => { water.y -= 64 });
         this.sea.y -= 64;
         this.growTiles();
+    }
 
+    goBack () {
+        this.scene.water.children.entries.forEach((water) => { water.y += 128 });
+        this.sea.y += 128;
     }
 
     growTiles () {
-        console.log("Growing tiles!")
         for (let i = 0; i < 16; i++) {
             this.scene.platform.add(new Block(this.scene, -7 * 64, this.wallGrow * -64, Phaser.Math.Between(0, 1)))
             this.scene.platform.add(new Block(this.scene, 7 * 64, this.wallGrow * -64, Phaser.Math.Between(0, 1)))
             this.wallGrow++;
+        }
+
+        if (Phaser.Math.Between(0, 3) > 1) {
+            const position = Math.random() > 0.5 ? 1 : -1;
+            this.scene.littles.add(new Little(this.scene, ((position * 7) * 64) + (64 * -position), this.wallGrow * -128))
+            this.scene.platform.add(new Block(this.scene, ((position * 7) * 64) + (64 * -position), this.wallGrow * -64))
         }
     }
 }

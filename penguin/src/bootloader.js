@@ -28,9 +28,14 @@ export default class Bootloader extends Phaser.Scene {
         });*/
 
         this.load.image("pellologo", "assets/images/pellologo.png");
-        // this.load.audio("beam", "assets/sounds/beam.mp3");
-
-
+        this.load.audio("flap", "assets/sounds/flap.mp3");
+        this.load.audio("chirp", "assets/sounds/chirp.mp3");
+        this.load.audio("hitice", "assets/sounds/hitice.mp3");
+        this.load.audio("water", "assets/sounds/water.mp3");
+        this.load.audio("blizzard", "assets/sounds/blizzard.mp3");
+        this.load.audio("rescue", "assets/sounds/rescue.mp3");
+        this.load.audio("thankyou", "assets/sounds/thankyou.mp3");
+        
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
 
         this.load.spritesheet("penguin", "./assets/images/penguin.png", { frameWidth: 64, frameHeight: 64 });
@@ -38,12 +43,15 @@ export default class Bootloader extends Phaser.Scene {
             this.load.image(`ice${i}`, `assets/images/ice${i}.png`);
         });
 
+
+        this.load.spritesheet("little", "assets/images/little.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("water", "assets/images/water.png", { frameWidth: 64, frameHeight: 64 });
         Array(2).fill(0).forEach((_,i) => {
             this.load.image(`block${i}`, `assets/images/block${i}.png`);
         });
-        this.load.image(`cloud`, `assets/images/cloud.png`);
+
         this.load.image("star", "assets/images/star.png");
+        this.load.image("logo", "assets/images/logo.png");
 
         this.registry.set("score", 0);
         this.registry.set("coins", 0);

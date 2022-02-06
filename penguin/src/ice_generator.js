@@ -10,12 +10,10 @@ export default class IceGenerator {
     }
 
     addIce () {
-        console.log("Generating ice!")
         let x = Phaser.Math.Between(-150, 150)
-        //let sign = x >= 0 ? 1 : -1; 
-        //x = Math.abs(x) < 340 ? x : 340 * sign; 
-        console.log("Final x:" , this.scene.player.x, this.scene.player.y)
+        x = x - this.scene.player.x > 330 ? Phaser.Math.Between(-10, 10) : x;
         const y = this.scene.player.y - Phaser.Math.Between(60, 80)
-        this.scene.ice.add(new Ice(this.scene, x, y))
+        const ice = new Ice(this.scene, x, y, this.scene.icesLayer);
+        this.scene.ice.add(ice)
     }
 }
