@@ -14,7 +14,7 @@ export default class WaterPlatform {
             this.scene.water.add(new Water(this.scene, 64 * (i - 15), 128))
         }
         this.sea = this.scene.add.rectangle(0, 650, 1800, 1000, 0x2f4f59).setOrigin(0.5);
-        this.timer = this.scene.time.addEvent({ delay: 800, callback: this.grow, callbackScope: this, loop: true });
+        this.timer = this.scene.time.addEvent({ delay: 900, callback: this.grow, callbackScope: this, loop: true });
     }
 
     grow () {

@@ -38,13 +38,18 @@ export default class Game extends Phaser.Scene {
       this.cameras.main.startFollow(this.player) //, true, 0.05, 0.05, 0, 0);
       this.addScore();
       this.loadAudios(); 
-      // this.playMusic();
+      this.addSnow();
+      this.playMusic();
     }
 
     addWater () {
       this.water = this.add.group();
       this.waterPlatform = new WaterPlatform(this)
-      this.physics.add.collider(this.player, this.water, this.hitWater, ()=>{
+      this.physics.add.overlap(this.player, this.water, this.hitWater, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.littles, this.water, this.hitWaterLittle, ()=>{
         return true;
       }, this);
     }
@@ -137,6 +142,17 @@ export default class Game extends Phaser.Scene {
       this.time.delayedCall(2000, ()=> { this.finishScene()}, null, true)
     }
 
+    hitWaterLittle(little, water) {
+      this.playAudio("water");
+      this.tweens.add({
+        targets: little,
+        duration: 100,
+        alpha: {from: 1, to: 0},
+        repeat: 1,
+        onComplete: () => { little.destroy() }
+      })
+    }
+
       loadAudios () {
         this.audios = {
           "flap": this.sound.add("flap"),
@@ -152,12 +168,12 @@ export default class Game extends Phaser.Scene {
         this.audios[key].play();
       }
 
-      playMusic (theme="game") {
+      playMusic (theme="music") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.6,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -166,13 +182,36 @@ export default class Game extends Phaser.Scene {
       })
       }
 
+      addSnow() {
+        this.particles = this.add.particles('flake');
+        this.particles.setScrollFactor(0);
+        this.particles.createEmitter({
+            alpha: { start: 1, end: 0 },
+            scale: { start: 0.2, end: 1.5 },
+            tint: [0xffffff, 0xeeeeee, 0xdddddd ],
+            speed: 20,
+            accelerationY: {min: 10, max: 50 },
+            angle: { min: -85, max: -95 },
+            rotate: { min: -180, max: 180 },
+            lifespan: { min: 10000, max: 11000 },
+            blendMode: 'ADD',
+            frequency: 110,
+            maxParticles: -1,
+            x: {min: -500, max: 500},
+            y: this.player.y - 600
+        });
+  
+    }
+
     update() {
       this.player.update()
+      if (this.player && !this.player.jumping)
+        this.particles.y = this.player.y - 700;
       //this.cameras.main.y = this.player.y;
     }
 
     finishScene () {
-     // this.theme.stop();
+      this.theme.stop();
       this.scene.start("outro");
     }
 

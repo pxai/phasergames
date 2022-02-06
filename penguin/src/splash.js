@@ -20,6 +20,7 @@ export default class Splash extends Phaser.Scene {
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
         this.playMusic();
         //this.showPlayer();
+        this.addSnow();
     }
 
     startGame () {
@@ -42,6 +43,26 @@ export default class Splash extends Phaser.Scene {
             },
             yoyo: true,
           })
+    }
+
+    addSnow() {
+        this.particles = this.add.particles('flake');
+        this.particles.createEmitter({
+            alpha: { start: 1, end: 0 },
+            scale: { start: 0.2, end: 1.5 },
+            tint: [0xffffff, 0xeeeeee, 0xdddddd ],
+            speed: 20,
+            accelerationY: {min: 100, max: 150 },
+            accelerationX: { min: -50, max: -100},
+            angle: { min: -85, max: -95 },
+            rotate: { min: -180, max: 180 },
+            lifespan: { min: 10000, max: 11000 },
+            blendMode: 'ADD',
+            frequency: 110,
+            maxParticles: -1,
+            x: {min: 0, max: 900},
+            y: -100
+        });
     }
 
     showPlayer () {
