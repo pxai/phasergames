@@ -87,7 +87,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addScore () {
-      this.score = this.add.bitmapText(this.center_width - 200, 20, "pixelFont", String(this.registry.get("score")).padStart(8, '0') , 30).setOrigin(0.5).setScrollFactor(0)
+      this.score = this.add.bitmapText(this.center_width, 20, "pixelFont", String(this.registry.get("score")).padStart(8, '0') , 30).setOrigin(0.5).setScrollFactor(0)
     }
 
     addIceGenerator () {
@@ -185,29 +185,28 @@ export default class Game extends Phaser.Scene {
       addSnow() {
         this.particles = this.add.particles('flake');
         this.particles.setScrollFactor(0);
-        this.particles.createEmitter({
+        this.emitter =  this.particles.createEmitter({
             alpha: { start: 1, end: 0 },
             scale: { start: 0.2, end: 1.5 },
             tint: [0xffffff, 0xeeeeee, 0xdddddd ],
             speed: 20,
-            accelerationY: {min: 10, max: 50 },
+            accelerationY: {min: 10, max: 15 },
+            accelerationX: { min: -50, max: -100},
             angle: { min: -85, max: -95 },
             rotate: { min: -180, max: 180 },
             lifespan: { min: 10000, max: 11000 },
             blendMode: 'ADD',
             frequency: 110,
             maxParticles: -1,
-            x: {min: -500, max: 500},
-            y: this.player.y - 600
+            x: {min: 0, max: 900},
+            y: -1000
         });
-  
+        this.emitter.startFollow(this.player, 800, -1000);
+        console.log(this.emitter)
     }
 
     update() {
       this.player.update()
-      if (this.player && !this.player.jumping)
-        this.particles.y = this.player.y - 700;
-      //this.cameras.main.y = this.player.y;
     }
 
     finishScene () {
@@ -218,5 +217,19 @@ export default class Game extends Phaser.Scene {
     updateScore () {
         this.registry.set("score", Math.abs(Math.round(this.player.y)));
         this.score.setText(String(this.registry.get("score")).padStart(8, '0'));
+        this.textUpdateEffect(this.score, 0x3e6875)
     }
+
+    textUpdateEffect (textElement, color) {
+      textElement.setTint(color);
+      this.tweens.add({
+        targets: textElement,
+        duration: 100,
+        alpha: {from: 1, to: 0.8},
+        repeat: 5,
+        onComplete: () => {
+          textElement.setTint(0xffffff);
+        }
+      });
+     }
 }

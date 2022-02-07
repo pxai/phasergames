@@ -14,7 +14,7 @@ export default class Ice extends Phaser.GameObjects.Rectangle {
         this.scene.add.existing(this.ground);
         this.scene.physics.add.existing(this.ground);
 
-        this.body.setSize(60, 10)
+        this.body.setSize(55, 5)
         this.ground.body.setSize(64, 16, true)
         this.body.immovable = true;
         this.body.moves = false;

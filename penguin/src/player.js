@@ -163,7 +163,9 @@ class Player extends Phaser.GameObjects.Sprite {
             Array(Phaser.Math.Between(1, 4)).fill(0).forEach( debris => {
                 new Debris(this.scene, this.x + (Phaser.Math.Between(-20, 20)), this.y + (Phaser.Math.Between(64, 80)), Phaser.Math.Between(25, 50) / 100);
             })
- 
+            this.scene.waterPlatform.growTiles();
+            if (this.y > 500)
+                this.scene.waterPlatform.removeOldTiles();
             this.scene.updateScore();
             this.anims.play("playerground", true);
             new Star(this.scene, this.x, this.y - 5, 0, -100)
