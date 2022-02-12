@@ -32,11 +32,10 @@ export default class Transition extends Phaser.Scene {
             repeat: -1
         });
 
-        this.add.bitmapText(this.center_width - 200, 100, "pixelFont", "USE ARROWS", 30).setOrigin(0.5)
+        this.add.bitmapText(this.center_width - 200, 100, "pixelFont", "WASD/ARROWS", 30).setOrigin(0.5)
         this.add.sprite(this.center_width, 100, "up")
-        this.add.sprite(this.center_width + 100, 100, "down")
-        this.add.sprite(this.center_width + 200, 100, "right")
-        this.add.sprite(this.center_width + 300, 100, "left")
+        this.add.sprite(this.center_width + 100, 100, "right")
+        this.add.sprite(this.center_width + 200, 100, "left")
         this.penguin0 = this.add.sprite(this.center_width + 350, 100, "penguin");
         this.penguin0.anims.play("demowalk", true);
 

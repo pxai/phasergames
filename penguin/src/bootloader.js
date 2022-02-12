@@ -32,7 +32,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image("down", "assets/images/down.png");
         this.load.image("right", "assets/images/right.png");
         this.load.image("left", "assets/images/left.png");
-
+        this.load.image("background", "assets/images/background.png");
         this.load.audio("flap", "assets/sounds/flap.mp3");
         this.load.audio("chirp", "assets/sounds/chirp.mp3");
         this.load.audio("hitice", "assets/sounds/hitice.mp3");
@@ -41,7 +41,8 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("rescue", "assets/sounds/rescue.mp3");
         this.load.audio("thankyou", "assets/sounds/thankyou.mp3");
         this.load.audio("music", "assets/sounds/music.mp3");
-
+        Array(4).fill(0).forEach((e, i) => { this.load.audio(`thunder${i}`, `./assets/sounds/thunder${i}.mp3`);})
+        
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
 
         this.load.spritesheet('flake', 'assets/images/flake.png', { frameWidth: 32, frameHeight: 32 });

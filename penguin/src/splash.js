@@ -13,7 +13,7 @@ export default class Splash extends Phaser.Scene {
         this.center_height = this.height / 2;
 
 
-        this.cameras.main.setBackgroundColor(0x64a7bd);
+        this.cameras.main.setBackgroundColor(0x263F47);
         this.showLogo();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
@@ -29,7 +29,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     showLogo() {
-        this.gameLogo = this.add.image(this.center_width, 200, "logo").setScale(0.3).setOrigin(0.5).setAlpha(0.1)
+        this.gameLogo = this.add.image(this.center_width, 300, "logo").setScale(0.4).setOrigin(0.5).setTint(0xffffff).setAlpha(1)
         this.time.addEvent({ delay: 2000, callback: this.flickr, callbackScope: this, loop: true });
     }
 
@@ -38,8 +38,8 @@ export default class Splash extends Phaser.Scene {
             targets: this.gameLogo,
             duration: Phaser.Math.Between(1000, 3000),
             alpha: {
-              from: 0.2,
-              to: 0.8
+              from: 1,
+              to: 1
             },
             yoyo: true,
           })
@@ -85,10 +85,10 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 550, "pixelFont", "Arrows to move", 30).setOrigin(0.5);
-        this.add.sprite(this.center_width - 80, 610, "pellologo").setOrigin(0.5).setScale(0.4)
-        this.add.bitmapText(this.center_width + 40, 605, "pixelFont", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Press SPACE to start", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 600, "pixelFont", "Arrows/WASD to move", 30).setOrigin(0.5);
+        this.add.sprite(this.center_width - 80, 660, "pellologo").setOrigin(0.5).setScale(0.4)
+        this.add.bitmapText(this.center_width + 40, 665, "pixelFont", "By PELLO", 15).setOrigin(0.5);
+        this.space = this.add.bitmapText(this.center_width, 730, "pixelFont", "Press SPACE to start", 30).setOrigin(0.5);
         this.tweens.add({
             targets: this.space,
             duration: 300,

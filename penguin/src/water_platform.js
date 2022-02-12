@@ -39,13 +39,14 @@ export default class WaterPlatform {
             this.scene.littles.add(new Little(this.scene, ((position * 7) * 64) + (64 * -position), this.wallGrow * -128))
             this.scene.platform.add(new Block(this.scene, ((position * 7) * 64) + (64 * -position), this.wallGrow * -64))
         }
+
+        this.removeOldTiles();
     }
 
     removeOldTiles () {
-        console.log("Before clean: ", this.scene.platform.children.entries.length)
-        this.scene.platform.children.entries.slice(0, 6).forEach( block => {
+        if (this.scene.player.y > -2000) return;
+        this.scene.platform.children.entries.slice(0, 4).forEach( block => {
             this.scene.platform.remove(block, true, true)
         })
-        console.log("After clean: ", this.scene.platform.children.entries.length)
     }
 }

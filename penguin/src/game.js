@@ -3,6 +3,7 @@ import IceGenerator from "./ice_generator";
 import Block from "./block";
 import WaterPlatform from "./water_platform";
 import Star from "./star";
+import Lightning from "./lightning";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -27,7 +28,7 @@ export default class Game extends Phaser.Scene {
      //this.cameras.main.setBounds(0, 0, 600, 600);
       this.physics.world.setBounds(0, 0, 10920 * 2, 10080 * 2);
       this.cameras.main.setBackgroundColor(0x64a7bd)
-
+      this.background = this.add.image(450, 400, "background").setOrigin(0.5).setScrollFactor(0)
       this.addMap();
       this.addPlayer();
       this.addLittles();
@@ -40,6 +41,15 @@ export default class Game extends Phaser.Scene {
       this.loadAudios(); 
       this.addSnow();
       this.playMusic();
+      this.setLightning();
+    }
+
+    setLightning () {
+      this.lightsOut = this.add.rectangle(0, 40, this.width + 200, this.height + 500, 0x0).setOrigin(0).setScrollFactor(0)
+      this.lightsOut.setAlpha(0);
+      this.lightningEffect = this.add.rectangle(0, 40, this.width + 200, this.height + 500, 0xffffff).setOrigin(0).setScrollFactor(0)
+      this.lightningEffect.setAlpha(0);
+      this.lightning = new Lightning(this);
     }
 
     addWater () {
@@ -122,7 +132,6 @@ export default class Game extends Phaser.Scene {
       little.destroy();
       this.playAudio("rescue")
       this.waterPlatform.goBack();
-
       Array(5).fill(0).forEach(star => {
         new Star(this, this.x + star, this.y + star)
       })
@@ -132,6 +141,10 @@ export default class Game extends Phaser.Scene {
     hitWater(player, water) {
       player.dead = true;
       player.body.enable = false;
+      player.setAlpha(0)
+      Array(5).fill(0).forEach(star => {
+        new Star(this, player.x + star, player.y  + star + 32)
+      })
       this.playAudio("water");
       this.tweens.add({
         targets: this.player,
@@ -139,7 +152,8 @@ export default class Game extends Phaser.Scene {
         alpha: {from: 1, to: 0},
         repeat: -1
       })
-      this.time.delayedCall(2000, ()=> { this.finishScene()}, null, true)
+      this.cameras.main.shake(500);
+      this.time.delayedCall(1000, ()=> { this.finishScene()}, null, true)
     }
 
     hitWaterLittle(little, water) {
@@ -151,6 +165,7 @@ export default class Game extends Phaser.Scene {
         repeat: 1,
         onComplete: () => { little.destroy() }
       })
+      this.cameras.main.shake(100);
     }
 
       loadAudios () {
@@ -161,11 +176,23 @@ export default class Game extends Phaser.Scene {
           "water": this.sound.add("water"),
           "rescue": this.sound.add("rescue"),
           "thankyou": this.sound.add("thankyou"),
+          "thunder0": this.sound.add("thunder0"),
+          "thunder1": this.sound.add("thunder1"),
+          "thunder2": this.sound.add("thunder2"),
+          "thunder3": this.sound.add("thunder3"),
         };
       }
 
       playAudio(key) {
         this.audios[key].play();
+      }
+
+      playRandom(key) {
+        this.audios[key].play({
+          rate: Phaser.Math.Between(1, 1.5),
+          detune: Phaser.Math.Between(-1000, 1000),
+          delay: 0
+        });
       }
 
       playMusic (theme="music") {
@@ -202,7 +229,6 @@ export default class Game extends Phaser.Scene {
             y: -1000
         });
         this.emitter.startFollow(this.player, 800, -1000);
-        console.log(this.emitter)
     }
 
     update() {

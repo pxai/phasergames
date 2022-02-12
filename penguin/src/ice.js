@@ -14,7 +14,7 @@ export default class Ice extends Phaser.GameObjects.Rectangle {
         this.scene.add.existing(this.ground);
         this.scene.physics.add.existing(this.ground);
 
-        this.body.setSize(55, 5)
+        this.body.setSize(55, 8)
         this.ground.body.setSize(64, 16, true)
         this.body.immovable = true;
         this.body.moves = false;
@@ -59,7 +59,8 @@ export default class Ice extends Phaser.GameObjects.Rectangle {
         if (!this.used) {
             this.used = true;
             this.scene.iceGenerator.generate();
-
+            this.scene.waterPlatform.growTiles();
+            this.scene.lightning.lightning();
             this.scene.tweens.add({
                 targets: this.ground,
                 duration: 150,

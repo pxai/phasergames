@@ -1,4 +1,4 @@
-import es from "./dicts/es";
+import en from "./dicts/en";
 
 export default class Trie {
     constructor (parent, letter = "^", children) {
@@ -9,9 +9,9 @@ export default class Trie {
         this.children = children ? children : new Set();
     }
 
-    load(path = "es") {
+    load(path = "en") {
         const start =  Date.now();
-        es.forEach(word => {
+        en.forEach(word => {
             if (word.indexOf("'") === -1)
                 this.insert(word);
         })
