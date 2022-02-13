@@ -40,14 +40,20 @@ export default class Wordle {
             else if (!this.taken.includes(i))
                 this.status[this.current][i] = {letter: currentChar, color: 0xcccccc };
         }
-        this.current++;
+
         this.setOutcome()
     }
 
+    next () {
+        if (this.current < this.attempts)
+            this.current++;
+    }
+
     setOutcome () {
+        console.log(this.nope.length,this.attempts,this.current+1)
         if (this.nope.length === 0)
             this.outcome = "win";
-        else if (this.current === this.attempts)
+        else if (this.current+1 === this.attempts)
             this.outcome = "lose"
     }
 
@@ -66,5 +72,9 @@ export default class Wordle {
     reset () {
         this.current--;
         this.status[this.current] = Array(this.length).fill({letter: "", color: ""});
+    }
+
+    currentStatus() {
+        return this.status[this.current];
     }
 }

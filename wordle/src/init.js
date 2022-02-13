@@ -6,7 +6,7 @@ import Transition from "./transition";
 import Game from "./game";
 
 const config = {
-    width: 520,
+    width: 500,
     height: 800,
     scale: {
         mode: Phaser.Scale.FIT,
