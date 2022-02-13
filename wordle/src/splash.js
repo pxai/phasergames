@@ -1,53 +1,83 @@
+import Key from "./key";
+import Step from "./step";
+import Wordle from "./wordle";
+import Penguin from "./penguin";
+
 export default class Splash extends Phaser.Scene {
     constructor () {
         super({ key: "splash" });
+        this.player = null;
+        this.score = 0;
+        this.scoreText = null;
     }
+
+    init (data) {
+      this.name = data.name;
+      this.number = data.number;
+  }
 
     preload () {
     }
 
     create () {
-        this.width = this.sys.game.config.width;
-        this.height = this.sys.game.config.height;
-        this.center_width = this.width / 2;
-        this.center_height = this.height / 2;
-
-
-        this.cameras.main.setBackgroundColor(0x000000);
-        //this.showLogo();        ;
-        this.time.delayedCall(1000, () => this.showInstructions(), null, this);
-
-        this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
-        //this.playMusic();
-        //this.showPlayer();
+      this.width = this.sys.game.config.width;
+      this.height = this.sys.game.config.height;
+      this.center_width = this.width / 2;
+      this.center_height = this.height / 2;
+      this.add.tileSprite(0, 0, 1800, 1800, "background").setOrigin(0.5);
+      this.cameras.main.setBackgroundColor(0xffffff);
+      this.wordle = new Wordle("opera")
+      this.guess = "";
+      this.enabled = true;
+      
+      this.addTitle();
+      this.addStartButton();
+      this.addWalls();
+      this.addPenguin();
+      this.loadAudios(); 
+      this.playAudio("splash")
+      // this.playMusic();
     }
 
-    startGame () {
-        if (this.theme) this.theme.stop();
-        this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
+    addTitle() {
+      this.add.bitmapText(this.center_width, this.center_height, "pixelFont", "WORDLE", 50).setOrigin(0.5).setDropShadow(3, 4, 0x222222, 0.7);
+      this.add.bitmapText(this.center_width, this.center_height + 600, "pixelFont", "By PELLO", 20).setOrigin(0.5);
     }
 
-    showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
-        this.tweens.add({
-            targets: this.gameLogo,
-            duration: 1000,
-            x: {
-              from: this.center_width * 2,
-              to: this.center_width
-            },
-            y: {
-                from: -200,
-                to: 130
-              },
-          })
+    addStartButton () {
+      this.startButton = this.add.bitmapText(this.center_width, this.center_height + 150, "pixelFont", "START", 40).setOrigin(0.5).setDropShadow(3, 4, 0x222222, 0.7);
+      this.startButton.setInteractive();
+      this.startButton.on('pointerdown', () => {
+        this.finishScene();
+      });
+
+      this.startButton.on('pointerover', () => {
+        this.startButton.setTint(0x3E6875)
+      });
+
+      this.startButton.on('pointerout', () => {
+        this.startButton.setTint(0xffffff)
+      });
     }
 
-    showPlayer () {
-
+    addWalls() {
+      for (let i = 0; i < 16; i++) {
+        this.add.sprite(30, i * 64, "block" + Phaser.Math.Between(0, 1));
+        this.add.sprite(468, i * 64, "block" + Phaser.Math.Between(0, 1));
+      }
     }
+      loadAudios () {
+        this.audios = {
+          "splash": this.sound.add("splash"),
+          "match": this.sound.add("match"),
+        };
+      }
 
-    playMusic (theme="splash") {
+      playAudio(key) {
+        this.audios[key].play();
+      }
+
+      playMusic (theme="game") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
@@ -60,21 +90,16 @@ export default class Splash extends Phaser.Scene {
           delay: 0
       })
       }
-  
 
-    showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: track beam", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "pixelFont", "B: shoot coins", 30).setOrigin(0.5);
-        this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Press SPACE to start", 30).setOrigin(0.5);
-        this.tweens.add({
-            targets: this.space,
-            duration: 300,
-            alpha: {from: 0, to: 1},
-            repeat: -1,
-            yoyo: true
-        });
+    update() {
+    }
+
+    addPenguin () {
+      this.penguin = new Penguin(this, this.center_width, this.center_height + 100)
+    }
+
+    finishScene () {
+      this.playAudio("match")
+      this.scene.start("game", {next: "underwater", name: "STAGE", number: this.number + 1});
     }
 }

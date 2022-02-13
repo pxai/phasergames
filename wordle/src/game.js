@@ -24,11 +24,13 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
+      this.add.tileSprite(0, 0, 1800, 1800, "background").setOrigin(0.5);
       this.cameras.main.setBackgroundColor(0xffffff);
       this.wordle = new Wordle("opera")
       this.guess = "";
       this.enabled = true;
       
+      this.addTitle();
       this.addSteps();
       this.addWalls();
       this.addPenguin();
@@ -37,6 +39,10 @@ export default class Game extends Phaser.Scene {
 
       this.loadAudios(); 
       // this.playMusic();
+    }
+
+    addTitle() {
+      this.add.bitmapText(this.center_width, 40, "pixelFont", "WORDLE", 40).setOrigin(0.5).setDropShadow(3, 4, 0x222222, 0.7);
     }
 
     addWalls() {
@@ -52,6 +58,8 @@ export default class Game extends Phaser.Scene {
           "almost": this.sound.add("almost"),
           "key": this.sound.add("key"),
           "over": this.sound.add("over"),
+          "victory": this.sound.add("victory"),
+          "defeat": this.sound.add("defeat"),
         };
 
         this.colorKeys = {
@@ -146,17 +154,28 @@ export default class Game extends Phaser.Scene {
     }
 
     showResult (points = 0) {
-      const color = this.wordle.outcome === "win" ? 0x00ff00 : 0xff0000;
-      this.resultText.setText(this.wordle.outcome).setAlpha(1).setTint(color);
       if (this.wordle.outcome === "lose") {
         this.showAnswer();
-      }
+        return;
+      } 
+
+      this.penguin.play("playerjump", true)
+      this.playAudio("victory")
+      this.resultText.setText(this.wordle.outcome).setAlpha(1).setTint(0xffffff).setScale(2).setDropShadow(3, 4, 0x222222, 0.7);
+      this.tweens.add({
+        targets: this.resultText,
+        scale: { from : 2, to: 3},
+        repeat: -1,
+        duration: 500,
+        yoyo: true
+      })
     }
 
     showAnswer() {
       Array(5).fill(0).forEach((_, i) => {
         new Step(this, 56 + (64 * i), 540, this.wordle.word.charAt(i));
       })
+      this.playAudio("defeat")
       this.penguin.y = 514;
       this.penguin.anims.play("playerground", true);
     }
