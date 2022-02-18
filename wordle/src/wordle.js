@@ -50,7 +50,6 @@ export default class Wordle {
     }
 
     setOutcome () {
-        console.log(this.nope.length,this.attempts,this.current+1)
         if (this.nope.length === 0)
             this.outcome = "win";
         else if (this.current+1 === this.attempts)

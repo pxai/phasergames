@@ -2,6 +2,9 @@ import Key from "./key";
 import Step from "./step";
 import Wordle from "./wordle";
 import Penguin from "./penguin";
+import getParameters from "./get_params";
+import words from "./words";
+
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -26,7 +29,10 @@ export default class Game extends Phaser.Scene {
       this.center_height = this.height / 2;
       this.add.tileSprite(0, 0, 1800, 1800, "background").setOrigin(0.5);
       this.cameras.main.setBackgroundColor(0xffffff);
-      this.wordle = new Wordle("opera")
+
+      this.loadWord();
+
+      this.wordle = new Wordle(this.wordToGuess)
       this.guess = "";
       this.enabled = true;
       
@@ -39,6 +45,13 @@ export default class Game extends Phaser.Scene {
 
       this.loadAudios(); 
       // this.playMusic();
+    }
+
+    loadWord () {
+      const lang = getParameters().get("lang") || "en";
+      const today = `${new Date().getFullYear()}-${("0" + (new Date().getMonth()+1)).slice(-2)}-${("0" + new Date().getDate()).slice(-2)}`;
+      console.log("Loading ", lang, today)
+      this.wordToGuess = words[lang][today];
     }
 
     addTitle() {
