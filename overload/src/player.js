@@ -1,6 +1,6 @@
 
 //import { LightParticle } from "./particle";
-import Shot from "./shot";
+import Explosion from "./explosion";
 
 class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, name = "player") {
@@ -10,8 +10,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.id = Math.random();
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.body.setCollideWorldBounds(true);
-        this.body.setAllowGravity(false);
+        this.body.setAllowGravity(true);
         this.body.setCircle(26);
         this.body.setOffset(6, 9)
         this.power = 0;
@@ -53,7 +52,7 @@ class Player extends Phaser.GameObjects.Sprite {
     shoot () {
       //  this.scene.playAudio("shot")
      // this.shootingPatterns.shoot(this.x, this.y, this.powerUp)
-     this.scene.shots.add(new Shot(this.scene, this.x, this.y))
+     this.scene.explosions.add(new Explosion(this.scene, this.x, this.y + 50))
     }
 
 
@@ -63,11 +62,8 @@ class Player extends Phaser.GameObjects.Sprite {
             this.x -= 5;
             //this.anims.play(this.name + "left", true)
         } else if (this.cursor.right.isDown) {
-            this.x += 5;
+            this.x += 10;
            // this.anims.play(this.name + "right", true)
-        } else {
-            //this.anims.play(this.name , true)
-        
         }
     
         if (this.cursor.up.isDown) {
@@ -108,6 +104,8 @@ class Player extends Phaser.GameObjects.Sprite {
         super.destroy();
     }     
 }
+
+
 
 
 export default Player;
