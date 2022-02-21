@@ -1,5 +1,4 @@
 import Block from "./block";
-import BlockGenerator from "./block_generator"
 import Player from "./player";
 
 export default class Game extends Phaser.Scene {
@@ -26,9 +25,9 @@ export default class Game extends Phaser.Scene {
 
       this.addBoundLayer();
       this.addLands();
-      this.addLetters();
-
-      //this.cameras.main.startFollow(this.player)
+      this.addPlayer();
+      this.cameras.main.startFollow(this.player)
+      this.acc = 0;
 
       //this.loadAudios(); 
       // this.playMusic();
@@ -48,7 +47,7 @@ export default class Game extends Phaser.Scene {
 
       this.createPool();
 
-      this.growLand(32);
+      this.growLand(400);
 
       this.physics.add.overlap(this.shots, this.breakableBlocks, this.shotBlock, ()=>{
         return true;
@@ -60,58 +59,6 @@ export default class Game extends Phaser.Scene {
       this.physics.add.overlap(this.boundLayer, this.blocks, this.destroyBlock, ()=>{
         return true;
       }, this);
-    }
-
-    addLetters() {
-      this.letters = this.add.group();
-      this.explosions = this.add.group();
-      this.leftColliders = this.add.group();
-      this.rightColliders = this.add.group();
-      this.blockGenerator = new BlockGenerator(this);
-
-      this.physics.add.collider(this.letters, this.blocks, this.hitBlock, ()=>{
-        return true;
-      }, this);
-
-      this.physics.add.collider(this.letters, this.breakableBlocks, this.hitBlock, ()=>{
-        return true;
-      }, this);
-
-      this.physics.add.collider(this.letters, this.letters, this.hitBalls, ()=>{
-        return true;
-      }, this);
-
-      this.physics.add.collider(this.rightColliders, this.leftColliders, this.joinRightLeftLetter, ()=>{
-        return true;
-      }, this);
-
-      this.physics.add.collider(this.leftColliders, this.rightColliders, this.joinLeftRightLetter, ()=>{
-        return true;
-      }, this);
-
-      this.blockGenerator.generate();
-    }
-
-    joinRightLeftLetter(right, left) {
-      console.log("PArent: ", right.parentContainer.letter, " with: " , left.parentContainer.letter)
-      if (right.parentContainer.sticky)
-        right.parentContainer.joinRight(left.parentContainer);
-    }
-
-    joinLeftRightLetter(right, left) {
-      if (right.parentContainer.sticky)
-        right.parentContainer.joinLeft(left.parentContainer);
-    }
-
-    explode(ball, explosion) {
-      ball.react();
-    }
-
-    hitBalls (ball, player) {
-      
-    }
-
-    hitBlock (ball, block) {
     }
 
     destroyBlock(layer, block) {
@@ -136,19 +83,10 @@ export default class Game extends Phaser.Scene {
         this.blocks.add(block1)
         this.blocks.add(block2);
       }
-
-      for (i = 0; i < length; i++) {
-        let block1 = this.freeBlock().reuse(0, (i * 32), true, 1, false)
-        let block2 = this.freeBlock().reuse(1000, (i * 32), true, -1, false)
-        this.blocks.add(block1)
-        this.blocks.add(block2);
-      }
-
       this.growStart += length * 32;
     }
 
     onWorldBounds (body, t) {
-      console.log("World bound!! ", body.gameObject.name)
       const name = body.gameObject.name.toString();
 
       if (["block0", "block1" ,"shot"].includes(name)) {
@@ -200,7 +138,15 @@ export default class Game extends Phaser.Scene {
       }
 
     update(delta, time) {
-      if (this.player) this.player.update();
+      this.player.update();
+
+      this.boundLayer.x += 5;
+      this.acc += delta;
+      if (this.acc > 3_00_000) {
+        this.growLand(1)
+        console.log( this.acc)
+        this.acc = 0;
+      }
     }
 
   

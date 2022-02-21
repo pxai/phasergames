@@ -9,7 +9,7 @@ export default class Bootloader extends Phaser.Scene {
             "progress",
             function (value) {
                 this.progressBar.clear();
-                this.progressBar.fillStyle(0x88d24c, 1);
+                this.progressBar.fillStyle(0x4d4d4d, 1);
                 this.progressBar.fillRect(
                     this.cameras.main.width / 4,
                     this.cameras.main.height / 2 - 16,
@@ -20,15 +20,23 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("game");
+            this.scene.start("splash");
         },this);
 
-       /* Array(7).fill(0).forEach((_,i) => {
-            this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
-        });*/
+        this.load.audio("bump", "assets/sounds/bump.mp3");
+        this.load.audio("change", "assets/sounds/change.mp3");
+        this.load.audio("fail", "assets/sounds/fail.mp3");
+        this.load.audio("join", "assets/sounds/join.mp3");
+        this.load.audio("resolve", "assets/sounds/resolve.mp3");
+        this.load.audio("success", "assets/sounds/success.mp3");
+        this.load.audio("spawn", "assets/sounds/spawn.mp3");
+        this.load.audio("gameover", "assets/sounds/gameover.mp3");
+        this.load.audio("intro", "assets/sounds/intro.mp3");
+        this.load.audio("music", "assets/sounds/music.mp3");
+        this.load.image("pello", "assets/images/pello.png");
 
-        //this.load.image("logo", "assets/images/logo.png");
-        // this.load.audio("beam", "assets/sounds/beam.mp3");
+        this.load.image("background", "assets/images/background.png");
+        this.load.image("star", "assets/images/star.png");
         this.load.image("letter", "assets/images/letter.png");
         this.load.image("block0", "assets/images/block0.png");
         this.load.image("block1", "assets/images/block1.png");
@@ -47,7 +55,7 @@ export default class Bootloader extends Phaser.Scene {
 
     createBars () {
         this.loadBar = this.add.graphics();
-        this.loadBar.fillStyle(0x008483, 1);
+        this.loadBar.fillStyle(0xcccccc, 1);
         this.loadBar.fillRect(
             this.cameras.main.width / 4 - 2,
             this.cameras.main.height / 2 - 18,

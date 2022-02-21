@@ -28,8 +28,6 @@ export default class Transition extends Phaser.Scene {
         this.add.bitmapText(this.center_width, this.center_height - 20, "pixelFont", messages[this.next], 40).setOrigin(0.5)
         this.add.bitmapText(this.center_width, this.center_height + 20, "pixelFont", "Ready?", 30).setOrigin(0.5)
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
-
-        setTimeout(() => this.loadNext(), 3000);
     }
 
     update () {

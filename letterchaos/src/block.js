@@ -34,11 +34,8 @@ export default class Block extends Phaser.GameObjects.Sprite {
     }
 
     maybeChange () {
-        console.log("Maybe?",this.below, this.scene)
         if ((!this.below || !this.below.active)&& !this.fixed && Phaser.Math.Between(0, 4) > 2) {
-            console.log("Gone!", this)
             this.destroy()
-            console.log("Then:", this)
             return;
         }
 
@@ -58,13 +55,9 @@ export default class Block extends Phaser.GameObjects.Sprite {
     }
 
     drop () {
-        console.log("Lets see")
         if (!this.below) return;
-        console.log("Ok, not null")
         this.below.body.moves = true;
         this.below.body.immovable = false;
-
-        console.log("Going down")
         this.below.drop();
     }
 }
