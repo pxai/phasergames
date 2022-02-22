@@ -30,7 +30,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     addLetters () {
-        const points = [1, 1, 1, 1, 1];
+        const points = [1, 1, 1, 1, 1, 1];
         "LETTER".split("").forEach((letter, i) => {
             this.add.existing(new SingleLetter(this, 154 * (i + 1) - 30, 150, { letter, points: points[i]}).setScale(3.2));
         })

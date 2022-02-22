@@ -1,5 +1,6 @@
 import StarBurst from "./starburst";
 import LETTERS from "./letters";
+import { Particle } from "./particle";
 
 export default class Letter extends Phaser.GameObjects.Container {
     constructor (scene, x, y, letter = "", demo = false) {
@@ -66,17 +67,24 @@ export default class Letter extends Phaser.GameObjects.Container {
                 this.scene.playAudio("bump");
             }
         });
+
+        this.scene.input.on('dragstart', function (pointer, gameObject) {
+            gameObject.changeSticky(true);
+            gameObject.changeLetterColor();
+        });
     
         this.scene.input.on('drag', function (pointer, gameObject, dragX, dragY) {
             gameObject.changeSticky(true);
             gameObject.x = dragX;
             gameObject.y = dragY;
-            gameObject.body.setVelocityX(0)
-            gameObject.body.setVelocityY(0)
+            gameObject.body.setVelocityX(0);
+            gameObject.body.setVelocityY(0);
+            new Particle(this.scene, gameObject.x, gameObject.y);
         });
 
         this.scene.input.on('dragend', function (pointer, gameObject) {
             gameObject.changeSticky(false);
+            gameObject.changeLetterColor(0xffffff);
             gameObject.body.setVelocityX(gameObject.velocityX);
             gameObject.body.setVelocityY(gameObject.velocityY);
         });
@@ -116,7 +124,7 @@ export default class Letter extends Phaser.GameObjects.Container {
             }
         })
 
-
+        this.changeLetterColor(0xffffff);
         this.body.setSize(48 * this.letterLength , 46)
         this.body.setOffset(-48 * (this.letterLength-1),0)
         this.input.hitArea.x -= 48 * leftCount;
@@ -133,7 +141,7 @@ export default class Letter extends Phaser.GameObjects.Container {
             }
         })
 
-
+        this.changeLetterColor(0xffffff);
         this.body.setSize(48 * this.letterLength , 46)
         this.input.hitArea.setSize(48 * this.letterLength, 48)
     }
@@ -189,6 +197,13 @@ export default class Letter extends Phaser.GameObjects.Container {
      randomLetter () {
         const letters = LETTERS["en"];
         return letters[Phaser.Math.Between(0, letters.length - 1)];
+    }
+
+    changeLetterColor (color = 0xfcae1e) {
+        const letters = this.getAll("name", "SingleLetter");
+        letters.forEach( singleLetter => {
+            singleLetter.squareBack.setFillStyle(color);
+        })
     }
 }
 

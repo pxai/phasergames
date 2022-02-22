@@ -34,30 +34,8 @@ export default class Game extends Phaser.Scene {
     }
 
     addScore () {
-      this.scoreText = this.add.bitmapText(this.center_width, this.height - 48, "pixelFont", String(this.registry.get("score")).padStart(6, '0'), 50).setOrigin(0.5).setScrollFactor(0)
-      this.letterText = this.add.bitmapText(this.width - 100, this.height - 48, "pixelFont", "1", 30).setOrigin(0.5)
-    }
-
-    addLands () {
-      this.shots = this.add.group();
-      this.breakableBlocks = this.add.group();
-      this.blocks = this.add.group();
-      this.growStart = 0;
-
-      this.createPool();
-
-      this.growLand(32);
-
-      this.physics.add.overlap(this.shots, this.breakableBlocks, this.shotBlock, ()=>{
-        return true;
-      }, this);
-
-      this.physics.add.overlap(this.boundLayer, this.breakableBlocks, this.destroyBlock, ()=>{
-        return true;
-      }, this);
-      this.physics.add.overlap(this.boundLayer, this.blocks, this.destroyBlock, ()=>{
-        return true;
-      }, this);
+      this.scoreText = this.add.bitmapText(this.center_width, this.height - 48, "pixelFont", String(this.registry.get("score")).padStart(6, '0'), 50).setOrigin(0.5).setDropShadow(3, 4, 0x222222, 0.7)
+      this.letterText = this.add.bitmapText(this.width - 100, this.height - 48, "pixelFont", "1", 30).setOrigin(0.5).setDropShadow(2, 3, 0x222222, 0.7)
     }
 
     addLetters() {
@@ -95,6 +73,7 @@ export default class Game extends Phaser.Scene {
         right.parentContainer.joinRight(left.parentContainer);
         this.playAudio("join");
         left.parentContainer.destroy();
+        this.showResolveMessage(right.parentContainer);
       }
     }
 
@@ -103,6 +82,7 @@ export default class Game extends Phaser.Scene {
         right.parentContainer.joinLeft(left.parentContainer);
         this.playAudio("join");
         left.parentContainer.destroy();
+        this.showResolveMessage(right.parentContainer);
       }
     }
 
@@ -110,7 +90,7 @@ export default class Game extends Phaser.Scene {
       ball.react();
     }
 
-    hitBalls (ball, player) {
+    hitBalls (ball1, ball2) {
       this.playAudio("bump");
     }
 
@@ -124,25 +104,6 @@ export default class Game extends Phaser.Scene {
 
     freeBlock () {
       return Phaser.Math.RND.pick(this.blockPool.filter(block => block.free))
-    }
-
-    growLand(length = 5) {
-      let i = 0;
-      for (i = 0; i < length; i++) {
-        let block1 = this.freeBlock().reuse(this.growStart + (i * 32), 32, true, 1, false)
-        let block2 = this.freeBlock().reuse(this.growStart + (i * 32), 700, true, -1, false)
-        this.blocks.add(block1)
-        this.blocks.add(block2);
-      }
-
-      for (i = 0; i < length; i++) {
-        let block1 = this.freeBlock().reuse(0, (i * 32), true, 1, false)
-        let block2 = this.freeBlock().reuse(1000, (i * 32), true, -1, false)
-        this.blocks.add(block1)
-        this.blocks.add(block2);
-      }
-
-      this.growStart += length * 32;
     }
 
       loadAudios () {
@@ -166,7 +127,7 @@ export default class Game extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.7,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -206,6 +167,36 @@ export default class Game extends Phaser.Scene {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
         this.scoreText.setText(String(score).padStart(6, '0'));
+        this.tweens.add({
+          targets: this.scoreText,
+          duration: 50,
+          scale: {from: 1.2, to: 1},
+          repeat: 10
+        })
+    }
+
+    showResolveMessage(letterContainer) {
+      const {word, points} = letterContainer.getWord();
+      if (words.includes(word.toLowerCase())) {
+        const resolveWord = this.add.bitmapText(letterContainer.x, letterContainer.y, "pixelFont", "+" + points, 25).setDropShadow(2, 3, 0x222222, 0.7).setOrigin(0.5);
+        this.tweens.add({
+          targets: letterContainer,
+          scale: { from: 1.2, to: 1 },
+          duration: 50,
+          repeat: 5,
+          onComplete: () => { letterContainer.changeLetterColor(0x77dd77); }
+        });
+        this.tweens.add({
+          targets: resolveWord,
+          duration: 1000,
+          y: { from: resolveWord.y - 20, to: resolveWord.y - 120},
+          alpha: { from: 1, to: 0.2},
+          onComplete: () => { resolveWord.destroy(); this.updateLetterCount(); }
+        })
+      } else {
+        letterContainer.changeLetterColor(0xffffff);
+      }
+
     }
 
     checkWord(letterContainer) {
@@ -222,12 +213,14 @@ export default class Game extends Phaser.Scene {
           y: "+=10",
           repeat: 10,
           onComplete: () => {
+            this.cameras.main.shake(25 * (hay.length));
             this.playAudio("success");
             this.updateScore(letterContainer.getWord().points);
             letterContainer.clearWord();
             letterContainer.destroy();
           }
         })
+        
         const winnerWord = this.add.bitmapText(letterContainer.x, letterContainer.y, "pixelFont", hay + " +" + points, 35).setDropShadow(2, 3, 0x222222, 0.7).setOrigin(0.5);
         this.tweens.add({
           targets: winnerWord,
@@ -237,7 +230,17 @@ export default class Game extends Phaser.Scene {
           onComplete: () => { winnerWord.destroy() }
         })
       } else {
-        this.playAudio("fail");
+        this.tweens.add({
+          targets: letterContainer,
+          duration: 25,
+          x: "+=10",
+          y: "+=10",
+          repeat: 5,
+          onComplete: () => {
+            this.playAudio("fail");
+          }
+        })
+        
       }
     }
 }
