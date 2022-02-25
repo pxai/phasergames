@@ -1,6 +1,7 @@
 import Block from "./block";
 import BlockGenerator from "./block_generator"
 import words from "./words";
+import Letter from "./letter";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -70,19 +71,36 @@ export default class Game extends Phaser.Scene {
 
     joinRightLeftLetter(right, left) {
       if (right.parentContainer.sticky) {
-        right.parentContainer.joinRight(left.parentContainer);
+
+        const allLetters = right.parentContainer.getLetters().concat(left.parentContainer.getLetters());
+
+        const first = allLetters.shift();
+
+        const letter = new Letter(this, right.parentContainer.x, right.parentContainer.y, first);
+        letter.addLetters(allLetters);
+
+        this.letters.add(letter)
         this.playAudio("join");
         left.parentContainer.destroy();
-        this.showResolveMessage(right.parentContainer);
+        right.parentContainer.destroy();
+        this.showResolveMessage(letter);
       }
     }
 
     joinLeftRightLetter(right, left) {
       if (right.parentContainer.sticky) {
-        right.parentContainer.joinLeft(left.parentContainer);
+        const allLetters = left.parentContainer.getLetters().concat(right.parentContainer.getLetters());
+        
+        const first = allLetters.shift();
+
+        const letter = new Letter(this, right.parentContainer.x, right.parentContainer.y, first);
+        letter.addLetters(allLetters);
+        this.letters.add(letter)
+
         this.playAudio("join");
         left.parentContainer.destroy();
-        this.showResolveMessage(right.parentContainer);
+        right.parentContainer.destroy();
+        this.showResolveMessage(letter);
       }
     }
 
@@ -114,7 +132,8 @@ export default class Game extends Phaser.Scene {
           "join": this.sound.add("join"),
           "resolve": this.sound.add("resolve"),
           "success": this.sound.add("success"),
-          "spawn": this.sound.add("spawn")
+          "spawn": this.sound.add("spawn"),
+          "disable": this.sound.add("disable")
         };
       }
 

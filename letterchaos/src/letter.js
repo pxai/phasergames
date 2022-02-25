@@ -56,10 +56,19 @@ export default class Letter extends Phaser.GameObjects.Container {
             if (pointer.rightButtonDown() && this.letterLength === 1 && this.change < 3) {
                 const letter = this.getByName("SingleLetter");
                 letter.setLetter(this.randomLetter())
+                this.scene.tweens.add({
+                    targets: this,
+                    duration: 30,
+                    x: "+=5",
+                    y: "+=5",
+                    repeat: 3
+                });
+                new StarBurst(this.scene, this.x, this.y + 50, "0xffffff", false)
                 this.scene.playAudio("change");
                 this.change++;
             } else if (pointer.rightButtonDown() && this.letterLength === 1 && this.change >= 3) {
                 const letter = this.getByName("SingleLetter");
+                this.scene.playAudio("disable");
                 letter.list[0].fillColor = 0xdddddd;
             } else if (pointer.rightButtonDown() && this.letterLength > 1) {
                 this.scene.checkWord(this);
@@ -93,6 +102,35 @@ export default class Letter extends Phaser.GameObjects.Container {
 
     }
 
+    addLetters(letters) {
+        letters.forEach((letter, i) => {
+            this.add(new SingleLetter(this.scene, 48 * this.letterLength, 0, letter))
+            this.leftCollider.x += 48;
+            this.letterLength++;
+        })
+
+        this.changeLetterColor(0xccddccf);
+        this.removeInteractive();
+        this.setSize(48 * this.letterLength, 48)
+        this.body.setSize(48 * this.letterLength , 46)
+        this.body.setOffset(24 * (this.letterLength - 1),0)
+
+        this.setInteractive();
+        this.input.hitArea.setTo(24 * (this.letterLength-1), 0, 48 * this.letterLength, 48);
+        this.leftCollider.x = -24;
+        this.rightCollider.x = (48 * this.letterLength) - 24;
+        this.setDrag();
+
+        new StarBurst(this.scene, this.x, this.y - 50, "0xffffff", false, true)
+        this.scene.tweens.add({
+            targets: this,
+            duration: 50,
+            x: "+=7",
+            y: "+=7",
+            repeat: 5
+        });
+    }
+
     addSideColliders() {
         this.leftCollider = new Phaser.GameObjects.Rectangle(this.scene, -24, 0, 4, 42, 0x00ff00).setOrigin(0.5)
         this.scene.physics.add.existing(this.leftCollider);
@@ -111,41 +149,6 @@ export default class Letter extends Phaser.GameObjects.Container {
         this.square.setFillStyle(color);
     }
 
-    joinLeft (leftContainer) {
-        let leftCount = 0;
-        leftContainer.reverse();
-        leftContainer.iterate( singleLetter => {
-            if (singleLetter.type === 'Container') {
-                new StarBurst(this.scene, leftContainer.x, leftContainer.y - 50, "0xffffff", false)
-                this.addAt(new SingleLetter(this.scene, -48 * this.letterLength, 0, singleLetter.letter), 0)
-                this.letterLength++;
-                this.leftCollider.x -= 48;
-                leftCount++;
-            }
-        })
-
-        this.changeLetterColor(0xffffff);
-        this.body.setSize(48 * this.letterLength , 46)
-        this.body.setOffset(-48 * (this.letterLength-1),0)
-        this.input.hitArea.x -= 48 * leftCount;
-        this.input.hitArea.setSize(48 * this.letterLength, 48)
-    }
-
-    joinRight (rightContainer) {
-        rightContainer.iterate( singleLetter => {
-            if (singleLetter.type === 'Container') {
-                new StarBurst(this.scene, rightContainer.x, rightContainer.y - 50, "0xffffff", false)
-                this.addAt(new SingleLetter(this.scene, 48 * this.letterLength, 0, singleLetter.letter), this.letterLength)
-                this.letterLength++;
-                this.rightCollider.x += 48;
-            }
-        })
-
-        this.changeLetterColor(0xffffff);
-        this.body.setSize(48 * this.letterLength , 46)
-        this.input.hitArea.setSize(48 * this.letterLength, 48)
-    }
-
     getWord () {
         let word = "";
         let points = 0;
@@ -161,6 +164,18 @@ export default class Letter extends Phaser.GameObjects.Container {
             word,
             points
         };
+    }
+
+    getLetters () {
+        let letters = [];
+
+        this.iterate( singleLetter => {
+            if (singleLetter.type === 'Container') {
+                letters.push(singleLetter.letter)
+            }
+        })
+
+        return letters;
     }
 
     changeSticky (value) {
@@ -187,7 +202,7 @@ export default class Letter extends Phaser.GameObjects.Container {
          this.iterate(child => {
             if (child.type === 'Container') {
                 //(scene, x, y, color = "0xffffff", launch = false, multi = false)
-                new StarBurst(this.scene, this.x + (i*48), this.y, "0xffffff", false, true)
+                new StarBurst(this.scene, this.x + (i*48), this.y, "0xffffff", true, true)
             }
              child.destroy();
              i++;
