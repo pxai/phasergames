@@ -14,7 +14,7 @@ export default class Splash extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.cameras.main.setBackgroundColor(0x888888);
+        this.addBackground();
         this.addLetters();
 
         this.time.delayedCall(300, () => this.showInstructions(), null, this);
@@ -27,6 +27,10 @@ export default class Splash extends Phaser.Scene {
         this.add.bitmapText(this.center_width, 150, "visitor", "ELECTRON", 160).setDropShadow(0, 10, 0x222222, 0.9).setOrigin(0.5);
     }
 
+    addBackground () {
+        this.background = this.add.tileSprite(0, 0, this.width, this.height, "background").setOrigin(0).setScrollFactor(0, 1); 
+      }
+
     addPlayer() {
         this.trailLayer = this.add.layer();
         this.player = new Player(this, this.center_width, this.center_height)
@@ -36,6 +40,8 @@ export default class Splash extends Phaser.Scene {
 
     update () {
         this.player.update();
+        this.background.tilePositionY -= 2;
+        this.background.tilePositionX += 2;
     }
     startGame () {
         this.scene.start("transition")

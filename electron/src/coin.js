@@ -25,6 +25,20 @@ export default class Coin extends Phaser.GameObjects.Sprite {
         }, null, this)
     }
 
+    showPoints () {
+        let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "visitor", "+1", 30).setDropShadow(0, 3, 0x222222, 0.9).setTint(0xffffff).setOrigin(0.5);
+        this.scene.tweens.add({
+            targets: text,
+            duration: 800,
+            alpha: {from: 1, to: 0},
+            y: {from: this.y - 20, to: this.y - 80},
+            onComplete: () => {
+                text.destroy()
+            }
+        });
+    }
+
+
     destroy(picked = false) {
         this.delayBoom.destroy();
         super.destroy();

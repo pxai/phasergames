@@ -103,6 +103,7 @@ export default class Game extends Phaser.Scene {
     }
 
     pickCoin(player, coin) {
+      coin.showPoints();
       coin.destroy(true);
       this.playAudio("coin", 1)
       this.updateCoins();
@@ -111,7 +112,7 @@ export default class Game extends Phaser.Scene {
     hitPlayerParticle0(player, particle) {
       new Explosion(this, particle.x, particle.y, particle.type)
 
-      this.updateLife(-300)
+      this.updateLife(-30)
       particle.destroy();
       this.playAudio("hit");
       this.cameras.main.shake(200);

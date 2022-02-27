@@ -8,15 +8,12 @@ export default class ParticlGenerator {
 
     generate () {
         this.scene.time.addEvent({ 
-            delay: 1000, 
+            delay: 800, 
             callback: () => { 
                 let particle = new Particle(this.scene, Phaser.Math.Between(0, this.scene.width), 100)
                 this.scene.particles[particle.type].add(particle)
                 this.scene.playRandomizedAudio("spawn");
                 this.addCoins();
-                //let letter = new Letter(this.scene,this.scene.center_width, 128, this.randomLetter());
-               // this.scene.playAudio("spawn");
-                //new StarBurst(this.scene, letter.x, letter.y, "0xffffff", true, false)
             }, 
             callbackScope: this, 
             loop: true 

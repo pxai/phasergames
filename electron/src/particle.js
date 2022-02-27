@@ -22,14 +22,20 @@ export class Particle extends Phaser.GameObjects.Container {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.body.setVelocityY(velocityY);
+
         this.body.setAllowGravity(false);
         this.body.setCollideWorldBounds(true);
         this.body.onWorldBounds = true;
         this.body.setCircle(16);
         this.body.setOffset(-16, -16)
 
-        const type = startType ? startType : Object.keys(TYPES)[Phaser.Math.Between(0, Object.keys(TYPES).length - 3)]
+        const type = startType ? startType : "particle" + this.getRandomType()
+        if (type === "particle1") {
+            this.body.setVelocityY(velocityY);
+        } else {
+            this.scene.physics.moveTo(this, this.scene.player.x, this.scene.player.y, 300);
+        }
+           
 
         const { color, radius, intensity } = TYPES[type];
         this.type = type;
@@ -41,6 +47,17 @@ export class Particle extends Phaser.GameObjects.Container {
 
 
         this.init();
+   }
+
+   getRandomType() {
+       const number = Phaser.Math.Between(0, 100);
+       if (number < 40) {
+            return 2;
+       } else if (number >= 40 && number <= 75) {
+            return 0;
+       } else {
+           return 1;
+       }
    }
 
    getTypes () {

@@ -42,6 +42,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("coinboom", "assets/sounds/coinboom.mp3");
         this.load.audio("music", "assets/sounds/music.mp3");
 
+        this.load.image("background", "assets/images/background.png");
         this.load.image("stage1", "assets/images/stage1.png");
         this.load.image("pello", "assets/images/pello.png");
         this.load.image("evil", "assets/images/evil.png");
