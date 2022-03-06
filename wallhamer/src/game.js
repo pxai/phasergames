@@ -3,6 +3,8 @@ import { Debris } from "./particle";
 import Bat from "./bat";
 import Snake from "./snake";
 import Turn from "./turn";
+import Coin from "./coin";
+import LunchBox from "./lunchbox";
 import Platform from "./platform";
 
 export default class Game extends Phaser.Scene {
@@ -36,8 +38,20 @@ export default class Game extends Phaser.Scene {
 
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 100);
       this.physics.world.enable([ this.player ]);
+      this.addScore();
       //this.loadAudios(); 
       // this.playMusic();
+    }
+
+    addScore() {
+      this.scoreCoins = this.add.bitmapText(75, 10, "pixelFont", "x0", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.scoreCoinsLogo = this.add.sprite(50, 25, "coin").setScale(1).setOrigin(0.5).setScrollFactor(0)
+      const coinAnimation = this.anims.create({
+        key: "coin",
+        frames: this.anims.generateFrameNumbers("coin", { start: 0, end: 13 }, ),
+        frameRate: 8,
+      });
+      this.scoreCoinsLogo.play({ key: "coin", repeat: -1 });
     }
 
     createMap() {
@@ -57,6 +71,7 @@ export default class Game extends Phaser.Scene {
       this.turnGroup = this.add.group();
       this.exitGroup = this.add.group();
       this.platformGroup = this.add.group();
+      this.lunchBoxGroup = this.add.group();
       this.bricks = this.add.group();
 
       this.objectsLayer.objects.forEach( object => {
@@ -78,6 +93,10 @@ export default class Game extends Phaser.Scene {
 
         if (object.name === "turn") {
           this.turnGroup.add(new Turn(this, object.x, object.y))
+        }
+
+        if (object.name === "lunchbox") {
+          this.lunchBoxGroup.add(new LunchBox(this, object.x, object.y))
         }
 
         if (object.name === "exit") {
@@ -110,12 +129,14 @@ export default class Game extends Phaser.Scene {
       foe.turn();
     }
 
+
     hitFloor() {
 
     }
 
     addPlayer() {
       this.elements = this.add.group();
+      this.coins = this.add.group();
 
       const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
       this.player = new Player(this, playerPosition.x, playerPosition.y, 0);
@@ -129,6 +150,14 @@ export default class Game extends Phaser.Scene {
       }, this);
   
       this.physics.add.collider(this.player, this.bricks, this.hitFloor, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.player, this.coins, this.pickCoin, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.player, this.lunchBoxGroup, this.pickLunchBox, ()=>{
         return true;
       }, this);
   
@@ -152,6 +181,10 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
+      this.physics.add.overlap(this.bricks, this.foesGroup, this.foeBlowBrick, ()=>{
+        return true;
+      }, this);
+
       this.physics.add.collider(this.player, this.batGroup, this.hitPlayer, ()=>{
         return true;
       }, this);
@@ -162,6 +195,19 @@ export default class Game extends Phaser.Scene {
 
     }
 
+    pickCoin (player, coin) {
+      if (!coin.disabled) {
+        coin.pick();
+        this.updateCoins();
+      }
+    }
+
+    pickLunchBox (player, lunchBox) {
+      if (!lunchBox.disabled) {
+        lunchBox.pick();
+      }
+    }
+
     hitPlayer(player, foe) {
       player.die();
     }
@@ -170,12 +216,26 @@ export default class Game extends Phaser.Scene {
       foe.destroy();
     }
 
+    foeBlowBrick(brick, foe) {
+      foe.turn();
+      Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, brick.x, brick.y))
+      brick.destroy();
+    }
+
     blowPlatform (blow, platform) {
       const tile = this.getTile(platform)
       if (this.isBreakable(tile)) {
         blow.destroy();
         Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY))
         this.platform.removeTileAt(tile.x, tile.y);
+        this.spawnCoin(tile)
+      }
+    }
+
+    spawnCoin(tile) {
+      if (Phaser.Math.Between(0, 11) > 5) {
+        console.log("Here we go")
+        this.coins.add(new Coin(this, tile.pixelX, tile.pixelY))
       }
     }
 
@@ -258,5 +318,17 @@ export default class Game extends Phaser.Scene {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
         this.scoreText.setText(Number(score).toLocaleString());
+    }
+
+    updateCoins () {
+      const coins = +this.registry.get("coins") + 1;
+      this.registry.set("coins", coins);
+      this.scoreCoins.setText("x"+coins);
+      this.tweens.add({
+        targets: [this.scoreCoins, this.scoreCoinsLogo],
+        scale: { from: 1.4, to: 1},
+        duration: 50,
+        repeat: 10
+      })
     }
 }

@@ -129,6 +129,17 @@
                  "width":0,
                  "x":260.863636363636,
                  "y":2803.31818181818
+                }, 
+                {
+                 "height":0,
+                 "id":10,
+                 "name":"lunchbox",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":100,
+                 "y":2668
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -137,7 +148,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":10,
+ "nextobjectid":11,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.8.2",

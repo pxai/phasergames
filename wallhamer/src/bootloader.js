@@ -9,7 +9,7 @@ export default class Bootloader extends Phaser.Scene {
             "progress",
             function (value) {
                 this.progressBar.clear();
-                this.progressBar.fillStyle(0x88d24c, 1);
+                this.progressBar.fillStyle(0xf09937, 1);
                 this.progressBar.fillRect(
                     this.cameras.main.width / 4,
                     this.cameras.main.height / 2 - 16,
@@ -51,7 +51,8 @@ export default class Bootloader extends Phaser.Scene {
 
         this.load.spritesheet("bat", "assets/images/bat.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("snake", "assets/images/snake.png", { frameWidth: 64, frameHeight: 32 });
-
+        this.load.spritesheet("coin", "assets/images/coin.png", { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet("lunchbox", "assets/images/lunchbox.png", { frameWidth: 64, frameHeight: 64 });
 
         this.registry.set("score", 0);
         this.registry.set("coins", 0);
@@ -63,7 +64,7 @@ export default class Bootloader extends Phaser.Scene {
 
     createBars () {
         this.loadBar = this.add.graphics();
-        this.loadBar.fillStyle(0x008483, 1);
+        this.loadBar.fillStyle(0xca6702, 1);
         this.loadBar.fillRect(
             this.cameras.main.width / 4 - 2,
             this.cameras.main.height / 2 - 18,

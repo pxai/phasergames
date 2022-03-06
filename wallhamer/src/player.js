@@ -1,6 +1,7 @@
 
 import Blow from "./blow";
 import Brick from "./brick";
+import { JumpSmoke, RockSmoke } from "./particle";
 
 class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, health = 10) {
@@ -104,6 +105,7 @@ class Player extends Phaser.GameObjects.Sprite {
             this.anims.play("playerjump", true);
             //this.scene.playAudio("chirp")
             this.jumping = true;
+            this.jumpSmoke();
 
         } else if (this.cursor.right.isDown || this.D.isDown) {
             this.building = false;
@@ -121,6 +123,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
         } else {
             if (this.body.blocked.down) { 
+                if (this.jumping) this.landSmoke();
                 this.jumping = false;
                 this.falling = false;
 
@@ -139,6 +142,18 @@ class Player extends Phaser.GameObjects.Sprite {
             this.buildBlock()
         }
 
+    }
+
+    landSmoke () {
+        this.jumpSmoke(20);
+    }
+
+    jumpSmoke (offsetY = 10) {
+        Array(Phaser.Math.Between(3, 6)).fill(0).forEach(i => {
+            const offset = Phaser.Math.Between(-1, 1) > 0 ? 1 : -1;
+            const varX = Phaser.Math.Between(0, 20);
+            new JumpSmoke(this.scene, this.x + (offset * varX), this.y + offsetY)
+        })
     }
 
     buildBlock() {
