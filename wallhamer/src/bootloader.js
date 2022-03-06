@@ -28,8 +28,18 @@ export default class Bootloader extends Phaser.Scene {
         });*/
 
         //this.load.image("logo", "assets/images/logo.png");
-        // this.load.audio("beam", "assets/sounds/beam.mp3");
-
+        
+        this.load.audio("build", "assets/sounds/build.mp3");
+        this.load.audio("coin", "assets/sounds/coin.mp3");
+        this.load.audio("death", "assets/sounds/death.mp3");
+        this.load.audio("jump", "assets/sounds/jump.mp3");
+        this.load.audio("kill", "assets/sounds/kill.mp3");
+        this.load.audio("land", "assets/sounds/land.mp3");
+        this.load.audio("lunchbox", "assets/sounds/lunchbox.mp3");
+        this.load.audio("prize", "assets/sounds/prize.mp3");
+        this.load.audio("stone_fail", "assets/sounds/stone_fail.mp3");
+        this.load.audio("stone", "assets/sounds/stone.mp3");
+        this.load.audio("foedeath", "assets/sounds/foedeath.mp3");
 
         Array(2).fill(0).forEach((_,i) => {
             this.load.image(`brick${i}`,`assets/images/brick${i}.png`)
@@ -49,10 +59,16 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image('bricks', 'assets/maps/bricks.png');
         this.load.image('background', 'assets/maps/background.png');
 
+        this.load.image('chain', 'assets/images/chain.png');
         this.load.spritesheet("bat", "assets/images/bat.png", { frameWidth: 32, frameHeight: 32 });
-        this.load.spritesheet("snake", "assets/images/snake.png", { frameWidth: 64, frameHeight: 32 });
+        this.load.spritesheet("zombie", "assets/images/zombie.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("coin", "assets/images/coin.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("lunchbox", "assets/images/lunchbox.png", { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet("hammer", "assets/images/hammer.png", { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet("speed", "assets/images/speed.png", { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet("boots", "assets/images/boots.png", { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet("star", "assets/images/star.png", { frameWidth: 64, frameHeight: 64 });
+
 
         this.registry.set("score", 0);
         this.registry.set("coins", 0);

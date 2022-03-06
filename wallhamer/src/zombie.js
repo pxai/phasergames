@@ -1,13 +1,13 @@
-export default class Snake extends Phaser.Physics.Arcade.Sprite {
+export default class Zombie extends Phaser.Physics.Arcade.Sprite {
     constructor (scene, x, y, type="right") {
-        super(scene, x, y, "snake");
-        this.name = "snake";
+        super(scene, x, y, "zombie");
+        this.name = "zombie";
         this.scene = scene;
         this.scene.physics.add.existing(this);
         this.scene.physics.world.enable(this);
         this.body.setAllowGravity(true);
         this.scene.add.existing(this);
-        this.direction = type === "right" ? 1 : -1;
+        this.direction = type === "right" ? -1 : 1;
 
         this.init();
     }
@@ -23,13 +23,12 @@ export default class Snake extends Phaser.Physics.Arcade.Sprite {
           this.scene.anims.create({
             key: this.name + "death",
             frames: this.scene.anims.generateFrameNumbers(this.name, { start: 3, end: 5 }),
-            frameRate: 5,
-            repeat: -1
+            frameRate: 5
           });
   
           this.anims.play(this.name, true)
-          this.body.setVelocityX(this.direction * 150);
-          this.flipX = this.direction > 0;
+          this.body.setVelocityX(this.direction * 100);
+          this.flipX = this.direction < 0;
           this.on('animationcomplete', this.animationComplete, this);
     }
 
@@ -39,8 +38,8 @@ export default class Snake extends Phaser.Physics.Arcade.Sprite {
 
     turn () {
         this.direction = -this.direction;
-        this.flipX = this.direction > 0;
-        this.body.setVelocityX(this.direction * 150);
+        this.flipX = this.direction < 0;
+        this.body.setVelocityX(this.direction * 100);
     }
 
     death () {
@@ -51,7 +50,7 @@ export default class Snake extends Phaser.Physics.Arcade.Sprite {
       }
 
       animationComplete(animation, frame) {
-        if (animation.key === "death") {
+        if (animation.key === this.name +"death") {
           this.destroy()
         }
     }

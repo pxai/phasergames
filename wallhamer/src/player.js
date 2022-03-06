@@ -22,6 +22,9 @@ class Player extends Phaser.GameObjects.Sprite {
       this.building = false;
       this.falling = false;
       this.mjolnir = false;
+      this.walkVelocity = 160;
+      this.jumpVelocity = -400;
+      this.invincible = false;
 
       this.health = health;
 
@@ -100,10 +103,10 @@ class Player extends Phaser.GameObjects.Sprite {
         if ((Phaser.Input.Keyboard.JustDown(this.cursor.up) || Phaser.Input.Keyboard.JustDown(this.W)) && this.body.blocked.down) {
             // new Dust(this.scene, this.x, this.y)
             this.building = false;
-            this.body.setVelocityY(-400);
+            this.body.setVelocityY(this.jumpVelocity);
             this.body.setGravityY(400)
             this.anims.play("playerjump", true);
-            //this.scene.playAudio("chirp")
+            this.scene.playAudio("jump")
             this.jumping = true;
             this.jumpSmoke();
 
@@ -112,18 +115,18 @@ class Player extends Phaser.GameObjects.Sprite {
             if (this.body.blocked.down) { this.anims.play("playerwalk", true); }
             this.right = true;
             this.flipX = (this.body.velocity.x < 0);
-            this.body.setVelocityX(160);
+            this.body.setVelocityX(this.walkVelocity);
 
         } else if (this.cursor.left.isDown || this.A.isDown) {
             this.building = false;
             if (this.body.blocked.down) { this.anims.play("playerwalk", true); }
             this.right = false;
             this.flipX = true;
-            this.body.setVelocityX(-160);  
+            this.body.setVelocityX(-this.walkVelocity);  
 
         } else {
             if (this.body.blocked.down) { 
-                if (this.jumping) this.landSmoke();
+                if (this.jumping) {this.scene.playAudio("land");this.landSmoke();}
                 this.jumping = false;
                 this.falling = false;
 
@@ -148,19 +151,30 @@ class Player extends Phaser.GameObjects.Sprite {
         this.jumpSmoke(20);
     }
 
-    jumpSmoke (offsetY = 10) {
+    jumpSmoke (offsetY = 10, varX) {
         Array(Phaser.Math.Between(3, 6)).fill(0).forEach(i => {
-            const offset = Phaser.Math.Between(-1, 1) > 0 ? 1 : -1;
-            const varX = Phaser.Math.Between(0, 20);
+            const offset = varX || Phaser.Math.Between(-1, 1) > 0 ? 1 : -1;
+            varX = varX || Phaser.Math.Between(0, 20);
             new JumpSmoke(this.scene, this.x + (offset * varX), this.y + offsetY)
         })
     }
 
+    buildSmoke (offsetY = 10, offsetX) {
+        Array(Phaser.Math.Between(8, 14)).fill(0).forEach(i => {
+            const varX = Phaser.Math.Between(-20, 20);
+            new JumpSmoke(this.scene, this.x + (offsetX + varX), this.y + offsetY)
+        })
+    }
+    
+
     buildBlock() {
         this.building = true;
         this.anims.play("playerbuild", true);
+        this.scene.playAudio("build");
         const offsetX = this.right ? 64 : -64;
-        this.scene.bricks.add(new Brick(this.scene, this.x + offsetX, this.y))
+        const offsetY = this.jumpVelocity === -400 ? 0 : -128
+        this.buildSmoke(32, offsetX);
+        this.scene.bricks.add(new Brick(this.scene, this.x + offsetX, this.y + offsetY))
     }
 
     destroyBlock() {
@@ -229,17 +243,46 @@ class Player extends Phaser.GameObjects.Sprite {
        // //this.scene.playAudio("gameover")
     }
 
-    showFly () {
-        this.healthBar.decrease(1)
+
+    applyPrize (prize) {
+        console.log("Apply prize: ", prize)
+        switch (prize) {
+            case "speed":
+                    this.walkVelocity = 320;
+                    this.flashPlayer();
+                    break;
+            case "hammer":
+                    this.mjolnir = true;
+                    this.flashPlayer();
+                    break;
+            case "boots":
+                    this.jumpVelocity = -600;
+                    this.flashPlayer();
+                    break;
+            case "coin":
+                    this.scene.updateCoins();
+                    break;
+            case "star":
+                    this.invincible = true;
+                    this.scene.tweens.add({
+                        targets: this,
+                        duration: 300,
+                        alpha: {from: 0.7, to: 1},
+                        repeat: -1
+                    });
+                    break;
+            default: break;
+        }
+    }
+
+    flashPlayer () {
         this.scene.tweens.add({
-          targets: this.healthBar.bar,
-          duration: 1000,
-          alpha: {
-            from: 1,
-            to: 0
-          },
+            targets: this,
+            duration: 50,
+            scale: { from: 1.2, to: 1},
+            repeat: 10
         });
-      }
+    }
 
 }
 

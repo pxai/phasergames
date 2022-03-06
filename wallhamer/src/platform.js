@@ -13,10 +13,45 @@ export default class Platform extends Phaser.GameObjects.Container {
 
         this.body.immovable = true;
         this.body.moves = false;
+        this.chain = new Phaser.GameObjects.Sprite(this.scene, (size * 32) - 32, -2048, "chain").setOrigin(0);
+        this.add(this.chain);
         this.platform = new Phaser.GameObjects.Sprite(this.scene, 0, 0, "platform" + size).setOrigin(0);
         this.add(this.platform);
-        this.chain = new Phaser.GameObjects.Sprite(this.scene, 0, 0, "chain").setOrigin(0);
-        this.add(this.chain);
 
+        this.init();
+    }
+
+    init() {
+        const type = Phaser.Math.Between(0, 7);
+        let offsetX = this.x;
+        let offsetY = this.y;
+
+        switch (type) {
+            case 0: 
+                offsetX = Phaser.Math.Between(-200, 200); 
+                break;
+            case 1:
+                offsetY = Phaser.Math.Between(-200, 200); 
+                break;
+            case 2:
+                offsetX = Phaser.Math.Between(-200, 200); 
+                offsetY = Phaser.Math.Between(-200, 200); 
+                break;
+            case 3: 
+            case 4:
+            case 5:
+            case 6: 
+            case 6: 
+            default: break;
+        }
+
+        this.scene.tweens.add({
+            targets: this,
+            duration: Phaser.Math.Between(4000, 6000),
+            x: {from: this.x, to: offsetX},
+            y: {from: this.y, to: offsetY},
+            repeat: -1,
+            yoyo: true
+        })
     }
 }

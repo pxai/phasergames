@@ -24,7 +24,6 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
             key: this.name + "death",
             frames: this.scene.anims.generateFrameNumbers(this.name, { start: 2, end: 5 }),
             frameRate: 5,
-            repeat: -1
           });
   
           this.anims.play(this.name, true)
@@ -51,7 +50,7 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
       }
 
       animationComplete(animation, frame) {
-        if (animation.key === "death") {
+        if (animation.key === this.name +"death") {
           this.destroy()
         }
     }

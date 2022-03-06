@@ -1,7 +1,7 @@
 import Player from "./player";
 import { Debris } from "./particle";
 import Bat from "./bat";
-import Snake from "./snake";
+import Zombie from "./zombie";
 import Turn from "./turn";
 import Coin from "./coin";
 import LunchBox from "./lunchbox";
@@ -31,7 +31,7 @@ export default class Game extends Phaser.Scene {
       
       this.createMap();
 
-      this.cameras.main.setBackgroundColor(0x000044)
+      this.cameras.main.setBackgroundColor(0x5d94fb)
       this.cameras.main.setBounds(0, 0, 20920 * 2, 20080 * 2);
       this.physics.world.setBounds(0, 0, 20920 * 2, 20080 * 2);
       this.addPlayer();
@@ -39,7 +39,7 @@ export default class Game extends Phaser.Scene {
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 100);
       this.physics.world.enable([ this.player ]);
       this.addScore();
-      //this.loadAudios(); 
+      this.loadAudios(); 
       // this.playMusic();
     }
 
@@ -66,7 +66,7 @@ export default class Game extends Phaser.Scene {
       this.platform.setCollisionByExclusion([-1]);
 
       this.batGroup = this.add.group();
-      this.snakeGroup = this.add.group();
+      this.zombieGroup = this.add.group();
       this.foesGroup = this.add.group();
       this.turnGroup = this.add.group();
       this.exitGroup = this.add.group();
@@ -82,9 +82,9 @@ export default class Game extends Phaser.Scene {
         }
 
         if (object.name === "snake") {
-          let snake = new Snake(this, object.x, object.y, object.type);
-          this.snakeGroup.add(snake);
-          this.foesGroup.add(snake);
+          let zombie = new Zombie(this, object.x, object.y, object.type);
+          this.zombieGroup.add(zombie);
+          this.foesGroup.add(zombie);
         }
 
         if (object.name === "platform") {
@@ -108,7 +108,7 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
-      this.physics.add.collider(this.snakeGroup, this.bricks, this.turnFoe, ()=>{
+      this.physics.add.collider(this.zombieGroup, this.bricks, this.turnFoe, ()=>{
         return true;
       }, this);
 
@@ -116,11 +116,11 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
-      this.physics.add.collider(this.snakeGroup, this.turnGroup, this.turnFoe, ()=>{
+      this.physics.add.collider(this.zombieGroup, this.turnGroup, this.turnFoe, ()=>{
         return true;
       }, this);
 
-      this.physics.add.collider(this.snakeGroup, this.platform, this.hitFloor, ()=>{
+      this.physics.add.collider(this.zombieGroup, this.platform, this.hitFloor, ()=>{
         return true;
       }, this);
     }
@@ -189,7 +189,7 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
-      this.physics.add.collider(this.player, this.snakeGroup, this.hitPlayer, ()=>{
+      this.physics.add.collider(this.player, this.zombieGroup, this.hitPlayer, ()=>{
         return true;
       }, this);
 
@@ -198,22 +198,32 @@ export default class Game extends Phaser.Scene {
     pickCoin (player, coin) {
       if (!coin.disabled) {
         coin.pick();
+        this.playAudio("coin");
         this.updateCoins();
       }
     }
 
     pickLunchBox (player, lunchBox) {
       if (!lunchBox.disabled) {
+        this.playAudio("lunchbox");
         lunchBox.pick();
       }
     }
 
     hitPlayer(player, foe) {
-      player.die();
+      if (player.invincible) {
+        foe.death();
+        this.playAudio("foedeath");
+      } else {
+        player.die();
+        this.playAudio("death");
+      }
     }
 
     blowFoe(blow, foe) {
-      foe.destroy();
+      this.playAudio("kill");
+      this.playAudio("foedeath");
+      foe.death();
     }
 
     foeBlowBrick(brick, foe) {
@@ -225,11 +235,15 @@ export default class Game extends Phaser.Scene {
     blowPlatform (blow, platform) {
       const tile = this.getTile(platform)
       if (this.isBreakable(tile)) {
+        this.playAudioRandomly("stone_fail");
+        this.playAudioRandomly("stone");
+        if (this.player.mjolnir) this.cameras.main.shake(30);
         blow.destroy();
         Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY))
         this.platform.removeTileAt(tile.x, tile.y);
         this.spawnCoin(tile)
-      }
+
+      } 
     }
 
     spawnCoin(tile) {
@@ -241,6 +255,9 @@ export default class Game extends Phaser.Scene {
 
     blowBrick (blow, brick) {
       console.log("Blow brick" ,brick)
+      if (this.player.mjolnir) this.cameras.main.shake(30);
+      this.playAudioRandomly("stone_fail");
+      this.playAudioRandomly("stone");
       blow.destroy();
       Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, brick.x, brick.y))
       brick.destroy();
@@ -259,12 +276,12 @@ export default class Game extends Phaser.Scene {
       if (this.player.jumping && !this.player.falling && this.player.body.velocity.y === 0) {
         console.log(this.player.body.velocity.y) 
         const tile = this.getTile(platform)
-        console.log(platform, "Falling: ", this.player.falling)
         if (this.isBreakable(tile)) {
-          console.log("Hit while jump: ", tile, platform)
+          this.playAudioRandomly("stone");
           Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY))
           this.platform.removeTileAt(tile.x, tile.y);
         } else if (platform?.name === "brick0") {
+          this.playAudioRandomly("stone");
           Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, platform.x, platform.y))
           platform.destroy();
         }
@@ -273,12 +290,28 @@ export default class Game extends Phaser.Scene {
 
       loadAudios () {
         this.audios = {
-          "beam": this.sound.add("beam"),
+          "build": this.sound.add("build"),
+          "coin": this.sound.add("coin"),
+          "death": this.sound.add("death"),
+          "jump": this.sound.add("jump"),
+          "kill": this.sound.add("kill"),
+          "land": this.sound.add("land"),
+          "lunchbox": this.sound.add("lunchbox"),
+          "prize": this.sound.add("prize"),
+          "stone_fail": this.sound.add("stone_fail"),
+          "stone": this.sound.add("stone"),
+          "foedeath": this.sound.add("foedeath"),
         };
       }
 
       playAudio(key) {
         this.audios[key].play();
+      }
+
+      playAudioRandomly(key) {
+        const volume = Phaser.Math.Between(0.6, 1);
+        const rate = Phaser.Math.Between(0.7, 1);
+        this.audios[key].play({volume, rate});
       }
 
       playMusic (theme="game") {
@@ -297,17 +330,19 @@ export default class Game extends Phaser.Scene {
 
     update() {
       this.player.update();
+      if (this.number === 3 && this.player.y > 1500) this.restartScene();
     }
 
     finishScene () {
       if (this.theme) this.theme.stop();
-      this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
+      this.scene.start("transition", { name: "STAGE", number: this.number + 1});
     }
 
     restartScene () {
+      console.log("About to restart", this.number)
       this.time.delayedCall(1000, () => {
           if (this.theme) this.theme.stop();
-          this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number});
+          this.scene.start("transition", { name: "STAGE", number: this.number});
         },
         null,
         this

@@ -42,8 +42,27 @@ class LunchBox extends Phaser.GameObjects.Sprite {
     pick () {
         this.anims.play(this.name + "opened", true);
         console.log("pick!")
+        this.showPrize()
         this.disabled = true;
-        this.scene.time.delayedCall(500, () => { this.destroy()}, null, this);
+        this.scene.time.delayedCall(1000, () => { 
+            this.destroy()
+            this.prizeSprite.destroy();
+        }, null, this);
+    }
+
+    showPrize () {
+        const prize = ["boots", "hammer", "coin", "star", "speed"];
+        const selectedPrize = Phaser.Math.RND.pick(prize);
+        this.scene.player.applyPrize(selectedPrize)
+        this.prizeSprite = this.scene.add.sprite(this.x, this.y, selectedPrize).setOrigin(0.5).setScale(0.8);
+        this.scene.tweens.add({
+            targets: this.prizeSprite,
+            duration: 500,
+            y: {from: this.y, to: this.y - 64},
+            onComplete: () => {
+                this.scene.playAudio("prize")
+            }
+        })
     }
 }
 
