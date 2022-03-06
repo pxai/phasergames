@@ -1,5 +1,9 @@
 import Player from "./player";
 import { Debris } from "./particle";
+import Bat from "./bat";
+import Snake from "./snake";
+import Turn from "./turn";
+import Platform from "./platform";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -25,6 +29,7 @@ export default class Game extends Phaser.Scene {
       
       this.createMap();
 
+      this.cameras.main.setBackgroundColor(0x000044)
       this.cameras.main.setBounds(0, 0, 20920 * 2, 20080 * 2);
       this.physics.world.setBounds(0, 0, 20920 * 2, 20080 * 2);
       this.addPlayer();
@@ -40,33 +45,77 @@ export default class Game extends Phaser.Scene {
       this.tileSetBg = this.tileMap.addTilesetImage("background");
       this.tileMap.createStaticLayer('background', this.tileSetBg)
   
-      this.tileSet = this.tileMap.addTilesetImage("bricks");
+      this.tileSet = this.tileMap.addTilesetImage("softbricks");
       this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet);
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
 
       this.platform.setCollisionByExclusion([-1]);
 
-      this.foeActivators = this.add.group();
+      this.batGroup = this.add.group();
+      this.snakeGroup = this.add.group();
+      this.foesGroup = this.add.group();
+      this.turnGroup = this.add.group();
+      this.exitGroup = this.add.group();
+      this.platformGroup = this.add.group();
+      this.bricks = this.add.group();
 
-      /*this.objectsLayer.objects.forEach( object => {
-        if (object.name.startsWith("foe")){
-          let foeActivator = this.add.rectangle(object.x, object.y, 32, 32, 0xffffff).setAlpha(0).setOrigin(0);
-          this.physics.add.existing(foeActivator);
-          foeActivator.body.setAllowGravity(false);
-          this.foeActivators.add(foeActivator)
+      this.objectsLayer.objects.forEach( object => {
+        if (object.name === "bat") {
+          let bat = new Bat(this, object.x, object.y, object.type);
+          this.batGroup.add(bat)
+          this.foesGroup.add(bat)
         }
-          
-        if (object.name.startsWith("text")){
-          this.addText(object)
-        }
-      })*/
 
-      //this.addExit();
+        if (object.name === "snake") {
+          let snake = new Snake(this, object.x, object.y, object.type);
+          this.snakeGroup.add(snake);
+          this.foesGroup.add(snake);
+        }
+
+        if (object.name === "platform") {
+          this.platformGroup.add(new Platform(this, object.x, object.y, object.type))
+        }
+
+        if (object.name === "turn") {
+          this.turnGroup.add(new Turn(this, object.x, object.y))
+        }
+
+        if (object.name === "exit") {
+          this.exitGroup.add(new Turn(this, object.x, object.y, object.width, object.height, object.type).setOrigin(0.5))
+        }
+      });
+
+      this.physics.add.collider(this.batGroup, this.platform, this.turnFoe, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.snakeGroup, this.bricks, this.turnFoe, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.batGroup, this.bricks, this.turnFoe, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.snakeGroup, this.turnGroup, this.turnFoe, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.snakeGroup, this.platform, this.hitFloor, ()=>{
+        return true;
+      }, this);
+    }
+
+    turnFoe (foe, platform) {
+      foe.turn();
+    }
+
+    hitFloor() {
+
     }
 
     addPlayer() {
       this.elements = this.add.group();
-      this.bricks = this.add.group();
 
       const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
       this.player = new Player(this, playerPosition.x, playerPosition.y, 0);
@@ -74,17 +123,20 @@ export default class Game extends Phaser.Scene {
       this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
         return true;
       }, this);
+
+      this.physics.add.collider(this.player, this.platformGroup, this.hitFloor, ()=>{
+        return true;
+      }, this);
   
       this.physics.add.collider(this.player, this.bricks, this.hitFloor, ()=>{
         return true;
       }, this);
   
-     
-     /* this.physics.add.overlap(this.player, this.exit, () => { 
+      this.physics.add.overlap(this.player, this.exitGroup, () => { 
         this.time.delayedCall(1000, () => this.finishScene(), null, this);
       }, ()=>{
         return true;
-      }, this);*/
+      }, this);
 
       this.blows = this.add.group();
 
@@ -96,21 +148,26 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
-    /*  this.foes = this.add.group();
-      this.foeShots = this.add.group();
-      this.physics.add.overlap(this.player, this.foes, this.killFoe, ()=>{
+      this.physics.add.overlap(this.blows, this.foesGroup, this.blowFoe, ()=>{
         return true;
       }, this);
 
-      this.physics.add.overlap(this.player, this.foeShots, this.hitPlayer, ()=>{
+      this.physics.add.collider(this.player, this.batGroup, this.hitPlayer, ()=>{
         return true;
-      }, this);*/
-      
+      }, this);
 
-     /* this.physics.add.overlap(this.foeShots, this.platform, this.destroyShotWall, ()=>{
+      this.physics.add.collider(this.player, this.snakeGroup, this.hitPlayer, ()=>{
         return true;
-      }, this);*/
+      }, this);
 
+    }
+
+    hitPlayer(player, foe) {
+      player.die();
+    }
+
+    blowFoe(blow, foe) {
+      foe.destroy();
     }
 
     blowPlatform (blow, platform) {
@@ -183,9 +240,18 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene () {
-      this.sky.stop();
-      this.theme.stop();
+      if (this.theme) this.theme.stop();
       this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
+    }
+
+    restartScene () {
+      this.time.delayedCall(1000, () => {
+          if (this.theme) this.theme.stop();
+          this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number});
+        },
+        null,
+        this
+      );
     }
 
     updateScore (points = 0) {

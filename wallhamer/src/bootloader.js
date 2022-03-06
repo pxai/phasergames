@@ -35,14 +35,23 @@ export default class Bootloader extends Phaser.Scene {
             this.load.image(`brick${i}`,`assets/images/brick${i}.png`)
         });
 
+        Array(5).fill(0).forEach((_,i) => {
+            this.load.image(`platform${i+2}`,`assets/images/platform${i+2}.png`)
+        });
+
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
         this.load.spritesheet("walt", "assets/images/walt.png", { frameWidth: 64, frameHeight: 64 });
 
-        Array(1).fill(0).forEach((_,i) => {
+        Array(4).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`);
         });
+        this.load.image('softbricks', 'assets/maps/softbricks.png');
         this.load.image('bricks', 'assets/maps/bricks.png');
         this.load.image('background', 'assets/maps/background.png');
+
+        this.load.spritesheet("bat", "assets/images/bat.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("snake", "assets/images/snake.png", { frameWidth: 64, frameHeight: 32 });
+
 
         this.registry.set("score", 0);
         this.registry.set("coins", 0);

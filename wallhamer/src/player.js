@@ -20,6 +20,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.jumping = false;
       this.building = false;
       this.falling = false;
+      this.mjolnir = false;
 
       this.health = health;
 
@@ -71,6 +72,12 @@ class Player extends Phaser.GameObjects.Sprite {
             frames: this.scene.anims.generateFrameNumbers("walt", { start: 9, end: 10 }),
             frameRate: 10,
             repeat: 2
+        });
+
+        this.scene.anims.create({
+            key: "playerdead",
+            frames: this.scene.anims.generateFrameNumbers("walt", { start: 11, end: 16 }),
+            frameRate: 5,
         });
 
         this.anims.play("startidle", true);
@@ -145,7 +152,8 @@ class Player extends Phaser.GameObjects.Sprite {
         this.building = true;
         this.anims.play("playerhammer", true); 
         const offsetX = this.right ? 32 : -32;
-        this.scene.blows.add(new Blow(this.scene, this.x + offsetX, this.y))
+        const size = this.mjolnir ? 128 : 32;
+        this.scene.blows.add(new Blow(this.scene, this.x + offsetX, this.y, size, size))
     }
 
     turn () {
@@ -197,11 +205,12 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     die () {
+        this.dead = true;
+        this.anims.play("playerdead", true);
         this.body.immovable = true;
         this.body.moves = false;
-        this.scene.updateHealth(0)
-        this.scene.gameOver();
-        //this.anims.play("playerdead" + this.number)
+        // this.scene.updateHealth(0)
+        this.scene.restartScene();
        // //this.scene.playAudio("gameover")
     }
 
