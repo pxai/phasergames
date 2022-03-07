@@ -221,7 +221,7 @@ export default class Game extends Phaser.Scene {
       if (player.invincible) {
         foe.death();
         this.playAudio("foedeath");
-      } else {
+      } else if (!player.dead && this.number > 0) {
         player.die();
         this.playAudio("death");
       }
@@ -261,7 +261,7 @@ export default class Game extends Phaser.Scene {
 
     blowBrick (blow, brick) {
       if (this.player.mjolnir) this.cameras.main.shake(30);
-      this.playAudioRandomly("stone_fail");
+      this.playAudio("stone_fail");
       this.playAudioRandomly("stone");
       blow.destroy();
       Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, brick.x, brick.y))
@@ -314,8 +314,8 @@ export default class Game extends Phaser.Scene {
       }
 
       playAudioRandomly(key) {
-        const volume = Phaser.Math.Between(0.6, 1);
-        const rate = Phaser.Math.Between(0.7, 1);
+        const volume = Phaser.Math.Between(0.8, 1);
+        const rate = Phaser.Math.Between(0.8, 1);
         this.audios[key].play({volume, rate});
       }
 

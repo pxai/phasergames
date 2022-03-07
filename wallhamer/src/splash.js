@@ -55,7 +55,7 @@ export default class Splash extends Phaser.Scene {
         })
     }
     playAudioRandomly(key) {
-        const volume = Phaser.Math.Between(0.6, 1);
+        const volume = Phaser.Math.Between(0.8, 1);
         const rate = 1; // Phaser.Math.Between(0.9, 1);
         this.sound.add(key).play({volume, rate});
       }

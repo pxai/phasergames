@@ -57,7 +57,7 @@
                  "y":763.059062121212
                 }, 
                 {
-                 "height":70.1243,
+                 "height":108.1243,
                  "id":14,
                  "name":"text",
                  "rotation":0,
@@ -66,13 +66,13 @@
                      "color":"#ffffff",
                      "fontfamily":"Public Pixel",
                      "pixelsize":34,
-                     "text":"SPACE to DESTROY!",
+                     "text":"SPACE\/JUMP to DESTROY!",
                      "wrap":true
                     },
                  "type":"",
                  "visible":true,
-                 "width":351.141,
-                 "x":1010.4295,
+                 "width":587.141,
+                 "x":774.4295,
                  "y":598.93785
                 }, 
                 {

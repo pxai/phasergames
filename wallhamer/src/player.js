@@ -22,7 +22,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.building = false;
       this.falling = false;
       this.mjolnir = false;
-      this.walkVelocity = 160;
+      this.walkVelocity = 200;
       this.jumpVelocity = -400;
       this.invincible = false;
 
@@ -95,7 +95,7 @@ class Player extends Phaser.GameObjects.Sprite {
         if (this.jumping ) {
            // if (Phaser.Math.Between(1,101) > 100) new Star(this.scene, this.x, this.y + 5)
             if (this.body.velocity.y >= 0) {
-                this.body.setGravityY(600)
+                this.body.setGravityY(700)
                 this.falling = true;
             }
         }
@@ -223,16 +223,14 @@ class Player extends Phaser.GameObjects.Sprite {
         this.anims.play("playerdead", true);
         this.body.immovable = true;
         this.body.moves = false;
-        // this.scene.updateHealth(0)
         this.scene.restartScene();
-       // //this.scene.playAudio("gameover")
     }
 
 
     applyPrize (prize) {
         switch (prize) {
             case "speed":
-                    this.walkVelocity = 320;
+                    this.walkVelocity = 330;
                     this.flashPlayer();
                     break;
             case "hammer":
