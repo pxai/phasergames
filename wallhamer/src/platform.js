@@ -28,14 +28,14 @@ export default class Platform extends Phaser.GameObjects.Container {
 
         switch (type) {
             case 0: 
-                offsetX = Phaser.Math.Between(-200, 200); 
+                offsetX = Phaser.Math.Between(-50, 50); 
                 break;
             case 1:
-                offsetY = Phaser.Math.Between(-200, 200); 
+                offsetY = Phaser.Math.Between(-50, 50); 
                 break;
             case 2:
-                offsetX = Phaser.Math.Between(-200, 200); 
-                offsetY = Phaser.Math.Between(-200, 200); 
+                offsetX = Phaser.Math.Between(-100, 100); 
+                offsetY = Phaser.Math.Between(-100, 100); 
                 break;
             case 3: 
             case 4:

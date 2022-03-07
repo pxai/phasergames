@@ -28,10 +28,12 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      
+      this.cameras.main.setBackgroundColor(0x62a2bf)
+      this.add.tileSprite(0, 1000, 1024 * 10, 512, "landscape").setOrigin(0.5);
       this.createMap();
 
-      this.cameras.main.setBackgroundColor(0x5d94fb)
+
+
       this.cameras.main.setBounds(0, 0, 20920 * 2, 20080 * 2);
       this.physics.world.setBounds(0, 0, 20920 * 2, 20080 * 2);
       this.addPlayer();
@@ -40,18 +42,18 @@ export default class Game extends Phaser.Scene {
       this.physics.world.enable([ this.player ]);
       this.addScore();
       this.loadAudios(); 
-      // this.playMusic();
+      this.playMusic();
     }
 
     addScore() {
       this.scoreCoins = this.add.bitmapText(75, 10, "pixelFont", "x0", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
       this.scoreCoinsLogo = this.add.sprite(50, 25, "coin").setScale(1).setOrigin(0.5).setScrollFactor(0)
       const coinAnimation = this.anims.create({
-        key: "coin",
-        frames: this.anims.generateFrameNumbers("coin", { start: 0, end: 13 }, ),
+        key: "coinscore",
+        frames: this.anims.generateFrameNumbers("coin", { start: 0, end: 7 }, ),
         frameRate: 8,
       });
-      this.scoreCoinsLogo.play({ key: "coin", repeat: -1 });
+      this.scoreCoinsLogo.play({ key: "coinscore", repeat: -1 });
     }
 
     createMap() {
@@ -81,7 +83,7 @@ export default class Game extends Phaser.Scene {
           this.foesGroup.add(bat)
         }
 
-        if (object.name === "snake") {
+        if (object.name === "zombie") {
           let zombie = new Zombie(this, object.x, object.y, object.type);
           this.zombieGroup.add(zombie);
           this.foesGroup.add(zombie);
@@ -97,6 +99,10 @@ export default class Game extends Phaser.Scene {
 
         if (object.name === "lunchbox") {
           this.lunchBoxGroup.add(new LunchBox(this, object.x, object.y))
+        }
+
+        if (object.name === "text") {
+          this.add.bitmapText(object.x, object.y, "pixelFont", object.text.text, 30).setDropShadow(2, 4, 0x222222, 0.9).setOrigin(0)
         }
 
         if (object.name === "exit") {
@@ -162,6 +168,7 @@ export default class Game extends Phaser.Scene {
       }, this);
   
       this.physics.add.overlap(this.player, this.exitGroup, () => { 
+        this.playAudio("stage");
         this.time.delayedCall(1000, () => this.finishScene(), null, this);
       }, ()=>{
         return true;
@@ -248,13 +255,11 @@ export default class Game extends Phaser.Scene {
 
     spawnCoin(tile) {
       if (Phaser.Math.Between(0, 11) > 5) {
-        console.log("Here we go")
-        this.coins.add(new Coin(this, tile.pixelX, tile.pixelY))
+        this.time.delayedCall(500, () => { this.coins.add(new Coin(this, tile.pixelX, tile.pixelY))}, null, this);
       }
     }
 
     blowBrick (blow, brick) {
-      console.log("Blow brick" ,brick)
       if (this.player.mjolnir) this.cameras.main.shake(30);
       this.playAudioRandomly("stone_fail");
       this.playAudioRandomly("stone");
@@ -274,7 +279,6 @@ export default class Game extends Phaser.Scene {
 
     hitFloor(player, platform) {
       if (this.player.jumping && !this.player.falling && this.player.body.velocity.y === 0) {
-        console.log(this.player.body.velocity.y) 
         const tile = this.getTile(platform)
         if (this.isBreakable(tile)) {
           this.playAudioRandomly("stone");
@@ -301,6 +305,7 @@ export default class Game extends Phaser.Scene {
           "stone_fail": this.sound.add("stone_fail"),
           "stone": this.sound.add("stone"),
           "foedeath": this.sound.add("foedeath"),
+          "stage": this.sound.add("stage"),
         };
       }
 
@@ -315,11 +320,11 @@ export default class Game extends Phaser.Scene {
       }
 
       playMusic (theme="game") {
-        this.theme = this.sound.add(theme);
+        this.theme = this.sound.add("music" + this.number);
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.7,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -339,7 +344,6 @@ export default class Game extends Phaser.Scene {
     }
 
     restartScene () {
-      console.log("About to restart", this.number)
       this.time.delayedCall(1000, () => {
           if (this.theme) this.theme.stop();
           this.scene.start("transition", { name: "STAGE", number: this.number});

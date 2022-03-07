@@ -23,11 +23,12 @@ export default class Bootloader extends Phaser.Scene {
             this.scene.start("splash");
         },this);
 
-       /* Array(7).fill(0).forEach((_,i) => {
-            this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
-        });*/
+        Array(5).fill(0).forEach((_,i) => {
+            this.load.audio(`music${i}`,`assets/sounds/music${i}.mp3`)
+        });
 
-        //this.load.image("logo", "assets/images/logo.png");
+        this.load.image("pello", "assets/images/pello.png");
+        this.load.image("landscape", "assets/images/landscape.png");
         
         this.load.audio("build", "assets/sounds/build.mp3");
         this.load.audio("coin", "assets/sounds/coin.mp3");
@@ -40,6 +41,9 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("stone_fail", "assets/sounds/stone_fail.mp3");
         this.load.audio("stone", "assets/sounds/stone.mp3");
         this.load.audio("foedeath", "assets/sounds/foedeath.mp3");
+        this.load.audio("stage", "assets/sounds/stage.mp3");
+
+        this.load.audio("splash", "assets/sounds/splash.mp3");
 
         Array(2).fill(0).forEach((_,i) => {
             this.load.image(`brick${i}`,`assets/images/brick${i}.png`)
@@ -52,7 +56,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
         this.load.spritesheet("walt", "assets/images/walt.png", { frameWidth: 64, frameHeight: 64 });
 
-        Array(4).fill(0).forEach((_,i) => {
+        Array(5).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`);
         });
         this.load.image('softbricks', 'assets/maps/softbricks.png');
@@ -69,7 +73,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("boots", "assets/images/boots.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("star", "assets/images/star.png", { frameWidth: 64, frameHeight: 64 });
 
-
+        this.load.bitmapFont("hammerfont", "assets/fonts/hammer.png", "assets/fonts/hammer.xml");
         this.registry.set("score", 0);
         this.registry.set("coins", 0);
         this.registry.set("hull", 10);

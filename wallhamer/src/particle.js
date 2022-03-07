@@ -76,7 +76,7 @@ export class Debris extends Phaser.GameObjects.Rectangle {
         width = width || Phaser.Math.Between(15, 30)
         height = height || Phaser.Math.Between(15, 30)
         super(scene, x, y + 5, width, height, color)
-        this.setStrokeStyle(4, 0x000000);
+       // this.setStrokeStyle(4, 0x000000);
         scene.add.existing(this)
         scene.physics.add.existing(this);
         this.body.setAllowGravity(true);

@@ -195,23 +195,8 @@ class Player extends Phaser.GameObjects.Sprite {
         }
 
         if (animation.key === "playerhammer" || animation.key === "playerbuild" ) {
-            console.log("Finished anim")
             this.building = false;
             this.anims.play(this.jumping ? "playerjump" : "playeridle", true);
-        }
-    }
-
-    hitIce(ice) {
-        this.currentIce = ice;
-
-        if (this.jumping) {
-            //this.scene.playAudio("hitice")
-            Array(Phaser.Math.Between(1, 4)).fill(0).forEach( debris => {
-               // new Debris(this.scene, this.x + (Phaser.Math.Between(-20, 20)), this.y + (Phaser.Math.Between(64, 80)), Phaser.Math.Between(25, 50) / 100);
-            })
-            this.scene.updateScore();
-            this.anims.play("playerground", true);
-            // new Star(this.scene, this.x, this.y - 5, 0, -100)
         }
     }
 
@@ -245,7 +230,6 @@ class Player extends Phaser.GameObjects.Sprite {
 
 
     applyPrize (prize) {
-        console.log("Apply prize: ", prize)
         switch (prize) {
             case "speed":
                     this.walkVelocity = 320;

@@ -14,11 +14,11 @@ export default class Outro extends Phaser.Scene {
         this.introLayer = this.add.layer();
         this.splashLayer = this.add.layer();
         this.text = [ 
-            "The U.F.I.S.H. recovered the engines.",
-            "After a terrible fishing day,",
-            "they decided to move to Europa moon,",
-            "to fish under the ice",
-            "But that is another story..."
+            "You did it!!",
+            "Thanks to your building skills",
+            "and your mighty hammer,",
+            "you saved the earth.",
+            "Made in 3 days for Minijam\n by Pello\n\n Press SPACE"
         ];
         this.showHistory();
         //this.showPlayer();
@@ -31,7 +31,7 @@ export default class Outro extends Phaser.Scene {
         this.text.forEach((line, i) => {
                 this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this); 
         });
-        this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
+        //this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
     }
 
     playMusic (theme="outro") {

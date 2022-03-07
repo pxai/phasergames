@@ -19,10 +19,10 @@ class Coin extends Phaser.GameObjects.Sprite {
         this.scene.anims.create({
             key: this.name,
             frames:  this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 7 }),
-            frameRate: 5,
+            frameRate: 10,
             repeat: -1
         });
-        console.log("Animating: ", this.name)
+
         this.anims.play(this.name, true);
         this.scene.tweens.add({
             targets: this,
@@ -35,7 +35,7 @@ class Coin extends Phaser.GameObjects.Sprite {
 
     pick () {
         const {x, y} = this.scene.cameras.main.getWorldPoint(this.scene.scoreCoinsLogo.x, this.scene.scoreCoinsLogo.y);
-        console.log("Position: ", this.x, this.y, this.scene.cameras.main.getWorldPoint(this.x, this.y))
+
         this.disabled = true;
         this.scene.tweens.add({
             targets: this,

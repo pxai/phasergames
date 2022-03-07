@@ -28,7 +28,6 @@ class LunchBox extends Phaser.GameObjects.Sprite {
             frameRate: 1,
         }); 
 
-        console.log("Animating: ", this.name)
         this.anims.play(this.name, true);
         this.scene.tweens.add({
             targets: this,
@@ -41,7 +40,6 @@ class LunchBox extends Phaser.GameObjects.Sprite {
 
     pick () {
         this.anims.play(this.name + "opened", true);
-        console.log("pick!")
         this.showPrize()
         this.disabled = true;
         this.scene.time.delayedCall(1000, () => { 
