@@ -4,7 +4,6 @@ export default class Lightning {
     }
 
     lightning () {
-        console.log("Lightning");
         const timeline = this.scene.tweens.createTimeline();
         timeline.add({
             targets: this.scene.lightningEffect,
@@ -16,7 +15,7 @@ export default class Lightning {
           timeline.add({
               targets: this.scene.lightningEffect,
               alpha: { from: 1, to: 0},
-              duration: 2000,
+              duration: 1000,
           });
 
       timeline.play();

@@ -53,7 +53,7 @@ export default class Splash extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 0.6,
+          volume: 0.4,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -64,7 +64,7 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "moriartyFont", "Use WASD", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.add.bitmapText(this.center_width, 450, "moriartyFont", "Use WAD", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
 
         this.add.sprite(this.center_width - 100, 550, "pello").setOrigin(0.5).setScale(0.5)
         this.add.bitmapText(this.center_width + 20, 550, "moriartyFont", "By PELLO", 35).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);

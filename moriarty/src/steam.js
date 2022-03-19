@@ -81,11 +81,10 @@ export class Steam {
         })
 
         this.scene.matter.world.on("collisionstart", (event, bodyA, bodyB) => {
-            console.log("Collision FIRE! ", bodyA.label, bodyB.label, player?.label === "player", this.type, this.scene.player.direction)
             const player = bodyA.label === "player" ? bodyA : bodyB;
 
             if (bodyA.label === "fireburst" && player?.label === "player") {
-                console.log("FIREBURST!!")
+
                 //this.scene.finishScene();
             }
         });

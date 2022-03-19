@@ -8,11 +8,10 @@ class Turn {
         this.sprite.label = "exit";
 
         this.scene.matter.world.on("collisionstart", (event, bodyA, bodyB) => {
-            console.log("Collision with ", bodyA.label, bodyB.label, player?.label === "player", this.type, this.scene.player.direction)
             const player = bodyA.label === "player" ? bodyA : bodyB;
 
             if (bodyA.label === "exit" && player?.label === "player" && this.type === this.scene.player.direction) {
-                console.log("Game OVER MAN!!!")
+
                 this.scene.finishScene();
             }
         });

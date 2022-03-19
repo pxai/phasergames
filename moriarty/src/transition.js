@@ -14,7 +14,7 @@ export default class Transition extends Phaser.Scene {
 
     create () {
         const messages = {
-            "game": "Use WASD",
+            "game": "Use WAD keys",
             "underwater": "You lost your engine!",
             "depth": "Time to go down!",
             "escape": "Go up and escape!",

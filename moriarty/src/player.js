@@ -91,23 +91,24 @@ export default class Player {
     update () {
         if (this.destroyed || this.dead) return;
         if (Phaser.Input.Keyboard.JustDown(this.A)) {
-            this.sprite.setFlipX(true);
-            this.sprite.applyForce({ x: -this.moveForce, y: 0 });
-          } else if (Phaser.Input.Keyboard.JustDown(this.D)) {
             this.sprite.setFlipX(false);
-            this.sprite.applyForce({ x: this.moveForce, y: 0 });
+            this.sprite.setVelocityX(-2);
+          } else if (Phaser.Input.Keyboard.JustDown(this.D)) {
+            this.sprite.setFlipX(true);
+            this.sprite.setVelocityX(2);
           }
       
           // Limit horizontal speed, without this the player's velocity would just keep increasing to
           // absurd speeds. We don't want to touch the vertical velocity though, so that we don't
           // interfere with gravity.
-          if (this.sprite.body.velocity.x > 7) this.sprite.setVelocityX(7);
-          else if (this.sprite.body.velocity.x < -7) this.sprite.setVelocityX(-7);
+         // if (this.sprite.body.velocity.x > 7) this.sprite.setVelocityX(7);
+         // else if (this.sprite.body.velocity.x < -7) this.sprite.setVelocityX(-7);
       
           if (Phaser.Input.Keyboard.JustDown(this.W)) {
             this.scene.playRandom("player")
             Array(Phaser.Math.Between(5, 10)).fill(0).forEach(i => new Steam(this.scene, this.sprite.x, this.sprite.y))
-            this.sprite.setVelocityY(-10);
+            this.sprite.setVelocityY(-9);
+            this.sprite.setVelocityX(0);
           }
     }
 
@@ -137,6 +138,8 @@ export default class Player {
     death () {
         if (this.dead) return;
         this.dead = true;
+        const { Body, Bodies } = Phaser.Physics.Matter.Matter;
+       
         this.scene.time.delayedCall(1000, () => {
             if (this.direction === "down") {
               this.direction = "up";

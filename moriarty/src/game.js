@@ -31,6 +31,7 @@ export default class Game extends Phaser.Scene {
       this.loadAudios(); 
        this.playMusic();
       this.addLightning();
+
     }
 
     addLightning() {
@@ -41,9 +42,8 @@ export default class Game extends Phaser.Scene {
 
     addPlayer() {
       const { x, y } = this.objectsLayer.objects.find( object => object.name === "player")
-      console.log("Setting playe!", x ,y )
       this.player = new Player(this, x, y);
-  
+      this.showStatus(this.player.direction, x, y)
       // Smoothly follow the player
       this.cameras.main.startFollow(this.player.sprite, false, 0.5, 0.5, 0, -300);
 
@@ -97,8 +97,9 @@ export default class Game extends Phaser.Scene {
     }
 
     hitDeadlyLayer(tile) {
-      console.log("Death")
       if (!this.player.dead) {
+        this.player.sprite.anims.play("moriarty", true);
+        this.cameras.main.shake(100);
         this.lightning.lightning();
         this.player.death();
       }
@@ -133,7 +134,7 @@ export default class Game extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 0.6,
+          volume: 0.4,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -156,16 +157,19 @@ export default class Game extends Phaser.Scene {
 
     showStatus (direction, x, y) {
       const text = direction === "up" ? "YOU'RE DEAD!\nNOW CLIMB UP!!!" : "YOU'RE ALIVE!\nNOW GO DOWN!!!"
+      const offset = direction === "up" ? -150 : 150;
       //const {x, y} = this.midPoint;
-      this.statusText = this.add.bitmapText(x, y, "moriartyFont", text, 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+      this.arrow = this.add.sprite(x, y + offset, direction).setOrigin(0.5)
+      this.statusText = this.add.bitmapText(x, y, "moriartyFont", text, 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(1, 2, 0x693600, 0.7);
       this.tweens.add({
-        targets: this.statusText,
+        targets: [this.statusText,this.arrow],
         duration: 300,
         alpha: {from: 0, to: 1},
         repeat: 10,
         yoyo: true,
         onComplete: () => {
           this.statusText.destroy()
+          this.arrow.destroy();
         }
     });
     }
