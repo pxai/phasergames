@@ -21,7 +21,8 @@
     "unit": "mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js"
   },
   "dependencies": {
-    "phaser": "^3.52.0"
+    "phaser": "^3.52.0",
+    "phaser-matter-collision-plugin": "1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",

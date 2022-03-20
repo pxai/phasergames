@@ -4,7 +4,13 @@ import Outro from "./outro";
 import Splash from "./splash";
 import Transition from "./transition";
 import Game from "./game";
-
+import PhaserMatterCollisionPlugin from "phaser-matter-collision-plugin";
+/*
+        matter: {
+           // gravity: { y: 300 },
+            debug: true
+        }
+*/
 const config = {
     width: 1000,
     height: 800,
@@ -17,10 +23,19 @@ const config = {
     physics: {
         default: "matter",
         matter: {
-            gravity: { y: 300 },
-            debug: false
-        }
+            // gravity: { y: 300 },
+             debug: true
+         }
     },
+    plugins: {
+        scene: [
+          {
+            plugin: PhaserMatterCollisionPlugin, // The plugin class
+            key: "matterCollision", // Where to store in Scene.Systems, e.g. scene.sys.matterCollision
+            mapping: "matterCollision" // Where to store in the Scene, e.g. scene.matterCollision
+          }
+        ]
+      },
     scene: [
         Bootloader,
         Splash,
