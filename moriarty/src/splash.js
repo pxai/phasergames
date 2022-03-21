@@ -11,23 +11,24 @@ export default class Splash extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.cameras.main.setBackgroundColor(0x210707);
-        //this.showLogo();        ;
+        this.cameras.main.setBackgroundColor(0x222222);
+        this.showTitle();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
         this.addStartButton();
-        //this.playMusic();
-        //this.showPlayer();
+        this.playMusic();
+        this.showPlayer();
     }
 
     startGame () {
         if (this.theme) this.theme.stop();
+        this.sound.add("steam").play();
         this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
     }
 
-    showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
+    showTitle() {
+        this.gameLogo = this.add.bitmapText(this.center_width + 20, 100, "moriartyFont", "MORIARTY", 200).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
         this.tweens.add({
             targets: this.gameLogo,
             duration: 1000,
@@ -40,6 +41,7 @@ export default class Splash extends Phaser.Scene {
                 to: 130
               },
           })
+          this.sound.add("steam").play();
     }
 
     showPlayer () {
@@ -51,7 +53,7 @@ export default class Splash extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.6,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -62,15 +64,15 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.add.bitmapText(this.center_width, 450, "moriartyFont", "Use WASD", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
 
         this.add.sprite(this.center_width - 100, 550, "pello").setOrigin(0.5).setScale(0.5)
-        this.add.bitmapText(this.center_width + 20, 550, "pixelFont", "By PELLO", 15).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.add.bitmapText(this.center_width + 20, 550, "moriartyFont", "By PELLO", 35).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
 
     }
 
     addStartButton () {
-        this.startButton = this.add.bitmapText(this.center_width, 670, "pixelFont", "Click HERE to start", 30).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.startButton = this.add.bitmapText(this.center_width, 670, "moriartyFont", "Click HERE to start", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {
             this.startGame();
@@ -90,5 +92,16 @@ export default class Splash extends Phaser.Scene {
             repeat: -1,
             yoyo: true
         });
+    }
+
+    showPlayer() {
+        this.player = this.add.sprite(this.center_width, this.center_height - 100, "moriarty").setScale(3).setOrigin(0.5);
+        this.anims.create({
+            key: "moriartyidle",
+            frames: this.anims.generateFrameNumbers("moriarty", { start: 0, end: 1 }),
+            frameRate: 3,
+            repeat: -1
+          });
+          this.player.anims.play("moriartyidle", true);
     }
 }

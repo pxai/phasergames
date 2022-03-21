@@ -1,3 +1,4 @@
+import { Steam }from "./steam";
 export default class Player {
     constructor(scene, x, y) {
       this.scene = scene;
@@ -9,24 +10,27 @@ export default class Player {
       const { width: w, height: h } = this.sprite;
       const mainBody = Bodies.rectangle(0, 0, w * 0.6, h, { chamfer: { radius: 10 } });
       mainBody.label = "player";
-     /* this.sensors = {
-        top: Bodies.rectangle(2, h * 0.5, w * 0.25, -10, { isSensor: true, label: "playerTop" }),
+      this.direction = "down";
+      this.sensors = {
+       // top: Bodies.rectangle(2, h * 0.5, w * 0.25, -10, { isSensor: true, label: "playerTop" }),
         bottom: Bodies.rectangle(0, h * 0.5, w * 0.25, 2, { isSensor: true, label: "playerBottom" }),
         left: Bodies.rectangle(-w * 0.35, 0, 2, h * 0.5, { isSensor: true, label: "playerLeft" }),
         right: Bodies.rectangle(w * 0.35, 0, 2, h * 0.5, { isSensor: true, label: "playerRight" })
       };
+      this.sensors.bottom.label = "player";
+
       const compoundBody = Body.create({
-        parts: [mainBody, this.sensors.top, this.sensors.bottom, this.sensors.left, this.sensors.right],
+        parts: [mainBody, this.sensors.bottom, this.sensors.left, this.sensors.right],
         frictionStatic: 0,
         frictionAir: 0.02,
         friction: 0.1,
         // The offset here allows us to control where the sprite is placed relative to the
         // matter body's x and y - here we want the sprite centered over the matter body.
         render: { sprite: { xOffset: 0.5, yOffset: 0.5 } },
-      });*/
+      });
       this.sprite
-        .setExistingBody(mainBody)
-        //.setScale(2)
+        .setExistingBody(compoundBody)
+        .setScale(0.7)
         .setFixedRotation() // Sets inertia to infinity so the player can't rotate
         .setPosition(x, y);
     
@@ -35,11 +39,11 @@ export default class Player {
         this.dead = false;
         this.destroyed = false;
 
-        //this.setSensors()
+        this.setSensors()
         this.init();
     }
 
-    /*setSensors () {
+    setSensors () {
         this.scene.matter.world.on("beforeupdate", this.resetTouching, this);
 
         // If a sensor just started colliding with something, or it continues to collide with something,
@@ -54,10 +58,25 @@ export default class Player {
           callback: this.onSensorCollide,
           context: this
         });
-    }*/
+    }
 
     init () {
         this.setKeys();
+
+      this.scene.anims.create({
+        key: "moriarty",
+        frames: this.scene.anims.generateFrameNumbers("moriarty", { start: 0, end: 1 }),
+        frameRate: 3,
+        repeat: -1
+      });
+
+      this.scene.anims.create({
+        key: "death",
+        frames: this.scene.anims.generateFrameNumbers("moriarty", { start: 2, end: 2 }),
+        frameRate: 3,
+        repeat: -1
+      });
+      this.sprite.anims.play("moriarty", true);
     }
 
     setKeys() {
@@ -86,7 +105,9 @@ export default class Player {
           else if (this.sprite.body.velocity.x < -7) this.sprite.setVelocityX(-7);
       
           if (Phaser.Input.Keyboard.JustDown(this.W)) {
-            this.sprite.setVelocityY(-11);
+            this.scene.playRandom("player")
+            Array(Phaser.Math.Between(5, 10)).fill(0).forEach(i => new Steam(this.scene, this.sprite.x, this.sprite.y))
+            this.sprite.setVelocityY(-10);
           }
     }
 
@@ -113,10 +134,23 @@ export default class Player {
         this.isTouching.ground = false;
       }
 
-    dead () {
+    death () {
+        if (this.dead) return;
         this.dead = true;
-        this.scene.delayedCall(1000, () => {
-            console.log("BACK!!")
+        this.scene.time.delayedCall(1000, () => {
+            if (this.direction === "down") {
+              this.direction = "up";
+              this.scene.cameras.main.startFollow(this.sprite, false, 0.5, 0.5, 0, 300);
+            } else {
+              this.direction = "down"
+              this.scene.cameras.main.startFollow(this.sprite, false, 0.5, 0.5, 0, -300);
+            }
+            const { x, y } = this.scene.objectsLayer.objects.find( object => object.name === "player")
+            this.sprite.x = x;
+            this.sprite.y = y;
+            this.scene.showStatus(this.direction, x, y)
+
+
             this.dead = false;
         }, null, this)
     }

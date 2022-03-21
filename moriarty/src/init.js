@@ -12,7 +12,7 @@ import PhaserMatterCollisionPlugin from "phaser-matter-collision-plugin";
         }
 */
 const config = {
-    width: 1000,
+    width: 800,
     height: 800,
     scale: {
         mode: Phaser.Scale.FIT,
@@ -24,7 +24,7 @@ const config = {
         default: "matter",
         matter: {
             // gravity: { y: 300 },
-             debug: true
+             debug: false
          }
     },
     plugins: {

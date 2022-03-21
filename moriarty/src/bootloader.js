@@ -28,12 +28,21 @@ export default class Bootloader extends Phaser.Scene {
         });*/
 
         this.load.image("pello", "assets/images/pello_ok.png");
-        // this.load.audio("beam", "assets/sounds/beam.mp3");
-        this.load.spritesheet("moriarty", "assets/images/walt.png", { frameWidth: 32, frameHeight: 32 });
 
-        this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
-        this.load.spritesheet("chopper", "assets/images/chopper.png", { frameWidth: 128, frameHeight: 128 });
+        this.load.image("fire", "assets/images/fire.png");
+        this.load.image("steam", "assets/images/steam.png");
+        this.load.image("fireburst", "assets/images/fireburst.png");
+        //this.load.spritesheet("moriarty", "assets/images/walt.png", { frameWidth: 32, frameHeight: 32 });
 
+        this.load.bitmapFont("moriartyFont", "assets/fonts/moriarty.png", "assets/fonts/moriarty.xml");
+        this.load.spritesheet("moriarty", "assets/images/moriarty.png", { frameWidth: 64, frameHeight: 64 });
+
+        this.load.audio("stage", "assets/sounds/stage.mp3");
+        this.load.audio("steam", "assets/sounds/steam.mp3");
+        this.load.audio("player", "assets/sounds/player.mp3");
+        this.load.audio("music", "assets/sounds/music.mp3");
+        this.load.audio("splash", "assets/sounds/splash.mp3");
+        Array(4).fill(0).forEach((e, i) => { this.load.audio(`thunder${i}`, `./assets/sounds/thunder${i}.mp3`);})
 
         this.load.tilemapTiledJSON("scene0", "assets/maps/scene0.json");
         this.load.image("background", "assets/maps/background.png");

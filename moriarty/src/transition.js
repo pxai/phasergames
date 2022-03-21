@@ -14,7 +14,7 @@ export default class Transition extends Phaser.Scene {
 
     create () {
         const messages = {
-            "game": "ARROWS/WASD + SPACE",
+            "game": "Use WASD",
             "underwater": "You lost your engine!",
             "depth": "Time to go down!",
             "escape": "Go up and escape!",
@@ -25,10 +25,10 @@ export default class Transition extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
         this.cameras.main.setBackgroundColor(0x210707);
-        this.add.bitmapText(this.center_width, this.center_height - 20, "pixelFont", messages[this.next], 40).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
-        this.add.bitmapText(this.center_width, this.center_height + 20, "pixelFont", "Ready?", 30).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
+        this.add.bitmapText(this.center_width, this.center_height - 40, "moriartyFont", messages[this.next], 80).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
+        this.add.bitmapText(this.center_width, this.center_height + 40, "moriartyFont", "Ready?", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
 
-        this.startButton = this.add.bitmapText(this.center_width, this.center_height + 200, "pixelFont", "START", 30).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
+        this.startButton = this.add.bitmapText(this.center_width, this.center_height + 200, "moriartyFont", "START", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {
@@ -48,6 +48,7 @@ export default class Transition extends Phaser.Scene {
     }
 
     loadNext () {
+        this.sound.add("steam").play();
         this.scene.start("game", { name: this.name, number: this.number });
     }
 }
