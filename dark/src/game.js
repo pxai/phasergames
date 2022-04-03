@@ -34,8 +34,31 @@ export default class Game extends Phaser.Scene {
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 100);
       this.loadAudios(); 
      //  this.playMusic();
-      this.addLightning();
+      this.addScore()
+      this.addHealth();
+    }
 
+    addScore() {
+      this.scoreText = this.add.bitmapText(75, 10, "pico", "x" +this.registry.get("score"), 20).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.scoreLogo = this.add.sprite(50, 25, "gold").setScale(1).setOrigin(0.5).setScrollFactor(0)
+      const coinAnimation = this.anims.create({
+        key: "goldscore",
+        frames: this.anims.generateFrameNumbers("gold", { start: 0, end: 7 }, ),
+        frameRate: 8,
+      });
+      this.scoreLogo.play({ key: "goldscore", repeat: -1 });
+    }
+
+    addHealth() {
+      this.healthText = this.add.bitmapText(275, 10, "pico", "x" +this.registry.get("health"), 20).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.healthLogo = this.add.sprite(250, 25, "heart").setScale(1.2).setOrigin(0.5).setScrollFactor(0)
+      this.tweens.add({
+        targets: this.healthLogo,
+        scale: {from: 1.2, to: 1},
+        yoyo: true,
+        duration: 500,
+        repeat: -1
+      })
     }
 
     addLight() {
@@ -44,15 +67,12 @@ export default class Game extends Phaser.Scene {
       this.playerLight = this.lights.addLight(0, 100, 100).setColor(0xffffff).setIntensity(3.0);
     }
 
-    addLightning() {
-      this.lightningEffect = this.add.rectangle(0, 40, this.map.widthInPixels, this.map.heightInPixels, 0xffffff).setOrigin(0)
-      this.lightningEffect.setAlpha(0);
-      this.lightning = new Lightning(this)
-    }
-
     addPlayer() {
       const { x, y } = {x: 100, y: 100}
       this.player = new Player(this, x, y);
+
+      this.chests = this.add.group();
+      this.golds = this.add.group();
 
       this.physics.add.collider(this.player, this.layer0, this.hitFloor, ()=>{
         return true;
@@ -68,6 +88,14 @@ export default class Game extends Phaser.Scene {
       }, this);
 
       this.physics.add.collider(this.tnts, this.layer1, this.tntHitFloor, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.player, this.chests, this.pickChest, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.player, this.golds, this.pickGold, ()=>{
         return true;
       }, this);
 
@@ -115,6 +143,21 @@ export default class Game extends Phaser.Scene {
       this.physics.add.overlap(this.explosions, this.explosions, this.chainKaboom, ()=>{
         return true;
       }, this);
+    }
+
+    pickGold (player, coin) {
+      if (!coin.disabled) {
+        coin.pick();
+        this.playAudio("coin");
+        this.updateCoins();
+      }
+    }
+
+    pickChest (player, lunchBox) {
+      if (!lunchBox.disabled) {
+        this.playAudio("lunchbox");
+        lunchBox.pick();
+      }
     }
 
     activateLamp(player, lamp) {
@@ -325,6 +368,24 @@ export default class Game extends Phaser.Scene {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
         this.scoreText.setText(Number(score).toLocaleString());
+        this.tweens.add({
+          targets: [this.scoreText, this.scoreLogo],
+          scale: { from: 1.4, to: 1},
+          duration: 50,
+          repeat: 10
+        })
+    }
+
+    updateHealth () {
+      const score = +this.registry.get("health") + points;
+      this.registry.set("health", score);
+      this.healthText.setText(Number(score).toLocaleString());
+      this.tweens.add({
+        targets: [this.healthText, this.healthLogo],
+        scale: { from: 1.4, to: 1},
+        duration: 50,
+        repeat: 10
+      })
     }
 
     get midPoint () {
