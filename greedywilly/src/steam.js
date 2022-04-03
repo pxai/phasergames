@@ -25,8 +25,8 @@ export class Steam {
 
   export class Explosion extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, width, height, chain = false ) {
-        width = width || Phaser.Math.Between(60, 95)
-        height = height || Phaser.Math.Between(60, 95)
+        width = width || Phaser.Math.Between(80, 115)
+        height = height || Phaser.Math.Between(80, 115)
         super(scene, x, y, width, height, 0x000000)
         this.setAlpha(0)
         scene.add.existing(this)

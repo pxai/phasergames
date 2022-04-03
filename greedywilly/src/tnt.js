@@ -24,7 +24,7 @@ export default class TNT extends Phaser.GameObjects.Sprite {
         this.light = this.scene.lights.addLight(this.x - 16, this.y, 50).setColor(0xffffff).setIntensity(3.0);
  
   
-        this.scene.time.delayedCall(3000, () => this.kaboom(), null, this);
+        this.scene.time.delayedCall(2000, () => this.kaboom(), null, this);
         this.anims.play("tnt", true);
         this.scene.tweens.add({
             targets: this,

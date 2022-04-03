@@ -20,7 +20,7 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("game");
+            this.scene.start("splash");
         },this);
 
         Array(4).fill(0).forEach((_,i) => {
@@ -34,15 +34,17 @@ export default class Bootloader extends Phaser.Scene {
 
         this.load.audio("splash", "assets/sounds/splash.mp3");
 
-        this.load.tilemapTiledJSON("scene0", "assets/maps/scene0.json");
-        this.load.image("background", "assets/maps/background.png");
+        this.load.audio("stone", "assets/sounds/stone.mp3");
+
         this.load.image("cave", "assets/maps/cave.png");
         this.load.image("heart", "assets/images/heart.png");
+        this.load.image("pello", "assets/images/pello_ok.png");
+        this.load.image("exit", "assets/images/exit.png");
         this.load.spritesheet("chest", "assets/images/chest.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("gold", "assets/images/gold.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('rock', 'assets/maps/cave.png', { frameWidth: 32, frameHeight: 32 });
         this.registry.set("score", 0);
-        this.registry.set("depth", 0);
+        this.registry.set("tnt", 1);
         this.registry.set("health", 10);
     }
 

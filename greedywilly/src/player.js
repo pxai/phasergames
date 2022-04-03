@@ -3,7 +3,7 @@ import { JumpSmoke, RockSmoke } from "./particle";
 import TNT from "./tnt";
 
 class Player extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, health = 10) {
+    constructor (scene, x, y, health = 10, tnt = 1) {
       super(scene, x, y, "walt")
       this.setOrigin(0.5)
       this.scene = scene;
@@ -20,9 +20,11 @@ class Player extends Phaser.GameObjects.Sprite {
       this.jumping = false;
       this.flashing = false;
       this.falling = false;
+      this.finished = false;
       this.walkVelocity = 200;
       this.jumpVelocity = -400;
       this.invincible = false;
+      this.totalTNTs = tnt;
 
       this.health = health;
 
@@ -90,7 +92,7 @@ class Player extends Phaser.GameObjects.Sprite {
   
 
     update () {
-        if (this.dead) return;
+        if (this.dead || this.finished) return;
         if (this.jumping ) {
            // if (Phaser.Math.Between(1,101) > 100) new Star(this.scene, this.x, this.y + 5)
             if (this.body.velocity.y >= 0) {
@@ -141,8 +143,9 @@ class Player extends Phaser.GameObjects.Sprite {
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.S)) {
-            this.scene.tnts.add(new TNT(this.scene, this.x, this.y));
-            console.log("Added ", this.x, this.y)
+            if (this.scene.tnts.countActive(true) < this.totalTNTs) {
+                this.scene.tnts.add(new TNT(this.scene, this.x, this.y));
+            }
         }
         this.scene.playerLight.x = this.x + (this.right ? 1 : -1) * 50;
         this.scene.playerLight.y = this.y;
@@ -165,25 +168,6 @@ class Player extends Phaser.GameObjects.Sprite {
             const varX = Phaser.Math.Between(-20, 20);
             new JumpSmoke(this.scene, this.x + (offsetX + varX), this.y + offsetY)
         })
-    }
-    
-
-    buildBlock() {
-        this.building = true;
-        this.anims.play("playerbuild", true);
-        this.scene.playAudio("build");
-        const offsetX = this.right ? 64 : -64;
-        const offsetY = this.jumpVelocity === -400 ? 0 : -128
-        this.buildSmoke(32, offsetX);
-        this.scene.bricks.add(new Brick(this.scene, this.x + offsetX, this.y + offsetY))
-    }
-
-    destroyBlock() {
-        this.building = true;
-        this.anims.play("playerhammer", true); 
-        const offsetX = this.right ? 32 : -32;
-        const size = this.mjolnir ? 128 : 32;
-        this.scene.blows.add(new Blow(this.scene, this.x + offsetX, this.y, size, size))
     }
 
     turn () {
@@ -211,10 +195,13 @@ class Player extends Phaser.GameObjects.Sprite {
 
     hit () {
         console.log("its a hit!!", this.health)
+        this.scene.updateHealth(-1)
+        this.scene.showPoints(this.x, this.y, "-1 HEALTH", 0xff0000)
         this.flashing = true;
         this.health--;
         this.flashPlayer();
         if (this.health === 0) {
+            console.log("You are dead")
             this.die();
         }
 
@@ -225,35 +212,29 @@ class Player extends Phaser.GameObjects.Sprite {
         this.anims.play("playerdead", true);
         this.body.immovable = true;
         this.body.moves = false;
-        this.scene.restartScene();
+        this.scene.finishScene("splash");
     }
 
 
     applyPrize (prize) {
         switch (prize) {
-            case "speed":
-                    this.walkVelocity = 330;
+            case "tnt":
+                    this.totalTNTs++;
+                    this.scene.updateTNT(1);
+                    this.scene.showPoints(this.x, this.y, "+1 TNT")
                     this.flashPlayer();
                     break;
-            case "hammer":
-                    this.mjolnir = true;
+            case "whisky":
+                    let health = Phaser.Math.Between(1, 4);
+                    this.health += health;
+                    this.scene.updateHealth(health) 
+                    this.scene.showPoints(this.x, this.y, "+" + health + " HEALTH")
                     this.flashPlayer();
                     break;
-            case "boots":
-                    this.jumpVelocity = -600;
-                    this.flashPlayer();
-                    break;
-            case "coin":
-                    this.scene.updateCoins();
-                    break;
-            case "star":
-                    this.invincible = true;
-                    this.scene.tweens.add({
-                        targets: this,
-                        duration: 300,
-                        alpha: {from: 0.7, to: 1},
-                        repeat: -1
-                    });
+            case "gold":
+                    let gold = Phaser.Math.Between(1, 4);
+                    this.scene.showPoints(this.x, this.y, "+" + gold + " GOLD")
+                    this.scene.updateScore(gold);
                     break;
             default: break;
         }

@@ -18,30 +18,24 @@ export default class Splash extends Phaser.Scene {
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
         this.addStartButton();
         this.playMusic();
-        this.showPlayer();
+        //this.showPlayer();
     }
 
     startGame () {
         if (this.theme) this.theme.stop();
-        this.sound.add("steam").play();
-        this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
+       // this.sound.add("steam").play();
+        this.scene.start("game")
     }
 
     showTitle() {
-        this.gameLogo = this.add.bitmapText(this.center_width + 20, 100, "western", "MORIARTY", 200).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.gameLogo1 = this.add.bitmapText(this.center_width + 20, 100, "western", "GREEDY", 200).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7).setAlpha(0);
+        this.gameLogo2 = this.add.bitmapText(this.center_width + 20, 250, "western", "WILLIE", 200).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7).setAlpha(0);
         this.tweens.add({
-            targets: this.gameLogo,
+            targets: [this.gameLogo1, this.gameLogo2],
             duration: 1000,
-            x: {
-              from: this.center_width * 2,
-              to: this.center_width
-            },
-            y: {
-                from: -200,
-                to: 130
-              },
+            alpha: {from: 0, to: 1}
           })
-          this.sound.add("steam").play();
+          //this.sound.add("steam").play();
     }
 
     showPlayer () {
@@ -64,26 +58,26 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "western", "Use WAD", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.add.bitmapText(this.center_width, 450, "western", "WASD/ARROWS", 60).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7);
 
         this.add.sprite(this.center_width - 100, 550, "pello").setOrigin(0.5).setScale(0.5)
-        this.add.bitmapText(this.center_width + 20, 550, "western", "By PELLO", 35).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.add.bitmapText(this.center_width + 20, 550, "western", "By PELLO", 35).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7);
 
     }
 
     addStartButton () {
-        this.startButton = this.add.bitmapText(this.center_width, 670, "western", "Click HERE to start", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.startButton = this.add.bitmapText(this.center_width, 670, "western", "Click HERE to start", 60).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7);
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {
             this.startGame();
         });
     
         this.startButton.on('pointerover', () => {
-            this.startButton.setTint(0x3E6875)
+            this.startButton.setTint(0xb85d08)
         });
     
         this.startButton.on('pointerout', () => {
-            this.startButton.setTint(0xffffff)
+            this.startButton.setTint(0xe5cc18)
         });
         this.tweens.add({
             targets: this.space,
