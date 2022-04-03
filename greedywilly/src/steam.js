@@ -35,6 +35,7 @@ export class Steam {
         this.chain = false;
        // this.body.setVelocityY(-100);
         this.init();
+        this.scene.waves.add(new Wave(this.scene, x, y))
     }
 
     init () {
@@ -57,7 +58,24 @@ export class Steam {
     }
 }
 
+export class Wave extends Phaser.GameObjects.Rectangle {
+  constructor (scene, x, y ) {
+      const width = Phaser.Math.Between(200, 400)
+      super(scene, x, y, width, 10, 0x000000)
+      this.setAlpha(0)
+      scene.add.existing(this)
+      scene.physics.add.existing(this);
+      this.body.setAllowGravity(false);
 
+      this.body.setVelocityY(-800);
+      scene.tweens.add({
+        targets: this,
+        duration: 1000,
+        scale: {from: 1, to: 0.9},
+        onComplete: () => { this.destroy() }
+      })
+  }
+}
  
 
  

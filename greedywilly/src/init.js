@@ -4,13 +4,7 @@ import Outro from "./outro";
 import Splash from "./splash";
 import Transition from "./transition";
 import Game from "./game";
-import PhaserMatterCollisionPlugin from "phaser-matter-collision-plugin";
-/*
-        matter: {
-           // gravity: { y: 300 },
-            debug: true
-        }
-*/
+
 const config = {
     width: 800,
     height: 800,

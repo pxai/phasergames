@@ -28,7 +28,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     showTitle() {
-        this.gameLogo = this.add.bitmapText(this.center_width + 20, 100, "pico", "MORIARTY", 200).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.gameLogo = this.add.bitmapText(this.center_width + 20, 100, "western", "MORIARTY", 200).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
         this.tweens.add({
             targets: this.gameLogo,
             duration: 1000,
@@ -64,15 +64,15 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pico", "Use WAD", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.add.bitmapText(this.center_width, 450, "western", "Use WAD", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
 
         this.add.sprite(this.center_width - 100, 550, "pello").setOrigin(0.5).setScale(0.5)
-        this.add.bitmapText(this.center_width + 20, 550, "pico", "By PELLO", 35).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.add.bitmapText(this.center_width + 20, 550, "western", "By PELLO", 35).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
 
     }
 
     addStartButton () {
-        this.startButton = this.add.bitmapText(this.center_width, 670, "pico", "Click HERE to start", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.startButton = this.add.bitmapText(this.center_width, 670, "western", "Click HERE to start", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {
             this.startGame();

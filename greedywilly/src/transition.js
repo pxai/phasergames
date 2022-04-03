@@ -25,10 +25,10 @@ export default class Transition extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
         this.cameras.main.setBackgroundColor(0x210707);
-        this.add.bitmapText(this.center_width, this.center_height - 40, "pico", messages[this.next], 80).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
-        this.add.bitmapText(this.center_width, this.center_height + 40, "pico", "Ready?", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
+        this.add.bitmapText(this.center_width, this.center_height - 40, "western", messages[this.next], 80).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
+        this.add.bitmapText(this.center_width, this.center_height + 40, "western", "Ready?", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
 
-        this.startButton = this.add.bitmapText(this.center_width, this.center_height + 200, "pico", "START", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
+        this.startButton = this.add.bitmapText(this.center_width, this.center_height + 200, "western", "START", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {

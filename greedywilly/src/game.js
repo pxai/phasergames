@@ -1,5 +1,4 @@
 import Player from "./player";
-import Lightning from "./lightning"
 import { Debris, Rock } from "./particle";
 import { Explosion } from "./steam";
 
@@ -26,20 +25,19 @@ export default class Game extends Phaser.Scene {
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
       this.cameras.main.setBackgroundColor(0x000000);
-      //this.cameras.main.setBounds(0, 0, 20920 * 2, 2000 * 2);
-      //this.physics.world.setBounds(0, 0, 20920 * 2, 2080 * 2);
+
       this.createMap();
       this.addPlayer();
       this.addLight();
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 100);
       this.loadAudios(); 
-     //  this.playMusic();
+      this.playMusic();
       this.addScore()
       this.addHealth();
     }
 
     addScore() {
-      this.scoreText = this.add.bitmapText(75, 10, "pico", "x" +this.registry.get("score"), 20).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.scoreText = this.add.bitmapText(75, 10, "western", "x" +this.registry.get("score"), 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
       this.scoreLogo = this.add.sprite(50, 25, "gold").setScale(1).setOrigin(0.5).setScrollFactor(0)
       const coinAnimation = this.anims.create({
         key: "goldscore",
@@ -50,7 +48,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addHealth() {
-      this.healthText = this.add.bitmapText(275, 10, "pico", "x" +this.registry.get("health"), 20).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.healthText = this.add.bitmapText(275, 10, "western", "x" +this.registry.get("health"), 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
       this.healthLogo = this.add.sprite(250, 25, "heart").setScale(1.2).setOrigin(0.5).setScrollFactor(0)
       this.tweens.add({
         targets: this.healthLogo,
@@ -103,8 +101,17 @@ export default class Game extends Phaser.Scene {
       this.chainReaction = this.add.group();
       this.lamps = this.add.group();
       this.rocks = this.add.group();
+      this.waves = this.add.group();
+
+      this.physics.add.collider(this.player, this.rocks, this.hitFloor, ()=>{
+        return true;
+      }, this);
 
       this.physics.add.collider(this.rocks, this.layer0, this.hitRock, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.rocks, this.rocks, this.hitRock, ()=>{
         return true;
       }, this);
 
@@ -125,6 +132,18 @@ export default class Game extends Phaser.Scene {
       }, this);
 
       this.physics.add.overlap(this.layer1, this.explosions, this.kaboom, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.rocks, this.explosions, this.rockKaboom, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.layer1, this.waves, this.waveHit, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.layer0, this.waves, this.waveHit, ()=>{
         return true;
       }, this);
 
@@ -165,18 +184,30 @@ export default class Game extends Phaser.Scene {
     }
 
     hitExplosion(player, explosion) {
-      console.log("Hit by explosion!", player.flashing)
       if (!player.flashing) {
         this.player.hit();
+        this.updateHealth(-1);
       }
+    }
+
+    rockKaboom(rock, explosion) {
+      rock.destroy();
     }
 
     kaboom(explosion, tile) {
       if (tile.layer["name"] === "layer1") {
-        if (Phaser.Math.Between(0, 5) > 4)
-          this.rocks.add(new Rock(this, tile.pixelX + (Phaser.Math.Between(-100, 100)), tile.pixelY - 100))
+        //if (Phaser.Math.Between(0, 5) > 4)
+          //this.rocks.add(new Rock(this, tile.pixelX + (Phaser.Math.Between(-100, 100)), tile.pixelY - 100))
         Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY))
         this.layer1.removeTileAt(tile.x, tile.y);
+      }
+    }
+
+    waveHit(wave, tile) {
+      if (wave) wave.destroy();
+      if (tile.layer["name"] === "layer1") {
+        if (Phaser.Math.Between(0, 5) > 4)
+          this.rocks.add(new Rock(this, tile.pixelX + (Phaser.Math.Between(-100, 100)), tile.pixelY - 100))
       }
     }
 
@@ -339,11 +370,11 @@ export default class Game extends Phaser.Scene {
       }
 
       playMusic (theme="music") {
-        this.theme = this.sound.add(theme);
+        this.theme = this.sound.add("music"+ Phaser.Math.Between(0, 3));
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 0.4,
+          volume: 0.2,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -367,24 +398,24 @@ export default class Game extends Phaser.Scene {
     updateScore (points = 0) {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
-        this.scoreText.setText(Number(score).toLocaleString());
+        this.scoreText.setText("x"+Number(score).toLocaleString());
         this.tweens.add({
           targets: [this.scoreText, this.scoreLogo],
           scale: { from: 1.4, to: 1},
-          duration: 50,
-          repeat: 10
+          duration: 100,
+          repeat: 5
         })
     }
 
-    updateHealth () {
+    updateHealth (points) {
       const score = +this.registry.get("health") + points;
       this.registry.set("health", score);
-      this.healthText.setText(Number(score).toLocaleString());
+      this.healthText.setText("x"+Number(score).toLocaleString());
       this.tweens.add({
         targets: [this.healthText, this.healthLogo],
         scale: { from: 1.4, to: 1},
-        duration: 50,
-        repeat: 10
+        duration: 100,
+        repeat: 5
       })
     }
 

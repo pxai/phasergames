@@ -20,7 +20,7 @@ export default class Outro extends Phaser.Scene {
         this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
 
-        this.startButton = this.add.bitmapText(this.center_width, this.center_height + 200, "pico", "TRY AGAIN", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
+        this.startButton = this.add.bitmapText(this.center_width, this.center_height + 200, "western", "TRY AGAIN", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
  
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {
@@ -37,7 +37,7 @@ export default class Outro extends Phaser.Scene {
     }
 
     showResult () {
-        this.add.bitmapText(this.center_width, this.center_height, "pico", "GOOD JOB!", 100).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.add.bitmapText(this.center_width, this.center_height, "western", "GOOD JOB!", 100).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
     }
 
     playMusic (theme="outro") {
@@ -55,7 +55,7 @@ export default class Outro extends Phaser.Scene {
       }
 
     showLine(text, y) {
-        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "pico", text, 25).setOrigin(0.5).setAlpha(0));
+        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "western", text, 25).setOrigin(0.5).setAlpha(0));
         this.tweens.add({
             targets: line,
             duration: 2000,
