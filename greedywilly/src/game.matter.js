@@ -75,9 +75,7 @@ export default class Game extends Phaser.Scene {
       this.matter.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
       this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
       this.layer1.forEachTile(function (tile) {
-        console.log(tile, tile.label)
         tile.label = "destroyable"
-
       });
 
       this.matter.world.on('collisionstart', function (event) {
@@ -95,7 +93,7 @@ export default class Game extends Phaser.Scene {
             // that we have the top level body instead of a part of a larger compound body.
             const bodyA = getRootBody(event.pairs[i].bodyA);
             const bodyB = getRootBody(event.pairs[i].bodyB);
-            console.log("Something happended: ", bodyA, bodyB)
+
             if ((bodyA.label === 'explosion' && bodyB.label === 'destroyable') ||
                 (bodyB.label === 'explosion' && bodyA.label === 'destroyable'))
             {

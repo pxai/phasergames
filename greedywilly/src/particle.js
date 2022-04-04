@@ -112,6 +112,29 @@ export class Rock extends Phaser.GameObjects.Sprite {
     }
 }
 
+export class Gold extends Phaser.GameObjects.Sprite {
+    constructor (scene, x, y ) {
+        super(scene, x, y, "rock", Phaser.Math.RND.pick([9, 10, 11, 12]));
+       // this.setStrokeStyle(4, 0x000000);
+        scene.add.existing(this)
+        scene.physics.add.existing(this);
+        this.body.setAllowGravity(false);
+        this.body.immovable = true;
+
+        this.init();
+    }
+
+    init () {
+        this.scene.tweens.add({
+            targets: this,
+            duration: 100,
+            repeat: -1,
+            scale: {from: 0.9, to: 1},
+            yoyo: true
+        })
+    }
+}
+
 export const elements = {
     "gold": { color: 0xb06f00, hits: 5, points: 1000, rate: 0.8 },
     "orange": { color: 0xb03e00, hits: 1, points: 10, rate: 1.1 },

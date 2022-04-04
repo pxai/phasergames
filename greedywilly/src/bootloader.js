@@ -30,22 +30,33 @@ export default class Bootloader extends Phaser.Scene {
         this.load.bitmapFont("pico", "assets/fonts/pico.png", "assets/fonts/pico.xml");
         this.load.bitmapFont("western", "assets/fonts/western.png", "assets/fonts/western.xml");
         this.load.spritesheet("walt", "assets/images/walt.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("willie", "assets/images/willie.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("tnt", "assets/images/tnt.png", { frameWidth: 32, frameHeight: 32 });
 
         this.load.audio("splash", "assets/sounds/splash.mp3");
 
         this.load.audio("stone", "assets/sounds/stone.mp3");
+        this.load.audio("explosion", "assets/sounds/explosion.mp3");
+        this.load.audio("wick", "assets/sounds/wick.mp3");
+        this.load.audio("land", "assets/sounds/land.mp3");
+        this.load.audio("jump", "assets/sounds/jump.mp3");
+        this.load.audio("hit", "assets/sounds/hit.mp3");
+        this.load.audio("yee-haw", "assets/sounds/yee-haw.mp3");
+        this.load.audio("chest0", "assets/sounds/chest0.mp3");
+        this.load.audio("chest1", "assets/sounds/chest1.mp3");
+        this.load.audio("gold", "assets/sounds/gold.mp3");
+        this.load.audio("coin", "assets/sounds/coin.mp3");
+        this.load.audio("start", "assets/sounds/start.mp3");
+        this.load.audio("exit", "assets/sounds/exit.mp3");
 
         this.load.image("cave", "assets/maps/cave.png");
         this.load.image("heart", "assets/images/heart.png");
         this.load.image("pello", "assets/images/pello_ok.png");
         this.load.image("exit", "assets/images/exit.png");
+        this.load.image("whisky", "assets/images/whisky.png");
         this.load.spritesheet("chest", "assets/images/chest.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("gold", "assets/images/gold.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('rock', 'assets/maps/cave.png', { frameWidth: 32, frameHeight: 32 });
-        this.registry.set("score", 0);
-        this.registry.set("tnt", 1);
-        this.registry.set("health", 10);
     }
 
     create () {

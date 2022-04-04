@@ -11,6 +11,8 @@ export default class TNT extends Phaser.GameObjects.Sprite {
       this.scene.physics.add.existing(this);
       this.body.setAllowGravity(false);
       this.chain = false;
+      this.wick = this.scene.sound.add("wick");
+      this.wick.play();
       this.init();
     }
 
@@ -44,6 +46,7 @@ export default class TNT extends Phaser.GameObjects.Sprite {
 
     kaboom () {
        if (this.scene) {
+           this.wick.stop();
            this.scene.lights.removeLight(this.light);
             this.scene.explosions.add(new Explosion(this.scene, this.x, this.y, Phaser.Math.Between(60, 95), Phaser.Math.Between(60, 95), this.chain))
        }

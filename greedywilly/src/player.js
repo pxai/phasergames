@@ -4,7 +4,7 @@ import TNT from "./tnt";
 
 class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, health = 10, tnt = 1) {
-      super(scene, x, y, "walt")
+      super(scene, x, y, "willie")
       this.setOrigin(0.5)
       this.scene = scene;
 
@@ -41,47 +41,47 @@ class Player extends Phaser.GameObjects.Sprite {
 
         this.scene.anims.create({
             key: "startidle",
-            frames: this.scene.anims.generateFrameNumbers("walt", { start: 0, end: 1 }),
+            frames: this.scene.anims.generateFrameNumbers("willie", { start: 0, end: 1 }),
             frameRate: 3,
             repeat: -1
         });
 
         this.scene.anims.create({
             key: "playeridle",
-            frames: this.scene.anims.generateFrameNumbers("walt", { start: 2, end: 3 }),
+            frames: this.scene.anims.generateFrameNumbers("willie", { start: 2, end: 3 }),
             frameRate: 3,
             repeat: -1
         });
 
         this.scene.anims.create({
             key: "playerwalk",
-            frames: this.scene.anims.generateFrameNumbers("walt", { start: 4, end: 6 }),
+            frames: this.scene.anims.generateFrameNumbers("willie", { start: 4, end: 6 }),
             frameRate: 10,
             repeat: -1
         });
 
         this.scene.anims.create({
             key: "playerjump",
-            frames: this.scene.anims.generateFrameNumbers("walt", { start: 4, end: 4 }),
+            frames: this.scene.anims.generateFrameNumbers("willie", { start: 4, end: 4 }),
             frameRate: 1,
         });
 
         this.scene.anims.create({
             key: "playerhammer",
-            frames: this.scene.anims.generateFrameNumbers("walt", { start: 7, end: 8 }),
+            frames: this.scene.anims.generateFrameNumbers("willie", { start: 7, end: 8 }),
             frameRate: 10
         });
 
         this.scene.anims.create({
             key: "playerbuild",
-            frames: this.scene.anims.generateFrameNumbers("walt", { start: 9, end: 10 }),
+            frames: this.scene.anims.generateFrameNumbers("willie", { start: 9, end: 10 }),
             frameRate: 10,
             repeat: 2
         });
 
         this.scene.anims.create({
             key: "playerdead",
-            frames: this.scene.anims.generateFrameNumbers("walt", { start: 11, end: 16 }),
+            frames: this.scene.anims.generateFrameNumbers("willie", { start: 11, end: 16 }),
             frameRate: 5,
         });
 
@@ -163,9 +163,9 @@ class Player extends Phaser.GameObjects.Sprite {
         })
     }
 
-    buildSmoke (offsetY = 10, offsetX) {
+    hitSmoke (offsetY = -32, offsetX) {
         Array(Phaser.Math.Between(8, 14)).fill(0).forEach(i => {
-            const varX = Phaser.Math.Between(-20, 20);
+            const varX = Phaser.Math.Between(-10, 10);
             new JumpSmoke(this.scene, this.x + (offsetX + varX), this.y + offsetY)
         })
     }
@@ -178,11 +178,6 @@ class Player extends Phaser.GameObjects.Sprite {
         if (animation.key === "playerground") {
             this.anims.play("playeridle", true)
         }
-
-        if (animation.key === "playerhammer" || animation.key === "playerbuild" ) {
-            this.building = false;
-            this.anims.play(this.jumping ? "playerjump" : "playeridle", true);
-        }
     }
 
     hitFloor() {
@@ -194,14 +189,12 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     hit () {
-        console.log("its a hit!!", this.health)
         this.scene.updateHealth(-1)
         this.scene.showPoints(this.x, this.y, "-1 HEALTH", 0xff0000)
         this.flashing = true;
         this.health--;
         this.flashPlayer();
-        if (this.health === 0) {
-            console.log("You are dead")
+        if (this.health < 0) {
             this.die();
         }
 
@@ -217,6 +210,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
 
     applyPrize (prize) {
+        this.scene.playAudio("yee-haw");
         switch (prize) {
             case "tnt":
                     this.totalTNTs++;
@@ -225,14 +219,14 @@ class Player extends Phaser.GameObjects.Sprite {
                     this.flashPlayer();
                     break;
             case "whisky":
-                    let health = Phaser.Math.Between(1, 4);
+                    let health = Phaser.Math.Between(4, 8);
                     this.health += health;
                     this.scene.updateHealth(health) 
                     this.scene.showPoints(this.x, this.y, "+" + health + " HEALTH")
                     this.flashPlayer();
                     break;
             case "gold":
-                    let gold = Phaser.Math.Between(1, 4);
+                    let gold = Phaser.Math.Between(20, 30);
                     this.scene.showPoints(this.x, this.y, "+" + gold + " GOLD")
                     this.scene.updateScore(gold);
                     break;
@@ -247,7 +241,6 @@ class Player extends Phaser.GameObjects.Sprite {
             alpha: { from: 0.0, to: 1},
             repeat: 10,
             onComplete: () => {
-                console.log("Completed!")
                 this.flashing = false;
             }
         });

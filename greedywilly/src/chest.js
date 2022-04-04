@@ -1,6 +1,5 @@
 class Chest extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, name = "chest") {
-        console.log("Lets create: ", scene, x, y, name)
         super(scene, x, y, name);
         this.scene = scene;
         this.name = name;
@@ -59,7 +58,7 @@ class Chest extends Phaser.GameObjects.Sprite {
             duration: 500,
             y: {from: this.y, to: this.y - 64},
             onComplete: () => {
-                this.scene.playAudio("prize")
+                //this.scene.playAudio("prize")
             }
         })
     }

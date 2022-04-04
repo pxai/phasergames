@@ -1,5 +1,5 @@
 import Player from "./player";
-import { Debris, Rock } from "./particle";
+import { Debris, Rock, Gold } from "./particle";
 import { Explosion } from "./steam";
 import Chest from "./chest";
 import Exit from "./exit";
@@ -36,6 +36,18 @@ export default class Game extends Phaser.Scene {
       this.addScore()
       this.addHealth();
       this.addTNT();
+      this.addTutorial();
+      this.playAudio("start");
+    }
+
+    addTutorial() {
+      if (this.number === 0) {
+        this.tutorialText = this.add.bitmapText(175, 400, "western", "Use A-D or Left-Right to move", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0);
+        const texts = ["Use S or Down to place TNT and avoid it", "Avoid debris!", "Pick gold and chests", "Pick TNTs to add more TNT in a row", "Find the exit, keep going!", ""];
+        texts.forEach((text, i) => {
+          this.time.delayedCall(4000 * (i + 1), () => { this.tutorialText.setText(texts[i])}, null, this);
+        })
+      }
     }
 
     addScore() {
@@ -80,7 +92,8 @@ export default class Game extends Phaser.Scene {
 
     addPlayer() {
       const { x, y } = {x: 100, y: 100}
-      this.player = new Player(this, x, y, +this.registry.get("health"), +this.registry.get("tnt"));
+      const health = +this.registry.get("health") < 10 ? 10 : +this.registry.get("health");
+      this.player = new Player(this, x, y, health, +this.registry.get("tnt"));
 
 
       this.physics.add.collider(this.player, this.layer0, this.hitFloor, ()=>{
@@ -189,6 +202,8 @@ export default class Game extends Phaser.Scene {
 
     hitRockPlayer(player, rock) {
       if (!player.flashing && rock.body.touching.down) {
+        this.playAudio("hit");
+        player.hitSmoke();
         player.hit();
         rock.destroy();
       }
@@ -196,7 +211,7 @@ export default class Game extends Phaser.Scene {
 
     pickGold (player, gold) {
         gold.destroy()
-        //this.playAudio("coin");
+        this.playAudio("gold");
         let points = Phaser.Math.Between(1, 4);
         this.showPoints(player.x, player.y, "+" + points + " GOLD")
         this.updateScore(points);
@@ -204,7 +219,8 @@ export default class Game extends Phaser.Scene {
 
     pickChest (player, chest) {
       if (!chest.disabled) {
-        //this.playAudio("lunchbox");
+        this.playAudio("chest1");
+        this.playAudio("chest0");
         chest.pick();
       }
     }
@@ -216,7 +232,6 @@ export default class Game extends Phaser.Scene {
     hitExplosion(player, explosion) {
       if (!player.flashing) {
         this.player.hit();
-        this.updateHealth(-1);
       }
     }
 
@@ -230,21 +245,23 @@ export default class Game extends Phaser.Scene {
         Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY))
         this.layer1.removeTileAt(tile.x, tile.y);
 
-        if ([0,1,2,3].includes(tile.index))
-          this.golds.add(this.map.putTileAt(Phaser.Math.RND.pick([9, 10, 11, 12]), tile.x, tile.y));
+        if ([0,1,2,3].includes(tile.index) && Phaser.Math.Between(1, 10) > 9) {
+          this.golds.add(new Gold(this, tile.pixelX + 16, tile.pixelY + 16))
+        }
+
       }
     }
 
     waveHit(wave, tile) {
       if (wave) wave.destroy();
       if (tile.layer["name"] === "layer1") {
-        //////if (Phaser.Math.Between(0, 5) > 4)
-        //////  this.rocks.add(new Rock(this, tile.pixelX + (Phaser.Math.Between(-100, 100)), tile.pixelY - 100))
+        if (Phaser.Math.Between(0, 5) > 4)
+          this.rocks.add(new Rock(this, tile.pixelX + (Phaser.Math.Between(-100, 100)), tile.pixelY + 32))
+          this.playAudio("stone")
       }
     }
 
     tntKaboom(tnt, explosion) {
-      console.log("TNT kaboom", tnt, explosion)
       if (!tnt.chain) {
         tnt.chain = true;
         tnt.kaboom();
@@ -258,12 +275,14 @@ export default class Game extends Phaser.Scene {
         const width = explosion1.width + explosion2.width;
         const height = explosion1.height + explosion2.height;
         this.chainReaction.add(new Explosion(this, explosion1.x, explosion1.y, width, height))
+        this.playRandom("explosion")
       }
     }
 
     exitScreen(player, exit) {
       player.finished = true;
       player.visible = false;
+      this.playAudio("exit");
       this.finishScene();
     }
 
@@ -278,19 +297,7 @@ export default class Game extends Phaser.Scene {
 
     } 
 
-    hitFloor(player, platform) {
-      if (this.player.jumping && !this.player.falling && this.player.body.velocity.y === 0) {
-        const tile = this.getTile(platform)
-        if (this.isBreakable(tile)) {
-          this.playAudioRandomly("stone");
-          Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY))
-          this.platform.removeTileAt(tile.x, tile.y);
-        } else if (platform?.name === "brick0") {
-          this.playAudioRandomly("stone");
-          Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, platform.x, platform.y))
-          platform.destroy();
-        }
-      }
+    hitFloor(player, tile) {
     }
 
     createMap() {
@@ -319,17 +326,19 @@ export default class Game extends Phaser.Scene {
         this.rooms++;
       } while(this.rooms < 10)
       positions.pop();
-      console.log(positions)
 
       this.layer1 = this.map.createBlankLayer('layer1', this.brickTiles).setPipeline('Light2D');
       positions.forEach(position => {
-
         let {x, y, width, height} = position;
         this.createSquare(1, x + 1, y + 1, width - 2, height -2, 2)
+        if (Phaser.Math.Between(1, 10)> 7) {
+          this.chests.add(new Chest(this, (x * 32) + Phaser.Math.Between(160, 224), (y * 32) +  128))
+        }
       });
+      const {x, y} = positions.pop();
+      this.exits.add(new Exit(this, (x * 32) + 128, (y * 32) + 128))
 
-      this.chests.add(new Chest(this, 200, 200))
-      this.exits.add(new Exit(this, 300, 200))
+      
       this.layer0.setCollisionByExclusion([-1]);
       this.layer1.setCollisionByExclusion([-1]);
     }
@@ -361,7 +370,6 @@ export default class Game extends Phaser.Scene {
         Array(height).fill(0).forEach((_,i) => setTile(tile, x, y + i));
         Array(height).fill(0).forEach((_,i) => setTile(tile, x + width - 1, y + i));
         Array(height).fill(0).forEach((_,i) => setTile(tile, x + width, y + i));
-        //if (Phaser.Math.Between(0, 3)> 1) this.chests.add(new Chest(this.scene, x, y - 32))
       }
 
 
@@ -386,23 +394,25 @@ export default class Game extends Phaser.Scene {
       return this.layer1.getTileAt(x, y);
     }
 
-    hitDeadlyLayer(tile) {
-      if (!this.player.dead) {
-        this.player.sprite.anims.play("moriarty", true);
-        this.cameras.main.shake(100)
-        this.lightning.lightning();
-        this.player.death();
-      }
-    }
-
       loadAudios () {
         this.audios = {
           "stone": this.sound.add("stone"),
+          "explosion": this.sound.add("explosion"),
+          "wick": this.sound.add("wick"),
+          "land": this.sound.add("land"),
+          "jump": this.sound.add("jump"),
+          "hit": this.sound.add("hit"),
+          "yee-haw": this.sound.add("yee-haw"),
+          "chest0": this.sound.add("chest0"),
+          "chest1": this.sound.add("chest1"),
+          "gold": this.sound.add("gold"),
+          "coin": this.sound.add("coin"),
+          "start": this.sound.add("start"),
+          "exit": this.sound.add("exit"),
         };
       }
 
       playAudio(key) {
-        return
         this.audios[key].play();
       }
 
@@ -436,13 +446,14 @@ export default class Game extends Phaser.Scene {
       this.theme.stop();
 
       this.time.delayedCall(500, () => {
-        this.scene.start(screen);
+        this.scene.start(screen, {name: "", number: this.number + 1});
       }, null, this)
     }
 
     updateScore (points = 0) {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
+        this.playAudio("coin")
         this.scoreText.setText("x"+Number(score).toLocaleString());
         this.tweens.add({
           targets: [this.scoreText, this.scoreLogo],
