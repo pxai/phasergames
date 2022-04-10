@@ -16,11 +16,11 @@ export default class Outro extends Phaser.Scene {
 
         this.showResult();
         this.showPlayer();
-        //this.playMusic();
+        this.sound.add("outro").play();
         this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
 
-        this.startButton = this.add.bitmapText(this.center_width, this.center_height + 200, "western", "TRY AGAIN", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
+        this.startButton = this.add.bitmapText(this.center_width, this.center_height + 200, "western", "TRY AGAIN!", 60).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7)
  
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {
@@ -37,8 +37,32 @@ export default class Outro extends Phaser.Scene {
     }
 
     showResult () {
-        this.add.bitmapText(this.center_width, this.center_height, "western", "GOOD JOB!", 100).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.addScore();
+        this.addTNT();
+        this.add.bitmapText(this.center_width, 150, "western", "TOO GREEDY!!", 100).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
     }
+
+    addScore() {
+        this.scoreText = this.add.bitmapText(this.center_width + 20, 350, "western", "x" +this.registry.get("score"), 60).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+        this.scoreLogo = this.add.sprite(this.center_width - 40, 375, "gold").setScale(2).setOrigin(0.5).setScrollFactor(0)
+        const coinAnimation = this.anims.create({
+          key: "goldscore",
+          frames: this.anims.generateFrameNumbers("gold", { start: 0, end: 7 }, ),
+          frameRate: 8,
+        });
+        this.scoreLogo.play({ key: "goldscore", repeat: -1 });
+      }
+  
+      addTNT() {
+        this.tntText = this.add.bitmapText(this.center_width + 25, 450, "western", "x" +this.registry.get("tnt"), 40).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+        this.tntLogo = this.add.sprite(this.center_width - 25, 475, "tnt").setScale(1).setOrigin(0.5).setScrollFactor(0)
+        const coinAnimation = this.anims.create({
+          key: "tntscore",
+          frames: this.anims.generateFrameNumbers("tnt", { start: 0, end: 2 }, ),
+          frameRate: 8,
+        });
+        this.tntLogo.play({ key: "tntscore", repeat: -1 });
+      }
 
     playMusic (theme="outro") {
         this.theme = this.sound.add(theme);
@@ -65,18 +89,18 @@ export default class Outro extends Phaser.Scene {
 
 
     startSplash () {
-        // this.theme.stop();
-        window.location.reload();
+        this.sound.add("yee-haw").play();
+        this.scene.start("splash", {name: "", number: 0});
     }
 
     showPlayer() {
-        this.player = this.add.sprite(this.center_width, this.center_height - 130, "moriarty").setScale(3).setOrigin(0.5);
+        this.player = this.add.sprite(this.center_width, this.center_height - 130, "willie").setScale(3).setOrigin(0.5);
         this.anims.create({
-            key: "moriartyidle",
-            frames: this.anims.generateFrameNumbers("moriarty", { start: 0, end: 1 }),
+            key: "willieidle",
+            frames: this.anims.generateFrameNumbers("willie", { start: 0, end: 1 }),
             frameRate: 3,
             repeat: -1
           });
-          this.player.anims.play("moriartyidle", true);
+          this.player.anims.play("willieidle", true);
     }
 }

@@ -28,6 +28,7 @@ export class Steam {
         width = width || Phaser.Math.Between(80, 115)
         height = height || Phaser.Math.Between(80, 115)
         super(scene, x, y, width, height, 0x000000)
+        this.scene = scene;
         this.setAlpha(0)
         scene.add.existing(this)
         scene.physics.add.existing(this);
@@ -41,7 +42,6 @@ export class Steam {
 
     init () {
       const light = this.scene.lights.addLight(this.x, this.y, 300).setColor(0xffffff).setIntensity(10.0);
- 
         this.scene.tweens.add({
             targets: this,
             duration: 500,

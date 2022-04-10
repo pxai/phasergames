@@ -21,12 +21,14 @@ export default class Splash extends Phaser.Scene {
         this.registry.set("score", 0);
         this.registry.set("tnt", 1);
         this.registry.set("health", 10);
+        this.registry.set("remote", 0);
+        this.registry.set("velocity", 200)
         //this.showPlayer();
     }
 
     startGame () {
         if (this.theme) this.theme.stop();
-       // this.sound.add("steam").play();
+        this.sound.add("gold").play();
         this.scene.start("game", {number: 0, name: "no name"})
     }
 

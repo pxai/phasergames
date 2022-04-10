@@ -1,8 +1,9 @@
 import Player from "./player";
-import { Debris, Rock, Gold } from "./particle";
+import { Smoke, Debris, Rock, Gold, JumpSmoke } from "./particle";
 import { Explosion } from "./steam";
 import Chest from "./chest";
 import Exit from "./exit";
+import places from "./places";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -37,6 +38,7 @@ export default class Game extends Phaser.Scene {
       this.addHealth();
       this.addTNT();
       this.addTutorial();
+      this.addMineName();
       this.playAudio("start");
     }
 
@@ -90,10 +92,21 @@ export default class Game extends Phaser.Scene {
       this.playerLight = this.lights.addLight(0, 100, 100).setColor(0xffffff).setIntensity(3.0);
     }
 
+    addMineName () {
+      const name = "Entering \"" + Phaser.Math.RND.pick(places) + "\" shafts";
+      this.mineName = this.add.bitmapText(this.center_width, 100, "western", name, 40).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7).setOrigin(0.5).setScrollFactor(0)
+      this.tweens.add({
+        targets: this.mineName,
+        duration: 4000,
+        alpha: { from: 1, to: 0},
+      })
+    }
+
     addPlayer() {
+      this.player100 = 100;
       const { x, y } = {x: 100, y: 100}
       const health = +this.registry.get("health") < 10 ? 10 : +this.registry.get("health");
-      this.player = new Player(this, x, y, health, +this.registry.get("tnt"));
+      this.player = new Player(this, x, y, health, +this.registry.get("tnt"), +this.registry.get("velocity"), +this.registry.get("remote"));
 
 
       this.physics.add.collider(this.player, this.layer0, this.hitFloor, ()=>{
@@ -201,7 +214,7 @@ export default class Game extends Phaser.Scene {
     }
 
     hitRockPlayer(player, rock) {
-      if (!player.flashing && rock.body.touching.down) {
+      if (!player.flashing && rock.body.touching.down && rock.falling) {
         this.playAudio("hit");
         player.hitSmoke();
         player.hit();
@@ -244,7 +257,7 @@ export default class Game extends Phaser.Scene {
       if (tile.layer["name"] === "layer1" && [0,1,2,3].includes(tile.index)) {
         Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY))
         this.layer1.removeTileAt(tile.x, tile.y);
-
+        new Smoke(this, tile.pixelX, tile.pixelY)
         if ([0,1,2,3].includes(tile.index) && Phaser.Math.Between(1, 10) > 9) {
           this.golds.add(new Gold(this, tile.pixelX + 16, tile.pixelY + 16))
         }
@@ -294,8 +307,19 @@ export default class Game extends Phaser.Scene {
     }
 
     hitRock(rock, layer) {
-
+      if (rock.falling) {
+        rock.falling = false;
+        this.groundSmoke(rock, 20);
+      }
     } 
+
+    groundSmoke (element, offsetY = 10, varX) {
+      Array(Phaser.Math.Between(3, 6)).fill(0).forEach(i => {
+          const offset = varX || Phaser.Math.Between(-1, 1) > 0 ? 1 : -1;
+          varX = varX || Phaser.Math.Between(0, 20);
+          new JumpSmoke(this, element.x + (offset * varX), element.y + offsetY)
+      })
+  }
 
     hitFloor(player, tile) {
     }
@@ -356,20 +380,25 @@ export default class Game extends Phaser.Scene {
     createSquare (tile, x, y, width, height, layer, first = false) {
       
       this.map.setLayer(layer)
-      const setTile = (tile, x, y) => {
+      const setTile = (tile, x, y, skip=false) => {
+        if (skip && Phaser.Math.Between(0,5)>4) return;
         tile = Phaser.Math.RND.pick([0, 1, 2, 3])
         const t = this.map.putTileAt(tile, x, y);
       }
       Array(width).fill(0).forEach((_,i) => setTile(tile, x + i, y));
       Array(width).fill(0).forEach((_,i) => setTile(tile, x + i, y + height - 1));
 
+      if (layer === 1) {
+        Array(5).fill(0).forEach((_, j) => Array(width).fill(0).forEach((_,i) => setTile(tile, x + i, y + height + j)))
+      }
+
       if (!layer === 1 && first) {
         Array(height).fill(0).forEach((_,i) => setTile(tile, x, y + i));
       } else if (layer === 2) {
-        Array(height).fill(0).forEach((_,i) => setTile(tile, x - 1, y + i));
-        Array(height).fill(0).forEach((_,i) => setTile(tile, x, y + i));
-        Array(height).fill(0).forEach((_,i) => setTile(tile, x + width - 1, y + i));
-        Array(height).fill(0).forEach((_,i) => setTile(tile, x + width, y + i));
+        Array(height).fill(0).forEach((_,i) => setTile(tile, x - 1, y + i, true));
+        Array(height).fill(0).forEach((_,i) => setTile(tile, x, y + i, true));
+        Array(height).fill(0).forEach((_,i) => setTile(tile, x + width - 1, y + i, true));
+        Array(height).fill(0).forEach((_,i) => setTile(tile, x + width, y + i, true));
       }
 
 
@@ -409,6 +438,7 @@ export default class Game extends Phaser.Scene {
           "coin": this.sound.add("coin"),
           "start": this.sound.add("start"),
           "exit": this.sound.add("exit"),
+          "step": this.sound.add("step"),
         };
       }
 
@@ -416,11 +446,12 @@ export default class Game extends Phaser.Scene {
         this.audios[key].play();
       }
 
-      playRandom(key) {
+      playRandom(key, volume = 1) {
         this.audios[key].play({
           rate: Phaser.Math.Between(1, 1.5),
           detune: Phaser.Math.Between(-1000, 1000),
-          delay: 0
+          delay: 0,
+          volume
         });
       }
 
@@ -453,6 +484,12 @@ export default class Game extends Phaser.Scene {
     updateScore (points = 0) {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
+        if (score >= this.player100) {
+          this.playAudio("start")
+          this.playAudio("chest1")
+          this.updateHealth(10)
+          this.player100 += 100;
+        }
         this.playAudio("coin")
         this.scoreText.setText("x"+Number(score).toLocaleString());
         this.tweens.add({

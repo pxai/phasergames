@@ -49,7 +49,7 @@ class Chest extends Phaser.GameObjects.Sprite {
     }
 
     showPrize () {
-        const prize = ["gold", "whisky", "tnt"];
+        const prize = ["gold", "whisky", "tnt", "boots", "remote"];
         const selectedPrize = Phaser.Math.RND.pick(prize);
         this.scene.player.applyPrize(selectedPrize)
         this.prizeSprite = this.scene.add.sprite(this.x, this.y, selectedPrize).setOrigin(0.5).setScale(0.8);

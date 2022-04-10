@@ -102,9 +102,10 @@ export class Rock extends Phaser.GameObjects.Sprite {
        // this.setStrokeStyle(4, 0x000000);
         scene.add.existing(this)
         scene.physics.add.existing(this);
+        this.body.setSize(24, 24)
         this.body.setAllowGravity(true);
         this.body.immovable = true;
-
+        this.falling = true;
         this.init();
     }
 

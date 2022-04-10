@@ -3,38 +3,38 @@ import { JumpSmoke, RockSmoke } from "./particle";
 import TNT from "./tnt";
 
 class Player extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, health = 10, tnt = 1) {
-      super(scene, x, y, "willie")
-      this.setOrigin(0.5)
-      this.scene = scene;
+    constructor (scene, x, y, health = 10, tnt = 1, velocity = 200, remote = false) {
+        super(scene, x, y, "willie")
+        this.setOrigin(0.5)
+        this.scene = scene;
 
-      this.scene.add.existing(this);
-      this.scene.physics.add.existing(this);
-      this.cursor = this.scene.input.keyboard.createCursorKeys();
-      this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-      this.down = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
-      this.right = true;
-      this.body.setGravityY(100)
-      this.body.setSize(30, 30)
-      this.init();
-      this.jumping = false;
-      this.flashing = false;
-      this.falling = false;
-      this.finished = false;
-      this.walkVelocity = 200;
-      this.jumpVelocity = -400;
-      this.invincible = false;
-      this.totalTNTs = tnt;
+        this.scene.add.existing(this);
+        this.scene.physics.add.existing(this);
+        this.cursor = this.scene.input.keyboard.createCursorKeys();
+        this.down = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+        this.right = true;
+        this.body.setGravityY(100)
+        this.body.setSize(20, 30)
+        this.init();
+        this.jumping = false;
+        this.flashing = false;
+        this.falling = false;
+        this.finished = false;
+        this.walkVelocity = velocity;
+        this.jumpVelocity = -400;
+        this.remoteActive = remote === 1;
+        this.totalTNTs = tnt;
 
-      this.health = health;
+        this.health = health;
 
-      this.dead = false;
+        this.dead = false;
 
-      this.W = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-      this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-      this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-      this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-      this.scene.events.on("update", this.update, this);
+        this.W = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.scene.events.on("update", this.update, this);
     }
 
     init () {
@@ -57,7 +57,6 @@ class Player extends Phaser.GameObjects.Sprite {
             key: "playerwalk",
             frames: this.scene.anims.generateFrameNumbers("willie", { start: 4, end: 6 }),
             frameRate: 10,
-            repeat: -1
         });
 
         this.scene.anims.create({
@@ -89,12 +88,11 @@ class Player extends Phaser.GameObjects.Sprite {
 
         this.on('animationcomplete', this.animationComplete, this);
     }    
-  
 
     update () {
         if (this.dead || this.finished) return;
-        if (this.jumping ) {
-           // if (Phaser.Math.Between(1,101) > 100) new Star(this.scene, this.x, this.y + 5)
+        if (this.jumping) {
+            // if (Phaser.Math.Between(1,101) > 100) new Star(this.scene, this.x, this.y + 5)
             if (this.body.velocity.y >= 0) {
                 this.body.setGravityY(700)
                 this.falling = true;
@@ -111,6 +109,10 @@ class Player extends Phaser.GameObjects.Sprite {
             this.jumping = true;
             this.jumpSmoke();
 
+        } else if (this.body.blocked.down && this.jumping) { 
+            if (this.jumping) {this.scene.playAudio("land");this.landSmoke();}
+            this.jumping = false;
+            this.falling = false;
         } else if (this.cursor.right.isDown || this.D.isDown) {
             this.building = false;
             if (this.body.blocked.down) { this.anims.play("playerwalk", true); }
@@ -126,26 +128,19 @@ class Player extends Phaser.GameObjects.Sprite {
             this.body.setVelocityX(-this.walkVelocity);  
 
         } else {
-            if (this.body.blocked.down) { 
-                if (this.jumping) {this.scene.playAudio("land");this.landSmoke();}
-                this.jumping = false;
-                this.falling = false;
-
-                if (!this.building)
-                    this.anims.play("playeridle", true); 
-            }
-
             this.body.setVelocityX(0)
+            this.anims.play("playeridle", true);
         }
 
-        if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
-            this.destroyBlock()
-        }
 
         if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.S)) {
             if (this.scene.tnts.countActive(true) < this.totalTNTs) {
                 this.scene.tnts.add(new TNT(this.scene, this.x, this.y));
-            }
+            } 
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.spaceBar) && this.remoteActive) {
+            this.scene.tnts.children.entries.forEach(tnt => {if (tnt.active) tnt.kaboom()})
         }
         this.scene.playerLight.x = this.x + (this.right ? 1 : -1) * 50;
         this.scene.playerLight.y = this.y;
@@ -178,6 +173,11 @@ class Player extends Phaser.GameObjects.Sprite {
         if (animation.key === "playerground") {
             this.anims.play("playeridle", true)
         }
+
+        if(animation.key == "playerwalk") {
+            this.scene.playRandom("step", Phaser.Math.Between(2, 7) / 10);
+            new JumpSmoke(this.scene, this.x, this.y + 10)
+        }
     }
 
     hitFloor() {
@@ -192,9 +192,10 @@ class Player extends Phaser.GameObjects.Sprite {
         this.scene.updateHealth(-1)
         this.scene.showPoints(this.x, this.y, "-1 HEALTH", 0xff0000)
         this.flashing = true;
-        this.health--;
+        console.log("Player was hit: ", this.scene.registry.get("health"))
         this.flashPlayer();
-        if (this.health < 0) {
+        if (+this.scene.registry.get("health") < 0) {
+            console.log("Player dies")
             this.die();
         }
 
@@ -205,32 +206,41 @@ class Player extends Phaser.GameObjects.Sprite {
         this.anims.play("playerdead", true);
         this.body.immovable = true;
         this.body.moves = false;
-        this.scene.finishScene("splash");
+        this.scene.finishScene("outro");
     }
 
 
     applyPrize (prize) {
         this.scene.playAudio("yee-haw");
         switch (prize) {
-            case "tnt":
-                    this.totalTNTs++;
-                    this.scene.updateTNT(1);
-                    this.scene.showPoints(this.x, this.y, "+1 TNT")
-                    this.flashPlayer();
-                    break;
-            case "whisky":
-                    let health = Phaser.Math.Between(4, 8);
-                    this.health += health;
-                    this.scene.updateHealth(health) 
-                    this.scene.showPoints(this.x, this.y, "+" + health + " HEALTH")
-                    this.flashPlayer();
-                    break;
-            case "gold":
-                    let gold = Phaser.Math.Between(20, 30);
-                    this.scene.showPoints(this.x, this.y, "+" + gold + " GOLD")
-                    this.scene.updateScore(gold);
-                    break;
-            default: break;
+        case "tnt":
+            this.totalTNTs++;
+            this.scene.updateTNT(1);
+            this.scene.showPoints(this.x, this.y, "+1 TNT")
+            this.flashPlayer();
+            break;
+        case "whisky":
+            let health = Phaser.Math.Between(4, 8);
+            this.scene.updateHealth(health) 
+            this.scene.showPoints(this.x, this.y, "+" + health + " HEALTH")
+            this.flashPlayer();
+            break;
+        case "gold":
+            let gold = Phaser.Math.Between(20, 30);
+            this.scene.showPoints(this.x, this.y, "+" + gold + " GOLD")
+            this.scene.updateScore(gold);
+            break;
+        case "boots":
+            this.scene.showPoints(this.x, this.y, "+ SPEED")
+            this.walkVelocity += 50;
+            this.scene.registry.set("velocity", this.walkVelocity)
+            break;
+        case "remote":
+            this.scene.showPoints(this.x, this.y, "+ SPACE = DETONATION")
+            this.scene.registry.set("remote", "1")
+            this.remoteActive = true;
+            break;
+        default: break;
         }
     }
 

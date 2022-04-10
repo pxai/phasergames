@@ -48,14 +48,18 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("coin", "assets/sounds/coin.mp3");
         this.load.audio("start", "assets/sounds/start.mp3");
         this.load.audio("exit", "assets/sounds/exit.mp3");
-
+        this.load.audio("step", "assets/sounds/step.mp3");
+        this.load.audio("outro", "assets/sounds/outro.mp3");
         this.load.image("cave", "assets/maps/cave.png");
         this.load.image("heart", "assets/images/heart.png");
+        this.load.image("boots", "assets/images/boots.png");
         this.load.image("pello", "assets/images/pello_ok.png");
         this.load.image("exit", "assets/images/exit.png");
+        this.load.image("remote", "assets/images/remote.png");
         this.load.image("whisky", "assets/images/whisky.png");
         this.load.spritesheet("chest", "assets/images/chest.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("gold", "assets/images/gold.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("explosion", "assets/images/explosion.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('rock', 'assets/maps/cave.png', { frameWidth: 32, frameHeight: 32 });
     }
 
