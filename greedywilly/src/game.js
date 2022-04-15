@@ -4,6 +4,7 @@ import { Explosion } from "./steam";
 import Chest from "./chest";
 import Exit from "./exit";
 import places from "./places";
+import MapGenerator from "./map_generator";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -28,7 +29,7 @@ export default class Game extends Phaser.Scene {
       this.center_height = this.height / 2;
       this.cameras.main.setBackgroundColor(0x000000);
 
-      this.createMap();
+      new MapGenerator(this).createMap();
       this.addPlayer();
       this.addLight();
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 100);
@@ -104,7 +105,7 @@ export default class Game extends Phaser.Scene {
 
     addPlayer() {
       this.player100 = 100;
-      const { x, y } = {x: 100, y: 100}
+      const { x, y } = {x: 400, y: 400}
       const health = +this.registry.get("health") < 10 ? 10 : +this.registry.get("health");
       this.player = new Player(this, x, y, health, +this.registry.get("tnt"), +this.registry.get("velocity"), +this.registry.get("remote"));
 
@@ -135,6 +136,14 @@ export default class Game extends Phaser.Scene {
       }, this);
 
       this.physics.add.collider(this.chests, this.layer1, () => {}, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.exits, this.layer0, () => {}, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.exits, this.layer1, () => {}, ()=>{
         return true;
       }, this);
 
@@ -322,100 +331,6 @@ export default class Game extends Phaser.Scene {
   }
 
     hitFloor(player, tile) {
-    }
-
-    createMap() {
-      this.chests = this.add.group();
-      this.golds = this.add.group();
-      this.exits = this.add.group();
-      // https://rexrainbow.github.io/phaser3-rex-notes/docs/site/tilemap/#map
-      this.map = this.make.tilemap({ tileWidth: 32, tileHeight: 32, width: 300, height: 300});
-      this.brickTiles = this.map.addTilesetImage('cave');
-
-      this.background = this.map.createBlankLayer('background', this.brickTiles).setPipeline('Light2D');
-      this.layer0 = this.map.createBlankLayer('layer0', this.brickTiles).setPipeline('Light2D');
-      // this.layer1.randomize(0, 0, this.map.width, this.map.height, [ -1, 0, 12 ]);
-      this.finished = false;
-      this.rooms = 0;
-      const positions = [{x: 0, y: 0}];
-      let width, height;
-      do {
-        let {x, y} = positions[positions.length - 1];
-        width = Phaser.Math.Between(10, 20)
-        height = Phaser.Math.Between(8, 10);
-        positions[positions.length - 1] = {...positions[positions.length - 1], width, height}
-        let position = this.createSquare(0, x, y, width , height, 1, (this.rooms === 0));
-        this.createBackground(x, y, width , height)
-        positions.push(position);
-        this.rooms++;
-      } while(this.rooms < 10)
-      positions.pop();
-
-      this.layer1 = this.map.createBlankLayer('layer1', this.brickTiles).setPipeline('Light2D');
-      positions.forEach(position => {
-        let {x, y, width, height} = position;
-        this.createSquare(1, x + 1, y + 1, width - 2, height -2, 2)
-        if (Phaser.Math.Between(1, 10)> 7) {
-          this.chests.add(new Chest(this, (x * 32) + Phaser.Math.Between(160, 224), (y * 32) +  128))
-        }
-      });
-      const {x, y} = positions.pop();
-      this.exits.add(new Exit(this, (x * 32) + 128, (y * 32) + 128))
-
-      
-      this.layer0.setCollisionByExclusion([-1]);
-      this.layer1.setCollisionByExclusion([-1]);
-    }
-
-    createBackground(x, y, width, height) {
-      this.map.setLayer(0)
-      Array(height).fill(0).forEach((_,i) => {
-        Array(width).fill(0).forEach((_,j) => {
-          const tile = Phaser.Math.RND.pick([4, 5, 6, 7])
-          this.map.putTileAt(tile, x + j, y + i )
-        })
-      });
-    }
-
-    createSquare (tile, x, y, width, height, layer, first = false) {
-      
-      this.map.setLayer(layer)
-      const setTile = (tile, x, y, skip=false) => {
-        if (skip && Phaser.Math.Between(0,5)>4) return;
-        tile = Phaser.Math.RND.pick([0, 1, 2, 3])
-        const t = this.map.putTileAt(tile, x, y);
-      }
-      Array(width).fill(0).forEach((_,i) => setTile(tile, x + i, y));
-      Array(width).fill(0).forEach((_,i) => setTile(tile, x + i, y + height - 1));
-
-      if (layer === 1) {
-        Array(5).fill(0).forEach((_, j) => Array(width).fill(0).forEach((_,i) => setTile(tile, x + i, y + height + j)))
-      }
-
-      if (!layer === 1 && first) {
-        Array(height).fill(0).forEach((_,i) => setTile(tile, x, y + i));
-      } else if (layer === 2) {
-        Array(height).fill(0).forEach((_,i) => setTile(tile, x - 1, y + i, true));
-        Array(height).fill(0).forEach((_,i) => setTile(tile, x, y + i, true));
-        Array(height).fill(0).forEach((_,i) => setTile(tile, x + width - 1, y + i, true));
-        Array(height).fill(0).forEach((_,i) => setTile(tile, x + width, y + i, true));
-      }
-
-
-      const growinDirections = this.calculateGrowinOptions(x, y, width, height);
-      const grow = Phaser.Math.RND.pick(growinDirections);
-      return {
-        "right": {x: x + width, y},
-        "left": {x: x - width, y},
-        "up": {x, y},
-        "down": {x: x, y: y + height },
-      }[grow.orientation];
-    }
-
-    calculateGrowinOptions(x, y, width, height) {
-      const result = [];
-      result.push({ orientation: "right", width: 7, height: 7 } );
-      return result;
     }
 
     getTile(platform) {

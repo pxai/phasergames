@@ -48,6 +48,20 @@ export class RockSmoke extends Phaser.GameObjects.Rectangle {
     }
 }
 
+export class Glitter extends Phaser.GameObjects.Rectangle {
+    constructor (scene, x, y, min=1, max=1, color = 0xffffff) {
+        let width = Phaser.Math.Between(min, max)
+        super(scene, x, y, width, width, color)
+        scene.add.existing(this)
+        this.scene.tweens.add({
+            targets: this,
+            duration: 800,
+            scale: {from: 1, to: 0},
+            onComplete: () => { this.destroy()  }
+        });
+    }
+}
+
 export class JumpSmoke extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, width, height, color = 0xFFEAAB, gravity = false ) {
         width = width || Phaser.Math.Between(10, 25)
@@ -126,13 +140,19 @@ export class Gold extends Phaser.GameObjects.Sprite {
     }
 
     init () {
+        this.scene.events.on("update", this.update, this);
         this.scene.tweens.add({
             targets: this,
-            duration: 100,
+            duration: 300,
             repeat: -1,
-            scale: {from: 0.9, to: 1},
+            scale: {from: 0.95, to: 1},
             yoyo: true
         })
+    }
+
+    update() {
+        if (this.active && Phaser.Math.Between(0,10) > 8)
+            new Glitter(this.scene, Phaser.Math.Between(this.x-18, this.x+18), Phaser.Math.Between(this.y - 18, this.y + 18), 3,5)
     }
 }
 

@@ -1,3 +1,5 @@
+import { Glitter } from "./particle";
+
 export default class Splash extends Phaser.Scene {
     constructor () {
         super({ key: "splash" });
@@ -23,7 +25,11 @@ export default class Splash extends Phaser.Scene {
         this.registry.set("health", 10);
         this.registry.set("remote", 0);
         this.registry.set("velocity", 200)
-        //this.showPlayer();
+    }
+
+    update () {
+        if (Phaser.Math.Between(0,10) > 8)
+            new Glitter(this, Phaser.Math.Between(100, 700), Phaser.Math.Between(50, 300), 1,5)
     }
 
     startGame () {
@@ -63,15 +69,15 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "western", "WASD/ARROWS", 60).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7);
+        this.add.bitmapText(this.center_width, 400, "western", "WASD/ARROWS", 60).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7);
 
-        this.add.sprite(this.center_width - 100, 550, "pello").setOrigin(0.5).setScale(0.5)
-        this.add.bitmapText(this.center_width + 20, 550, "western", "By PELLO", 35).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7);
+        this.add.sprite(this.center_width - 100, 470, "pello").setOrigin(0.5).setScale(0.4)
+        this.add.bitmapText(this.center_width + 20, 470, "western", "By PELLO", 35).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7);
 
     }
 
     addStartButton () {
-        this.startButton = this.add.bitmapText(this.center_width, 670, "western", "Click HERE to start", 60).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7);
+        this.startButton = this.add.bitmapText(this.center_width, 520, "western", "Click HERE to start", 50).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7);
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {
             this.startGame();

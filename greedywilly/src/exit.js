@@ -5,7 +5,6 @@ class Exit extends Phaser.GameObjects.Sprite {
         scene.physics.add.existing(this);
   
         this.body.immovable = true;
-        this.body.moves = false;
      }
   
   }

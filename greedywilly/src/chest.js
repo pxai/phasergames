@@ -3,14 +3,14 @@ class Chest extends Phaser.GameObjects.Sprite {
         super(scene, x, y, name);
         this.scene = scene;
         this.name = name;
-        this.setScale(1);
+        this.setScale(1.2);
         this.setOrigin(0.5)
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
         this.body.immovable = true;
-        this.body.moves = false;
+        //this.body.moves = false;
         this.disabled = false;
         this.init();
     }
@@ -32,7 +32,7 @@ class Chest extends Phaser.GameObjects.Sprite {
         this.scene.tweens.add({
             targets: this,
             duration: 500,
-            y: this.y - 20,
+            scale: { from: 0.9, to: 1},
             repeat: -1,
             yoyo: true
         })  
