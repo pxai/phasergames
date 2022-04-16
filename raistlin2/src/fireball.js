@@ -1,8 +1,8 @@
 import { Particle } from "./particle";
 
-export default class Fireball extends Phaser.GameObjects.Rectangle {
+export default class Fireball extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, color = 0xffffff, size = 15) {
-        super(scene, x, y, size, size, color)
+        super(scene, x, y, "fireball")
         this.name = "fireball";
         scene.add.existing(this)
         scene.physics.add.existing(this);
@@ -26,6 +26,6 @@ export default class Fireball extends Phaser.GameObjects.Rectangle {
     update() {
         if (this.scene?.gameOver) return;
         if (Phaser.Math.Between(0,5)> 4)
-            this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y, 0xffffff, 10));
+            this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y, 0xffffff, 8, false));
     }
   }

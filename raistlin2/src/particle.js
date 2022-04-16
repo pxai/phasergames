@@ -1,11 +1,11 @@
 export class Particle extends Phaser.GameObjects.Rectangle {
-    constructor (scene, x, y, color = 0xffffff, size = 5) {
+    constructor (scene, x, y, color = 0xffffff, size = 5, gravity=true) {
         super(scene, x, y, size, size, color)
         this.name = "celtic";
         this.scene = scene;
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.body.setAllowGravity(true);
+        this.body.setAllowGravity(gravity);
         this.init();
     }
 
