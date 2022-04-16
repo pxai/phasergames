@@ -32,9 +32,10 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("emptymana", "assets/sounds/emptymana.mp3");
         this.load.audio("fireball", "assets/sounds/fireball.mp3");
 
+        this.load.bitmapFont("runeFont", "assets/fonts/runes.png", "assets/fonts/runes.xml");
         this.load.bitmapFont("mainFont", "assets/fonts/celtic.png", "assets/fonts/celtic.xml");
         this.load.spritesheet("raistlin", "assets/images/willie.png", { frameWidth: 32, frameHeight: 32 });
-        this.load.spritesheet("skeleton", "assets/images/skeleton.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("skeleton", "assets/images/foe.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("arrow", "assets/images/arrow.png", { frameWidth: 32, frameHeight: 32 });
 
         this.load.image('map', 'assets/maps/map.png');

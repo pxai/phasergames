@@ -131,6 +131,31 @@ export class JumpSmoke extends Phaser.GameObjects.Rectangle {
     }
 }
 
+export class Rune extends Phaser.GameObjects.BitmapText {
+    constructor (scene, x, y, color = 0xffffff, destroy=false ) {
+        super(scene, x, y - 5,"runeFont", "", 20)
+        scene.add.existing(this)
+        this.setTint(destroy ? 0x000000 : color);
+
+        this.init();
+    }
+
+    init () {
+        const chars = "abcdefghijklmnopqrstuvwxyz".split("");
+        const offset = Phaser.Math.Between(-10, 10);
+        this.setText(Phaser.Math.RND.pick(chars))
+        this.scene.tweens.add({
+            targets: this,
+            duration: 400,
+            y: "-=30",
+            x: { from: this.x, to: this.x + offset},
+            alpha: {from: 1, to: 0},
+            onComplete: () => { this.destroy()  }
+        });
+
+    }
+}
+
 export class Debris extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, color = 0xb03e00,  width, height, gravity = false ) {
         width = width || Phaser.Math.Between(15, 30)

@@ -1,5 +1,5 @@
 import Player from "./player";
-import { Light } from "./particle";
+import { Light, Rune } from "./particle";
 import Fireball from "./fireball";
 import Skeleton from "./skeleton";
 
@@ -28,7 +28,7 @@ export default class Game extends Phaser.Scene {
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
       this.gameOver = false;
-      this.cameras.main.setBackgroundColor(0x1c1c1c);
+      this.cameras.main.setBackgroundColor(0x000000);
       this.lines = this.add.group();
       this.addMap();
       this.addPlayer();
@@ -47,8 +47,7 @@ export default class Game extends Phaser.Scene {
       this.tileMap = this.make.tilemap({ key: `scene${this.number}` , tileWidth: 25, tileHeight: 25 });
 
       this.tileSetBg = this.tileMap.addTilesetImage("map");
-      this.tileMap.createLayer('background', this.tileSetBg)
-  
+      this.backgroundLayer = this.tileMap.createLayer('background', this.tileSetBg)
  
       this.tileSet = this.tileMap.addTilesetImage("map");
       this.platform = this.tileMap.createLayer(`scene${this.number}`, this.tileSet);
@@ -63,6 +62,7 @@ export default class Game extends Phaser.Scene {
       this.skeletons = this.add.group();
       this.fireballs = this.add.group();
       this.arrows = this.add.group();
+      this.waters = [];
 
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("skeleton")) {
@@ -71,10 +71,23 @@ export default class Game extends Phaser.Scene {
           this.foesGroup.add(skeleton)
         }
       });
+
+      this.backgroundLayer.forEachTile( (tile) => {
+        if (this.isWater(tile)) {
+          console.log(tile)
+          this.waters.push(tile);
+        }
+
+      });
     }
 
 
+    isWater (tile) {
+      return tile?.properties['element'] === "water"
+    }
+
     addPlayer () {
+      this.shootTime = 0;
       const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
       this.player = new Player(this, playerPosition.x, playerPosition.y, 0);
 
@@ -178,14 +191,27 @@ export default class Game extends Phaser.Scene {
       })
       }
 
-    update() {
+    update(time, delta) {
+      this.shootTime += delta;
       this.hidePointer()
       if (this.pointer.isDown) {
-        if (this.pointer.rightButtonDown())
-        this.useMana(this.shoot.bind(this));
-        else 
+        if (this.pointer.rightButtonDown()) {
+          console.log("SHOOT")
+          this.useMana(this.shoot.bind(this));
+        } else {
+          console.log("PAINT")
           this.useMana(this.paintLine.bind(this));
+        }
+
       }
+      this.updateWater();
+    }
+
+    updateWater() {
+      const waterTiles = [10, 11, 12];
+      const tile = Phaser.Math.RND.pick(this.waters)
+      const nextTile = tile.index < 12 ? tile.index + 1 : 10;
+      this.backgroundLayer.putTileAt(nextTile, tile.x, tile.y)
     }
 
     useMana (spell) {
@@ -195,6 +221,7 @@ export default class Game extends Phaser.Scene {
         }
         const cost = spell();
         this.mana -= cost;
+        console.log("Cost: ", cost, " New mana: ", this.mana)
         this.updateMana()
       } else {
         if (!this.emptyMana) {
@@ -214,13 +241,16 @@ export default class Game extends Phaser.Scene {
     }
 
     shoot () {
+      if (this.shootTime < 100) return 0;
        const {worldX, worldY}  = this.pointer;
        const point = new Phaser.Geom.Point(worldX, worldY);
        const fireball = new Fireball(this, this.player.x, this.player.y) ;
        this.fireballs.add(fireball)
        const distance = Phaser.Math.Distance.BetweenPoints(this.player, point) / 100;
+       new Rune(this, worldX, worldY);
       console.log(worldX, worldY)
       this.physics.moveTo(fireball, point.x, point.y, 300);
+      this.shootTime = 0;
       return 10;
     }
 
@@ -265,6 +295,7 @@ export default class Game extends Phaser.Scene {
       this.lines.add(rectangle0);
       this.lines.add(rectangle1);
       this.lines.add(rectangle2);
+      //new Rune(this, this.pointer.x, this.pointer.y, 0x00ffff, Phaser.Math.Between(0,3)>2);
 
       return 1;
     }

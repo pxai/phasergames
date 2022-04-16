@@ -137,13 +137,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
 
         if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.S)) {
-            if (this.scene.tnts.countActive(true) < this.totalTNTs) {
-                this.scene.tnts.add(new TNT(this.scene, this.x, this.y));
-            } 
-        }
 
-        if (Phaser.Input.Keyboard.JustDown(this.spaceBar) && this.remoteActive) {
-            this.scene.tnts.children.entries.forEach(tnt => {if (tnt.active) tnt.kaboom()})
         }
     }
 
