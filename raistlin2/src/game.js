@@ -1,5 +1,5 @@
 import Player from "./player";
-import { Light, Rune } from "./particle";
+import { Light, Rune, Line } from "./particle";
 import Fireball from "./fireball";
 import Skeleton from "./skeleton";
 
@@ -105,6 +105,10 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
+      this.physics.add.collider(this.player, this.foes, this.foeHitPlayer, ()=>{
+        return true;
+      }, this);
+
       this.physics.add.collider(this.fireballs, this.platform, this.fireballHitPlatform, ()=>{
         return true;
       }, this);
@@ -131,12 +135,16 @@ export default class Game extends Phaser.Scene {
       this.castSpell = this.sound.add("cast");
       //this.checkManaEvent = this.time.addEvent({ delay: 1000, callback: this.recoverMana, callbackScope: this, loop: true });
       this.mana = this.initialMana;
-      this.manaText = this.add.bitmapText(this.center_width - 150, this.height - 10,  "mainFont", "MANA: ", 15).setTint(0x03a062).setOrigin(0.5);
-      this.manaBar = this.add.rectangle(this.center_width, this.height - 20, this.mana * 2, 20, 0x03a062).setOrigin(0.5);
+      this.manaText = this.add.bitmapText(this.center_width - 150, this.height - 10,  "mainFont", "MANA: ", 15).setTint(0xffffff).setOrigin(0.5);
+      this.manaBar = this.add.rectangle(this.center_width, this.height - 20, this.mana * 2, 20, 0xffffff).setOrigin(0.5);
     }
 
     hitFloor(player, layer) {
 
+    }
+
+    foeHitPlayer(player, foe) {
+      player.die();
     }
 
     arrowHitPlayer(player, arrow) {
@@ -157,11 +165,11 @@ export default class Game extends Phaser.Scene {
     }
 
     fireballHitPlatform(fireball, platform) {
-      fireball.destroy();
+      // Add sound
     }
 
     fireballHitFoe(fireball, foe) {
-      fireball.destroy();
+      //fireball.destroy();
       foe.destroy();
     }
 
@@ -268,34 +276,9 @@ export default class Game extends Phaser.Scene {
     }
 
     paintLine() {
-      const rectangle0 = this.add.pointlight(this.pointer.x-1, this.pointer.y, 0xffa700, 8, 0.5);
-
-      const rectangle1 = this.add.pointlight(this.pointer.x, this.pointer.y,  0xffa700, 8, 0.5);
-      if (Phaser.Math.Between(1,2)>1) {
-        this.lines.add(new Light(this, this.pointer.x, this.pointer.y, 0xffa700, 8, 0.7, true))
-      }
-
-      const rectangle2 = this.add.pointlight(this.pointer.x+1, this.pointer.y,  0xffa700, 8, 0.5);
-
-      this.physics.add.existing(rectangle0);
-      this.physics.add.existing(rectangle1);
-      this.physics.add.existing(rectangle2);
-      rectangle0.body.setCircle(6);
-      rectangle1.body.setCircle(6);
-      rectangle2.body.setCircle(6);
-      rectangle0.body.setAllowGravity(false);
-      rectangle0.body.immovable = true;
-      rectangle1.body.setAllowGravity(false);
-      rectangle1.body.immovable = true;
-      rectangle2.body.setAllowGravity(false);
-      rectangle2.body.immovable = true;
-     /* this.time.delayedCall(1000 - (this.number * 110) , () => { 
-        rectangle0.destroy();rectangle1.destroy(), rectangle2.destroy() 
-      }, null, this);*/
-      this.lines.add(rectangle0);
-      this.lines.add(rectangle1);
-      this.lines.add(rectangle2);
-      //new Rune(this, this.pointer.x, this.pointer.y, 0x00ffff, Phaser.Math.Between(0,3)>2);
+      this.lines.add(new Line(this, this.pointer.x-1, this.pointer.y, 12, 12, 0xffffff));
+      this.lines.add(new Line(this, this.pointer.x, this.pointer.y, 12, 12, 0xffffff));
+      this.lines.add(new Line(this, this.pointer.x+1, this.pointer.y,  12, 12, 0xffffff));
 
       return 1;
     }

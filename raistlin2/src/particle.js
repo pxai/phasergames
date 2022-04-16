@@ -1,6 +1,6 @@
-export class Particle extends Phaser.GameObjects.PointLight {
-    constructor (scene, x, y, color = 0xffffff, radius = 5, intensity = 0.5) {
-        super(scene, x, y, color, radius, intensity)
+export class Particle extends Phaser.GameObjects.Rectangle {
+    constructor (scene, x, y, color = 0xffffff, size = 5) {
+        super(scene, x, y, size, size, color)
         this.name = "celtic";
         this.scene = scene;
         scene.add.existing(this);
@@ -13,10 +13,36 @@ export class Particle extends Phaser.GameObjects.PointLight {
         this.scene.tweens.add({
             targets: this,
             duration: Phaser.Math.Between(600, 1000),
-            scale: { from: 1, to: 3 },
+            scale: { from: 1, to: 2 },
             alpha: { from: this.alpha, to: 0 },
             onComplete: () => { this.destroy() }
         });
+    }
+}
+
+export class Line extends Phaser.GameObjects.Rectangle {
+    constructor (scene, x, y, width, height, color = 0xffffff) {
+        super(scene, x, y, width, height, color)
+        this.name = "line";
+        this.scene = scene;
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
+
+        this.body.setAllowGravity(false);
+        this.body.immovable = true;
+        this.init();
+    }
+
+    init () {
+        const foam = this.scene.add.rectangle(this.x, this.y, 3, 3, 0xffffff);
+        const offset = Phaser.Math.Between(5, 15);
+        this.scene.tweens.add({
+            targets: foam,
+            duration: 500,
+            y: {from: this.y, to: this.y - offset},
+
+            repeat: -1
+        })
     }
 }
 

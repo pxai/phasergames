@@ -1,4 +1,7 @@
+import StarBurst from "./starburst";
+
 export default class Splash extends Phaser.Scene {
+
     constructor () {
         super({ key: "splash" });
     }
@@ -11,7 +14,7 @@ export default class Splash extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.cameras.main.setBackgroundColor(0x222222);
+        this.cameras.main.setBackgroundColor(0x000000);
         this.showTitle();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
@@ -30,14 +33,23 @@ export default class Splash extends Phaser.Scene {
     }
 
     showTitle() {
-        this.gameLogo1 = this.add.bitmapText(this.center_width, 130, "mainFont", "RAISTLIN", 90).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7);
-        this.gameLogo2 = this.add.bitmapText(this.center_width, 360, "mainFont", "2", 200).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7).setAlpha(0);
+        this.gameLogo1 = this.add.bitmapText(this.center_width, 130, "mainFont", "RAISTLIN", 90).setOrigin(0.5).setTint(0xbf2522).setDropShadow(3, 4, 0xffe066, 0.7);
+        this.gameLogo2 = this.add.bitmapText(this.center_width, 360, "mainFont", "2", 200).setOrigin(0.5).setTint(0xffe066).setDropShadow(3, 4, 0xbf2522, 0.7).setAlpha(0);
+       
         this.tweens.add({
-            targets: [this.gameLogo2],
-            duration: 2000,
-            alpha: {from: 0, to: 1}
-          })
-          //this.sound.add("steam").play();
+            targets: [this.gameLogo1],
+            duration: 2500,
+            alpha: {from: 0, to: 1},
+            onComplete: () => {
+                this.sound.add("boom").play();
+                this.gameLogo2.setAlpha(1);
+                new StarBurst(this, this.gameLogo2.x, this.gameLogo2.y-200, "0xffe066", true, true);
+                new StarBurst(this, this.gameLogo2.x-100, this.gameLogo2.y-100, "0xffe066", true, true);
+                new StarBurst(this, this.gameLogo2.x+100, this.gameLogo2.y-100, "0xffe066", true, true);
+                new StarBurst(this, this.gameLogo2.x, this.gameLogo2.y, "0xffe066", true, true);
+            }
+         })
+
     }
 
     showPlayer () {
@@ -60,15 +72,20 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width + 20, 500, "mainFont", "By PELLO", 35).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7);
-        //this.add.sprite(this.center_width - 100, 470, "pello").setOrigin(0.5).setScale(0.4)
-        this.add.bitmapText(this.center_width, 570, "mainFont", "WASD/ARROWS", 30).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7);
-        this.add.bitmapText(this.center_width, 640, "mainFont", "MOUSE LEFT/RIGHT", 30).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7);
+        const by = this.add.bitmapText(this.center_width + 20, 500, "mainFont", "by PELLO", 35).setOrigin(0.5).setTint(0xbf2522).setDropShadow(3, 4, 0xffe066, 0.7).setAlpha(0);
+        const logo = this.add.sprite(this.center_width - 200, 470, "pello").setOrigin(0.5).setScale(0.6).setAlpha(0);
+        const instructions = this.add.bitmapText(this.center_width, 570, "arcade", "WASD/ARROWS", 30).setOrigin(0.5).setTint(0xbf2522).setDropShadow(3, 4, 0xffe066, 0.7).setAlpha(0);
+        const mouse = this.add.bitmapText(this.center_width, 640, "arcade", "MOUSE LEFT/RIGHT", 30).setOrigin(0.5).setTint(0xbf2522).setDropShadow(3, 4, 0xffe066, 0.7).setAlpha(0);
 
+        this.tweens.add({
+            targets: [by, logo, instructions, mouse],
+            duration: 3000,
+            alpha: {from: 0, to: 1}
+        });
     }
 
     addStartButton () {
-        this.startButton = this.add.bitmapText(this.center_width, 720, "mainFont", "Click HERE to start", 30).setOrigin(0.5).setTint(0xe5cc18).setDropShadow(3, 4, 0xb85d08, 0.7);
+        this.startButton = this.add.bitmapText(this.center_width, 720, "arcade", "Click HERE to start", 30).setOrigin(0.5).setTint(0xbf2522).setDropShadow(3, 4, 0xffe066, 0.7).setAlpha(0);
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {
             this.startGame();
@@ -82,11 +99,9 @@ export default class Splash extends Phaser.Scene {
             this.startButton.setTint(0xe5cc18)
         });
         this.tweens.add({
-            targets: this.space,
-            duration: 300,
+            targets: this.startButton,
+            duration: 3000,
             alpha: {from: 0, to: 1},
-            repeat: -1,
-            yoyo: true
         });
     }
 
