@@ -112,7 +112,7 @@ class Player extends Phaser.GameObjects.Sprite {
             this.jumping = true;
             this.jumpSmoke();
 
-        } else if (this.body.blocked.down && this.jumping) { 
+        } else if (this.body?.blocked.down && this.jumping) { 
             if (this.jumping) {/*this.scene.playAudio("land");*/this.landSmoke();}
             this.jumping = false;
             this.falling = false;
@@ -131,7 +131,7 @@ class Player extends Phaser.GameObjects.Sprite {
             this.body.setVelocityX(-this.walkVelocity);  
 
         } else {
-            this.body.setVelocityX(0)
+            this.body?.setVelocityX(0)
             this.anims.play("playeridle", true);
         }
 
@@ -186,7 +186,7 @@ class Player extends Phaser.GameObjects.Sprite {
     die () {
         this.dead = true;
         this.anims.play("playerdead", true);
-        this.body.immovable = true;
+        //this.body.immovable = true;
         this.body.moves = false;
         this.scene.restartScene();
     }

@@ -86,6 +86,10 @@ export default class Game extends Phaser.Scene {
       return tile?.properties['element'] === "water"
     }
 
+    isWaterDeath (tile) {
+      return tile?.properties['element'] === "waterdeath"
+    }
+
     addPlayer () {
       this.shootTime = 0;
       const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
@@ -101,11 +105,15 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
+      this.physics.add.overlap(this.player, this.backgroundLayer, this.hitBackground, ()=>{
+        return true;
+      }, this);
+
       this.physics.add.collider(this.player, this.arrows, this.arrowHitPlayer, ()=>{
         return true;
       }, this);
 
-      this.physics.add.collider(this.player, this.foes, this.foeHitPlayer, ()=>{
+      this.physics.add.collider(this.player, this.foesGroup, this.foeHitPlayer, ()=>{
         return true;
       }, this);
 
@@ -141,6 +149,14 @@ export default class Game extends Phaser.Scene {
 
     hitFloor(player, layer) {
 
+    }
+
+    hitBackground(player, tile) {
+      console.log("Plyaer, hit", tile)
+      if (this.isWaterDeath(tile)) {
+        console.log("Water hit!", tile)
+        player.die();
+      }
     }
 
     foeHitPlayer(player, foe) {
