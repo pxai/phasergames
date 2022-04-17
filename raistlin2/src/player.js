@@ -133,7 +133,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
         } else {
             this.body?.setVelocityX(0)
-            this.anims.play("playeridle", true);
+            this.anims?.play("playeridle", true);
         }
 
 
@@ -192,7 +192,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.anims.play("playerdead", true);
         //this.body.immovable = true;
         this.body.moves = false;
-        this.scene.restartScene();
+        this.scene.time.delayedCall(2000, () => this.scene.restartScene(), null, this);
     }
 
 

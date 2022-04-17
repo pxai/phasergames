@@ -1,13 +1,13 @@
 import {Particle} from "./particle";
 
 export default class Skeleton extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, name) {
+    constructor (scene, x, y, name, type) {
         super(scene, x, y, "skeleton")
         this.name = name;
         this.scene = scene;
         scene.add.existing(this)
         scene.physics.add.existing(this);
-
+        this.type = +type;
         this.body.setSize(32, 32)
         this.setOrigin(0.5)
         this.flipX = this.name === "skeleton1";
@@ -33,18 +33,34 @@ export default class Skeleton extends Phaser.GameObjects.Sprite {
 
       this.on('animationcomplete', this.animationComplete, this);
       this.anims.play("wizard", true)
-      this.timer = this.scene.time.addEvent({ delay: 1000, callback: this.throwArrow, callbackScope: this, loop: true });
+      if (this.type >= 0) {
+        const delay = (this.type === 0) ? 1000 : this.type * 1000;
+        this.timer = this.scene.time.addEvent({ delay, callback: this.throwArrow, callbackScope: this, loop: true });
+      } else if (this.type === -1) {
+        this.timer = this.scene.time.addEvent({ delay: 3000, callback: this.directShot, callbackScope: this, loop: true });
+      }
 
     }
 
     throwArrow () {
       if (!this.active) return;
-      if (Phaser.Math.Between(0, 10) > 9) {
-        this.anims.play("wizardshot", true)
-        const velocity = this.name === "skeleton0" ? 100 : -100
-        this.scene.arrows.add(new Fireball(this.scene, this.x, this.y, velocity))
+      if (this.type > 0 || (this.type === 0 && Phaser.Math.Between(0, 10) > 9)) {
+        this.shot();
       }
+    }
 
+    shot() {
+      this.anims.play("wizardshot", true)
+      const velocity = this.name === "skeleton0" ? 100 : -100
+      this.scene.arrows.add(new Fireball(this.scene, this.x, this.y, velocity))
+    }
+
+    directShot() {
+      const distance = Phaser.Math.Distance.BetweenPoints(this.scene.player, this);
+      this.anims.play("wizardshot", true)
+      const fireball = new Fireball(this.scene, this.x, this.y, 0)
+      this.scene.arrows.add(fireball)
+      this.scene.physics.moveTo(fireball, this.scene.player.x, this.scene.player.y, 100);
     }
 
     destroy () {

@@ -35,8 +35,7 @@ export default class Game extends Phaser.Scene {
       this.addMap();
       this.addPlayer();
 
-      this.pointer = this.input.activePointer;
-      this.input.mouse.disableContextMenu();
+      this.addPointer();
       this.trailLayer = this.add.layer();
 
       this.addMana();
@@ -46,8 +45,13 @@ export default class Game extends Phaser.Scene {
       // this.playMusic();
     }
 
-
+    addPointer() {
+      this.pointer = this.input.activePointer;
+      this.input.mouse.disableContextMenu();
+    }
+  
     addMap() {
+      this.waterTime = 0;
       this.tileMap = this.make.tilemap({ key: `scene${this.number}` , tileWidth: 25, tileHeight: 25 });
 
       this.tileSetBg = this.tileMap.addTilesetImage("map");
@@ -69,10 +73,11 @@ export default class Game extends Phaser.Scene {
       this.exits = this.add.group();
       this.keys = this.add.group();
       this.waters = [];
+      this.watersDeath = [];
 
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("skeleton")) {
-          let skeleton = new Skeleton(this, object.x, object.y, object.name);
+          let skeleton = new Skeleton(this, object.x, object.y, object.name, object.type || 0);
           this.skeletons.add(skeleton)
           this.foesGroup.add(skeleton)
         }
@@ -89,6 +94,10 @@ export default class Game extends Phaser.Scene {
       this.backgroundLayer.forEachTile( (tile) => {
         if (this.isWater(tile)) {
           this.waters.push(tile);
+        }
+
+        if (this.isWaterDeath(tile)) {
+          this.watersDeath.push(tile);
         }
 
       });
@@ -164,8 +173,8 @@ export default class Game extends Phaser.Scene {
       this.castSpell = this.sound.add("cast");
       //this.checkManaEvent = this.time.addEvent({ delay: 1000, callback: this.recoverMana, callbackScope: this, loop: true });
       this.mana = this.initialMana;
-      this.manaText = this.add.bitmapText(this.center_width - 150, this.height - 150,  "mainFont", "MANA: ", 15).setTint(0xffffff).setOrigin(0.5).setScrollFactor(0);
-      this.manaBar = this.add.rectangle(this.center_width, this.height - 20, this.mana * 2, 20, 0xffffff).setOrigin(0.5).setScrollFactor(0);
+      this.manaText = this.add.bitmapText(this.center_width - 100, this.height - 50,  "mainFont", "MANA: ", 15).setTint(0xffffff).setOrigin(0.5).setScrollFactor(0);
+      this.manaBar = this.add.rectangle(this.center_width + 50, this.height - 62, this.mana * 2, 20, 0xffffff).setOrigin(0.5).setScrollFactor(0);
     }
 
     addHelp () {
@@ -289,26 +298,41 @@ export default class Game extends Phaser.Scene {
       }
 
     update(time, delta) {
+      if (time < 5000) return;
       this.shootTime += delta;
-      this.hidePointer()
+      this.waterTime += delta;
+      this.hidePointer(time)
       if (this.pointer.isDown) {
         if (this.pointer.rightButtonDown()) {
           console.log("SHOOT")
           this.useMana(this.shoot.bind(this));
         } else {
-          console.log("PAINT")
+          console.log("PAINT", time)
           this.useMana(this.paintLine.bind(this));
         }
 
       }
-      this.updateWater();
+
+     // this.updateWater();
+      this.updateWaterDeath();
     }
 
     updateWater() {
-      const waterTiles = [10, 11, 12];
-      const tile = Phaser.Math.RND.pick(this.waters)
-      const nextTile = tile.index < 12 ? tile.index + 1 : 10;
-      this.backgroundLayer.putTileAt(nextTile, tile.x, tile.y)
+      if (this.waterTime > 1000) {
+        const waterTiles = [10, 11, 12];
+        this.waters.forEach(tile => {
+          const nextTile = tile.index < 12 ? tile.index + 1 : 10;
+         // this.backgroundLayer.putTileAt(nextTile, tile.x, tile.y)
+        });
+        this.waterTime = 0;
+      }
+    }
+
+    updateWaterDeath() {
+      const waterTiles = [13, 14, 15, 16];
+      const tile = Phaser.Math.RND.pick(this.watersDeath)
+      const nextTile = tile.index < 16 ? tile.index + 1 : 13;
+      this.backgroundLayer.putTileAt(nextTile, tile.x, tile.y)        
     }
 
     useMana (spell) {
@@ -325,8 +349,8 @@ export default class Game extends Phaser.Scene {
           this.gameOver = true;
           this.emptyMana = this.sound.add("emptymana");
           this.emptyMana.play();
-          this.time.delayedCall(1000, () => this.restartScene(), null, this);
-        }
+          this.player.die();
+         }
         
         this.tweens.add({
           targets: [this.manaText],
@@ -351,7 +375,8 @@ export default class Game extends Phaser.Scene {
       return 10;
     }
 
-    hidePointer() {
+    hidePointer(time) {
+
       const {worldX, worldY}  = this.pointer;
       const point = new Phaser.Geom.Point(worldX, worldY);
       const distance = Phaser.Math.Distance.BetweenPoints(this.player, point);

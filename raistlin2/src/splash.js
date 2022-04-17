@@ -33,8 +33,8 @@ export default class Splash extends Phaser.Scene {
     }
 
     showTitle() {
-        this.gameLogo1 = this.add.bitmapText(this.center_width, 130, "mainFont", "RAISTLIN", 90).setOrigin(0.5).setTint(0xbf2522).setDropShadow(3, 4, 0xffe066, 0.7);
-        this.gameLogo2 = this.add.bitmapText(this.center_width, 360, "mainFont", "2", 200).setOrigin(0.5).setTint(0xffe066).setDropShadow(3, 4, 0xbf2522, 0.7).setAlpha(0);
+        this.gameLogo1 = this.add.bitmapText(this.center_width, 130, "mainFont", "RAISTLIN", 60).setOrigin(0.5).setTint(0xbf2522).setDropShadow(3, 4, 0xffe066, 0.7);
+        this.gameLogo2 = this.add.bitmapText(this.center_width, 300, "mainFont", "2", 150).setOrigin(0.5).setTint(0xffe066).setDropShadow(3, 4, 0xbf2522, 0.7).setAlpha(0);
        
         this.tweens.add({
             targets: [this.gameLogo1],
@@ -72,10 +72,10 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        const by = this.add.bitmapText(this.center_width + 20, 500, "mainFont", "by PELLO", 35).setOrigin(0.5).setTint(0xbf2522).setDropShadow(3, 4, 0xffe066, 0.7).setAlpha(0);
-        const logo = this.add.sprite(this.center_width - 200, 470, "pello").setOrigin(0.5).setScale(0.6).setAlpha(0);
-        const instructions = this.add.bitmapText(this.center_width, 570, "arcade", "WASD/ARROWS", 30).setOrigin(0.5).setTint(0xbf2522).setDropShadow(3, 4, 0xffe066, 0.7).setAlpha(0);
-        const mouse = this.add.bitmapText(this.center_width, 640, "arcade", "MOUSE LEFT/RIGHT", 30).setOrigin(0.5).setTint(0xbf2522).setDropShadow(3, 4, 0xffe066, 0.7).setAlpha(0);
+        const by = this.add.bitmapText(this.center_width + 20, 400, "mainFont", "by PELLO", 30).setOrigin(0.5).setTint(0xbf2522).setDropShadow(2, 3, 0xffe066, 0.7).setAlpha(0);
+        const logo = this.add.sprite(this.center_width - 150, 380, "pello").setOrigin(0.5).setScale(0.6).setAlpha(0);
+        const instructions = this.add.bitmapText(this.center_width, 470, "arcade", "WASD/ARROWS", 30).setOrigin(0.5).setTint(0xbf2522).setDropShadow(2, 3, 0xffe066, 0.7).setAlpha(0);
+        const mouse = this.add.bitmapText(this.center_width, 510, "arcade", "MOUSE LEFT/RIGHT", 30).setOrigin(0.5).setTint(0xbf2522).setDropShadow(2, 3, 0xffe066, 0.7).setAlpha(0);
 
         this.tweens.add({
             targets: [by, logo, instructions, mouse],
@@ -85,7 +85,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     addStartButton () {
-        this.startButton = this.add.bitmapText(this.center_width, 720, "arcade", "Click HERE to start", 30).setOrigin(0.5).setTint(0xbf2522).setDropShadow(3, 4, 0xffe066, 0.7).setAlpha(0);
+        this.startButton = this.add.bitmapText(this.center_width, 560, "arcade", "Click HERE to start", 30).setOrigin(0.5).setTint(0xbf2522).setDropShadow(2, 3, 0xffe066, 0.7).setAlpha(0);
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {
             this.startGame();
