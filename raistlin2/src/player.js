@@ -194,8 +194,9 @@ class Player extends Phaser.GameObjects.Sprite {
         }
     }
 
-    die () {
+    die (shake=100) {
         this.scene.playAudio("death");
+        this.scene.cameras.main.shake(shake)
         this.dead = true;
         this.anims.play("playerdead", true);
 

@@ -140,6 +140,7 @@ export default class Game extends Phaser.Scene {
 
     addPlayer () {
       this.shootTime = 0;
+      this.lineTime = 0;
       const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
       this.player = new Player(this, playerPosition.x, playerPosition.y, 0);
 
@@ -352,6 +353,7 @@ export default class Game extends Phaser.Scene {
     update(time, delta) {
       if (time < 5000) return;
       this.shootTime += delta;
+      this.lineTime += delta;
       this.waterTime += delta;
       this.hidePointer(time)
       if (this.pointer.isDown) {
@@ -399,7 +401,7 @@ export default class Game extends Phaser.Scene {
           this.gameOver = true;
           this.emptyMana = this.sound.add("emptymana");
           this.emptyMana.play();
-          this.player.die();
+          this.player.die(50);
          }
         
         this.tweens.add({
@@ -412,7 +414,7 @@ export default class Game extends Phaser.Scene {
     }
 
     shoot () {
-      if (this.shootTime < 100) return 0;
+      if (this.shootTime < 200) return 0;
       this.player.anims.play("playerspell", true);
        const {worldX, worldY}  = this.pointer;
        const point = new Phaser.Geom.Point(worldX, worldY);
@@ -447,11 +449,12 @@ export default class Game extends Phaser.Scene {
 
         return 0;
       }
+      if (this.lineTime < 100) return 0;
       this.player.anims.play("playerspell", true);
       this.lines.add(new Line(this, this.pointer.x-1, this.pointer.y, 12, 12, 0xffffff));
       this.lines.add(new Line(this, this.pointer.x, this.pointer.y, 12, 12, 0xffffff));
       this.lines.add(new Line(this, this.pointer.x+1, this.pointer.y,  12, 12, 0xffffff));
-
+      this.lineTime = 0;
       return 1;
     }
 
