@@ -50,6 +50,7 @@ export default class Skeleton extends Phaser.GameObjects.Sprite {
     }
 
     shot() {
+      this.scene.playAudio("foeshot");
       this.anims.play("wizardshot", true)
       const velocity = this.name === "skeleton0" ? 100 : -100
       this.scene.arrows.add(new Fireball(this.scene, this.x, this.y, velocity))

@@ -110,6 +110,17 @@
                  "width":0,
                  "x":349.333333333333,
                  "y":368
+                }, 
+                {
+                 "height":0,
+                 "id":11,
+                 "name":"text",
+                 "rotation":0,
+                 "type":"Use R to restart level",
+                 "visible":true,
+                 "width":0,
+                 "x":237.333333333333,
+                 "y":78.6666666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -118,7 +129,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":11,
+ "nextobjectid":12,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.8.4",

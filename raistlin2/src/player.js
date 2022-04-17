@@ -111,7 +111,7 @@ class Player extends Phaser.GameObjects.Sprite {
             this.body.setVelocityY(this.jumpVelocity);
             this.body.setGravityY(600)
             this.anims.play("playerjump", true);
-           // this.scene.playAudio("jump")
+            this.scene.playAudio("jump")
             this.jumping = true;
             this.jumpSmoke();
 
@@ -195,6 +195,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     die () {
+        this.scene.playAudio("death");
         return; // TODO
         this.dead = true;
         this.anims.play("playerdead", true);

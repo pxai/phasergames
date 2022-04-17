@@ -22,7 +22,7 @@ export default class Splash extends Phaser.Scene {
         this.startButtonEasy = this.addStartButton("EASY", 100, -160);
         this.startButtonMedium = this.addStartButton("MEDIUM", 70, 0);
         this.startButtonHard = this.addStartButton("HARD", 40, 160);
-        //this.playMusic();
+        this.playMusic();
     }
 
     update () {
@@ -110,14 +110,4 @@ export default class Splash extends Phaser.Scene {
         return startButton
     }
 
-    showPlayer() {
-        this.player = this.add.sprite(this.center_width, this.center_height - 100, "moriarty").setScale(3).setOrigin(0.5);
-        this.anims.create({
-            key: "moriartyidle",
-            frames: this.anims.generateFrameNumbers("moriarty", { start: 0, end: 1 }),
-            frameRate: 3,
-            repeat: -1
-          });
-          this.player.anims.play("moriartyidle", true);
-    }
 }

@@ -20,7 +20,7 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("splash");
+            this.scene.start("outro");
         },this);
 
         this.load.image("pello", "assets/images/pello.png");
@@ -36,6 +36,16 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("key", "assets/sounds/key.mp3");
         this.load.audio("land", "assets/sounds/land.mp3");
         this.load.audio("step", "assets/sounds/step.mp3");
+        this.load.audio("jump", "assets/sounds/jump.mp3");
+        this.load.audio("bump1", "assets/sounds/bump1.mp3");
+        this.load.audio("bump2", "assets/sounds/bump2.mp3");
+        this.load.audio("foeshot", "assets/sounds/foeshot.mp3");
+        this.load.audio("death", "assets/sounds/death.mp3");
+        this.load.audio("win", "assets/sounds/win.mp3");
+        this.load.audio("door", "assets/sounds/door.mp3");
+        this.load.audio("splash", "assets/sounds/splash.mp3");
+        this.load.audio("outro", "assets/sounds/outro.mp3");
+        this.load.audio("music", "assets/sounds/music.mp3");
 
         this.load.bitmapFont("runeFont", "assets/fonts/runes.png", "assets/fonts/runes.xml");
         this.load.bitmapFont("mainFont", "assets/fonts/celtic.png", "assets/fonts/celtic.xml");

@@ -14,14 +14,12 @@ export default class Game extends Phaser.Scene {
     }
 
     init (data) {
-      console.log("Data: ", data)
       this.name = data.name;
       this.number = data.number;
       this.initialMana = data.mana || 100;
   }
 
     preload () {
-      console.log("Added game", this.number)
     }
 
     create () {
@@ -43,7 +41,7 @@ export default class Game extends Phaser.Scene {
       this.loadAudios();
       this.showTexts();
 
-      // this.playMusic();
+      this.playMusic();
     }
 
     addPointer() {
@@ -113,7 +111,6 @@ export default class Game extends Phaser.Scene {
         }
 
       });
-      console.log("DOOR: ", this.texts)
     }
 
     showTexts() {
@@ -229,6 +226,7 @@ export default class Game extends Phaser.Scene {
     }
 
     foeHitPlayer(player, foe) {
+      this.playAudio("bump2");
       player.die();
     }
 
@@ -238,23 +236,27 @@ export default class Game extends Phaser.Scene {
     }
 
     arrowHitLine (arrow, line) {
+      this.playAudio("bump2");
      this.arrowHitPlatform(arrow, line)
     }
 
     arrowHitPlatform(arrow, platform) {
+      this.playAudio("bump2");
       Array(Phaser.Math.Between(1,3)).fill(0).forEach( i => new Smoke(this, arrow.x, arrow.y, null, null, 0x95b8c7))
       arrow.destroy();
     }
 
     fireballHitLine (fireball, line) {
-
+      this.playAudio("bump1");
     }
 
     fireballHitPlatform(fireball, platform) {
+      this.playAudio("bump1");
       Array(Phaser.Math.Between(1,3)).fill(0).forEach( i => new Smoke(this, fireball.x, fireball.y))
     }
 
     fireballHitFoe(fireball, foe) {
+      this.playAudio("bump1");
       //fireball.destroy();
       this.playAudio("boom");
       Array(Phaser.Math.Between(1,5)).fill(0).forEach( i => new Smoke(this, foe.x+i, foe.y+i, null, null, 0x95b8c7))
@@ -279,6 +281,7 @@ export default class Game extends Phaser.Scene {
     playerHitsKey(player, key) {
       key.destroy();
       this.playAudio("key")
+      this.playAudio("door");
       player.hasKey = true;
 
       this.openDoor();
@@ -295,7 +298,6 @@ export default class Game extends Phaser.Scene {
     }
 
     showKeyWarning () {
-      console.log("You need the key")
     }
 
       loadAudios () {
@@ -307,6 +309,13 @@ export default class Game extends Phaser.Scene {
           "land": this.sound.add("land"),
           "boom": this.sound.add("boom"),
           "step": this.sound.add("step"),
+          "jump": this.sound.add("jump"),
+          "bump1": this.sound.add("bump1"),
+          "bump2": this.sound.add("bump2"),
+          "foeshot": this.sound.add("foeshot"),
+          "death": this.sound.add("death"),
+          "win": this.sound.add("win"),
+          "door": this.sound.add("door"),
         };
       }
 
@@ -323,7 +332,7 @@ export default class Game extends Phaser.Scene {
         });
       }
 
-      playMusic (theme="game") {
+      playMusic (theme="music") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
@@ -344,10 +353,8 @@ export default class Game extends Phaser.Scene {
       this.hidePointer(time)
       if (this.pointer.isDown) {
         if (this.pointer.rightButtonDown()) {
-          console.log("SHOOT")
           this.useMana(this.shoot.bind(this));
         } else {
-          console.log("PAINT", time)
           this.useMana(this.paintLine.bind(this));
         }
 
@@ -383,7 +390,6 @@ export default class Game extends Phaser.Scene {
         this.player.casting = true;
         const cost = spell();
         this.mana -= cost;
-        console.log("Cost: ", cost, " New mana: ", this.mana)
         this.updateMana()
       } else {
         if (!this.emptyMana) {
@@ -411,7 +417,6 @@ export default class Game extends Phaser.Scene {
        this.fireballs.add(fireball)
        const distance = Phaser.Math.Distance.BetweenPoints(this.player, point) / 100;
        new Rune(this, worldX, worldY);
-      console.log(worldX, worldY)
       this.physics.moveTo(fireball, point.x, point.y, 300);
       this.shootTime = 0;
       return 10;
@@ -442,13 +447,14 @@ export default class Game extends Phaser.Scene {
     }
 
     restartScene () {
-     // this.theme.stop();
+     this.theme.stop();
      this.player.finished = true;
       this.scene.start("game", {number: this.number, name: this.name, mana: this.initialMana });
     }
 
     finishScene () {
-   //   this.theme.stop();
+    this.theme.stop();
+   this.playAudio("win");
    this.player.finished = true;
       if (this.number < 9)
         this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1, mana: this.initialMana});

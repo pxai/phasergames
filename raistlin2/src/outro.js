@@ -24,7 +24,7 @@ export default class Outro extends Phaser.Scene {
         ];
         this.showHistory();
         //this.showPlayer();
-        //this.playMusic();
+        this.playMusic();
         this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
     }
@@ -64,7 +64,7 @@ export default class Outro extends Phaser.Scene {
     }
 
     startSplash () {
-        // this.theme.stop();
+        this.theme.stop();
         this.scene.start("splash");
     }
 }
