@@ -135,7 +135,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
         } else {
             this.body?.setVelocityX(0)
-            //this.anims?.play("playeridle", true);
+            if (!this.casting) this.anims?.play("playeridle", true);
         }
 
 

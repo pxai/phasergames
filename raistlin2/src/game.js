@@ -40,7 +40,8 @@ export default class Game extends Phaser.Scene {
 
       this.addMana();
       this.addHelp();
-      this.loadAudios(); 
+      this.loadAudios();
+      this.showTexts();
 
       // this.playMusic();
     }
@@ -72,8 +73,10 @@ export default class Game extends Phaser.Scene {
       this.arrows = this.add.group();
       this.exits = this.add.group();
       this.keys = this.add.group();
+      this.texts = [];
       this.waters = [];
       this.watersDeath = [];
+      this.door = [];
 
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("skeleton")) {
@@ -89,6 +92,10 @@ export default class Game extends Phaser.Scene {
         if (object.name === "key") {
           this.keys.add(new Key(this, object.x, object.y));
         }
+
+        if (object.name === "text") {
+          this.texts.push(object);
+        }
       });
 
       this.backgroundLayer.forEachTile( (tile) => {
@@ -100,9 +107,30 @@ export default class Game extends Phaser.Scene {
           this.watersDeath.push(tile);
         }
 
+
+        if (this.isDoor(tile)) {
+          this.door.push(tile)
+        }
+
       });
+      console.log("DOOR: ", this.texts)
     }
 
+    showTexts() {
+       this.texts.forEach(text => {
+        let help = this.add.bitmapText(text.x, text.y, "arcade", "Amos", 20).setOrigin(0.5).setTint(0xffe066).setDropShadow(1, 2, 0xbf2522, 0.7);
+        this.tweens.add({
+          targets: help,
+          duration: 10000,
+          alpha: { from: 1, to: 0},
+          ease: 'Linear'
+        })
+      })
+    }
+
+    isDoor (tile) {
+      return tile?.properties['element']?.toString().startsWith("door")
+    }
 
     isWater (tile) {
       return tile?.properties['element'] === "water"
@@ -173,8 +201,8 @@ export default class Game extends Phaser.Scene {
       this.castSpell = this.sound.add("cast");
       //this.checkManaEvent = this.time.addEvent({ delay: 1000, callback: this.recoverMana, callbackScope: this, loop: true });
       this.mana = this.initialMana;
-      this.manaText = this.add.bitmapText(this.center_width - 100, this.height - 50,  "mainFont", "MANA: ", 15).setTint(0xffffff).setOrigin(0.5).setScrollFactor(0);
-      this.manaBar = this.add.rectangle(this.center_width + 50, this.height - 62, this.mana * 2, 20, 0xffffff).setOrigin(0.5).setScrollFactor(0);
+      this.manaBar = this.add.rectangle(this.center_width - 1, this.height - 41, this.mana * 1.8, 20, 0xffffff).setOrigin(0.5).setScrollFactor(0);
+      this.manaText = this.add.bitmapText(this.center_width - 1, this.height - 31,  "mainFont", "MANA", 15).setTint(0x000000).setOrigin(0.5).setScrollFactor(0);
     }
 
     addHelp () {
@@ -252,6 +280,20 @@ export default class Game extends Phaser.Scene {
       key.destroy();
       this.playAudio("key")
       player.hasKey = true;
+
+      this.openDoor();
+    }
+
+    openDoor () {
+      const otherDoor = {'door0': 36, 'door1': 37, 'door2': 38, 'door3': 39}
+      console.log("OPEN THE DOOR")
+      this.door.forEach(tile => {
+        console.log("Changing ", tile, this.door)
+        let index = otherDoor[tile.properties['element']];
+        this.backgroundLayer.putTileAt(index, tile.x, tile.y)
+        Array(Phaser.Math.Between(1,3)).fill(0).forEach( i => new Smoke(this, tile.pixelX + 10, tile.pixelY + 10))
+
+      })
     }
 
     showKeyWarning () {
@@ -388,7 +430,7 @@ export default class Game extends Phaser.Scene {
     }
 
     updateMana () {
-      this.manaBar.width = this.mana * 2;
+      this.manaBar.width = this.mana * 1.8;
     }
 
     paintLine() {

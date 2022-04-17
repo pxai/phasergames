@@ -27,7 +27,7 @@ export default class Skeleton extends Phaser.GameObjects.Sprite {
       this.scene.anims.create({
         key: "wizardshot",
         frames: this.scene.anims.generateFrameNumbers("skeleton", { start: 2, end: 3 }),
-        frameRate: 1,
+        frameRate: 3,
       });
   
 
