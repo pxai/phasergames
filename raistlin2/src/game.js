@@ -340,6 +340,7 @@ export default class Game extends Phaser.Scene {
         if (!this.castSpell.isPlaying) {
           this.castSpell.play();
         }
+        this.player.casting = true;
         const cost = spell();
         this.mana -= cost;
         console.log("Cost: ", cost, " New mana: ", this.mana)
@@ -363,6 +364,7 @@ export default class Game extends Phaser.Scene {
 
     shoot () {
       if (this.shootTime < 100) return 0;
+      this.player.anims.play("playerspell", true);
        const {worldX, worldY}  = this.pointer;
        const point = new Phaser.Geom.Point(worldX, worldY);
        const fireball = new Fireball(this, this.player.x, this.player.y) ;
@@ -390,6 +392,8 @@ export default class Game extends Phaser.Scene {
     }
 
     paintLine() {
+
+      this.player.anims.play("playerspell", true);
       this.lines.add(new Line(this, this.pointer.x-1, this.pointer.y, 12, 12, 0xffffff));
       this.lines.add(new Line(this, this.pointer.x, this.pointer.y, 12, 12, 0xffffff));
       this.lines.add(new Line(this, this.pointer.x+1, this.pointer.y,  12, 12, 0xffffff));

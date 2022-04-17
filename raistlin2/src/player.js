@@ -18,6 +18,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.jumping = false;
         this.flashing = false;
         this.falling = false;
+        this.casting = false;
         this.finished = false;
         this.walkVelocity = velocity;
         this.jumpVelocity = -400;
@@ -40,46 +41,46 @@ class Player extends Phaser.GameObjects.Sprite {
 
         this.scene.anims.create({
             key: "startidle",
-            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 0, end: 1 }),
+            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 1, end: 2 }),
             frameRate: 3,
             repeat: -1
         });
 
         this.scene.anims.create({
             key: "playeridle",
-            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 2, end: 3 }),
+            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 1, end: 2 }),
             frameRate: 3,
             repeat: -1
         });
 
         this.scene.anims.create({
             key: "playerwalk",
-            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 4, end: 6 }),
+            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 3, end: 4 }),
             frameRate: 10,
         });
 
         this.scene.anims.create({
             key: "playerjump",
-            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 4, end: 4 }),
+            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 5, end: 5 }),
             frameRate: 1,
         });
 
         this.scene.anims.create({
-            key: "playerhammer",
-            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 7, end: 8 }),
-            frameRate: 10
+            key: "playerfall",
+            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 6, end: 6 }),
+            frameRate: 1,
         });
 
         this.scene.anims.create({
-            key: "playerbuild",
-            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 9, end: 10 }),
+            key: "playerspell",
+            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 7, end: 8 }),
             frameRate: 10,
             repeat: 2
         });
 
         this.scene.anims.create({
             key: "playerdead",
-            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 11, end: 16 }),
+            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 9, end: 14 }),
             frameRate: 5,
         });
 
@@ -98,6 +99,7 @@ class Player extends Phaser.GameObjects.Sprite {
         if (this.jumping) {
             if (Phaser.Math.Between(1, 10) > 5)  new Particle(this.scene, this.x, this.y, 0xFFEAAB, 2, false)
             if (this.body.velocity.y >= 0) {
+                this.anims.play("playerfall", true);
                 this.body.setGravityY(1000)
                 this.falling = true;
             }
@@ -133,7 +135,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
         } else {
             this.body?.setVelocityX(0)
-            this.anims?.play("playeridle", true);
+            //this.anims?.play("playeridle", true);
         }
 
 
@@ -169,6 +171,11 @@ class Player extends Phaser.GameObjects.Sprite {
     animationComplete (animation, frame) {
         if (animation.key === "playerground") {
             this.anims.play("playeridle", true)
+        }
+
+        if (animation.key === "playerspell") {
+            this.anims.play("playeridle", true)
+            this.casting = false;
         }
     }
 
