@@ -17,7 +17,7 @@ export default class Game extends Phaser.Scene {
       console.log("Data: ", data)
       this.name = data.name;
       this.number = data.number;
-      this.initialMana = data.mana;
+      this.initialMana = data.mana || 100;
   }
 
     preload () {
@@ -118,7 +118,7 @@ export default class Game extends Phaser.Scene {
 
     showTexts() {
        this.texts.forEach(text => {
-        let help = this.add.bitmapText(text.x, text.y, "arcade", "Amos", 20).setOrigin(0.5).setTint(0xffe066).setDropShadow(1, 2, 0xbf2522, 0.7);
+        let help = this.add.bitmapText(text.x, text.y, "arcade", text.type, 20).setOrigin(0.5).setTint(0xffe066).setDropShadow(1, 2, 0xbf2522, 0.7);
         this.tweens.add({
           targets: help,
           duration: 10000,
@@ -200,7 +200,7 @@ export default class Game extends Phaser.Scene {
       this.emptyMana = null;
       this.castSpell = this.sound.add("cast");
       //this.checkManaEvent = this.time.addEvent({ delay: 1000, callback: this.recoverMana, callbackScope: this, loop: true });
-      this.mana = this.initialMana;
+      this.mana = this.initialMana * 1000; // TODO
       this.manaBar = this.add.rectangle(this.center_width - 1, this.height - 41, this.mana * 1.8, 20, 0xffffff).setOrigin(0.5).setScrollFactor(0);
       this.manaText = this.add.bitmapText(this.center_width - 1, this.height - 31,  "mainFont", "MANA", 15).setTint(0x000000).setOrigin(0.5).setScrollFactor(0);
     }
@@ -286,9 +286,7 @@ export default class Game extends Phaser.Scene {
 
     openDoor () {
       const otherDoor = {'door0': 36, 'door1': 37, 'door2': 38, 'door3': 39}
-      console.log("OPEN THE DOOR")
       this.door.forEach(tile => {
-        console.log("Changing ", tile, this.door)
         let index = otherDoor[tile.properties['element']];
         this.backgroundLayer.putTileAt(index, tile.x, tile.y)
         Array(Phaser.Math.Between(1,3)).fill(0).forEach( i => new Smoke(this, tile.pixelX + 10, tile.pixelY + 10))
@@ -451,7 +449,11 @@ export default class Game extends Phaser.Scene {
 
     finishScene () {
    //   this.theme.stop();
-      this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
+   this.player.finished = true;
+      if (this.number < 9)
+        this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1, mana: this.initialMana});
+      else
+        this.scene.start("outro");
     }
 
     updateScore (points = 0) {

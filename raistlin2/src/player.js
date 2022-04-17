@@ -195,6 +195,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     die () {
+        return; // TODO
         this.dead = true;
         this.anims.play("playerdead", true);
         //this.body.immovable = true;

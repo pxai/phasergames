@@ -14,11 +14,13 @@ export default class Outro extends Phaser.Scene {
         this.introLayer = this.add.layer();
         this.splashLayer = this.add.layer();
         this.text = [ 
-            "The U.F.I.S.H. recovered the engines.",
-            "After a terrible fishing day,",
-            "they decided to move to Europa moon,",
-            "to fish under the ice",
-            "But that is another story..."
+            "Finally!!",
+            "Waterfall Temple was defeated,",
+            "and Raistlin the Wizard",
+            "became so powerful",
+            "that he bought Twitter...",
+            "",
+            "ENTER to start again!"
         ];
         this.showHistory();
         //this.showPlayer();
@@ -49,7 +51,7 @@ export default class Outro extends Phaser.Scene {
       }
 
     showLine(text, y) {
-        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "mainFont", text, 25).setOrigin(0.5).setAlpha(0));
+        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "mainFont", text, 15).setOrigin(0.5).setAlpha(0));
         this.tweens.add({
             targets: line,
             duration: 2000,
@@ -57,6 +59,9 @@ export default class Outro extends Phaser.Scene {
         })
     }
 
+    showPlayer () {
+        this.add.sprite(this.center_width, 500, "raistlin").setOrigin(0.5).setScale(3);
+    }
 
     startSplash () {
         // this.theme.stop();

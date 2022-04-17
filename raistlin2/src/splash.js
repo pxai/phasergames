@@ -19,17 +19,20 @@ export default class Splash extends Phaser.Scene {
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
-        this.addStartButton();
+        this.startButtonEasy = this.addStartButton("EASY", 100, -160);
+        this.startButtonMedium = this.addStartButton("MEDIUM", 70, 0);
+        this.startButtonHard = this.addStartButton("HARD", 40, 160);
         //this.playMusic();
     }
 
     update () {
     }
 
-    startGame () {
+    startGame (level) {
         if (this.theme) this.theme.stop();
         //this.sound.add("gold").play();
-        this.scene.start("game", {number: 0, mana: 100, name: "no name"})
+        console.log("Starting with ", level)
+        this.scene.start("game", {number: 0, mana: level, name: "no name"})
     }
 
     showTitle() {
@@ -53,7 +56,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     showPlayer () {
-
+        this.add.sprite(this.center_width, 500, "raistlin").setOrigin(0.5).setScale(2);
     }
 
     playMusic (theme="splash") {
@@ -84,25 +87,27 @@ export default class Splash extends Phaser.Scene {
         });
     }
 
-    addStartButton () {
-        this.startButton = this.add.bitmapText(this.center_width, 560, "arcade", "Click HERE to start", 30).setOrigin(0.5).setTint(0xbf2522).setDropShadow(2, 3, 0xffe066, 0.7).setAlpha(0);
-        this.startButton.setInteractive();
-        this.startButton.on('pointerdown', () => {
-            this.startGame();
+    addStartButton (button, level, offset) {
+        const startButton = this.add.bitmapText(this.center_width + offset, 560, "arcade", button, 30).setOrigin(0.5).setTint(0xbf2522).setDropShadow(2, 3, 0xffe066, 0.7).setAlpha(0);
+        startButton.setInteractive();
+        startButton.on('pointerdown', () => {
+            this.startGame(level);
         });
     
-        this.startButton.on('pointerover', () => {
-            this.startButton.setTint(0xb85d08)
+        startButton.on('pointerover', () => {
+            startButton.setTint(0xb85d08)
         });
     
-        this.startButton.on('pointerout', () => {
-            this.startButton.setTint(0xe5cc18)
+        startButton.on('pointerout', () => {
+            startButton.setTint(0xe5cc18)
         });
         this.tweens.add({
-            targets: this.startButton,
+            targets: startButton,
             duration: 3000,
             alpha: {from: 0, to: 1},
         });
+
+        return startButton
     }
 
     showPlayer() {

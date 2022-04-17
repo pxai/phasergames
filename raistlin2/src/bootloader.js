@@ -23,10 +23,6 @@ export default class Bootloader extends Phaser.Scene {
             this.scene.start("splash");
         },this);
 
-       /* Array(7).fill(0).forEach((_,i) => {
-            this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
-        });*/
-
         this.load.image("pello", "assets/images/pello.png");
         this.load.image("star", "assets/images/star.png");
         this.load.image("fireball", "assets/images/fireball.png");
@@ -50,7 +46,7 @@ export default class Bootloader extends Phaser.Scene {
 
         this.load.image('map', 'assets/maps/map.png');
 
-        Array(1).fill(0).forEach((_,i) => {
+        Array(10).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`);
         });
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
