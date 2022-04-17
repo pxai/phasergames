@@ -1,5 +1,5 @@
 
-import { JumpSmoke, RockSmoke } from "./particle";
+import { JumpSmoke, RockSmoke, Particle } from "./particle";
 
 class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, health = 10, tnt = 1, velocity = 200, remote = false) {
@@ -21,8 +21,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.finished = false;
         this.walkVelocity = velocity;
         this.jumpVelocity = -400;
-        this.remoteActive = remote === 1;
-        this.totalTNTs = tnt;
+        this.hasKey = false;
 
         this.health = health;
 
@@ -87,6 +86,8 @@ class Player extends Phaser.GameObjects.Sprite {
         this.anims.play("startidle", true);
 
         this.on('animationcomplete', this.animationComplete, this);
+
+        this.on('animationupdate', this.animationUpdate, this);
     }    
 
     update () {
@@ -95,25 +96,25 @@ class Player extends Phaser.GameObjects.Sprite {
             this.scene.restartScene();
         }
         if (this.jumping) {
-            // if (Phaser.Math.Between(1,101) > 100) new Star(this.scene, this.x, this.y + 5)
+            if (Phaser.Math.Between(1, 10) > 5)  new Particle(this.scene, this.x, this.y, 0xFFEAAB, 2, false)
             if (this.body.velocity.y >= 0) {
-                this.body.setGravityY(700)
+                this.body.setGravityY(1000)
                 this.falling = true;
             }
         }
         //if (Phaser.Input.Keyboard.JustDown(this.down)) {
         if ((Phaser.Input.Keyboard.JustDown(this.cursor.up) || Phaser.Input.Keyboard.JustDown(this.W)) && this.body.blocked.down) {
-            // new Dust(this.scene, this.x, this.y)
+
             this.building = false;
             this.body.setVelocityY(this.jumpVelocity);
-            this.body.setGravityY(400)
+            this.body.setGravityY(600)
             this.anims.play("playerjump", true);
            // this.scene.playAudio("jump")
             this.jumping = true;
             this.jumpSmoke();
 
         } else if (this.body?.blocked.down && this.jumping) { 
-            if (this.jumping) {/*this.scene.playAudio("land");*/this.landSmoke();}
+            if (this.jumping) {this.scene.playAudio("land");this.landSmoke();}
             this.jumping = false;
             this.falling = false;
         } else if (this.cursor.right.isDown || this.D.isDown) {
@@ -152,6 +153,7 @@ class Player extends Phaser.GameObjects.Sprite {
             new JumpSmoke(this.scene, this.x + (offset * varX), this.y + offsetY)
         })
     }
+    
 
     hitSmoke (offsetY = -32, offsetX) {
         Array(Phaser.Math.Between(8, 14)).fill(0).forEach(i => {
@@ -168,10 +170,12 @@ class Player extends Phaser.GameObjects.Sprite {
         if (animation.key === "playerground") {
             this.anims.play("playeridle", true)
         }
+    }
 
-        if(animation.key == "playerwalk") {
-            //this.scene.playRandom("step", Phaser.Math.Between(2, 7) / 10);
-            new JumpSmoke(this.scene, this.x, this.y + 10)
+    animationUpdate (animation, frame) {
+        if(animation.key === "playerwalk") {
+            this.scene.playRandom("step", Phaser.Math.Between(2, 7) / 10);
+            new JumpSmoke(this.scene, this.x, this.y + Phaser.Math.Between(10, 15))
         }
     }
 

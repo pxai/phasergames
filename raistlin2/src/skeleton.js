@@ -1,3 +1,5 @@
+import {Particle} from "./particle";
+
 export default class Skeleton extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, name) {
         super(scene, x, y, "skeleton")
@@ -8,7 +10,7 @@ export default class Skeleton extends Phaser.GameObjects.Sprite {
 
         this.body.setSize(32, 32)
         this.setOrigin(0.5)
-      
+        this.flipX = this.name === "skeleton1";
         this.body.setImmovable(true)
         this.body.setAllowGravity(false);
         this.init();
@@ -16,40 +18,21 @@ export default class Skeleton extends Phaser.GameObjects.Sprite {
   
     init () {
       this.scene.anims.create({
-        key: "skeleton0",
+        key: "wizard",
         frames: this.scene.anims.generateFrameNumbers("skeleton", { start: 0, end: 1 }),
         frameRate: 5,
         repeat: -1
       });
     
       this.scene.anims.create({
-        key: "skeleton1",
+        key: "wizardshot",
         frames: this.scene.anims.generateFrameNumbers("skeleton", { start: 2, end: 3 }),
-        frameRate: 5,
-        repeat: -1
+        frameRate: 1,
       });
   
-      this.scene.anims.create({
-        key: "skeleton2",
-        frames: this.scene.anims.generateFrameNumbers("skeleton", { start: 4, end: 5 }),
-        frameRate: 5,
-        repeat: -1
-      });
-    
-      this.scene.anims.create({
-        key: "skeleton3",
-        frames: this.scene.anims.generateFrameNumbers("skeleton", { start: 6, end: 7 }),
-        frameRate: 5,
-        repeat: -1
-      });
 
-      this.scene.anims.create({
-        key: "skeletondeath",
-        frames: this.scene.anims.generateFrameNumbers("skeleton", { start: 8, end: 10 }),
-        frameRate: 5,
-      });
       this.on('animationcomplete', this.animationComplete, this);
-      this.anims.play(this.name, true)
+      this.anims.play("wizard", true)
       this.timer = this.scene.time.addEvent({ delay: 1000, callback: this.throwArrow, callbackScope: this, loop: true });
 
     }
@@ -57,9 +40,9 @@ export default class Skeleton extends Phaser.GameObjects.Sprite {
     throwArrow () {
       if (!this.active) return;
       if (Phaser.Math.Between(0, 10) > 9) {
-        console.log("Throw it!!")
+        this.anims.play("wizardshot", true)
         const velocity = this.name === "skeleton0" ? 100 : -100
-        this.scene.arrows.add(new Arrow(this.scene, this.x, this.y, velocity))
+        this.scene.arrows.add(new Fireball(this.scene, this.x, this.y, velocity))
       }
 
     }
@@ -70,8 +53,8 @@ export default class Skeleton extends Phaser.GameObjects.Sprite {
     }
 
     animationComplete (animation, frame) {
-        if (animation.key === "skeletondeath") {
-            this.destroy();
+        if (animation.key === "wizardshot") {
+          this.anims.play("wizard", true)
         }
     }
   }
@@ -100,6 +83,39 @@ export default class Skeleton extends Phaser.GameObjects.Sprite {
         repeat: -1
       });
       this.anims.play("arrow", true)
+    }
+  }
+
+
+  class Fireball extends Phaser.GameObjects.Sprite {
+    constructor (scene, x, y, velocity=100) {
+        super(scene, x, y, "wizardshot")
+        this.scene = scene;
+        scene.add.existing(this)
+        scene.physics.add.existing(this);
+        this.body.setVelocityX(velocity)
+        this.body.setSize(32, 16)
+        this.setOrigin(0.5)
+        this.flipX = velocity < 0;
+    
+        this.body.setAllowGravity(false);
+        this.scene.events.on("update", this.update, this);
+        this.init();
+    }
+
+    update () {
+      if (Phaser.Math.Between(0,5)> 4)
+      this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y, 0x95b8c7, 2, false));
+    }
+
+    init () {
+      this.scene.tweens.add({
+        targets: this,
+        scale: {from: 1, to: 0.7},
+        duration: 400,
+        repeat: -1,
+        yoyo: true
+      })
     }
   }
   

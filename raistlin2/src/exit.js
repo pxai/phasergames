@@ -1,7 +1,7 @@
-class Exit extends Phaser.GameObjects.Rectangle {
-    constructor (scene, x, y, width = 30, height = 10) {
-        super(scene, x, y, width, height)
-        this.name = "exit";
+export default class Exit extends Phaser.GameObjects.Sprite {
+    constructor (scene, x, y, name) {
+        super(scene, x, y, "star")
+        this.name = name;
         scene.add.existing(this)
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);

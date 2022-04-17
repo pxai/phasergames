@@ -1,7 +1,9 @@
 import Player from "./player";
-import { Light, Rune, Line } from "./particle";
+import { Light, Rune, Line, Smoke } from "./particle";
 import Fireball from "./fireball";
 import Skeleton from "./skeleton";
+import Exit from "./exit";
+import Key from "./key";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -32,11 +34,13 @@ export default class Game extends Phaser.Scene {
       this.lines = this.add.group();
       this.addMap();
       this.addPlayer();
+
       this.pointer = this.input.activePointer;
       this.input.mouse.disableContextMenu();
       this.trailLayer = this.add.layer();
 
       this.addMana();
+      this.addHelp();
       this.loadAudios(); 
 
       // this.playMusic();
@@ -62,6 +66,8 @@ export default class Game extends Phaser.Scene {
       this.skeletons = this.add.group();
       this.fireballs = this.add.group();
       this.arrows = this.add.group();
+      this.exits = this.add.group();
+      this.keys = this.add.group();
       this.waters = [];
 
       this.objectsLayer.objects.forEach( object => {
@@ -70,11 +76,18 @@ export default class Game extends Phaser.Scene {
           this.skeletons.add(skeleton)
           this.foesGroup.add(skeleton)
         }
+
+        if (object.name.startsWith("exit")) {
+          this.exits.add(new Exit(this, object.x, object.y, object.name));
+        }
+
+        if (object.name === "key") {
+          this.keys.add(new Key(this, object.x, object.y));
+        }
       });
 
       this.backgroundLayer.forEachTile( (tile) => {
         if (this.isWater(tile)) {
-          console.log(tile)
           this.waters.push(tile);
         }
 
@@ -117,6 +130,14 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
+      this.physics.add.overlap(this.player, this.exits, this.playerHitsExit, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.player, this.keys, this.playerHitsKey, ()=>{
+        return true;
+      }, this);
+
       this.physics.add.collider(this.fireballs, this.platform, this.fireballHitPlatform, ()=>{
         return true;
       }, this);
@@ -143,18 +164,29 @@ export default class Game extends Phaser.Scene {
       this.castSpell = this.sound.add("cast");
       //this.checkManaEvent = this.time.addEvent({ delay: 1000, callback: this.recoverMana, callbackScope: this, loop: true });
       this.mana = this.initialMana;
-      this.manaText = this.add.bitmapText(this.center_width - 150, this.height - 10,  "mainFont", "MANA: ", 15).setTint(0xffffff).setOrigin(0.5);
-      this.manaBar = this.add.rectangle(this.center_width, this.height - 20, this.mana * 2, 20, 0xffffff).setOrigin(0.5);
+      this.manaText = this.add.bitmapText(this.center_width - 150, this.height - 150,  "mainFont", "MANA: ", 15).setTint(0xffffff).setOrigin(0.5).setScrollFactor(0);
+      this.manaBar = this.add.rectangle(this.center_width, this.height - 20, this.mana * 2, 20, 0xffffff).setOrigin(0.5).setScrollFactor(0);
     }
+
+    addHelp () {
+      this.helpText = this.add.bitmapText(this.center_width, this.height - 50,  "mainFont", "Show Help", 15).setTint(0xffffff).setOrigin(0.5).setScrollFactor(0).setAlpha(0);
+     }
+
+     showHelp(message) {
+      this.helpText.setText(message);
+      this.tweens.add({
+        targets: this.helpText,
+        duration: 10000,
+        alpha: {from: 1, to: 0},
+      })
+     }
 
     hitFloor(player, layer) {
 
     }
 
     hitBackground(player, tile) {
-      console.log("Plyaer, hit", tile)
       if (this.isWaterDeath(tile)) {
-        console.log("Water hit!", tile)
         player.die();
       }
     }
@@ -169,10 +201,11 @@ export default class Game extends Phaser.Scene {
     }
 
     arrowHitLine (arrow, line) {
-      arrow.destroy();
+     this.arrowHitPlatform(arrow, line)
     }
 
     arrowHitPlatform(arrow, platform) {
+      Array(Phaser.Math.Between(1,3)).fill(0).forEach( i => new Smoke(this, arrow.x, arrow.y, null, null, 0x95b8c7))
       arrow.destroy();
     }
 
@@ -181,12 +214,39 @@ export default class Game extends Phaser.Scene {
     }
 
     fireballHitPlatform(fireball, platform) {
-      // Add sound
+      Array(Phaser.Math.Between(1,3)).fill(0).forEach( i => new Smoke(this, fireball.x, fireball.y))
     }
 
     fireballHitFoe(fireball, foe) {
       //fireball.destroy();
+      this.playAudio("boom");
+      Array(Phaser.Math.Between(1,5)).fill(0).forEach( i => new Smoke(this, foe.x+i, foe.y+i, null, null, 0x95b8c7))
+
       foe.destroy();
+    }
+
+    playerHitsExit(player, exit) {
+      if (exit.name === "exit1") {
+        if (player.hasKey) {
+          this.finishScene();
+        } else {
+          this.showHelp("You need the key!!")
+        }
+      }
+
+      if (exit.name === "exit0") {
+        this.finishScene();
+      }
+    }
+
+    playerHitsKey(player, key) {
+      key.destroy();
+      this.playAudio("key")
+      player.hasKey = true;
+    }
+
+    showKeyWarning () {
+      console.log("You need the key")
     }
 
       loadAudios () {
@@ -194,11 +254,24 @@ export default class Game extends Phaser.Scene {
           "cast": this.sound.add("cast"),
           "emptymana": this.sound.add("emptymana"),
           "fireball": this.sound.add("fireball"),
+          "key": this.sound.add("key"),
+          "land": this.sound.add("land"),
+          "boom": this.sound.add("boom"),
+          "step": this.sound.add("step"),
         };
       }
 
       playAudio(key) {
         this.audios[key].play();
+      }
+
+      playRandom(key, volume = 1) {
+        this.audios[key].play({
+          rate: Phaser.Math.Between(1, 1.5),
+          detune: Phaser.Math.Between(-1000, 1000),
+          delay: 0,
+          volume
+        });
       }
 
       playMusic (theme="game") {
@@ -306,7 +379,7 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene () {
-      this.theme.stop();
+   //   this.theme.stop();
       this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
     }
 

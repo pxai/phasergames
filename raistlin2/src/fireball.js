@@ -26,6 +26,6 @@ export default class Fireball extends Phaser.GameObjects.Sprite {
     update() {
         if (this.scene?.gameOver) return;
         if (Phaser.Math.Between(0,5)> 4)
-            this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y, 0xffffff, 8, false));
+            this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y, 0xffffff, 4, false));
     }
   }
