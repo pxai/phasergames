@@ -15,6 +15,7 @@ export default class Splash extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
         this.cameras.main.setBackgroundColor(0x000000);
+        this.addPlayer();
         this.showTitle();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
@@ -30,8 +31,6 @@ export default class Splash extends Phaser.Scene {
 
     startGame (level) {
         if (this.theme) this.theme.stop();
-        //this.sound.add("gold").play();
-        console.log("Starting with ", level)
         this.scene.start("game", {number: 0, mana: level, name: "no name"})
     }
 
@@ -40,7 +39,7 @@ export default class Splash extends Phaser.Scene {
         this.gameLogo2 = this.add.bitmapText(this.center_width, 300, "mainFont", "2", 150).setOrigin(0.5).setTint(0xffe066).setDropShadow(3, 4, 0xbf2522, 0.7).setAlpha(0);
        
         this.tweens.add({
-            targets: [this.gameLogo1],
+            targets: [this.gameLogo1, this.player],
             duration: 2500,
             alpha: {from: 0, to: 1},
             onComplete: () => {
@@ -55,8 +54,8 @@ export default class Splash extends Phaser.Scene {
 
     }
 
-    showPlayer () {
-        this.add.sprite(this.center_width, 500, "raistlin").setOrigin(0.5).setScale(2);
+    addPlayer () {
+        this.player = this.add.sprite(this.center_width, 320, "raistlin").setOrigin(0.5).setAlpha(0).setScale(2);
     }
 
     playMusic (theme="splash") {

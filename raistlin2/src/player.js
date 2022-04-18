@@ -196,10 +196,9 @@ class Player extends Phaser.GameObjects.Sprite {
 
     die () {
         this.scene.playAudio("death");
-        return; // TODO
         this.dead = true;
         this.anims.play("playerdead", true);
-        //this.body.immovable = true;
+
         this.body.moves = false;
         this.scene.time.delayedCall(2000, () => this.scene.restartScene(), null, this);
     }

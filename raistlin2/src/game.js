@@ -45,6 +45,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addPointer() {
+      this.hiddenPointer = false;
       this.pointer = this.input.activePointer;
       this.input.mouse.disableContextMenu();
     }
@@ -196,8 +197,9 @@ export default class Game extends Phaser.Scene {
     addMana () {
       this.emptyMana = null;
       this.castSpell = this.sound.add("cast");
+      this.emptyManaSound = this.sound.add("emptymana");
       //this.checkManaEvent = this.time.addEvent({ delay: 1000, callback: this.recoverMana, callbackScope: this, loop: true });
-      this.mana = this.initialMana * 1000; // TODO
+      this.mana = this.initialMana;
       this.manaBar = this.add.rectangle(this.center_width - 1, this.height - 41, this.mana * 1.8, 20, 0xffffff).setOrigin(0.5).setScrollFactor(0);
       this.manaText = this.add.bitmapText(this.center_width - 1, this.height - 31,  "mainFont", "MANA", 15).setTint(0x000000).setOrigin(0.5).setScrollFactor(0);
     }
@@ -333,11 +335,12 @@ export default class Game extends Phaser.Scene {
       }
 
       playMusic (theme="music") {
+        this.game.sound.stopAll();
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -419,7 +422,7 @@ export default class Game extends Phaser.Scene {
        new Rune(this, worldX, worldY);
       this.physics.moveTo(fireball, point.x, point.y, 300);
       this.shootTime = 0;
-      return 10;
+      return 30;
     }
 
     hidePointer(time) {
@@ -427,7 +430,7 @@ export default class Game extends Phaser.Scene {
       const {worldX, worldY}  = this.pointer;
       const point = new Phaser.Geom.Point(worldX, worldY);
       const distance = Phaser.Math.Distance.BetweenPoints(this.player, point);
-
+      this.hiddenPointer = (distance > 250);
       this.input.manager.canvas.style.cursor = (distance > 250) ? 'none' : 'crosshair';
 
     }
@@ -437,7 +440,13 @@ export default class Game extends Phaser.Scene {
     }
 
     paintLine() {
+      if (this.hiddenPointer) {
+        if (!this.emptyManaSound.isPlaying) {
+          this.emptyManaSound.play();
+        }
 
+        return 0;
+      }
       this.player.anims.play("playerspell", true);
       this.lines.add(new Line(this, this.pointer.x-1, this.pointer.y, 12, 12, 0xffffff));
       this.lines.add(new Line(this, this.pointer.x, this.pointer.y, 12, 12, 0xffffff));
@@ -447,15 +456,15 @@ export default class Game extends Phaser.Scene {
     }
 
     restartScene () {
-     this.theme.stop();
-     this.player.finished = true;
+      this.theme.stop();
+      this.player.finished = true;
       this.scene.start("game", {number: this.number, name: this.name, mana: this.initialMana });
     }
 
     finishScene () {
-    this.theme.stop();
-   this.playAudio("win");
-   this.player.finished = true;
+      this.theme.stop();
+      this.playAudio("win");
+      this.player.finished = true;
       if (this.number < 9)
         this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1, mana: this.initialMana});
       else

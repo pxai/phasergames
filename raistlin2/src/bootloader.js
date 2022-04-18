@@ -20,7 +20,7 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("outro");
+            this.scene.start("splash");
         },this);
 
         this.load.image("pello", "assets/images/pello.png");
