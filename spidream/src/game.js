@@ -1,5 +1,7 @@
 import Player from "./player";
 import Scenario from "./scenario";
+import APP from "./music";
+import * as Tone from 'tone'
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -26,6 +28,7 @@ export default class Game extends Phaser.Scene {
       console.log("Amos")
       this.addPointer();
       this.addPlayer();
+      this.addMusic();
       new Scenario(this)
       //this.loadAudios(); 
       // this.playMusic();
@@ -38,6 +41,12 @@ export default class Game extends Phaser.Scene {
     addPointer() {
       this.pointer = this.input.activePointer;
       this.input.mouse.disableContextMenu();
+    }
+
+    addMusic () {
+      if (Tone.context.state !== 'running') Tone.context.resume();
+      APP.MusicGenerator.init(((Math.random() * 100000000) + (Math.random() * 10000)).toString());
+      APP.MusicGenerator.play()
     }
 
       loadAudios () {
