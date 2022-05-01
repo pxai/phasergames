@@ -113,12 +113,16 @@ export default class Player {
             // Array(Phaser.Math.Between(5, 10)).fill(0).forEach(i => new Steam(this.scene, this.sprite.x, this.sprite.y))
             this.sprite.setVelocityY(-9);
             this.sprite.setVelocityX(0);
-        } 
+        } else if (this.S.isDown) {
+          this.sprite.applyForce({ x: 0, y: this.moveForce });
+        }
           // Limit horizontal speed, without this the player's velocity would just keep increasing to
           // absurd speeds. We don't want to touch the vertical velocity though, so that we don't
           // interfere with gravity.
+          if (this.sprite.body.velocity.y > 7) this.sprite.setVelocityY(7);
           if (this.sprite.body.velocity.x > 7) this.sprite.setVelocityX(7);
           else if (this.sprite.body.velocity.x < -7) this.sprite.setVelocityX(-7);
+
       
           if (this.scene.pointer.isDown) {
             console.log("Mouse down")

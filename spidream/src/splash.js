@@ -62,7 +62,7 @@ export default class Splash extends Phaser.Scene {
       }
   
     addStartButton () {
-        this.startButton = this.add.bitmapText(this.center_width, 670, "pixelFont", "Click HERE to start", 30).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.startButton = this.add.bitmapText(this.center_width, 670, "doom", "Click HERE to start", 30).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {
             this.startGame();
@@ -85,10 +85,10 @@ export default class Splash extends Phaser.Scene {
     }
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "pixelFont", "B: shoot coins", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 450, "doom", "WASD/Arrows: move", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 550, "doom", "B: shoot coins", 30).setOrigin(0.5);
         this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5);
+        this.add.bitmapText(this.center_width + 40, 620, "doom", "By PELLO", 15).setOrigin(0.5);
 
         this.tweens.add({
             targets: this.space,

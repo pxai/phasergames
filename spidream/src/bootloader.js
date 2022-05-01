@@ -31,7 +31,7 @@ export default class Bootloader extends Phaser.Scene {
         // this.load.audio("beam", "assets/sounds/beam.mp3");
         this.load.spritesheet("spider", "assets/images/spider.png", { frameWidth: 48, frameHeight: 48 });
 
-        this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
+        this.load.bitmapFont("doom", "assets/fonts/mario.png", "assets/fonts/mario.xml");
 
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
 

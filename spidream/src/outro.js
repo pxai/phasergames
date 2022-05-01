@@ -49,7 +49,7 @@ export default class Outro extends Phaser.Scene {
       }
 
     showLine(text, y) {
-        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "pixelFont", text, 25).setOrigin(0.5).setAlpha(0));
+        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "doom", text, 25).setOrigin(0.5).setAlpha(0));
         this.tweens.add({
             targets: line,
             duration: 2000,

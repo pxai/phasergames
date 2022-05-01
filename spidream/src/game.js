@@ -28,7 +28,7 @@ export default class Game extends Phaser.Scene {
       console.log("Amos")
       this.addPointer();
       this.addPlayer();
-      this.addMusic();
+      //this.addMusic();
       new Scenario(this)
       //this.loadAudios(); 
       // this.playMusic();
@@ -44,9 +44,11 @@ export default class Game extends Phaser.Scene {
     }
 
     addMusic () {
-      if (Tone.context.state !== 'running') Tone.context.resume();
+
+      if (Tone.context.state !== 'running') { Tone.context.resume(); console.log("Resume tone") };
       APP.MusicGenerator.init(((Math.random() * 100000000) + (Math.random() * 10000)).toString());
       APP.MusicGenerator.play()
+     // Tone.start();
     }
 
       loadAudios () {
