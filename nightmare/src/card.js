@@ -3,6 +3,7 @@ export default class Card extends Phaser.GameObjects.Container {
         super(scene, x, y) //"cards", index);
 
         this.scene = scene;
+        console.log("Created tile ", tile)
         this.tile = tile;
         this.index = index;
 
@@ -31,20 +32,37 @@ export default class Card extends Phaser.GameObjects.Container {
         this.card.anims.play("back", true);
     }
 
+    canApply () {
+        return true;7
+        // This is hard because player may create islands
+        /*return Math.abs(this.tile.x - this.scene.currentCard.tile.x) < 2 &&
+              Math.abs(this.tile.y - this.scene.currentCard.tile.y) < 2;*/
+    }
+
     addListeners () {
         this.card.setInteractive();
         this.card.on("pointerdown", () => {
-            
+            if (this.canApply()) {
+                this.scene.resolveCard(this);
+            } else {
+                this.scene.setForbiddenCursor();
+            }
         });
 
         this.card.on("pointerover", () => {
-            this.card.setTint(0x3E6875);
-            this.card.setScale(1.1)
+            if (this.canApply()) {
+                this.scene.setPickCursor();
+                this.card.setTint(0x3E6875);
+                this.card.setScale(1.1)
+            } else {
+                this.scene.setForbiddenCursor();
+            }
         });
 
         this.card.on("pointerout", () => {
             this.card.setScale(1)
             this.card.setTint(this.scene.primaryColor);
+            this.scene.setDefaultCursor();
         });
     }
 }

@@ -35,15 +35,18 @@ export default class Game extends Phaser.Scene {
     }
 
     addStage () {
+        this.totalResolved = 0;
         this.stage = new Stage("Sample stage")
         this.tiles = {};
+        this.currentCard = null;
         for (let x = 0; x < this.stage.width; x++) {
             this.tiles =  {[x]: {}, ...this.tiles};
             for (let y = 0; y < this.stage.height; y++) {
                 //let card = this.add.sprite(196 + (x * 100), 196 + (y * 128), "cards").setOrigin(0.5).setTint(this.primaryColor)
-                let card = new Card(this, 64, 64, this.tiles[x+y])
+                let card = new Card(this, 64, 64, this.stage.tiles[x][y])
 
                 this.tiles[x] =  {[y]: card, ...this.tiles[x] };
+                this.currentCard = card;
             }
         }
         console.log(this.tiles)
@@ -59,8 +62,8 @@ export default class Game extends Phaser.Scene {
                 timeline.add({
                     targets: [this.tiles[x][y]],
                     duration: 200,
-                    x: {from: 64, to: 196 + (x * 100) },
-                    y: {from: 64, to: 196 + (y * 128)},
+                    x: {from: 64, to: 256 + (x * 100) },
+                    y: {from: 64, to: 128 + (y * 128)},
                     onComplete: () => {
                         console.log("Completed! ", this.tiles[x][y].card)
                         this.tiles[x][y].card.play("flip", true);
@@ -70,6 +73,28 @@ export default class Game extends Phaser.Scene {
         }
 
         timeline.play();
+    }
+
+    resolveCard (card) {
+        this.totalResolved++;
+        console.log("Resolved?", this.totalResolved, this.stage.length)
+        this.currentCard = card;
+        card.card.playReverse("flip", true)
+        const destinyX = this.width - (64 + 100);
+        const destinyY = this.height - (64 + 128);
+        card.removeInteractive();
+
+        this.tweens.add({
+            targets: [card],
+            x: {from: card.x, to: destinyX},
+            y: {from: card.y, to: destinyY},
+            duration: 500
+        })
+
+        if (this.totalResolved === this.stage.length) {
+            console.log("Stage resolved!!", this.totalResolved, this.stage.length)
+            this.time.delayedCall(1000, () => { this.finishScene() }, null, this);
+        }
     }
 
     addDeck() {
@@ -87,11 +112,15 @@ export default class Game extends Phaser.Scene {
         this.setPickCursor();
     }
 
+    setDefaultCursor() {
+        this.input.setDefaultCursor('default');
+    }
+
     setPickCursor() {
         this.input.setDefaultCursor('url(assets/images/pick.png), pointer');
     }
 
-    setCancelCursor() {
+    setForbiddenCursor() {
         this.input.setDefaultCursor('url(assets/images/forbidden.png), pointer');
     }
 
@@ -137,8 +166,7 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene () {
-        this.sky.stop();
-        this.theme.stop();
+        // this.theme.stop();
         this.scene.start("transition", { next: "underwater", name: "STAGE", number: this.number + 1 });
     }
 
