@@ -46,9 +46,11 @@ export default class Player {
     takeDamage(damage) {
 
         const totalDamage = this.armor - damage;
-       // console.log("Player takes damage! Armor: ", this.armor, " Damage: ",  damage, " Total: ", totalDamage)
         this.scene.updateHealth(totalDamage);
-        this.scene.updateArmor(totalDamage)
+        const armorDamage = this.armor >= damage ? damage : this.armor;
+        // console.log("Player takes damage! Armor: ", this.armor, " Damage: ",  damage, " Total: ", totalDamage, ", armorDamage: ", armorDamage)
+
+        this.scene.updateArmor(-armorDamage)
         if (totalDamage < 0) { this.scene.playAudio("pain")}
         if (this.health <= 0) {
             this.scene.gameOver();

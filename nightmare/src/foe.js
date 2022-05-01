@@ -15,7 +15,7 @@ class Foe {
 }
 
 export class Grunt {
-    constructor (health = 2, damage = 1, name = "grunt") {
+    constructor (health = 4, damage = 2, name = "grunt") {
         this.health = health;
         this.damage = damage;
         this.name = name;
@@ -25,7 +25,7 @@ export class Grunt {
 }
 
 export class Imp {
-    constructor (health = 3, damage = 3, name = "imp") {
+    constructor (health = 8, damage = 6, name = "imp") {
         this.health = health;
         this.damage = damage;
         this.name = name;
@@ -35,7 +35,7 @@ export class Imp {
 }
 
 export class ShotgunGuy {
-    constructor (health = 3, damage = 2, name = "shotgun_guy") {
+    constructor (health = 8, damage = 6, name = "shotgun_guy") {
         this.health = health;
         this.damage = damage;
         this.name = name;
@@ -45,7 +45,7 @@ export class ShotgunGuy {
 }
 
 export class MinigunGuy {
-    constructor (health = 5, damage = 3, name = "minigun_guy") {
+    constructor (health = 12, damage = 10, name = "minigun_guy") {
         this.health = health;
         this.damage = damage;
         this.name = name;
@@ -55,7 +55,7 @@ export class MinigunGuy {
 }
 
 export class Knight {
-    constructor (health = 10, damage = 5, name = "knight") {
+    constructor (health = 20, damage = 12, name = "knight") {
         this.health = health;
         this.damage = damage;
         this.name = name;
@@ -65,7 +65,7 @@ export class Knight {
 }
 
 export class Demon {
-    constructor (health = 5, damage = 4, name = "demon") {
+    constructor (health = 14, damage = 15, name = "demon") {
         this.health = health;
         this.damage = damage;
         this.name = name;
@@ -76,7 +76,7 @@ export class Demon {
 
 
 export class Cacodemon {
-    constructor (health = 10, damage = 5, name = "cacodemon") {
+    constructor (health = 20, damage = 18, name = "cacodemon") {
         this.health = health;
         this.damage = damage;
         this.name = name;
@@ -86,7 +86,7 @@ export class Cacodemon {
 }
 
 export class Mancubus {
-    constructor (health = 15, damage = 7, name = "mancubus") {
+    constructor (health = 24, damage = 20, name = "mancubus") {
         this.health = health;
         this.damage = damage;
         this.name = name;
@@ -96,7 +96,7 @@ export class Mancubus {
 }
 
 export class Cyberdemon {
-    constructor (health = 20, damage = 10, name = "cyberdemon") {
+    constructor (health = 30, damage = 25, name = "cyberdemon") {
         this.health = health;
         this.damage = damage;
         this.name = name;

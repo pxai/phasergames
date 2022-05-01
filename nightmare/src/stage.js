@@ -7,8 +7,8 @@ export default class Stage {
     }
 
     init() {
-        this.width = Phaser.Math.Between(2, 6)
-        this.height = Phaser.Math.Between(2, 5)
+        this.width = Phaser.Math.Between(2, 5)
+        this.height = Phaser.Math.Between(2, 4)
         this.tiles = [];
         this.latest = null;
         for (let x = 0; x < this.width; x++) {

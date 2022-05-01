@@ -89,7 +89,7 @@ export default class Card extends Phaser.GameObjects.Container {
         this.card.on("pointerout", () => {
             this.scene.currentCardHelp.setText("")
             this.card.setScale(1)
-            this.card.setTint(this.scene.primaryColor);
+            this.card.setTint(0xffffff);
             this.scene.setDefaultCursor();
         });
     }
@@ -162,10 +162,10 @@ export default class Card extends Phaser.GameObjects.Container {
     resolveFoe (pointer) {
         const damage = this.scene.player.shoot();
         this.tile.foe.health -= damage;
-
         this.addDamageEffect(pointer, damage);
-       // console.log("REsolve foe", this.tile.foe, damage, this.tile.foe.health)
-        this.scene.player.takeDamage(this.tile.foe.damage)
+
+        const extraDamage = ["fist", "chainsaw"].includes(this.scene.player.currentWeapon.name) ? 10 : 0;
+        this.scene.player.takeDamage(this.tile.foe.damage + extraDamage)
 
         if (this.tile.foe.health <= 0) {
          //   console.log("FOE KILLED!")
@@ -208,6 +208,7 @@ export default class Card extends Phaser.GameObjects.Container {
     animationComplete(animation, frame) {
         if (animation.key === "flip" && !this.resolved) {
             this.card.anims.play("white", true)
+            this.card.setTint(0xffffff);
           this.addCardImage();
         }
     }

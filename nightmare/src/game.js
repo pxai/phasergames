@@ -40,6 +40,7 @@ export default class Game extends Phaser.Scene {
         this.loadAudios();
         // this.playMusic();
         this.playAudio("door_open")
+        this.showtemporaryHelpText("Click all cards to clear the room")
     }
 
     setKeys() {
@@ -112,7 +113,7 @@ export default class Game extends Phaser.Scene {
  
         this.blockFace = this.add.sprite(190 + 120 + 120 + 110, this.height - 48, "doomguy").setOrigin(0.5).setScale(0.6).setTint(this.primaryColor)
         this.blockArmor = this.add.sprite(190 + 120 + 120 + 96 + 124, this.height - 32, "block").setOrigin(0.5).setScale(1.2, 0.8).setTint(this.primaryColor)
-        this.armorText = this.add.bitmapText(190 + 120 + 120 + 96 + 124, this.height - 64, "doomed", this.player.armor, 30).setOrigin(0.5).setTint(this.primaryColor);
+        this.armorText = this.add.bitmapText(190 + 120 + 120 + 96 + 124, this.height - 64, "doomed", this.player.armor+"%", 30).setOrigin(0.5).setTint(this.primaryColor);
         this.armorTextHelp = this.add.bitmapText(190 + 120 + 120 + 96 + 124, this.height - 24, "doomed", "ARMOR", 14).setOrigin(0.5).setTint(this.primaryColor);
 
         this.blockCards = this.add.sprite(190 + 120 + 120 + 96 + 124 + 120, this.height - 32, "block").setOrigin(0.5).setScale(1.2, 0.8).setTint(this.primaryColor)
@@ -124,8 +125,8 @@ export default class Game extends Phaser.Scene {
 
         this.tweens.add({
             targets: [this.temporaryHelpText],
-            duration: 200,
-            repeat: 10,
+            duration: 400,
+            repeat: 20,
             alpha: {from: 0.8, to: 1},
             onComplete: () =>{
                 this.temporaryHelpText.setText("");
@@ -288,13 +289,13 @@ export default class Game extends Phaser.Scene {
     }
 
     updateArmor (points = 0) {
-        if (this.player.armor > 900) return;
         const armor = +this.registry.get("armor");
-        const armorToAdd = armor + points > 0 ? points : 0;
+        const armorToAdd = armor + points > 0 ? points : -armor;
 
-        this.player.armor = armorToAdd;
-        this.registry.set("armor", armorToAdd);
-        this.armorText.setText(armor + "%");
+        this.player.armor = armor + armorToAdd;
+     //   console.log("Update armor! current: ", armor, " add: ", armorToAdd, " total: ", this.player.armor)
+        this.registry.set("armor", armor + armorToAdd);
+        this.armorText.setText(+this.registry.get("armor") + "%");
         this.tweens.add({
             targets: [this.armorText],
             duration: 100,

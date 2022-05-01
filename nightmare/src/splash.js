@@ -21,7 +21,7 @@ export default class Splash extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-
+        this.game.sound.stopAll();
         this.cameras.main.setBackgroundColor(this.secondaryColor - 0x2f2f2f);
         this.showTitle();
 
@@ -152,6 +152,8 @@ export default class Splash extends Phaser.Scene {
         this.startButton = this.add.bitmapText(this.center_width, 400, "doomed", "Click to RELOAD COLORS", 40).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(2, 3, this.tertiaryColor, 0.7);
         this.startButton.setInteractive();
         this.startButton.on("pointerdown", () => {
+            this.theme.stop();
+            this.game.sound.stopAll();
             this.scene.start("bootloader", { next: "game", name: "STAGE", number: 1, time: 30 });
 
         });

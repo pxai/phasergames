@@ -43,7 +43,7 @@ export class Ammo {
 export class AmmoTile extends Tile {
     constructor (x, y, ammo, name = "ammo") {
         super(x, y, name)
-        this.ammo = ammo || new Ammo("gun", 5);
+        this.ammo = ammo || new Ammo("gun", 3);
 
     }
 
@@ -125,7 +125,7 @@ export class FoeTile extends Tile {
 export class Health extends Tile {
     constructor (x, y, health = 10, name = "health") {
         super(x, y, name)
-        this.health = health;
+        this.health = Phaser.Math.RND.pick([10, 10, 30, 20, 10]);
     }
 
     shoot() {
@@ -147,7 +147,6 @@ export class Armor extends Tile {
 
     shoot() {
         super.shoot();
-        this.armor = 0;
     }
 
     pick() {

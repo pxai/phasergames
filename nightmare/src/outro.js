@@ -17,7 +17,7 @@ export default class Outro extends Phaser.Scene {
             "The demonic hordes",
             "took over the moon base,",
             "then they jumped to earth,",
-            "and sign up on Twitter",
+            "and signed up on Twitter",
             "But that is another story..."
         ];
         this.sound.add("death").play();
