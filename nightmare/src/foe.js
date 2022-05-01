@@ -101,6 +101,5 @@ export class Cyberdemon {
         this.damage = damage;
         this.name = name;
         this.ammo = null;
-        this.sprite = name;
     }
 }

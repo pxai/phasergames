@@ -11,11 +11,11 @@ class Tile {
     }
 
     shoot () {
-        console.log("Shoot on ", this.name, this.x, this.y)
+       // console.log("Shoot on ", this.name, this.x, this.y)
     }
 
     pick () {
-        console.log("Pick on ", this.name, this.x, this.y)
+       // console.log("Pick on ", this.name, this.x, this.y)
     }
 }
 

@@ -30,7 +30,7 @@ export default class Game extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.cameras.main.setBackgroundColor(this.secondaryColor - 0x2f2f2f);
+        this.cameras.main.setBackgroundColor(this.secondaryColor); // - 0x2f2f2f);
         this.addPointer();
         this.addPlayer();
         this.addDeck();
@@ -87,7 +87,7 @@ export default class Game extends Phaser.Scene {
                     y: {from: 64, to: 128 + (y * 128)},
                     onComplete: () => {
                         this.tiles[x][y].card.play("flip", true);
-                        this.playAudio("flip")
+                        this.playAudio("flip", 1)
                     }
                 })
             }
@@ -97,7 +97,8 @@ export default class Game extends Phaser.Scene {
     }
 
     addStatus() {
-        this.currentCardHelp = this.add.bitmapText(this.center_width, 32, "doomed", "", 32).setOrigin(0.5).setTint(this.primaryColor)
+        this.temporaryHelpText = this.add.bitmapText(this.center_width, this.height - 120, "doomed", "", 24).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(1, 2, this.tertiaryColor, 0.7);
+        this.currentCardHelp = this.add.bitmapText(this.center_width, 32, "doomed", this.registry.get("name"), 32).setOrigin(0.5).setTint(this.primaryColor)
         this.blockAmmo = this.add.sprite(190, this.height - 32, "block").setOrigin(0.5).setScale(1.2, 0.8).setTint(this.primaryColor)
         this.ammoText = this.add.bitmapText(190, this.height - 64, "doomed", this.player.ammo, 28).setOrigin(0.5).setTint(this.primaryColor);
         this.ammoTextHelp = this.add.bitmapText(190, this.height - 24, "doomed", "AMMO", 14).setOrigin(0.5).setTint(this.primaryColor);
@@ -118,9 +119,23 @@ export default class Game extends Phaser.Scene {
 
     }
 
-    resolveCard (card) {
+    showtemporaryHelpText(message) {
+        this.temporaryHelpText.setText(message);
 
-        card.resolve()
+        this.tweens.add({
+            targets: [this.temporaryHelpText],
+            duration: 200,
+            repeat: 10,
+            alpha: {from: 0.8, to: 1},
+            onComplete: () =>{
+                this.temporaryHelpText.setText("");
+            }
+        })
+    }
+
+    resolveCard (card, pointer) {
+
+        card.resolve(pointer)
         if (card.resolved) {
             this.totalResolved++;
             this.playAudio("flop")
@@ -179,8 +194,8 @@ export default class Game extends Phaser.Scene {
         });
     }
 
-    playAudio (key) {
-        this.audios[key].play({volume: 0.7});
+    playAudio (key, volume = 0.7) {
+        this.audios[key].play({volume});
     }
 
     playRandom(key) {
@@ -239,7 +254,7 @@ export default class Game extends Phaser.Scene {
 
     gameOver () {
         // this.theme.stop();
-        this.playAudio("death")
+        this.game.sound.stopAll();
         this.scene.start("outro", { next: "underwater", name: "STAGE", number: this.number + 1 });
     }
 
@@ -276,7 +291,7 @@ export default class Game extends Phaser.Scene {
         if (this.player.armor > 900) return;
         const armor = +this.registry.get("armor");
         const armorToAdd = armor + points > 0 ? points : 0;
-        console.log("Armor points to add: ", armorToAdd)
+
         this.player.armor = armorToAdd;
         this.registry.set("armor", armorToAdd);
         this.armorText.setText(armor + "%");
@@ -286,5 +301,10 @@ export default class Game extends Phaser.Scene {
             repeat: 5,
             scale: {from: 1.2, to: 1}
         })
+    }
+
+    updateWeapons (weapons) {
+
+        this.registry.set("weapons", weapons);
     }
 }

@@ -11,7 +11,7 @@ export default class Bootloader extends Phaser.Scene {
             "progress",
             function (value) {
                 this.progressBar.clear();
-                this.progressBar.fillStyle(0x88d24c, 1);
+                this.progressBar.fillStyle(0xffffff, 1);
                 this.progressBar.fillRect(
                     this.cameras.main.width / 4,
                     this.cameras.main.height / 2 - 16,
@@ -65,9 +65,7 @@ export default class Bootloader extends Phaser.Scene {
         // this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
 
         this.generateColors();
-        this.registry.set("ammo", 0);
-        this.registry.set("health", 100);
-        this.registry.set("armor", 0);
+
     }
 
     create () {
@@ -82,7 +80,7 @@ export default class Bootloader extends Phaser.Scene {
 
     createBars () {
         this.loadBar = this.add.graphics();
-        this.loadBar.fillStyle(0x008483, 1);
+        this.loadBar.fillStyle(0x000000, 1);
         this.loadBar.fillRect(
             this.cameras.main.width / 4 - 2,
             this.cameras.main.height / 2 - 18,

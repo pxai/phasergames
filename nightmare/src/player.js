@@ -10,12 +10,20 @@ export default class Player {
     }
 
     init () {
-        this.weapons = {
-            "fist": new Fist(), 
-            "gun": new Gun(), "shotgun": null, "minigun": null, 
-            "bfg": null, "rocketlauncher": null, "chainsaw": null
+        const weapons = this.scene.registry.get("weapons");
+
+        if (weapons === null) {
+            this.weapons = {
+                "fist": new Fist(), 
+                "gun": new Gun(), "shotgun": null, "minigun": null, 
+                "bfg": null, "rocketlauncher": null, "chainsaw": null
+            }
+            this.scene.updateWeapons(this.weapons);
+        } else {
+            this.weapons = this.scene.registry.get("weapons");
         }
-        this.currentWeapon = this.weapons["fist"];
+
+        this.currentWeapon = this.weapons["gun"];
 
         this.cards = [];
     }
@@ -54,16 +62,18 @@ export default class Player {
             this.weapons[weapon.name].ammo += weapon.ammo;
         } else {
             this.weapons[weapon.name] = weapon;
+            this.scene.updateWeapons(this.weapons);
         }
         this.currentWeapon = this.weapons[weapon.name];
     }
 
     shoot (range) {
-        if (this.currentWeapon.ammo === 0) {
-            this.currentWeapon = this.weapons["gun"].ammo > 0 ? this.weapons["gun"] : this.weapons["fist"];
-        }
-        console.log("Play! ", this.currentWeapon.name)
+        if (this.ammo < this.currentWeapon.needed) {
+            this.currentWeapon = this.ammo === 0 ? this.weapons["fist"] : this.weapons["gun"];
+        } 
+
         this.scene.playAudio(this.currentWeapon.name)
+        this.scene.updateAmmo(-this.currentWeapon.needed);
         return this.currentWeapon.shoot(range);
     }
 }

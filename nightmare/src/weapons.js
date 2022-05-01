@@ -46,37 +46,37 @@ export class Chainsaw extends Weapon {
 }
 
 export class Gun extends Weapon {
-    constructor (name="gun", ammo = 20, needed = 1, damage = 2) {
+    constructor (name="gun", ammo = 10, needed = 1, damage = 2) {
         super(name, ammo, needed, damage);
     }
 }
 
 export class Shotgun extends Weapon {
-    constructor (name="shotgun", ammo = 10, needed = 2, damage = 10) {
+    constructor (name="shotgun", ammo = 8, needed = 2, damage = 10) {
         super(name, ammo, needed, damage);
     }
 }
 
 export class Minigun extends Weapon {
-    constructor (name="minigun", ammo = 30, needed = 1, damage = 1, range = 10) {
+    constructor (name="minigun", ammo = 10, needed = 1, damage = 1, range = 10) {
         super(name, ammo, needed, damage);
     }
 }
 
 export class Plasma extends Weapon {
-    constructor (name="plasma", ammo = 30, needed = 2, damage = 2, range = 10) {
+    constructor (name="plasma", ammo = 10, needed = 2, damage = 2, range = 10) {
         super(name, ammo, needed, damage);
     }
 }
 
 export class RocketLauncher extends Weapon {
-    constructor (name="rocketlauncher", ammo = 5, needed = 4, damage = 20, range = 10) {
+    constructor (name="rocketlauncher", ammo = 8, needed = 4, damage = 20, range = 10) {
         super(name, ammo, needed, damage);
     }
 }
 
 export class BFG extends Weapon {
-    constructor (name="bfg", ammo = 5, needed = 8, damage = 40, range = 10) {
+    constructor (name="bfg", ammo = 16, needed = 8, damage = 40, range = 10) {
         super(name, ammo, needed, damage);
     }
 }

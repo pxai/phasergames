@@ -1,3 +1,6 @@
+import { Particle } from "./particle";
+import HealthBar from "./health_bar";
+
 export default class Card extends Phaser.GameObjects.Container {
     constructor (scene, x, y, tile, index = 0) {
         super(scene, x, y) //"cards", index);
@@ -14,6 +17,7 @@ export default class Card extends Phaser.GameObjects.Container {
         this.add(this.card)
         this.init();
         this.addListeners();
+        this.healthBar = new HealthBar(this.scene, this, 64, 64, 100);
         this.resolved = false;
     }
 
@@ -63,9 +67,9 @@ export default class Card extends Phaser.GameObjects.Container {
 
     addListeners () {
         this.card.setInteractive();
-        this.card.on("pointerdown", () => {
+        this.card.on("pointerdown", (pointer) => {
             if (this.canApply()) {
-                this.scene.resolveCard(this);
+                this.scene.resolveCard(this, pointer);
             } else {
                 this.scene.setForbiddenCursor();
             }
@@ -90,7 +94,7 @@ export default class Card extends Phaser.GameObjects.Container {
         });
     }
 
-    resolve () {
+    resolve (pointer) {
        // this.removeCardImage();
         switch (this.tile.name) {
             case "empty": this.resolveEmpty(); break;
@@ -113,8 +117,8 @@ export default class Card extends Phaser.GameObjects.Container {
             case "knight":
             case "mancubus":
             case "cyberdemon":
-                this.resolveFoe(); break;
-            default: break;
+                this.resolveFoe(pointer); break;
+            default: this.resolveEmpty(); break;
         }
     }
 
@@ -147,16 +151,19 @@ export default class Card extends Phaser.GameObjects.Container {
 
     resolveWeapon () {
         this.scene.playAudio("weapon");
+        this.scene.showtemporaryHelpText("Hit numbers [1..7] to change weapon")
         this.cardImage.setVisible(false);
         this.scene.player.pickWeapon(this.tile.weapon);
+        this.scene.updateAmmo(this.tile.weapon.ammo)
         this.scene.weaponImage.setTexture(this.tile.weapon.name)
         this.resolved = true;
     }
 
-    resolveFoe () {
+    resolveFoe (pointer) {
         const damage = this.scene.player.shoot();
         this.tile.foe.health -= damage;
 
+        this.addDamageEffect(pointer, damage);
        // console.log("REsolve foe", this.tile.foe, damage, this.tile.foe.health)
         this.scene.player.takeDamage(this.tile.foe.damage)
 
@@ -165,6 +172,28 @@ export default class Card extends Phaser.GameObjects.Container {
             this.cardImage.setVisible(false);
             this.resolved = true;
         }
+    }
+
+    addDamageEffect(pointer, damage) {
+        this.scene.tweens.add({
+            targets: [this.card],
+            duration: 100,
+            repeat: 5,
+            scale: { from: 1.1, to: 1 },
+            alpha: { from: 0.7, to: 1}
+        })
+
+        //this.healthBar.decrease(damage)
+        /*this.scene.tweens.add({
+          targets: this.healthBar.bar,
+          duration: 1000,
+          alpha: {
+            from: 1,
+            to: 0
+          },
+        });*/
+
+        Array(20).fill(0).forEach((_,i) => new Particle(this.scene, pointer.worldX, pointer.worldY, 0x000000));
     }
 
     resolveExit () {
