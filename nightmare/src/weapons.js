@@ -5,6 +5,7 @@ class Weapon {
         this.needed = needed;
         this.damage = damage;
         this.range = range;
+        this.sprite = name;
         this.acc = 0;
     }
 
@@ -12,7 +13,7 @@ class Weapon {
         if (this.ammo > 0) {
             --this.ammo;
 
-            return this.damage - (range - this.range);
+            return this.damage; //- (range - this.range);
         }
 
         return 0;
@@ -70,6 +71,12 @@ export class Plasma extends Weapon {
 
 export class RocketLauncher extends Weapon {
     constructor (name="rocketlauncher", ammo = 5, needed = 4, damage = 20, range = 10) {
+        super(name, ammo, needed, damage);
+    }
+}
+
+export class BFG extends Weapon {
+    constructor (name="bfg", ammo = 5, needed = 8, damage = 40, range = 10) {
         super(name, ammo, needed, damage);
     }
 }

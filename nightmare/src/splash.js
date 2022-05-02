@@ -18,7 +18,7 @@ export default class Splash extends Phaser.Scene {
         this.center_height = this.height / 2;
 
         this.cameras.main.setBackgroundColor(this.secondaryColor - 0x2f2f2f);
-        this.showLogo();        ;
+        this.showTitle();
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
         this.addStartButton();
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
@@ -28,8 +28,29 @@ export default class Splash extends Phaser.Scene {
             this.sound.add(Phaser.Math.RND.pick(sounds)).play();
         })
 
+        this.showTitle();
         this.loadAudios();
     }
+
+    showTitle() {
+        "NightmarE".split("").forEach((letter, i) => {
+            this.time.delayedCall(50 * (i+1) + 800,
+                () => {
+                    this.playAudioRandomly("gun")
+                    //if (Phaser.Math.Between(0, 5) > 2) this.playAudioRandomly("stone")
+                    let text = this.add.bitmapText(100 * (i+1), 150, "doom", letter, 170).setTint(this.primaryColor).setOrigin(0.5).setDropShadow(4, 6, this.tertiaryColor, 0.9)
+                 },
+                null,
+                this
+            );
+        })
+    }
+
+    playAudioRandomly(key) {
+        const volume = Phaser.Math.Between(0.8, 1);
+        const rate = 1; // Phaser.Math.Between(0.9, 1);
+        this.sound.add(key).play({volume, rate});
+      }
 
     startGame () {
         if (this.theme) this.theme.stop();
@@ -79,9 +100,9 @@ export default class Splash extends Phaser.Scene {
     }
 
     showInstructions () {
-        this.add.bitmapText(this.center_width, 450, "doom", "WASD/Arrows: move", 30).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(2, 3, this.tertiaryColor, 0.7); ;
-        this.add.bitmapText(this.center_width, 500, "doom", "SPACE: track beam", 30).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(2, 3, this.tertiaryColor, 0.7); ;
-        this.add.bitmapText(this.center_width, 550, "doom", "B: shoot coins", 30).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(2, 3, this.tertiaryColor, 0.7); ;
+        this.add.bitmapText(this.center_width, 350, "doom", "Clear the stages!", 30).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(2, 3, this.tertiaryColor, 0.7); ;
+
+        this.add.bitmapText(this.center_width, 450, "doom", "Use the mouse", 30).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(2, 3, this.tertiaryColor, 0.7); ;
         this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.5).setTint(this.primaryColor);
         this.add.bitmapText(this.center_width + 40, 620, "doom", "By PELLO", 15).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(2, 3, this.tertiaryColor, 0.7); ;
         this.tweens.add({

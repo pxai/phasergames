@@ -1,25 +1,51 @@
-import { Fist } from "./weapons";
+import { Fist, Gun, Shotgun, Minigun, Chainsaw, RocketLauncher, BFG } from "./weapons";
 
 export default class Player {
-    constructor (scene) {
+    constructor (scene, health, ammo, armor) {
         this.scene = scene;
         this.init();
+        this.health = health;
+        this.ammo = ammo;
+        this.armor = armor;
     }
 
     init () {
         this.weapons = {
             "fist": new Fist(), 
-            "gun": null, "shotgun": null, "minigun": null, 
-            "plasma": null, "rocketlauncher": null, "chainsaw": null
+            "gun": new Gun(), "shotgun": null, "minigun": null, 
+            "bfg": null, "rocketlauncher": null, "chainsaw": null
         }
         this.currentWeapon = this.weapons["fist"];
-        this.health = 100;
-        this.shield = 100;
+
         this.cards = [];
     }
 
     pickCard () {
         this.currentWeapon.addCard()
+    }
+
+    setWeapon (name) {
+        if (this.weapons[name] !== null) {
+            this.currentWeapon = this.weapons[name];
+            return true;
+        }
+
+        this.currentWeapon = this.weapons["fist"];
+        return false;
+
+    }
+    
+    pickWeapon (weapon) {
+        if (this.weapons[weapon.name] !== null) {
+            // then pick ammo
+            console.log("Added ammo: ", weapon.ammo, this.weapons)
+            this.weapons[weapon.name].ammo += weapon.ammo;
+
+        } else {
+            console.log("Added weapon: ", weapon, this.weapons)
+            this.weapons[weapon.name] = weapon;
+
+        }
     }
 
     shoot (range) {

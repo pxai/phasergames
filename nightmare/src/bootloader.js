@@ -25,11 +25,32 @@ export default class Bootloader extends Phaser.Scene {
             this.scene.start("splash");
         }, this);
 
-        /* Array(7).fill(0).forEach((_,i) => {
-            this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
-        }); */
+        // CARDS
+        this.load.image("ammo", "assets/images/ammo.png");
+        this.load.image("health", "assets/images/health.png");
+        this.load.image("armor", "assets/images/armor.png");
+        this.load.image("exit", "assets/images/exit.png");
+        this.load.image("gun", "assets/images/gun.png");
+        this.load.image("shotgun", "assets/images/shotgun.png");
+        this.load.image("minigun", "assets/images/minigun.png");
+        this.load.image("rocketlauncher", "assets/images/rocketlauncher.png");
+        this.load.image("bfg", "assets/images/bfg.png");
+        this.load.image("chainsaw", "assets/images/chainsaw.png");
+
+        // Foes
+        this.load.image("grunt", "assets/images/grunt.png");
+        this.load.image("imp", "assets/images/imp.png");
+        this.load.image("shotgun_guy", "assets/images/shotgun_guy.png");
+        this.load.image("minigun_guy", "assets/images/minigun_guy.png");
+        this.load.image("demon", "assets/images/demon.png");
+        this.load.image("cacodemon", "assets/images/cacodemon.png");
+        this.load.image("knight", "assets/images/knight.png");
+        this.load.image("mancubus", "assets/images/mancubus.png");
+        this.load.image("cyberdemon", "assets/images/cyberdemon.png");
+
 
         this.load.image("pello", "assets/images/pello.png");
+        this.load.image("block", "assets/images/block.png");
         this.load.image("forbidden", "assets/images/forbidden.png");
         this.load.image("pick", "assets/images/pick.png");
         sounds.forEach(sound => this.load.audio(sound, `assets/sounds/${sound}.mp3`));
@@ -41,9 +62,9 @@ export default class Bootloader extends Phaser.Scene {
         // this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
 
         this.generateColors();
-        this.registry.set("score", 0);
-        this.registry.set("coins", 0);
-        this.registry.set("hull", 10);
+        this.registry.set("ammo", 0);
+        this.registry.set("health", 10);
+        this.registry.set("armor", 0);
     }
 
     create () {
