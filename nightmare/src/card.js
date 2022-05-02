@@ -91,8 +91,7 @@ export default class Card extends Phaser.GameObjects.Container {
     }
 
     resolve () {
-        console.log("Name? ", this.tile.name)
-        this.removeCardImage();
+       // this.removeCardImage();
         switch (this.tile.name) {
             case "empty": this.resolveEmpty(); break;
             case "ammo": this.resolveAmmo(); break;
@@ -120,52 +119,58 @@ export default class Card extends Phaser.GameObjects.Container {
     }
 
     resolveEmpty () {
-        console.log("REsolve emtpy")
+        this.scene.playAudio("blip");
         this.scene.updateAmmo(1);
         this.resolved = true;
     }
 
     resolveAmmo () {
+        this.scene.playAudio("pick");
         this.cardImage.setVisible(false);
-        console.log("REsolve ammo", this.tile.ammo)
         this.scene.updateAmmo(this.tile.ammo.amount);
         this.resolved = true;
     }
 
     resolveHealth () {
+        this.scene.playAudio("pick");
         this.cardImage.setVisible(false);
-        console.log("REsolve health", this.tile.health)
         this.scene.updateHealth(this.tile.health);
         this.resolved = true;
     }
 
     resolveArmor () {
+        this.scene.playAudio("pick");
         this.cardImage.setVisible(false);
-        console.log("REsolve armor", this.tile.armor)
         this.scene.updateArmor(this.tile.armor);
         this.resolved = true;
     }
 
     resolveWeapon () {
+        this.scene.playAudio("weapon");
         this.cardImage.setVisible(false);
-        console.log("REsolve weapon", this.tile.weapon.name)
         this.scene.player.pickWeapon(this.tile.weapon);
         this.scene.weaponImage.setTexture(this.tile.weapon.name)
         this.resolved = true;
     }
 
     resolveFoe () {
-        console.log("REsolve foe", this.tile.foe.name)
+        const damage = this.scene.player.shoot();
+        this.tile.foe.health -= damage;
+
+       // console.log("REsolve foe", this.tile.foe, damage, this.tile.foe.health)
+        this.scene.player.takeDamage(this.tile.foe.damage)
 
         if (this.tile.foe.health <= 0) {
+         //   console.log("FOE KILLED!")
             this.cardImage.setVisible(false);
             this.resolved = true;
         }
     }
 
     resolveExit () {
+        // TODO: take damage!
+        this.scene.playAudio("teleport");
         this.cardImage.setVisible(false);
-        console.log("REsolve exit", this.tile.name)
         this.scene.time.delayedCall(1000, () => { this.scene.finishScene()}, null, this)
         this.resolved = true;
     }

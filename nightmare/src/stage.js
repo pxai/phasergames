@@ -26,7 +26,6 @@ export default class Stage {
 
     generate(x, y) {
         const points = Phaser.Math.Between(0, 100);
-        console.log(points)
         //const foe = Phaser.Math.RND.pick([ "grunt", "shotgun_guy","grunt", "shotgun_guy","grunt", "shotgun_guy", "minigun_guy", "minigun_guy", "imp", "imp", "imp", "demon", "cacodemon", "knight", "mancubus", "cyberdemon"])
         //return new FoeTile(x, y, foe)
 

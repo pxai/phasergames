@@ -63,7 +63,6 @@ export class WeaponTile extends Tile {
         super(x, y, name)
         this.createWeapon(name)
         this.sprite = this.name = this.weapon.sprite;
-        console.log("Created: ", this.sprite)
     }
 
     createWeapon (name) {
@@ -94,7 +93,6 @@ export class FoeTile extends Tile {
         super(x, y, name)
         this.createFoe(name)
         this.sprite = this.name = this.foe.sprite;
-        console.log("Created foe: ", this.foe)
     }
 
     createFoe (name) {

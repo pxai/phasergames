@@ -37,8 +37,9 @@ export default class Game extends Phaser.Scene {
         this.addStage();
         this.addStatus();
         this.setKeys();
-        // this.loadAudios();
+        this.loadAudios();
         // this.playMusic();
+        this.playAudio("door_open")
     }
 
     setKeys() {
@@ -86,6 +87,7 @@ export default class Game extends Phaser.Scene {
                     y: {from: 64, to: 128 + (y * 128)},
                     onComplete: () => {
                         this.tiles[x][y].card.play("flip", true);
+                        this.playAudio("flip")
                     }
                 })
             }
@@ -107,7 +109,7 @@ export default class Game extends Phaser.Scene {
         this.weaponTextHelp = this.add.bitmapText(190 + 120 + 120, this.height - 24, "doomed", "WEAPON", 14).setOrigin(0.5).setTint(this.primaryColor);
         this.weaponImage = this.add.sprite(190 + 120 + 120, this.height - 48, "gun").setOrigin(0.5).setTint(this.primaryColor).setScale(0.5);
  
-        this.blockFace = this.add.sprite(190 + 120 + 120 + 110, this.height - 32, "block").setOrigin(0.5).setScale(1, 0.8).setTint(this.primaryColor)
+        this.blockFace = this.add.sprite(190 + 120 + 120 + 110, this.height - 48, "doomguy").setOrigin(0.5).setScale(0.6).setTint(this.primaryColor)
         this.blockArmor = this.add.sprite(190 + 120 + 120 + 96 + 124, this.height - 32, "block").setOrigin(0.5).setScale(1.2, 0.8).setTint(this.primaryColor)
         this.armorText = this.add.bitmapText(190 + 120 + 120 + 96 + 124, this.height - 64, "doomed", this.player.armor, 30).setOrigin(0.5).setTint(this.primaryColor);
         this.armorTextHelp = this.add.bitmapText(190 + 120 + 120 + 96 + 124, this.height - 24, "doomed", "ARMOR", 14).setOrigin(0.5).setTint(this.primaryColor);
@@ -117,27 +119,30 @@ export default class Game extends Phaser.Scene {
     }
 
     resolveCard (card) {
-        this.totalResolved++;
 
-        card.resolve();
-
-        this.currentCard = card;
-        card.card.playReverse("flip", true)
-        const destinyX = this.width - 100;
-        const destinyY = this.height - 128;
-        card.removeInteractive();
-
-        this.tweens.add({
-            targets: [card],
-            x: {from: card.x, to: destinyX},
-            y: {from: card.y, to: destinyY},
-            duration: 500
-        })
-
-        if (this.totalResolved === this.stage.length) {
-            console.log("Stage resolved!!", this.totalResolved, this.stage.length)
-            this.time.delayedCall(1000, () => { this.finishScene() }, null, this);
+        card.resolve()
+        if (card.resolved) {
+            this.totalResolved++;
+            this.playAudio("flop")
+            this.currentCard = card;
+            card.card.playReverse("flip", true)
+            const destinyX = this.width - 100;
+            const destinyY = this.height - 128;
+            card.removeInteractive();
+    
+            this.tweens.add({
+                targets: [card],
+                x: {from: card.x, to: destinyX},
+                y: {from: card.y, to: destinyY},
+                duration: 500
+            })
+    
+            if (this.totalResolved === this.stage.length) {
+                this.playAudio("door_close")
+                this.time.delayedCall(1000, () => { this.finishScene() }, null, this);
+            }
         }
+
     }
 
     addDeck() {
@@ -178,6 +183,15 @@ export default class Game extends Phaser.Scene {
         this.audios[key].play({volume: 0.7});
     }
 
+    playRandom(key) {
+        this.audios[key].play({
+          rate: Phaser.Math.Between(1, 1.5),
+          detune: Phaser.Math.Between(-1000, 1000),
+          volume: Phaser.Math.Between(0.5, 0.9),
+          delay: 0
+        });
+      }
+
     playMusic (theme = "game") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
@@ -194,14 +208,6 @@ export default class Game extends Phaser.Scene {
 
     update () {
         this.updatePointer();
-        if (this.pointer.isDown) {
-            if (this.pointer.rightButtonDown()) {
-                console.log("Right clicky")
-            } else {
-                console.log("Left clicky")
-            }
-    
-        }
 
         if (Phaser.Input.Keyboard.JustDown(this.ONE)) {
             this.player.setWeapon("fist");
@@ -231,9 +237,16 @@ export default class Game extends Phaser.Scene {
         this.scene.start("transition", { next: "underwater", name: "STAGE", number: this.number + 1 });
     }
 
+    gameOver () {
+        // this.theme.stop();
+        this.playAudio("death")
+        this.scene.start("outro", { next: "underwater", name: "STAGE", number: this.number + 1 });
+    }
+
     updateHealth (points = 0) {
         const currentHealth = +this.registry.get("health");
         const pointsToAdd = (currentHealth + points) > 100 ? 100 - currentHealth : points;
+
         const health = +this.registry.get("health") + pointsToAdd;
         this.player.health = health;
         this.registry.set("health", health);
@@ -261,9 +274,11 @@ export default class Game extends Phaser.Scene {
 
     updateArmor (points = 0) {
         if (this.player.armor > 900) return;
-        const armor = +this.registry.get("armor") + points;
-        this.player.armor = armor;
-        this.registry.set("armor", armor);
+        const armor = +this.registry.get("armor");
+        const armorToAdd = armor + points > 0 ? points : 0;
+        console.log("Armor points to add: ", armorToAdd)
+        this.player.armor = armorToAdd;
+        this.registry.set("armor", armorToAdd);
         this.armorText.setText(armor + "%");
         this.tweens.add({
             targets: [this.armorText],

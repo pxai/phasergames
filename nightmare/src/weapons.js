@@ -9,7 +9,7 @@ class Weapon {
         this.acc = 0;
     }
 
-    shoot(range) {
+    shoot() {
         if (this.ammo > 0) {
             --this.ammo;
 
@@ -35,7 +35,7 @@ export class Fist extends Weapon {
     }
 
     shoot () {
-        return range === 0 ? this.damage : 0;
+        return this.damage;
     }
 }
 

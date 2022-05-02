@@ -48,6 +48,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image("mancubus", "assets/images/mancubus.png");
         this.load.image("cyberdemon", "assets/images/cyberdemon.png");
 
+        this.load.image("doomguy", "assets/images/doomguy.png");
 
         this.load.image("pello", "assets/images/pello.png");
         this.load.image("block", "assets/images/block.png");
@@ -63,7 +64,7 @@ export default class Bootloader extends Phaser.Scene {
 
         this.generateColors();
         this.registry.set("ammo", 0);
-        this.registry.set("health", 10);
+        this.registry.set("health", 100);
         this.registry.set("armor", 0);
     }
 

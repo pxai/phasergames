@@ -24,5 +24,8 @@ export default [
     "swtich_off",
     "swtich_on",
     "teleport",
-    "weapon"
+    "weapon",
+    "flip",
+    "flop",
+    "fist"
 ];

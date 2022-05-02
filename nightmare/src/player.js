@@ -34,21 +34,34 @@ export default class Player {
         return false;
 
     }
+
+    takeDamage(damage) {
+
+        const totalDamage = this.armor - damage;
+       // console.log("Player takes damage! Armor: ", this.armor, " Damage: ",  damage, " Total: ", totalDamage)
+        this.scene.updateHealth(totalDamage);
+        this.scene.updateArmor(totalDamage)
+
+        if (this.health <= 0) {
+            this.scene.gameOver();
+        }
+    }
     
     pickWeapon (weapon) {
         if (this.weapons[weapon.name] !== null) {
             // then pick ammo
-            console.log("Added ammo: ", weapon.ammo, this.weapons)
+           // console.log("Added ammo: ", weapon.ammo, this.weapons)
             this.weapons[weapon.name].ammo += weapon.ammo;
 
         } else {
-            console.log("Added weapon: ", weapon, this.weapons)
             this.weapons[weapon.name] = weapon;
 
         }
     }
 
     shoot (range) {
+        console.log("Play! ", this.currentWeapon.name)
+        this.scene.playAudio(this.currentWeapon.name)
         return this.currentWeapon.shoot(range);
     }
 }
