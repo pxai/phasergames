@@ -32,6 +32,7 @@ export default class Splash extends Phaser.Scene {
         this.loadAudios();
     }
 
+
     showTitle() {
         "NightmarE".split("").forEach((letter, i) => {
             this.time.delayedCall(50 * (i+1) + 800,

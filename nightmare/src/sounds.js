@@ -27,5 +27,6 @@ export default [
     "weapon",
     "flip",
     "flop",
-    "fist"
+    "fist",
+    "pain"
 ];

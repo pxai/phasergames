@@ -41,7 +41,7 @@ export default class Player {
        // console.log("Player takes damage! Armor: ", this.armor, " Damage: ",  damage, " Total: ", totalDamage)
         this.scene.updateHealth(totalDamage);
         this.scene.updateArmor(totalDamage)
-
+        if (totalDamage < 0) { this.scene.playAudio("pain")}
         if (this.health <= 0) {
             this.scene.gameOver();
         }
@@ -52,14 +52,16 @@ export default class Player {
             // then pick ammo
            // console.log("Added ammo: ", weapon.ammo, this.weapons)
             this.weapons[weapon.name].ammo += weapon.ammo;
-
         } else {
             this.weapons[weapon.name] = weapon;
-
         }
+        this.currentWeapon = this.weapons[weapon.name];
     }
 
     shoot (range) {
+        if (this.currentWeapon.ammo === 0) {
+            this.currentWeapon = this.weapons["gun"].ammo > 0 ? this.weapons["gun"] : this.weapons["fist"];
+        }
         console.log("Play! ", this.currentWeapon.name)
         this.scene.playAudio(this.currentWeapon.name)
         return this.currentWeapon.shoot(range);
