@@ -20,6 +20,7 @@ export default class Outro extends Phaser.Scene {
             "and sign up on Twitter",
             "But that is another story..."
         ];
+        this.game.sound.stopAll();
         this.generateColors();
         this.showHistory();
         this.addStartButton();

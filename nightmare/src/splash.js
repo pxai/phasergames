@@ -22,7 +22,7 @@ export default class Splash extends Phaser.Scene {
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
         this.addStartButton();
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
-        // this.playMusic();
+        this.playMusic();
         // this.showPlayer();
         Array(5).fill().forEach(i => {
             this.sound.add(Phaser.Math.RND.pick(sounds)).play();
@@ -54,7 +54,7 @@ export default class Splash extends Phaser.Scene {
       }
 
     startGame () {
-        if (this.theme) this.theme.stop();
+        //if (this.theme) this.theme.stop();
         this.scene.start("transition", { next: "game", name: "STAGE", number: 1, time: 30 });
     }
 
@@ -86,12 +86,13 @@ export default class Splash extends Phaser.Scene {
         });
     }
 
-    playMusic (theme = "splash") {
+    playMusic () {
+        const theme = "music" + Phaser.Math.Between(0, 17);
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
             mute: false,
-            volume: 1,
+            volume: 0.6,
             rate: 1,
             detune: 0,
             seek: 0,
