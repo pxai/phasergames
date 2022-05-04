@@ -11,6 +11,7 @@ export default class Player {
 
     init () {
         const weapons = this.scene.registry.get("weapons");
+        const currentWeapon = this.scene.registry.get("currentWeapon") || "gun";
 
         if (weapons === null) {
             this.weapons = {
@@ -23,7 +24,7 @@ export default class Player {
             this.weapons = this.scene.registry.get("weapons");
         }
 
-        this.currentWeapon = this.weapons["gun"];
+        this.currentWeapon = this.weapons[currentWeapon];
 
         this.cards = [];
     }
@@ -34,11 +35,13 @@ export default class Player {
 
     setWeapon (name) {
         if (this.weapons[name] !== null) {
+            this.scene.registry.set("currentWeapon", name)
             this.currentWeapon = this.weapons[name];
             return true;
         }
 
         this.currentWeapon = this.weapons["fist"];
+        this.scene.registry.set("currentWeapon", "fist")
         return false;
 
     }

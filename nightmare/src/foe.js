@@ -22,6 +22,10 @@ export class Grunt {
         this.ammo = new Ammo("gun", 10);
         this.sprite = name;
     }
+
+    get info () {
+        return " Damage: " + this.damage + " Health: " + this.health;
+    }
 }
 
 export class Imp {
@@ -31,6 +35,10 @@ export class Imp {
         this.name = name;
         this.ammo = null;
         this.sprite = name;
+    }
+
+    get info () {
+        return " Damage: " + this.damage + " Health: " + this.health;
     }
 }
 
@@ -42,6 +50,10 @@ export class ShotgunGuy {
         this.ammo = new Ammo("gun", 10);
         this.sprite = name;
     }
+
+    get info () {
+        return " Damage: " + this.damage + " Health: " + this.health;
+    }
 }
 
 export class MinigunGuy {
@@ -51,6 +63,10 @@ export class MinigunGuy {
         this.name = name;
         this.ammo = new Ammo("gun", 10);
         this.sprite = name;
+    }
+
+    get info () {
+        return " Damage: " + this.damage + " Health: " + this.health;
     }
 }
 
@@ -62,6 +78,10 @@ export class Knight {
         this.ammo = null;
         this.sprite = name;
     }
+
+    get info () {
+        return " Damage: " + this.damage + " Health: " + this.health;
+    }
 }
 
 export class Demon {
@@ -71,6 +91,10 @@ export class Demon {
         this.name = name;
         this.ammo = null;
         this.sprite = name;
+    }
+
+    get info () {
+        return " Damage: " + this.damage + " Health: " + this.health;
     }
 }
 
@@ -83,6 +107,10 @@ export class Cacodemon {
         this.ammo = null;
         this.sprite = name;
     }
+
+    get info () {
+        return " Damage: " + this.damage + " Health: " + this.health;
+    }
 }
 
 export class Mancubus {
@@ -93,6 +121,10 @@ export class Mancubus {
         this.ammo = null;
         this.sprite = name;
     }
+
+    get info () {
+        return " Damage: " + this.damage + " Health: " + this.health;
+    }
 }
 
 export class Cyberdemon {
@@ -101,5 +133,9 @@ export class Cyberdemon {
         this.damage = damage;
         this.name = name;
         this.ammo = null;
+    }
+
+    get info () {
+        return " Damage: " + this.damage + " Health: " + this.health;
     }
 }

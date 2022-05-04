@@ -3,6 +3,7 @@ import Bootloader from "./bootloader";
 import Outro from "./outro";
 import Splash from "./splash";
 import Transition from "./transition";
+import Tutorial from "./tutorial";
 import Game from "./game";
 
 const config = {
@@ -24,6 +25,7 @@ const config = {
     scene: [
         Bootloader,
         Splash,
+        Tutorial,
         Transition,
         Game,
         Outro

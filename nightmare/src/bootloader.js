@@ -57,11 +57,12 @@ export default class Bootloader extends Phaser.Scene {
         sounds.forEach(sound => this.load.audio(sound, `assets/sounds/${sound}.mp3`));
 
         Array(18).fill().forEach((_,sound) => this.load.audio(`music${sound}`, `assets/sounds/music/${sound}.mp3`));
+        Array(7).fill().forEach((_,sound) => this.load.audio(`foe_death${sound}`, `assets/sounds/foe_death${sound}.mp3`));
 
         this.load.bitmapFont("doom", "assets/fonts/doom.png", "assets/fonts/doom.xml");
         this.load.bitmapFont("doomed", "assets/fonts/doomed.png", "assets/fonts/doomed.xml");
         this.load.spritesheet("cards", "assets/images/cards.png", { frameWidth: 100, frameHeight: 128 });
-
+        this.load.spritesheet("doom_heads", "assets/images/doom_heads.png", { frameWidth: 26, frameHeight: 34 });
         // this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
 
         this.generateColors();
@@ -72,10 +73,11 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     generateColors () {
-        const primary = Phaser.Math.Between(0x010101, 0xfefefe);
+        const primary = Phaser.Math.Between(0x0515151, 0xdedede);
         this.registry.set("primaryColor", primary);
         this.registry.set("secondaryColor", 0xffffff ^ primary); //~primary
         this.registry.set("tertiaryColor", 0x000000);
+        this.registry.set("currentWeapon", "gun")
     }
 
     createBars () {

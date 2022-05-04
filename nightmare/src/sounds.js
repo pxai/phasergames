@@ -28,5 +28,12 @@ export default [
     "flip",
     "flop",
     "fist",
-    "pain"
+    "pain",
+    "foe_death0",
+    "foe_death1",
+    "foe_death2",
+    "foe_death3",
+    "foe_death4",
+    "foe_death5",
+    "foe_death6",
 ];

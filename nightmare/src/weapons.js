@@ -9,6 +9,10 @@ class Weapon {
         this.acc = 0;
     }
 
+    get info () {
+        return " Dam: " + this.damage + " - Cost: " + this.needed
+    }
+
     shoot() {
         return this.damage;
     }
@@ -52,7 +56,7 @@ export class Shotgun extends Weapon {
 }
 
 export class Minigun extends Weapon {
-    constructor (name="minigun", ammo = 0, needed = 1, damage = 2, range = 10) {
+    constructor (name="minigun", ammo = 0, needed = 1, damage = 4, range = 10) {
         super(name, ammo, needed, damage);
     }
 }

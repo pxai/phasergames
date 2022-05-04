@@ -2,7 +2,7 @@ import { Particle } from "./particle";
 import HealthBar from "./health_bar";
 
 export default class Card extends Phaser.GameObjects.Container {
-    constructor (scene, x, y, tile, index = 0) {
+    constructor (scene, x, y, tile, index = 0, listeners = true) {
         super(scene, x, y) //"cards", index);
 
         this.scene = scene;
@@ -16,7 +16,8 @@ export default class Card extends Phaser.GameObjects.Container {
         this.scene.add.existing(this.card) // Apparently mecessary if you want to animate
         this.add(this.card)
         this.init();
-        this.addListeners();
+        if (listeners)
+            this.addListeners();
         this.healthBar = new HealthBar(this.scene, this, 64, 64, 100);
         this.resolved = false;
     }
@@ -70,13 +71,14 @@ export default class Card extends Phaser.GameObjects.Container {
         this.card.on("pointerdown", (pointer) => {
             if (this.canApply()) {
                 this.scene.resolveCard(this, pointer);
+                this.scene.currentCardHelp.setText(this.tile.info)
             } else {
                 this.scene.setForbiddenCursor();
             }
         });
 
         this.card.on("pointerover", () => {
-            this.scene.currentCardHelp.setText(this.tile.name)
+            this.scene.currentCardHelp.setText(this.tile.info)
             if (this.canApply()) {
                 this.scene.setPickCursor();
                 this.card.setTint(0x3E6875);
@@ -94,14 +96,14 @@ export default class Card extends Phaser.GameObjects.Container {
         });
     }
 
-    resolve (pointer) {
+    resolve (pointer, auto) {
        // this.removeCardImage();
         switch (this.tile.name) {
             case "empty": this.resolveEmpty(); break;
             case "ammo": this.resolveAmmo(); break;
             case "health": this.resolveHealth(); break;
             case "armor": this.resolveArmor(); break;
-            case "exit": this.resolveExit(); break;
+            case "exit": this.resolveExit(auto); break;
             case "shotgun": 
             case "minigun":
             case "chainsaw":
@@ -156,6 +158,7 @@ export default class Card extends Phaser.GameObjects.Container {
         this.scene.player.pickWeapon(this.tile.weapon);
         this.scene.updateAmmo(this.tile.weapon.ammo)
         this.scene.weaponImage.setTexture(this.tile.weapon.name)
+        this.scene.registry.set("currentWeapon", this.tile.weapon.name)
         this.resolved = true;
     }
 
@@ -163,14 +166,15 @@ export default class Card extends Phaser.GameObjects.Container {
         const damage = this.scene.player.shoot();
         this.tile.foe.health -= damage;
         this.addDamageEffect(pointer, damage);
-
-        const extraDamage = ["fist", "chainsaw"].includes(this.scene.player.currentWeapon.name) ? 10 : 0;
-        this.scene.player.takeDamage(this.tile.foe.damage + extraDamage)
-
         if (this.tile.foe.health <= 0) {
-         //   console.log("FOE KILLED!")
-            this.cardImage.setVisible(false);
-            this.resolved = true;
+            //   console.log("FOE KILLED!")
+               this.scene.playAudio("foe_death"+Phaser.Math.Between(0, 6))
+               this.cardImage.setVisible(false);
+               this.resolved = true;
+        } else {
+            const extraDamage = ["fist", "chainsaw"].includes(this.scene.player.currentWeapon.name) ? 10 : 0;
+            this.scene.player.takeDamage(this.tile.foe.damage + extraDamage)
+            this.scene.updatePlayerHead();
         }
     }
 
@@ -196,12 +200,14 @@ export default class Card extends Phaser.GameObjects.Container {
         Array(20).fill(0).forEach((_,i) => new Particle(this.scene, pointer.worldX, pointer.worldY, 0x000000));
     }
 
-    resolveExit () {
+    resolveExit (auto = false) {
         // TODO: take damage!
         this.scene.playAudio("teleport");
         this.cardImage.setVisible(false);
-        this.scene.time.delayedCall(1000, () => { this.scene.finishScene()}, null, this)
-        this.resolved = true;
+        if (!auto) {
+            this.scene.time.delayedCall(1000, () => { this.scene.finishScene()}, null, this)
+        } else { /*console.log("Dont auto solve exit")*/}
+         this.resolved = true;
     }
 
 
@@ -209,7 +215,7 @@ export default class Card extends Phaser.GameObjects.Container {
         if (animation.key === "flip" && !this.resolved) {
             this.card.anims.play("white", true)
             this.card.setTint(0xffffff);
-          this.addCardImage();
+            this.addCardImage();
         }
     }
 }

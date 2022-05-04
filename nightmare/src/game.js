@@ -98,26 +98,77 @@ export default class Game extends Phaser.Scene {
     }
 
     addStatus() {
-        this.temporaryHelpText = this.add.bitmapText(this.center_width, this.height - 120, "doomed", "", 24).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(1, 2, this.tertiaryColor, 0.7);
-        this.currentCardHelp = this.add.bitmapText(this.center_width, 32, "doomed", this.registry.get("name"), 32).setOrigin(0.5).setTint(this.primaryColor)
-        this.blockAmmo = this.add.sprite(190, this.height - 32, "block").setOrigin(0.5).setScale(1.2, 0.8).setTint(this.primaryColor)
-        this.ammoText = this.add.bitmapText(190, this.height - 64, "doomed", this.player.ammo, 28).setOrigin(0.5).setTint(this.primaryColor);
-        this.ammoTextHelp = this.add.bitmapText(190, this.height - 24, "doomed", "AMMO", 14).setOrigin(0.5).setTint(this.primaryColor);
-        this.blockHeatlh = this.add.sprite(190 + 120, this.height - 32, "block").setOrigin(0.5).setScale(1.2, 0.8).setTint(this.primaryColor)
-        this.healthText = this.add.bitmapText(190 + 120, this.height - 64, "doomed", this.player.health+"%", 28).setOrigin(0.5).setTint(this.primaryColor);
-        this.healthTextHelp = this.add.bitmapText(190 + 120, this.height - 24, "doomed", "HEALTH", 14).setOrigin(0.5).setTint(this.primaryColor);
-        this.blockWeapon = this.add.sprite(190 + 120 + 120, this.height - 32, "block").setOrigin(0.5).setScale(1.2, 0.8).setTint(this.primaryColor)
+        this.temporaryHelpText = this.add.bitmapText(this.center_width, this.height - 120, "doomed", "", 24).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(1, 2, this.tertiaryColor, 0.8);
+        this.currentCardHelp = this.add.bitmapText(this.center_width, 32, "doomed", this.registry.get("name"), 26).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(1, 2, this.tertiaryColor, 0.8);
+        this.blockAmmo = this.add.sprite(190, this.height - 32, "block").setOrigin(0.5).setScale(1.2, 0.8).setTint(this.primaryColor);
+        this.ammoText = this.add.bitmapText(190, this.height - 64, "doomed", this.player.ammo, 28).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(1, 2, this.tertiaryColor, 0.8);
+        this.ammoTextHelp = this.add.bitmapText(190, this.height - 24, "doomed", "AMMO", 14).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(1, 2, this.tertiaryColor, 0.8);
+        this.blockHeatlh = this.add.sprite(190 + 120, this.height - 32, "block").setOrigin(0.5).setScale(1.2, 0.8).setTint(this.primaryColor);
+        this.healthText = this.add.bitmapText(190 + 120, this.height - 64, "doomed", this.player.health+"%", 28).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(1, 2, this.tertiaryColor, 0.8);
+        this.healthTextHelp = this.add.bitmapText(190 + 120, this.height - 24, "doomed", "HEALTH", 14).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(1, 2, this.tertiaryColor, 0.8);
+        this.blockWeapon = this.add.sprite(190 + 120 + 120, this.height - 32, "block").setOrigin(0.5).setScale(1.2, 0.8).setTint(this.primaryColor);
         //this.weaponText = this.add.bitmapText(190 + 120 + 120, this.height - 64, "doomed", "FIST", 20).setOrigin(0.5).setTint(this.primaryColor);
-        this.weaponTextHelp = this.add.bitmapText(190 + 120 + 120, this.height - 24, "doomed", "WEAPON", 14).setOrigin(0.5).setTint(this.primaryColor);
-        this.weaponImage = this.add.sprite(190 + 120 + 120, this.height - 48, "gun").setOrigin(0.5).setTint(this.primaryColor).setScale(0.5);
- 
-        this.blockFace = this.add.sprite(190 + 120 + 120 + 110, this.height - 48, "doomguy").setOrigin(0.5).setScale(0.6).setTint(this.primaryColor)
+        this.weaponTextHelp = this.add.bitmapText(190 + 120 + 120, this.height - 24, "doomed", "WEAPON", 14).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(1, 2, this.tertiaryColor, 0.8);
+        this.weaponImage = this.add.sprite(190 + 120 + 120, this.height - 48, this.registry.get("currentWeapon")).setOrigin(0.5).setTint(this.primaryColor).setScale(0.5);
+        this.addDoomguy();
         this.blockArmor = this.add.sprite(190 + 120 + 120 + 96 + 124, this.height - 32, "block").setOrigin(0.5).setScale(1.2, 0.8).setTint(this.primaryColor)
-        this.armorText = this.add.bitmapText(190 + 120 + 120 + 96 + 124, this.height - 64, "doomed", this.player.armor+"%", 30).setOrigin(0.5).setTint(this.primaryColor);
-        this.armorTextHelp = this.add.bitmapText(190 + 120 + 120 + 96 + 124, this.height - 24, "doomed", "ARMOR", 14).setOrigin(0.5).setTint(this.primaryColor);
+        this.armorText = this.add.bitmapText(190 + 120 + 120 + 96 + 124, this.height - 64, "doomed", this.player.armor+"%", 30).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(1, 2, this.tertiaryColor, 0.8);
+        this.armorTextHelp = this.add.bitmapText(190 + 120 + 120 + 96 + 124, this.height - 24, "doomed", "ARMOR", 14).setOrigin(0.5).setTint(this.primaryColor).setDropShadow(1, 2, this.tertiaryColor, 0.8);
 
-        this.blockCards = this.add.sprite(190 + 120 + 120 + 96 + 124 + 120, this.height - 32, "block").setOrigin(0.5).setScale(1.2, 0.8).setTint(this.primaryColor)
+        this.blockCards = this.add.sprite(190 + 120 + 120 + 96 + 124 + 120, this.height - 32, "block").setOrigin(0.5).setScale(1.2, 0.8).setTint(this.primaryColor);
+    }
 
+    addDoomguy () {
+        this.blockFace = this.add.sprite(190 + 120 + 120 + 110, this.height - 48, "doom_heads").setOrigin(0.5).setScale(2.3).setTint(this.primaryColor)
+        this.anims.create({
+            key: "doomguy100",
+            frames: this.anims.generateFrameNumbers("doom_heads", { frames: [ 1, 2, 1, 0 ] }),
+            frameRate: 1,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: "doomguy80",
+            frames: this.anims.generateFrameNumbers("doom_heads", { frames: [ 10, 11, 10, 9 ] }),
+            frameRate: 1,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: "doomguy50",
+            frames: this.anims.generateFrameNumbers("doom_heads", { frames: [ 19, 20, 19, 18 ] }),
+            frameRate: 1,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: "doomguy25",
+            frames: this.anims.generateFrameNumbers("doom_heads", { frames: [ 28, 29, 28, 27 ] }),
+            frameRate: 1,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: "doomguy10",
+            frames: this.anims.generateFrameNumbers("doom_heads", { frames: [ 37, 38, 37, 36 ] }),
+            frameRate: 1,
+            repeat: -1
+        });
+        this.blockFace.anims.play("doomguy100", true)
+    }
+
+    updatePlayerHead() {
+        if (this.player.health >= 80) {
+            this.blockFace.anims.play("doomguy100", true)
+        } else if (this.player.health >= 50 && this.player.health < 80) {
+            this.blockFace.anims.play("doomguy80", true)
+        } else if (this.player.health >= 25 && this.player.health < 50) {
+            this.blockFace.anims.play("doomguy50", true)
+        } else if (this.player.health >= 10 && this.player.health < 25) {
+            this.blockFace.anims.play("doomguy25", true)
+        } else if (this.player.health < 10) {
+            this.blockFace.anims.play("doomguy10", true)
+        }
     }
 
     showtemporaryHelpText(message) {
@@ -134,9 +185,9 @@ export default class Game extends Phaser.Scene {
         })
     }
 
-    resolveCard (card, pointer) {
+    resolveCard (card, pointer, auto = false) {
 
-        card.resolve(pointer)
+        card.resolve(pointer, auto)
         if (card.resolved) {
             this.totalResolved++;
             this.playAudio("flop")
@@ -159,6 +210,33 @@ export default class Game extends Phaser.Scene {
             }
         }
 
+        if (this.stageIsSolved()) {
+            /*console.log("Stage is solved!")*/
+            this.solveIt();
+        }
+
+    }
+
+    stageIsSolved () {
+        const isAFoe = card => card.tile.foe;
+        for (let x = 0; x < this.stage.width; x++) {
+            for (let y = 0; y < this.stage.height; y++) {
+                if (!this.tiles[x][y].resolved && isAFoe(this.tiles[x][y])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    solveIt () {
+        for (let x = 0; x < this.stage.width; x++) {
+            for (let y = 0; y < this.stage.height; y++) {
+                if (!this.tiles[x][y].resolved) {
+                    this.resolveCard(this.tiles[x][y]);
+                }
+            }
+        }
     }
 
     addDeck() {

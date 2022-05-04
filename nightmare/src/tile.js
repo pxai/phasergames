@@ -8,6 +8,8 @@ class Tile {
         this.name = name;
         this.sprite = name;
         this.sound = name;
+        this.hidden = false;
+        this._info = name.toUpperCase();
     }
 
     shoot () {
@@ -44,7 +46,10 @@ export class AmmoTile extends Tile {
     constructor (x, y, ammo, name = "ammo") {
         super(x, y, name)
         this.ammo = ammo || new Ammo("gun", 3);
+    }
 
+    get info () {
+        return this._info + " +" + this.ammo.amount;
     }
 
     shoot() {
@@ -63,6 +68,10 @@ export class WeaponTile extends Tile {
         super(x, y, name)
         this.createWeapon(name)
         this.sprite = this.name = this.weapon.sprite;
+    }
+
+    get info () {
+        return this._info + " " + this.weapon.info;
     }
 
     createWeapon (name) {
@@ -93,6 +102,10 @@ export class FoeTile extends Tile {
         super(x, y, name)
         this.createFoe(name)
         this.sprite = this.name = this.foe.sprite;
+    }
+
+    get info () {
+        return this._info  + " " + this.foe.info;
     }
 
     createFoe (name) {
@@ -128,6 +141,10 @@ export class Health extends Tile {
         this.health = Phaser.Math.RND.pick([10, 10, 30, 20, 10]);
     }
 
+    get info () {
+        return this._info  + " +" + this.health;
+    }
+
     shoot() {
         super.shoot();
         this.health = 0;
@@ -143,6 +160,10 @@ export class Armor extends Tile {
     constructor (x, y, armor = 10, name = "armor") {
         super(x, y, name)
         this.armor = armor;
+    }
+
+    get info () {
+        return this._info + " +" + this.armor;
     }
 
     shoot() {
@@ -170,6 +191,24 @@ export class Barrell extends Tile {
 
 export class Exit extends Tile {
     constructor (x, y, name = "exit") {
+        super(x, y, name)
+    }
+
+    get info () {
+        return this._info + ": optional escape.";
+    }
+
+    shoot() {
+        super.shoot();
+    }
+
+    pick() {
+        super.pick();
+    }
+}
+
+export class Switch extends Tile {
+    constructor (x, y, name = "switch") {
         super(x, y, name)
     }
 
