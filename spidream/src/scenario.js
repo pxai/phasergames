@@ -9,7 +9,8 @@ export default class Scenario {
 
         //  First, we'll create a few static bodies
         const body1 = this.scene.matter.add.rectangle(250, this.scene.height-100, 200, 32, { isStatic: true, frictionStatic: 1, label: "active_jumper",ignoreGravity: true });
-       // const body0 = this.scene.matter.add.rectangle(400, 250, 40, 40, { isStatic: false })w
+       body1.collisionFilter = { 'group': 1, 'category': 2, 'mask': 1 };
+        // const body0 = this.scene.matter.add.rectangle(400, 250, 40, 40, { isStatic: false })w
 
 
         //this.scene.matter.add.polygon(600, 100, 3, 40, { isStatic: true });

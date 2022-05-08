@@ -8,8 +8,13 @@ export default class Player {
   
       const { Body, Bodies } = Phaser.Physics.Matter.Matter; // Native Matter modules
       const { width: w, height: h } = this.sprite;
-      const mainBody = Bodies.rectangle(0, 0, w * 0.6, h, { chamfer: { radius: 10 } });
-      mainBody.label = "player";
+      this.mainBody = Bodies.rectangle(0, 0, w * 0.6, h, { chamfer: { radius: 10 } });
+      this.mainBody.label = "player";
+      this.mainBody.collisionFilter = {
+        'group': 1,
+        'category': 2,
+        'mask': 1,
+      };
       this.direction = "down";
       this.sensors = {
         top: Bodies.rectangle(0, -h * 0.5, w * 0.25, 2, { isSensor: true, label: "playerTop" }),
@@ -20,7 +25,7 @@ export default class Player {
       this.sensors.bottom.label = "player";
 
       const compoundBody = Body.create({
-        parts: [mainBody, this.sensors.bottom, this.sensors.left, this.sensors.right, this.sensors.top],
+        parts: [this.mainBody, this.sensors.bottom, this.sensors.left, this.sensors.right, this.sensors.top],
         frictionStatic: 0,
         frictionAir: 0.02,
         friction: 0.1,
@@ -115,6 +120,7 @@ export default class Player {
             this.sprite.setVelocityX(0);
         } else if (this.S.isDown) {
           this.sprite.applyForce({ x: 0, y: this.moveForce });
+          // this.mainBody.collisionFilter = { 'group': -1, 'category': 2, 'mask': 1, };
         }
           // Limit horizontal speed, without this the player's velocity would just keep increasing to
           // absurd speeds. We don't want to touch the vertical velocity though, so that we don't
@@ -158,6 +164,7 @@ export default class Player {
         if (!bodyB.label.startsWith("active") || this.spring !== null) return;
         console.log("Sensonr Up touched something!! ", bodyA, bodyB)
         this.addSpring(bodyB)
+        bodyB.collisionFilter = { 'group': -1, 'category': 2, 'mask': 0 };
         if (bodyB.isSensor) return; // We only care about collisions with physical objects
 
       }

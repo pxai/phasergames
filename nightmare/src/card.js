@@ -60,7 +60,7 @@ export default class Card extends Phaser.GameObjects.Container {
     }
 
     canApply () {
-        return true;
+        return !this.resolved;
         // This is hard because player may create islands
         /*return Math.abs(this.tile.x - this.scene.currentCard.tile.x) < 2 &&
               Math.abs(this.tile.y - this.scene.currentCard.tile.y) < 2;*/
@@ -72,23 +72,21 @@ export default class Card extends Phaser.GameObjects.Container {
             if (this.canApply()) {
                 this.scene.resolveCard(this, pointer);
                 this.scene.currentCardHelp.setText(this.tile.info)
-            } else {
-                this.scene.setForbiddenCursor();
-            }
+            } 
         });
 
         this.card.on("pointerover", () => {
+            return !this.resolved;
             this.scene.currentCardHelp.setText(this.tile.info)
             if (this.canApply()) {
                 this.scene.setPickCursor();
                 this.card.setTint(0x3E6875);
                 this.card.setScale(1.1)
-            } else {
-                this.scene.setForbiddenCursor();
-            }
+            } 
         });
 
         this.card.on("pointerout", () => {
+            return !this.resolved;
             this.scene.currentCardHelp.setText("")
             this.card.setScale(1)
             this.card.setTint(0xffffff);
