@@ -1,3 +1,4 @@
+import { ContextExclusionPlugin } from "webpack";
 
 export default class Player {
     constructor(scene, x, y) {
@@ -118,9 +119,16 @@ export default class Player {
             // Array(Phaser.Math.Between(5, 10)).fill(0).forEach(i => new Steam(this.scene, this.sprite.x, this.sprite.y))
             this.sprite.setVelocityY(-9);
             this.sprite.setVelocityX(0);
+        } else if (Phaser.Input.Keyboard.JustUp(this.S) && this.spring) {
+          console.log("Released!! ", this.spring.bodyB)
+          this.scene.time.delayedCall(150, () => this.scene.matter.world.remove(this.spring), null, this);
         } else if (this.S.isDown) {
           this.sprite.applyForce({ x: 0, y: this.moveForce });
           // this.mainBody.collisionFilter = { 'group': -1, 'category': 2, 'mask': 1, };
+        } 
+
+        if (this.sprite.body.velocity.y > 0) {
+
         }
           // Limit horizontal speed, without this the player's velocity would just keep increasing to
           // absurd speeds. We don't want to touch the vertical velocity though, so that we don't
@@ -143,8 +151,10 @@ export default class Player {
 
     onSensorCollide({ bodyA, bodyB, pair }) {
         if (!bodyB.label.startsWith("active")) return;
-
-        if (bodyB.isSensor) return; // We only care about collisions with physical objects
+        
+        if (bodyB.isSensor) {
+          console.log("Its a : ", bodyB.label)
+        } // We only care about collisions with physical objects
         // debugger
         if (bodyA === this.sensors.left) {
             
@@ -170,7 +180,7 @@ export default class Player {
       }
 
       addSpring(body) {
-        this.spring = this.scene.matter.add.spring(this.sprite, body, 20, 0.003);
+        this.spring = this.scene.matter.add.spring(this.sprite, body, 15, 0.01);
         console.log("Lets see: ", this.spring)
        // this.scene.time.delayedCall(2000, () => { this.spring = null}, null, this);
       }

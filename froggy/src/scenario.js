@@ -12,7 +12,7 @@ export default class Scenario {
        body1.collisionFilter = { 'group': 1, 'category': 2, 'mask': 1 };
         // const body0 = this.scene.matter.add.rectangle(400, 250, 40, 40, { isStatic: false })w
 
-
+        const body0 = this.scene.matter.add.circle(400, this.scene.height - 64, 16, { isStatic: true, isSensor: true, label: "active_coin",ignoreGravity: true });
         //this.scene.matter.add.polygon(600, 100, 3, 40, { isStatic: true });
         //this.scene.matter.add.polygon(100, 500, 8, 50, { isStatic: true });
         //this.scene.matter.add.rectangle(750, 200, 16, 180, { isStatic: true });
