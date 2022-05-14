@@ -13,6 +13,7 @@ export default class Game extends Phaser.Scene {
     init (data) {
       this.name = data.name;
       this.number = data.number || 0;
+      this.limitedTime = data.limitedTime || 10;
     }
 
     preload () {
@@ -30,10 +31,27 @@ export default class Game extends Phaser.Scene {
       //this.addMusic();
       this.addMap();
       this.addPlayer();
-      this.setListeners();      
+      this.setListeners();  
+      this.addTimer()    
      // new Scenario(this)
       //this.loadAudios(); 
       // this.playMusic();
+    }
+
+    addTimer() {
+      this.totalTime = this.limitedTime;
+      this.timer = this.time.addEvent({ delay: 1000, callback: this.subSecond, callbackScope: this, loop: true });
+
+    }
+
+    subSecond () {
+      this.totalTime--;
+      console.log("remove it", this.totalTime)
+      if (this.totalTime <= 0) { 
+        this.timer.destroy();
+        this.restartScene() 
+      }
+
     }
 
     addMap() {
@@ -154,6 +172,13 @@ export default class Game extends Phaser.Scene {
       //this.theme.stop();
       this.time.delayedCall(2000, () => {
         this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
+      }, null, this)
+    }
+
+    restartScene () {
+      //this.theme.stop();
+      this.time.delayedCall(2000, () => {
+        this.scene.start("game", {next: "underwater", name: "STAGE", number: this.number });
       }, null, this)
     }
 
