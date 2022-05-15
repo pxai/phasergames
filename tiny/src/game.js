@@ -39,6 +39,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addTimer() {
+      this.timerText = this.add.bitmapText(this.center_width, 32, "mario", this.limitedTime, 30).setTint(0xffe066).setOrigin(0);
       this.totalTime = this.limitedTime;
       this.timer = this.time.addEvent({ delay: 1000, callback: this.subSecond, callbackScope: this, loop: true });
 
@@ -46,10 +47,11 @@ export default class Game extends Phaser.Scene {
 
     subSecond () {
       this.totalTime--;
+      this.updateTimer()
       console.log("remove it", this.totalTime)
       if (this.totalTime <= 0) { 
         this.timer.destroy();
-        this.restartScene() 
+        //this.restartScene() 
       }
 
     }
@@ -114,7 +116,7 @@ export default class Game extends Phaser.Scene {
     }
 
     hitPlatform(player, platform) {
-
+      player.directionChanged()
     }
 
     hitBlock(player, block) {
@@ -122,13 +124,16 @@ export default class Game extends Phaser.Scene {
       player.changeDirection(x, y, block)
     }
 
-    hitBlockBlock(player, block) {
+    hitBlockBlock(block, platform) {
+      console.log("Block hit! ", block)
       this.hitPlatform(player, block)
     }
 
 
     hitExit(player, exit) {
       exit.destroy();
+      player.finish();
+
       this.finishScene();
     }
 
@@ -182,9 +187,18 @@ export default class Game extends Phaser.Scene {
       }, null, this)
     }
 
-    updateScore (points = 0) {
-        const score = +this.registry.get("score") + points;
-        this.registry.set("score", score);
-        this.scoreText.setText(Number(score).toLocaleString());
+    updateTimer () {
+      if (this.totalTime < 5) {
+        this.timerText.setText(this.totalTime).setTint(0xff0000);
+        this.tweens.add({
+          targets: [this.timerText],
+          duration: 200,
+          alpha: {from: 0.6, to: 1},
+          repeat: -1
+        })
+      } else {
+        this.timerText.setText(this.totalTime);
+      }
+
     }
 }

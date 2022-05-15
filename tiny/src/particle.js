@@ -231,32 +231,25 @@ export class Rock extends Phaser.GameObjects.Sprite {
     }
 }
 
-export class Gold extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y ) {
-        super(scene, x, y, "rock", Phaser.Math.RND.pick([9, 10, 11, 12]));
+export class Wave extends Phaser.GameObjects.Sprite {
+    constructor (scene, x, y, sprite ) {
+        super(scene, x, y, "trail", sprite);
        // this.setStrokeStyle(4, 0x000000);
         scene.add.existing(this)
-        scene.physics.add.existing(this);
-        this.body.setAllowGravity(false);
-        this.body.immovable = true;
 
         this.init();
     }
 
     init () {
-        this.scene.events.on("update", this.update, this);
         this.scene.tweens.add({
             targets: this,
-            duration: 300,
-            repeat: -1,
-            scale: {from: 0.95, to: 1},
-            yoyo: true
+            duration: 500,
+            scale: {from: 1, to: 1.4},
+            alpha: {from: 1, to: 0},
+            onComplete: () => {
+                this.destroy()
+            }
         })
-    }
-
-    update() {
-        if (this.active && Phaser.Math.Between(0,10) > 8)
-            new Glitter(this.scene, Phaser.Math.Between(this.x-18, this.x+18), Phaser.Math.Between(this.y - 18, this.y + 18), 3,5)
     }
 }
 

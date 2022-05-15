@@ -9,7 +9,7 @@ export default class Bootloader extends Phaser.Scene {
             "progress",
             function (value) {
                 this.progressBar.clear();
-                this.progressBar.fillStyle(0x88d24c, 1);
+                this.progressBar.fillStyle(0xa6f316, 1);
                 this.progressBar.fillRect(
                     this.cameras.main.width / 4,
                     this.cameras.main.height / 2 - 16,
@@ -39,6 +39,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image('block_green', 'assets/images/block_green.png');
         this.load.image('block_blue', 'assets/images/block_blue.png');
         this.load.image('star', 'assets/images/star.png');
+        this.load.spritesheet("trail", "assets/images/trail.png", { frameWidth: 32, frameHeight: 32 });
 
         Array(1).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`);
@@ -46,7 +47,6 @@ export default class Bootloader extends Phaser.Scene {
 
         this.registry.set("score", 0);
         this.registry.set("coins", 0);
-        this.registry.set("hull", 10);
     }
 
     create () {
@@ -54,7 +54,7 @@ export default class Bootloader extends Phaser.Scene {
 
     createBars () {
         this.loadBar = this.add.graphics();
-        this.loadBar.fillStyle(0x008483, 1);
+        this.loadBar.fillStyle(0x3c97a6, 1);
         this.loadBar.fillRect(
             this.cameras.main.width / 4 - 2,
             this.cameras.main.height / 2 - 18,

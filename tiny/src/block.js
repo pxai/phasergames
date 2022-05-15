@@ -1,5 +1,5 @@
 export default class Block extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, direction = 0, defaultVelocity=100) {
+    constructor(scene, x, y, direction = 3, defaultVelocity=100) {
         super(scene, x, y , "block_red");
         this.scene = scene;
         this.name = "block_red";
@@ -45,7 +45,7 @@ export default class Block extends Phaser.GameObjects.Sprite {
 
   changeDirection () {
     this.direction = (this.direction < 3) ? this.direction + 1 : 0; 
-    
+    this.angle += 90;
     console.log(this.direction)
   }
 
@@ -70,15 +70,40 @@ export default class Block extends Phaser.GameObjects.Sprite {
 
     update() {
       if (!this.active) return;
-      if (Phaser.Input.Keyboard.JustUp(this.S)) {
+      if (Phaser.Input.Keyboard.JustUp(this.S) && this.canMoveDown()) {
           console.log("Move it")
         this.body.y += 32;
-      } else if (Phaser.Input.Keyboard.JustUp(this.W)) {
+      } else if (Phaser.Input.Keyboard.JustUp(this.W) && this.canMoveUp()) {
         this.y -= 32;
-      } else if (Phaser.Input.Keyboard.JustUp(this.D)) {
+      } else if (Phaser.Input.Keyboard.JustUp(this.D) && this.canMoveRight()) {
         this.x += 32;
-      } else if (Phaser.Input.Keyboard.JustUp(this.A)) {
+      } else if (Phaser.Input.Keyboard.JustUp(this.A) && this.canMoveLeft()) {
         this.x -= 32;
       }
+    }
+
+    canMoveDown() {
+      const tile = this.scene.platform.getTileAtWorldXY(this.x, this.y + 32);
+      console.log("Is there any tile DOWN?", tile)
+      return !tile;
+    }
+
+    canMoveUp() {
+      const tile = this.scene.platform.getTileAtWorldXY(this.x, this.y - 32);
+      console.log("Is there any tile Up?", tile)
+
+      return !tile;
+    }
+
+    canMoveLeft() {      
+      const tile = this.scene.platform.getTileAtWorldXY(this.x - 32, this.y );
+      console.log("Is there any tile left?", tile)
+      return !tile;
+    }
+
+    canMoveRight() {
+      const tile = this.scene.platform.getTileAtWorldXY(this.x + 32, this.y );
+      console.log("Is there any tile right?", tile)
+      return !tile;
     }
 }
