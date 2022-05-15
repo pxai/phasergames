@@ -1,11 +1,9 @@
 export class Particle extends Phaser.GameObjects.Rectangle {
-    constructor (scene, x, y, color = 0xffffff, size = 5, gravity=true) {
+    constructor (scene, x, y, color = 0x00ffaf, size = 5) {
         super(scene, x, y, size, size, color)
         this.name = "celtic";
         this.scene = scene;
         scene.add.existing(this);
-        scene.physics.add.existing(this);
-        this.body.setAllowGravity(gravity);
         this.init();
     }
 
@@ -45,12 +43,11 @@ export class Line extends Phaser.GameObjects.Rectangle {
     }
 }
 
-export class Smoke extends Phaser.GameObjects.Rectangle {
-    constructor (scene, x, y, width, height, color = 0xffffff, gravity = false ) {
+export class WaterSplash extends Phaser.GameObjects.Rectangle {
+    constructor (scene, x, y, width, height, color = 0x00ffaf) {
         width = width || Phaser.Math.Between(10, 25)
         height = height || Phaser.Math.Between(10, 25)
         super(scene, x, y, width, height, color)
-        this.gravity = gravity;
         scene.add.existing(this)
         this.scene = scene;
         this.color = color;
@@ -59,10 +56,9 @@ export class Smoke extends Phaser.GameObjects.Rectangle {
 
     init () {
         let offsetx, offsety = 0;
-        if (!this.gravity) {
-            offsetx = Phaser.Math.Between(-10, 10);
-            offsety = Phaser.Math.Between(-10, 10);
-        }
+        offsetx = Phaser.Math.Between(-10, 10);
+        offsety = Phaser.Math.Between(-10, 10);
+        
         this.scene.tweens.add({
             targets: this,
             duration: 800,

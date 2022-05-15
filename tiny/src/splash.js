@@ -18,13 +18,28 @@ export default class Splash extends Phaser.Scene {
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
         this.addStartButton();
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
-        //this.playMusic();
+        this.playMusic();
         //this.showPlayer();
+        this.showTitle();
+        this.addStartButton();
     }
 
     startGame () {
         if (this.theme) this.theme.stop();
-        this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
+        this.scene.start("transition", {name: "STAGE", number: 0})
+    }
+
+    showTitle() {
+        this.gameLogo1 = this.add.bitmapText(this.center_width, 120, "mario", "Puddle", 90).setOrigin(0.5).setTint(0xa6f316).setDropShadow(3, 4, 0x75b947, 0.7);
+        this.gameLogo2 = this.add.bitmapText(this.center_width, 220, "mario", "break", 100).setOrigin(0.5).setTint(0xffffff).setDropShadow(3, 4, 0x75b947, 0.7);
+       
+        this.tweens.add({
+            targets: [this.gameLogo2],
+            duration: 300,
+            alpha: {from: 0, to: 1},
+            repeat: -1
+         })
+
     }
 
     showLogo() {
@@ -62,7 +77,7 @@ export default class Splash extends Phaser.Scene {
       }
   
     addStartButton () {
-        this.startButton = this.add.bitmapText(this.center_width, 670, "mario", "Click HERE to start", 30).setOrigin(0.5).setTint(0x9A5000).setDropShadow(3, 4, 0x693600, 0.7);
+        this.startButton = this.add.bitmapText(this.center_width, 500, "mario", "Click to start", 30).setOrigin(0.5).setTint(0x9A5000).setDropShadow(2, 3, 0x693600, 0.7);
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {
             this.startGame();
@@ -85,10 +100,8 @@ export default class Splash extends Phaser.Scene {
     }
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "mario", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "mario", "B: shoot coins", 30).setOrigin(0.5);
-        this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "mario", "By PELLO", 15).setOrigin(0.5);
+        this.add.sprite(this.center_width - 80, 420, "pello").setOrigin(0.5).setScale(0.5)
+        this.add.bitmapText(this.center_width + 40, 420, "mario", "By PELLO", 15).setOrigin(0.5);
 
         this.tweens.add({
             targets: this.space,

@@ -1,18 +1,34 @@
+import { Particle } from "./particle";
+
 export default class Block extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, direction = 3, defaultVelocity=100) {
-        super(scene, x, y , "block_red");
+        super(scene, x, y , "block");
         this.scene = scene;
         this.name = "block_red";
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.body.immovable = true;
+        this.body.setSize(32, 32)
         //this.body.moves = false;
         this.active = false;
         this.setListeners();
         this.setKeys();
+        this.init();
         this.defaultVelocity = defaultVelocity;
         this.direction = direction;
         this.scene.events.on("update", this.update, this);
+
+    }
+
+    init () {
+      this.scene.anims.create({
+        key: "block",
+        frames: this.scene.anims.generateFrameNumbers("block", { start: 0, end: 1 }),
+        frameRate: 3,
+        repeat: -1
+    });
+
+      this.anims.play("block", true)
     }
 
     setKeys() {
@@ -59,6 +75,7 @@ export default class Block extends Phaser.GameObjects.Sprite {
   }
 
   activate () {
+    this.scene.playRandom("change")
     if (this.scene.activeBlock) this.scene.activeBlock.deactivate();
     this.active = true;
     this.scene.activeBlock = this;
@@ -71,13 +88,16 @@ export default class Block extends Phaser.GameObjects.Sprite {
     update() {
       if (!this.active) return;
       if (Phaser.Input.Keyboard.JustUp(this.S) && this.canMoveDown()) {
-          console.log("Move it")
-        this.body.y += 32;
+        this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y));
+        this.y += 32;
       } else if (Phaser.Input.Keyboard.JustUp(this.W) && this.canMoveUp()) {
+        this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y));
         this.y -= 32;
       } else if (Phaser.Input.Keyboard.JustUp(this.D) && this.canMoveRight()) {
+        this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y));
         this.x += 32;
       } else if (Phaser.Input.Keyboard.JustUp(this.A) && this.canMoveLeft()) {
+        this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y));
         this.x -= 32;
       }
     }

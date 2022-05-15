@@ -1,6 +1,7 @@
 import Player from "./player";
 import Block from "./block";
 import Exit from "./exit";
+import { WaterSplash } from "./particle";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -34,8 +35,8 @@ export default class Game extends Phaser.Scene {
       this.setListeners();  
       this.addTimer()    
      // new Scenario(this)
-      //this.loadAudios(); 
-      // this.playMusic();
+      this.loadAudios(); 
+      this.playMusic();
     }
 
     addTimer() {
@@ -65,7 +66,7 @@ export default class Game extends Phaser.Scene {
       this.platform = this.tileMap.createLayer(`scene${this.number}`, this.tileSet);
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
       this.platform.setCollisionByExclusion([-1]);
-
+      this.physics.world.setBounds(0, 0, this.width, this.height);
       this.exits = this.add.group();
       this.blocks = this.add.group();
       this.objectsLayer.objects.forEach( object => {
@@ -116,11 +117,17 @@ export default class Game extends Phaser.Scene {
     }
 
     hitPlatform(player, platform) {
+
+      this.playRandom("platform")
+      Array(Phaser.Math.Between(2, 4)).fill().forEach( p => this.trailLayer.add(new WaterSplash(this, player.x, player.y)));
       player.directionChanged()
     }
 
     hitBlock(player, block) {
       const {x, y} = block.getDirection();
+      this.playRandom("block")
+      Array(Phaser.Math.Between(3, 6)).fill().forEach( p => this.trailLayer.add(new WaterSplash(this, player.x, player.y)));
+
       player.changeDirection(x, y, block)
     }
 
@@ -148,7 +155,11 @@ export default class Game extends Phaser.Scene {
 
       loadAudios () {
         this.audios = {
-          "beam": this.sound.add("beam"),
+          "platform": this.sound.add("platform"),
+          "block": this.sound.add("block"),
+          "change": this.sound.add("change"),
+          "fail": this.sound.add("fail"),
+          "win": this.sound.add("win"),
         };
       }
 
@@ -156,33 +167,57 @@ export default class Game extends Phaser.Scene {
         this.audios[key].play();
       }
 
-      playMusic (theme="game") {
+      playRandom(key, volume = 1) {
+        this.audios[key].play({
+          rate: Phaser.Math.Between(1, 1.5),
+          detune: Phaser.Math.Between(-1000, 1000),
+          delay: 0,
+          volume
+        });
+      }
+
+      playMusic (theme="music") {
         this.theme = this.sound.add(theme);
+        this.bgSound = this.sound.add("pond");
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.6,
           rate: 1,
           detune: 0,
           seek: 0,
           loop: true,
           delay: 0
-      })
+        })
+
+        this.bgSound.play({
+          mute: false,
+          volume: 0.6,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+        })
       }
 
     update() {
     }
 
     finishScene () {
-      //this.theme.stop();
+      this.playAudio("win")
       this.time.delayedCall(2000, () => {
+        this.theme.stop();
+        this.bgSound.stop();
         this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
       }, null, this)
     }
 
     restartScene () {
-      //this.theme.stop();
+      this.playAudio("fail")
       this.time.delayedCall(2000, () => {
+        this.theme.stop();
+        this.bgSound.stop();
         this.scene.start("game", {next: "underwater", name: "STAGE", number: this.number });
       }, null, this)
     }

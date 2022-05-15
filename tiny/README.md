@@ -7,6 +7,10 @@ Bitmap font generator:
 https://snowb.org/
 
 Music: ETC
+Jazz Frog
+https://www.youtube.com/watch?v=0BWiMF8_v6M
+Frog Beat
+https://www.youtube.com/watch?v=dEqp23rv-BQ&ab_channel=xddcmusic
 
 Colors:
 primary: 0x3c97a6 water
