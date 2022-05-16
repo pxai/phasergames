@@ -143,6 +143,17 @@
                  "width":0,
                  "x":416,
                  "y":576
+                }, 
+                {
+                 "height":0,
+                 "id":14,
+                 "name":"extra_time",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":544,
+                 "y":512
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -151,7 +162,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":14,
+ "nextobjectid":15,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.8.4",

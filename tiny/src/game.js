@@ -2,6 +2,7 @@ import Player from "./player";
 import Block from "./block";
 import Exit from "./exit";
 import { WaterSplash } from "./particle";
+import ExtraTime from "./extra_time";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -37,6 +38,7 @@ export default class Game extends Phaser.Scene {
 
       this.loadAudios(); 
       this.showTexts();
+      this.solved = false;
     }
 
     addRetry () {
@@ -74,6 +76,7 @@ export default class Game extends Phaser.Scene {
       this.physics.world.setBounds(0, 0, this.width, this.height);
       this.exits = this.add.group();
       this.blocks = this.add.group();
+      this.hearts = this.add.group();
       this.texts = [];
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("block")){
@@ -83,6 +86,11 @@ export default class Game extends Phaser.Scene {
         if (object.name.startsWith("exit")){
           this.exits.add(new Exit(this, object.x - 16, object.y))
         }
+
+        if (object.name.startsWith("extra_time")){
+          this.hearts.add(new ExtraTime(this, object.x, object.y))
+        }
+
 
         if (object.name === "text") {
           this.texts.push(object);
@@ -133,6 +141,10 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
+      this.physics.add.overlap(this.player, this.hearts, this.hitExtraTime, ()=>{
+        return true;
+      }, this);
+
       this.physics.add.overlap(this.player, this.exits, this.hitExit, ()=>{
         return true;
       }, this);
@@ -153,6 +165,14 @@ export default class Game extends Phaser.Scene {
       if (block.allowChangeDirection)
         player.changeDirection(x, y, block)
       //else player.reverseDirection()
+    }
+
+    hitExtraTime(player, heart) {
+      heart.destroy();
+      this.totalTime = this.totalTime + 10;
+      this.updateTimer()
+      Array(Phaser.Math.Between(3, 6)).fill().forEach( p => this.trailLayer.add(new WaterSplash(this, player.x, player.y)));
+      this.playRandom("coin")
     }
 
     hitBlockBlock(block, platform) {
@@ -178,6 +198,7 @@ export default class Game extends Phaser.Scene {
           "change": this.sound.add("change"),
           "fail": this.sound.add("fail"),
           "win": this.sound.add("win"),
+          "coin": this.sound.add("coin"),
         };
       }
 
@@ -201,8 +222,10 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene () {
+      if (this.solved) return;
       this.timer.destroy();
       this.playAudio("win")
+      this.solved = true;
       this.winText = this.add.bitmapText(this.center_width, -100, "mario", "STAGE CLEARED!", 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x75b947, 0.7);
       this.tweens.add({
         targets: this.winText,

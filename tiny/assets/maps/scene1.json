@@ -132,6 +132,39 @@
                  "width":0,
                  "x":320,
                  "y":544
+                }, 
+                {
+                 "height":0,
+                 "id":17,
+                 "name":"extra_time",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":352,
+                 "y":416
+                }, 
+                {
+                 "height":0,
+                 "id":18,
+                 "name":"exit",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":512,
+                 "y":384
+                }, 
+                {
+                 "height":0,
+                 "id":19,
+                 "name":"text",
+                 "rotation":0,
+                 "type":"Hearts give extra time",
+                 "visible":true,
+                 "width":0,
+                 "x":416,
+                 "y":256
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -140,7 +173,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":17,
+ "nextobjectid":20,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.8.4",
