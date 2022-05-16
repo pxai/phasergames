@@ -105,9 +105,9 @@ export default class Player {
         */
       
           if (this.scene.pointer.isDown) {
-            console.log("Mouse down")
+
             if (this.scene.pointer.rightButtonDown()) {
-                console.log("Right clicky")
+
             } else {
                 // left
             }

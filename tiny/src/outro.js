@@ -21,7 +21,7 @@ export default class Outro extends Phaser.Scene {
             "from the puddles.",
             "He declared: croak",
             "croak, croak, ¡croak!",
-            "But that's another story..."
+            "¿Try again?"
         ];
         this.showHistory();
         this.addStartButton()
@@ -48,6 +48,10 @@ export default class Outro extends Phaser.Scene {
           loop: true,
           delay: 0
       })
+    }
+
+    showPlayer () {
+        this.add.sprite(this.center_width, 570, "frog").setOrigin(0.5).setScale(1.2);
     }
 
     showLine(text, y) {
@@ -84,7 +88,7 @@ export default class Outro extends Phaser.Scene {
 
 
     startSplash () {
-        // this.theme.stop();
+        this.sound.stopAll();
         this.scene.start("splash");
     }
 }

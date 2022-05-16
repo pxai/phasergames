@@ -19,13 +19,14 @@ export default class Splash extends Phaser.Scene {
         this.addStartButton();
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
         this.playMusic();
-        //this.showPlayer();
+        this.showPlayer();
         this.showTitle();
         this.addStartButton();
     }
 
     startGame () {
         if (this.theme) this.theme.stop();
+        this.playGameMusic();
         this.scene.start("transition", {name: "STAGE", number: 0})
     }
 
@@ -58,10 +59,6 @@ export default class Splash extends Phaser.Scene {
           })
     }
 
-    showPlayer () {
-
-    }
-
     playMusic (theme="splash") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
@@ -75,9 +72,45 @@ export default class Splash extends Phaser.Scene {
           delay: 0
       })
       }
+
+      playGameMusic (theme="music") {
+        this.theme = this.sound.add(theme);
+        this.bgSound = this.sound.add("pond");
+        this.theme.stop();
+        this.theme.play({
+          mute: false,
+          volume: 0.6,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+        })
+
+        this.bgSound.play({
+          mute: false,
+          volume: 0.6,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+        })
+      }
+
+      showPlayer () {
+        this.frog = this.add.sprite(this.center_width, 350, "frog").setOrigin(0.5).setScale(1.5);
+        this.anims.create({
+            key: "frogsplash",
+            frames: this.anims.generateFrameNumbers("frog", { start: 0, end: 1 }),
+            frameRate: 3,
+            repeat: -1
+        });
+        this.frog.anims.play("frogsplash", true)
+    }
   
     addStartButton () {
-        this.startButton = this.add.bitmapText(this.center_width, 500, "mario", "Click to start", 30).setOrigin(0.5).setTint(0x9A5000).setDropShadow(2, 3, 0x693600, 0.7);
+        this.startButton = this.add.bitmapText(this.center_width, 500, "mario", "Click to start", 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x693600, 0.7);
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {
             this.startGame();
@@ -88,7 +121,7 @@ export default class Splash extends Phaser.Scene {
         });
     
         this.startButton.on('pointerout', () => {
-            this.startButton.setTint(0xffffff)
+            this.startButton.setTint(0xffe066)
         });
         this.tweens.add({
             targets: this.space,

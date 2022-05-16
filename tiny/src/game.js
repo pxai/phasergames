@@ -26,21 +26,25 @@ export default class Game extends Phaser.Scene {
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
       this.cameras.main.setBackgroundColor(0x000000)
-      console.log("Amos")
+
       this.addPointer();
 
-      //this.addMusic();
       this.addMap();
       this.addPlayer();
       this.setListeners();  
-      this.addTimer()    
-     // new Scenario(this)
+      this.addTimer();
+      this.addRetry();
+
       this.loadAudios(); 
-      this.playMusic();
+      this.showTexts();
+    }
+
+    addRetry () {
+      this.R = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     }
 
     addTimer() {
-      this.timerText = this.add.bitmapText(this.center_width, 32, "mario", this.limitedTime, 30).setTint(0xffe066).setOrigin(0);
+      this.timerText = this.add.bitmapText(this.center_width, 32, "mario", this.limitedTime, 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(3, 4, 0x75b947, 0.7);
       this.totalTime = this.limitedTime;
       this.timer = this.time.addEvent({ delay: 1000, callback: this.subSecond, callbackScope: this, loop: true });
 
@@ -49,10 +53,11 @@ export default class Game extends Phaser.Scene {
     subSecond () {
       this.totalTime--;
       this.updateTimer()
-      console.log("remove it", this.totalTime)
+
       if (this.totalTime <= 0) { 
         this.timer.destroy();
-        //this.restartScene() 
+        if (this.number > 2)
+         this.failScene() 
       }
 
     }
@@ -69,6 +74,7 @@ export default class Game extends Phaser.Scene {
       this.physics.world.setBounds(0, 0, this.width, this.height);
       this.exits = this.add.group();
       this.blocks = this.add.group();
+      this.texts = [];
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("block")){
           this.blocks.add(new Block(this, object.x - 16, object.y - 16))
@@ -77,8 +83,24 @@ export default class Game extends Phaser.Scene {
         if (object.name.startsWith("exit")){
           this.exits.add(new Exit(this, object.x - 16, object.y))
         }
+
+        if (object.name === "text") {
+          this.texts.push(object);
+        }
       })
     }
+
+    showTexts() {
+      this.texts.forEach(text => {
+       let help = this.add.bitmapText(text.x, text.y, "mario", text.type, 15).setOrigin(0.5).setTint(0xffe066).setDropShadow(1, 2, 0xbf2522, 0.7);
+       this.tweens.add({
+         targets: help,
+         duration: 20000,
+         alpha: { from: 1, to: 0},
+         ease: 'Linear'
+       })
+     })
+   }
 
     setListeners () {
       this.activeBlock = null;
@@ -128,12 +150,12 @@ export default class Game extends Phaser.Scene {
       this.playRandom("block")
       Array(Phaser.Math.Between(3, 6)).fill().forEach( p => this.trailLayer.add(new WaterSplash(this, player.x, player.y)));
 
-      player.changeDirection(x, y, block)
+      if (block.allowChangeDirection)
+        player.changeDirection(x, y, block)
+      //else player.reverseDirection()
     }
 
     hitBlockBlock(block, platform) {
-      console.log("Block hit! ", block)
-      this.hitPlatform(player, block)
     }
 
 
@@ -147,10 +169,6 @@ export default class Game extends Phaser.Scene {
     addPointer() {
       this.pointer = this.input.activePointer;
       this.input.mouse.disableContextMenu();
-    }
-
-    addMusic () {
-
     }
 
       loadAudios () {
@@ -176,51 +194,51 @@ export default class Game extends Phaser.Scene {
         });
       }
 
-      playMusic (theme="music") {
-        this.theme = this.sound.add(theme);
-        this.bgSound = this.sound.add("pond");
-        this.theme.stop();
-        this.theme.play({
-          mute: false,
-          volume: 0.6,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-        })
-
-        this.bgSound.play({
-          mute: false,
-          volume: 0.6,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-        })
-      }
-
     update() {
+      if (Phaser.Input.Keyboard.JustDown(this.R)) {
+        this.restartScene();
+      }
     }
 
     finishScene () {
+      this.timer.destroy();
       this.playAudio("win")
+      this.winText = this.add.bitmapText(this.center_width, -100, "mario", "STAGE CLEARED!", 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x75b947, 0.7);
+      this.tweens.add({
+        targets: this.winText,
+        duration: 500,
+        y: {from: this.winText.y, to: this.center_height}
+      })
+      this.tweens.add({
+        targets: this.winText,
+        duration: 100,
+        scale: {from: 1, to: 1.1},
+        repeat: -1,
+        yoyo: true
+      })
       this.time.delayedCall(2000, () => {
-        this.theme.stop();
-        this.bgSound.stop();
         this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
       }, null, this)
     }
 
-    restartScene () {
+    failScene () {
       this.playAudio("fail")
+      this.failText = this.add.bitmapText(this.center_width, this.height + 100, "mario", "TIME UP!!", 30).setOrigin(0.5).setTint(0x9A5000).setDropShadow(2, 3, 0x75b947, 0.7);
+      this.tweens.add({
+        targets: this.failText,
+        duration: 500,
+        y: {from: this.failText.y, to: this.center_height}
+      })
       this.time.delayedCall(2000, () => {
-        this.theme.stop();
-        this.bgSound.stop();
-        this.scene.start("game", {next: "underwater", name: "STAGE", number: this.number });
+        this.scene.start("game", {next: "underwater", name: "STAGE", number: this.number, limitedTime: 10 + (this.number * 3)  });
       }, null, this)
     }
+
+    restartScene () {
+        this.scene.start("game", {next: "underwater", name: "STAGE", number: this.number });
+    }
+
+
 
     updateTimer () {
       if (this.totalTime < 5) {

@@ -16,6 +16,8 @@ export default class Block extends Phaser.GameObjects.Sprite {
         this.init();
         this.defaultVelocity = defaultVelocity;
         this.direction = direction;
+        this.changeDirection();
+        this.allowChangeDirection = true;
         this.scene.events.on("update", this.update, this);
 
     }
@@ -62,7 +64,17 @@ export default class Block extends Phaser.GameObjects.Sprite {
   changeDirection () {
     this.direction = (this.direction < 3) ? this.direction + 1 : 0; 
     this.angle += 90;
-    console.log(this.direction)
+    this.checkChangeDirection();
+  }
+
+  checkChangeDirection () {
+    switch(this.direction) {
+      case 0: this.allowChangeDirection = this.canMoveUp(64);break;
+      case 1: this.allowChangeDirection = this.canMoveRight(64);break;
+      case 2: this.allowChangeDirection = this.canMoveDown(64);break;
+      case 3: this.allowChangeDirection = this.canMoveLeft(64);break;
+      default: break;
+    }
   }
 
   getDirection () {
@@ -90,40 +102,40 @@ export default class Block extends Phaser.GameObjects.Sprite {
       if (Phaser.Input.Keyboard.JustUp(this.S) && this.canMoveDown()) {
         this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y));
         this.y += 32;
+        this.checkChangeDirection();
       } else if (Phaser.Input.Keyboard.JustUp(this.W) && this.canMoveUp()) {
         this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y));
         this.y -= 32;
+        this.checkChangeDirection();
       } else if (Phaser.Input.Keyboard.JustUp(this.D) && this.canMoveRight()) {
         this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y));
         this.x += 32;
+        this.checkChangeDirection();
       } else if (Phaser.Input.Keyboard.JustUp(this.A) && this.canMoveLeft()) {
         this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y));
         this.x -= 32;
+        this.checkChangeDirection();
       }
     }
 
-    canMoveDown() {
-      const tile = this.scene.platform.getTileAtWorldXY(this.x, this.y + 32);
-      console.log("Is there any tile DOWN?", tile)
+    canMoveDown(distance = 32) {
+      const tile = this.scene.platform.getTileAtWorldXY(this.x, this.y + distance);
       return !tile;
     }
 
-    canMoveUp() {
-      const tile = this.scene.platform.getTileAtWorldXY(this.x, this.y - 32);
-      console.log("Is there any tile Up?", tile)
+    canMoveUp(distance = 32) {
+      const tile = this.scene.platform.getTileAtWorldXY(this.x, this.y - distance);
 
       return !tile;
     }
 
-    canMoveLeft() {      
-      const tile = this.scene.platform.getTileAtWorldXY(this.x - 32, this.y );
-      console.log("Is there any tile left?", tile)
+    canMoveLeft(distance = 32) {      
+      const tile = this.scene.platform.getTileAtWorldXY(this.x - distance, this.y );
       return !tile;
     }
 
-    canMoveRight() {
-      const tile = this.scene.platform.getTileAtWorldXY(this.x + 32, this.y );
-      console.log("Is there any tile right?", tile)
+    canMoveRight(distance = 32) {
+      const tile = this.scene.platform.getTileAtWorldXY(this.x + distance, this.y );
       return !tile;
     }
 }

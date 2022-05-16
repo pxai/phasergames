@@ -6,8 +6,8 @@ import Transition from "./transition";
 import Game from "./game";
 
 const config = {
-    width: 600,
-    height: 600,
+    width: 608,
+    height: 608,
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
@@ -18,7 +18,7 @@ const config = {
         default: "arcade",
         arcade: {
           gravity: { y: 0 },
-          debug: true
+          debug: false
       }
     },
     plugins: {

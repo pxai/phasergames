@@ -52,10 +52,10 @@ export default class Scenario {
     
                 this.scene.matter.add.rectangle(x, y, width, height, { restitution: 0.5 });
             }
-            console.log("Adding bodies: ", x, y)
+
         }*/
     
         this.scene.matter.add.mouseSpring();
-        console.log("Added matter!")
+
     }
 }
