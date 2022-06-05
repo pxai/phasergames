@@ -1,0 +1,271 @@
+{ "compressionlevel":-1,
+ "height":19,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 27, 22, 27, 0, 0, 0, 27, 23, 25, 21, 26, 0, 0,
+            0, 0, 43, 43, 41, 40, 42, 41, 43, 41, 42, 43, 42, 0, 0, 0,
+            0, 0, 19, 27, 22, 27, 0, 20, 21, 23, 20, 21, 18, 26, 0, 0,
+            0, 0, 27, 22, 23, 20, 21, 27, 0, 23, 20, 21, 18, 26, 0, 0,
+            0, 0, 0, 27, 22, 20, 21, 26, 20, 21, 23, 25, 21, 26, 0, 0,
+            0, 0, 27, 22, 23, 35, 21, 20, 21, 23, 35, 21, 26, 0, 0, 0,
+            0, 0, 0, 27, 22, 10, 21, 27, 20, 21, 10, 19, 21, 0, 0, 0,
+            0, 0, 0, 0, 27, 10, 0, 20, 21, 23, 10, 21, 26, 36, 38, 0,
+            0, 0, 0, 0, 27, 10, 0, 27, 0, 26, 10, 26, 26, 37, 39, 0,
+            10, 10, 10, 10, 13, 15, 14, 14, 13, 15, 14, 13, 10, 10, 10, 10,
+            16, 15, 15, 15, 10, 10, 10, 10, 10, 10, 10, 10, 13, 14, 15, 13,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":19,
+         "id":4,
+         "name":"background",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":16,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            8, 4, 3, 3, 4, 3, 3, 2, 1, 3, 1, 3, 4, 3, 2, 4,
+            7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3,
+            2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            3, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2,
+            3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1,
+            2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,
+            5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
+            3, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 3, 4,
+            0, 0, 0, 0, 0, 0, 17, 17, 17, 0, 0, 0, 0, 0, 0, 0,
+            2, 4, 4, 2, 3, 1, 1, 1, 2, 4, 4, 1, 3, 1, 4, 4,
+            31, 33, 1, 3, 3, 0, 0, 0, 0, 0, 0, 3, 4, 4, 31, 33,
+            32, 34, 1, 4, 4, 4, 4, 4, 4, 3, 2, 2, 1, 1, 32, 34],
+         "height":19,
+         "id":1,
+         "name":"scene1",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":16,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"objects",
+         "objects":[
+                {
+                 "height":0,
+                 "id":2,
+                 "name":"exit0",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":446.666666666666,
+                 "y":429.333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":8,
+                 "name":"text",
+                 "rotation":0,
+                 "type":"Shoot fireball with right-click",
+                 "visible":true,
+                 "width":0,
+                 "x":238.5,
+                 "y":306.166666666667
+                }, 
+                {
+                 "height":0,
+                 "id":11,
+                 "name":"skeleton1",
+                 "rotation":0,
+                 "type":"2",
+                 "visible":true,
+                 "width":0,
+                 "x":430.666666666667,
+                 "y":334.666666666667
+                }, 
+                {
+                 "height":0,
+                 "id":12,
+                 "name":"player",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":78.6666666666667,
+                 "y":237.333333333333
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":5,
+ "nextobjectid":13,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.8.4",
+ "tileheight":32,
+ "tilesets":[
+        {
+         "columns":6,
+         "firstgid":1,
+         "image":"map.png",
+         "imageheight":256,
+         "imagewidth":192,
+         "margin":0,
+         "name":"map",
+         "spacing":0,
+         "tilecount":48,
+         "tileheight":32,
+         "tiles":[
+                {
+                 "id":11,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"water"
+                        }]
+                }, 
+                {
+                 "id":12,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"waterdeath"
+                        }]
+                }, 
+                {
+                 "id":13,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"waterdeath"
+                        }]
+                }, 
+                {
+                 "id":14,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"waterdeath"
+                        }]
+                }, 
+                {
+                 "id":15,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"waterdeath"
+                        }]
+                }, 
+                {
+                 "id":16,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"waterdeath"
+                        }]
+                }, 
+                {
+                 "id":30,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"door0"
+                        }]
+                }, 
+                {
+                 "id":31,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"door1"
+                        }]
+                }, 
+                {
+                 "id":32,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"door2"
+                        }]
+                }, 
+                {
+                 "id":33,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"door3"
+                        }]
+                }, 
+                {
+                 "id":35,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"door0"
+                        }]
+                }, 
+                {
+                 "id":36,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"door1"
+                        }]
+                }, 
+                {
+                 "id":37,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"door2"
+                        }]
+                }, 
+                {
+                 "id":38,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"door3"
+                        }]
+                }],
+         "tilewidth":32
+        }],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.8",
+ "width":16
+}

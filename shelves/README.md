@@ -1,7 +1,7 @@
 
 # Generic Game
 
-A *Generic* adventure
+A *fartastic* adventure
 
 Bitmap font generator:
 https://snowb.org/
