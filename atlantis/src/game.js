@@ -1,3 +1,4 @@
+import Block from "./block";
 import Player from "./player";
 
 export default class Game extends Phaser.Scene {
@@ -35,12 +36,15 @@ export default class Game extends Phaser.Scene {
   
       this.tileSet = this.tileMap.addTilesetImage("tileset_fg");
       this.platform = this.tileMap.createLayer(`scene${this.number}`, this.tileSet);
+      this.breakable = this.tileMap.createLayer("breakable", this.tileSet);
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
       this.platform.setCollisionByExclusion([-1]);
+      this.breakable.setCollisionByExclusion([-1]);
       this.physics.world.setBounds(0, 0, this.width, this.height);
       this.exits = this.add.group();
       this.blocks = this.add.group();
       this.hearts = this.add.group();
+      this.brokenBlocks = this.add.group();
       this.texts = [];
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("block")){
@@ -68,6 +72,14 @@ export default class Game extends Phaser.Scene {
       this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
         return true;
       }, this);
+
+      this.physics.add.collider(this.player, this.breakable, this.hitBreakable, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.player, this.brokenBlocks, this.hitBroken, ()=>{
+        return true;
+      }, this);
     }
 
     onWorldBounds (body, part) {
@@ -91,6 +103,29 @@ export default class Game extends Phaser.Scene {
         detune: Phaser.Math.Between(-1000, 1000),
         delay: 0
       });
+    }
+
+    hitFloor(player, block) {
+      
+    }
+
+    hitBreakable(player, block) {
+      if (player.falling) {
+        const tile = this.getTile(block)
+        console.log("Hit!", tile, block.layer.name, player.jumping, player.falling)
+        this.brokenBlocks.add(new Block(this, block.pixelX, block.pixelY, block.layer.name))
+        this.breakable.removeTileAt(tile.x, tile.y);
+      }
+
+    }
+
+    hitBroken(player, block) {
+
+    }
+ 
+    getTile(platform) {
+      const {x, y} = platform;
+      return this.breakable.getTileAt(x, y);
     }
 
     playAudio(key) {
