@@ -27,13 +27,13 @@ export class Smoke extends Phaser.GameObjects.Rectangle {
 
 export class RockSmoke extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, width, height, color = 0xFFEAAB, gravity = false ) {
-        width = width || Phaser.Math.Between(30, 55)
-        height = height || Phaser.Math.Between(30, 55)
+        width = width || Phaser.Math.Between(5, 10)
+        height = height || Phaser.Math.Between(5, 10)
         super(scene, x, y, width, height, color)
         scene.add.existing(this)
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
-        this.body.setVelocityY(-100);
+        this.body.setVelocityY(-30);
         this.init();
     }
 
@@ -41,7 +41,7 @@ export class RockSmoke extends Phaser.GameObjects.Rectangle {
         this.scene.tweens.add({
             targets: this,
             duration: 800,
-            scale: {from: 1, to: 0},
+            scale: {from: 1, to: 1.5},
             onComplete: () => { this.destroy()  }
         });
 

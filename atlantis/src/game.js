@@ -1,5 +1,8 @@
 import Block from "./block";
 import Player from "./player";
+import Bat from "./bat";
+import Coin from "./coin";
+import Exit from "./exit";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -24,9 +27,20 @@ export default class Game extends Phaser.Scene {
       this.center_height = this.height / 2;
       this.addMap();
       this.addPlayer();
-
+      this.addScore();
       //this.loadAudios(); 
       // this.playMusic();
+    }
+
+    addScore() {
+      this.scoreCoins = this.add.bitmapText(75, 20, "pixelFont", "x0", 15).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.scoreCoinsLogo = this.add.sprite(50, 25, "coin").setScale(0.5).setOrigin(0.5).setScrollFactor(0)
+      const coinAnimation = this.anims.create({
+        key: "coinscore",
+        frames: this.anims.generateFrameNumbers("coin", { start: 0, end: 7 }, ),
+        frameRate: 8,
+      });
+      this.scoreCoinsLogo.play({ key: "coinscore", repeat: -1 });
     }
 
     addMap() {
@@ -44,11 +58,25 @@ export default class Game extends Phaser.Scene {
       this.exits = this.add.group();
       this.blocks = this.add.group();
       this.hearts = this.add.group();
+      this.batGroup = this.add.group();
+      this.coins = this.add.group();
       this.brokenBlocks = this.add.group();
       this.texts = [];
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("block")){
           this.blocks.add(new Block(this, object.x - 16, object.y - 16))
+        }
+
+        if (object.name === "bat") {
+          let bat = new Bat(this, object.x, object.y, object.type);
+          this.batGroup.add(bat)
+          //this.foesGroup.add(bat)
+        }
+
+        if (object.name === "coin") {
+          let coin = new Coin(this, object.x, object.y);
+          this.coins.add(coin)
+          //this.foesGroup.add(bat)
         }
 
         if (object.name.startsWith("exit")){
@@ -67,6 +95,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addPlayer() {
+      this.trailLayer = this.add.layer();
       const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
       this.player = new Player(this, playerPosition.x, playerPosition.y);
       this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
@@ -78,6 +107,22 @@ export default class Game extends Phaser.Scene {
       }, this);
 
       this.physics.add.collider(this.player, this.brokenBlocks, this.hitBroken, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.player, this.batGroup, this.hitPlayer, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.player, this.exits, this.playerHitsExit, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.batGroup, this.platform, this.turnFoe, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.player, this.coins, this.pickCoin, ()=>{
         return true;
       }, this);
     }
@@ -105,6 +150,13 @@ export default class Game extends Phaser.Scene {
       });
     }
 
+    hitPlayer (player, foe) {
+      if (foe.name !== "drop") foe.turn();
+      //new Dust(player.scene, player.x, player.y, "0xff0000");
+      //this.playAudio("hit");
+      this.playerDeath();
+    }
+
     hitFloor(player, block) {
       
     }
@@ -120,7 +172,32 @@ export default class Game extends Phaser.Scene {
     }
 
     hitBroken(player, block) {
+      if (block.falling) {
+        this.playerDeath();
+      }
+    }
 
+    pickCoin (player, coin) {
+      if (!coin.disabled) {
+        coin.pick();
+        //this.playAudio("coin");
+       // this.updateCoins();
+      }
+    }
+
+    turnFoe (foe, platform) {
+      foe.turn();
+    }
+
+    playerHitsExit(player, exit) {
+      this.finishScene();
+    }
+
+    playerDeath () {
+      if (this.player.dead) return;
+      this.cameras.main.shake(100);
+      this.player.hit();
+      //this.time.delayedCall(1000, () => this.respawnPlayer(), null, this);
     }
  
     getTile(platform) {
@@ -161,5 +238,17 @@ export default class Game extends Phaser.Scene {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
         this.scoreText.setText(Number(score).toLocaleString());
+    }
+
+    updateCoins () {
+      const coins = +this.registry.get("coins") + 1;
+      this.registry.set("coins", coins);
+      this.scoreCoins.setText("x"+coins);
+      this.tweens.add({
+        targets: [this.scoreCoins, this.scoreCoinsLogo],
+        scale: { from: 1.4, to: 1},
+        duration: 50,
+        repeat: 10
+      })
     }
 }

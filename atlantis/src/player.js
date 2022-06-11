@@ -1,5 +1,5 @@
 
-import { JumpSmoke, RockSmoke } from "./particle";
+import { Smoke, JumpSmoke, RockSmoke } from "./particle";
 
 class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y) {
@@ -95,10 +95,12 @@ class Player extends Phaser.GameObjects.Sprite {
                 this.body.setDragY(-200)
                 this.falling = true;
             }
+            if (Phaser.Math.Between(0, 10) > 6)
+                this.scene.trailLayer.add(new Smoke(this.scene, this.x, this.y, 10, 10))
         }
         //if (Phaser.Input.Keyboard.JustDown(this.down)) {
         if ((Phaser.Input.Keyboard.JustDown(this.spaceBar) || Phaser.Input.Keyboard.JustDown(this.cursor.up) || Phaser.Input.Keyboard.JustDown(this.W)) && this.body.blocked.down) {
-            // new Dust(this.scene, this.x, this.y)
+
             this.building = false;
             this.body.setDragY(200)
             this.body.setVelocityY(this.jumpVelocity);
@@ -190,16 +192,11 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     hit () {
-        this.scene.updateHealth(-1)
-        this.scene.showPoints(this.x, this.y, "-1 HEALTH", 0xff0000)
+        //this.scene.showPoints(this.x, this.y, "-1 HEALTH", 0xff0000)
         this.flashing = true;
         console.log("Player was hit: ", this.scene.registry.get("health"))
         this.flashPlayer();
-        if (+this.scene.registry.get("health") < 0) {
-            console.log("Player dies")
-            this.die();
-        }
-
+        this.die();
     }
 
     die () {
@@ -207,7 +204,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.anims.play("playerdead", true);
         this.body.immovable = true;
         this.body.moves = false;
-        this.scene.finishScene("outro");
+        //this.scene.finishScene("outro");
     }
 
 
