@@ -130,6 +130,39 @@
                  "width":0,
                  "x":384,
                  "y":224
+                }, 
+                {
+                 "height":0,
+                 "id":9,
+                 "name":"bat",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":672,
+                 "y":512
+                }, 
+                {
+                 "height":0,
+                 "id":10,
+                 "name":"firing_block",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":256,
+                 "y":320
+                }, 
+                {
+                 "height":0,
+                 "id":11,
+                 "name":"firing_block",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":608,
+                 "y":320
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -138,7 +171,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":9,
+ "nextobjectid":12,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.2",

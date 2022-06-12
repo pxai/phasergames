@@ -20,6 +20,27 @@ export class Smoke extends Phaser.GameObjects.Rectangle {
     }
 }
 
+export class Particle extends Phaser.GameObjects.Rectangle {
+    constructor (scene, x, y, color = 0xffffff, size = 5, gravity=true) {
+        super(scene, x, y, size, size, color)
+        this.name = "celtic";
+        this.scene = scene;
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
+        this.body.setAllowGravity(gravity);
+        this.init();
+    }
+
+    init () {
+        this.scene.tweens.add({
+            targets: this,
+            duration: Phaser.Math.Between(600, 1000),
+            scale: { from: 1, to: 2 },
+            onComplete: () => { this.destroy() }
+        });
+    }
+}
+
 // 0xa13000 red brick
 // 0xb03e00 orange brick
 // 0xb06f00 golden brick

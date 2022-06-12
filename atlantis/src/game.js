@@ -1,8 +1,11 @@
 import Block from "./block";
+import FiringBlock from "./firing_block";
 import Player from "./player";
 import Bat from "./bat";
 import Coin from "./coin";
 import Exit from "./exit";
+import WaterPlatform from "./water_platform";
+import { RockSmoke, Smoke } from "./particle";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -28,6 +31,7 @@ export default class Game extends Phaser.Scene {
       this.addMap();
       this.addPlayer();
       this.addScore();
+      this.addWater();
       //this.loadAudios(); 
       // this.playMusic();
     }
@@ -59,7 +63,10 @@ export default class Game extends Phaser.Scene {
       this.blocks = this.add.group();
       this.hearts = this.add.group();
       this.batGroup = this.add.group();
+      this.foesGroup = this.add.group();
+      this.fireballs = this.add.group();
       this.coins = this.add.group();
+      this.bubbles = this.add.group();
       this.brokenBlocks = this.add.group();
       this.texts = [];
       this.objectsLayer.objects.forEach( object => {
@@ -70,13 +77,16 @@ export default class Game extends Phaser.Scene {
         if (object.name === "bat") {
           let bat = new Bat(this, object.x, object.y, object.type);
           this.batGroup.add(bat)
-          //this.foesGroup.add(bat)
+          this.foesGroup.add(bat)
         }
 
         if (object.name === "coin") {
           let coin = new Coin(this, object.x, object.y);
           this.coins.add(coin)
-          //this.foesGroup.add(bat)
+        }
+
+        if (object.name === "firing_block") {
+          this.brokenBlocks.add(new FiringBlock(this, object.x, object.y));
         }
 
         if (object.name.startsWith("exit")){
@@ -94,11 +104,24 @@ export default class Game extends Phaser.Scene {
       })
     }
 
+    addWater () {
+      this.bubbleLayer = this.add.layer();
+      this.water = this.add.group();
+      this.waterPlatform = new WaterPlatform(this)
+      this.physics.add.overlap(this.player, this.water, this.hitWater, ()=>{
+        return true;
+      }, this);
+    }
+
     addPlayer() {
       this.trailLayer = this.add.layer();
       const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
       this.player = new Player(this, playerPosition.x, playerPosition.y);
       this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.player, this.bubbles, this.hitFloor, ()=>{
         return true;
       }, this);
 
@@ -123,6 +146,23 @@ export default class Game extends Phaser.Scene {
       }, this);
 
       this.physics.add.overlap(this.player, this.coins, this.pickCoin, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.player, this.fireballs, this.fireballHitPlayer, ()=>{
+        return true;
+      }, this);
+
+
+      this.physics.add.collider(this.fireballs, this.platform, this.fireballHitPlatform, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.brokenBlocks, this.platform, this.blockHitPlatform, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.brokenBlocks, this.foesGroup, this.blockHitFoe, ()=>{
         return true;
       }, this);
     }
@@ -165,7 +205,9 @@ export default class Game extends Phaser.Scene {
       if (player.falling) {
         const tile = this.getTile(block)
         console.log("Hit!", tile, block.layer.name, player.jumping, player.falling)
-        this.brokenBlocks.add(new Block(this, block.pixelX, block.pixelY, block.layer.name))
+        const brokenBlock = new Block(this, block.pixelX, block.pixelY, block.layer.name)
+        this.brokenBlocks.add(brokenBlock)
+        brokenBlock.fall()
         this.breakable.removeTileAt(tile.x, tile.y);
       }
 
@@ -183,6 +225,47 @@ export default class Game extends Phaser.Scene {
         //this.playAudio("coin");
        // this.updateCoins();
       }
+    }
+
+    fireballHitPlayer(player, fireball) {
+      fireball.destroy();
+      this.playerDeath()
+    }
+
+    blockHitPlatform(block, platform) {
+      block.destroyed = true;
+      block.fallSmoke();
+      block.destroy();
+    }
+
+    blockHitFoe(block, foe) {
+      block.destroyed = true;
+      foe.destroy();
+      block.fallSmoke();
+      block.destroy();
+    }
+
+    hitWater(player, water) {
+      player.dead = true;
+      player.body.enable = false;
+      player.setAlpha(0)
+      Array(5).fill(0).forEach(star => {
+        new RockSmoke(this, player.x + 16, player.y  + 16)
+      })
+      //this.playAudio("water");
+      this.tweens.add({
+        targets: this.player,
+        duration: 100,
+        alpha: {from: 1, to: 0},
+        repeat: -1
+      })
+      this.playerDeath()
+    }
+
+    fireballHitPlatform(fireball, platform) {
+      //this.playAudio("bump2");
+      Array(Phaser.Math.Between(1,3)).fill(0).forEach( i => new Smoke(this, fireball.x, fireball.y, null, null, 0x95b8c7))
+      fireball.destroy();
     }
 
     turnFoe (foe, platform) {
