@@ -27,13 +27,24 @@ export default class Transition extends Phaser.Scene {
 
         this.add.bitmapText(this.center_width, this.center_height - 20, "pixelFont", messages[this.next], 40).setOrigin(0.5)
         this.add.bitmapText(this.center_width, this.center_height + 20, "pixelFont", "Ready?", 30).setOrigin(0.5)
+        this.add.bitmapText(this.center_width, this.center_height + 60, "pixelFont", "SPACE to START", 30).setOrigin(0.5)
+
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
+        this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
+        this.time.delayedCall(1000, () => this.loadNext(), null, this)
     }
 
     update () {
     }
 
     loadNext () {
-        this.scene.start(this.next, { name: this.name, number: this.number });
+        console.log("About to load next: ", this.number)
+        if (this.number < 6) {
+            this.scene.start("game", { name: this.name, number: this.number });
+        } else {
+            this.sound.stopAll();
+            this.scene.start("outro");
+        }
+
     }
 }

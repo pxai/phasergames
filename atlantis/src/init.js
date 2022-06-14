@@ -5,6 +5,7 @@ import Splash from "./splash";
 import Transition from "./transition";
 import Game from "./game";
 
+
 const config = {
     width: 800,
     height: 608,
