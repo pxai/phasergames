@@ -135,6 +135,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     update () {
+        if (this.health < 0) return;
         //if (Phaser.Math.Between(0, 6) > 5)
             //this.scene.trailLayer.add(new Trail(this.scene, this.x, this.y + 8, "particle3", -this.body.velocity.x, this.body.velocity.y === 0 ? 300 : -this.body.velocity.y))
     
@@ -162,24 +163,8 @@ class Player extends Phaser.GameObjects.Sprite {
         this.body.rotation += dir * 100
     }
 
-
-    calculateXHitVelocity (shell) {
-        if (this.limited) {
-            return this.body.speed > 150 ? 150 : this.body.speed
-        } else {
-            const direction = (this.x - shell.x) < 8 ? -1 : 1;
-            return direction * 150;
-        }
-    }
-
-    calculateYHitVelocity () {
-        return (this.limited)
-            ? this.body.speed > 400 ? -400 : -this.body.speed
-            : -400;
-    }
-
     showPoints (score, color = 0xff0000) {
-        let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "wendy", score, 20, color).setOrigin(0.5);
+        let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "wendy", score, 40, color).setOrigin(0.5);
         this.scene.tweens.add({
             targets: text,
             duration: 1000,
@@ -214,22 +199,29 @@ class Player extends Phaser.GameObjects.Sprite {
     pickEmber () {
         const health = Phaser.Math.Between(1, 10);
         this.health = health + this.health > 100 ? 100 : health + this.health;
+        this.showPoints("+"+health);
     }
 
     hit (score = 0) {
         this.isHit = true;
+        this.scene.cameras.main.shake(100);
         this.health--;
+        this.showPoints("-1", 0xcb0000);
         this.scene.updateHealth(this.health)
-        //new Dust(this.scene, this.x, this.y, "0x902406")
-        this.scene.tweens.add({
-            targets: this,
-            duration: 100,
-            alpha: {from: 0, to: 1},
-            repeat: 5,
-            onComplete: () => {
-                this.isHit = false
-            }
-        });
+
+        if (this.health < 0) {
+            this.scene.gameOver();
+        } else {
+            this.scene.tweens.add({
+                targets: this,
+                duration: 200,
+                alpha: {from: 0, to: 1},
+                repeat: 5,
+                onComplete: () => {
+                    this.isHit = false
+                }
+            });
+        }
     }
 
 

@@ -1,11 +1,13 @@
 import Player from "./player";
 import Exit from "./exit";
+import Checkpoint from "./checkpoint";
 import Volcano from "./volcano";
 import WaterVolcano from "./water_volcano";
 import Ember from "./ember";
 import Mine from "./mine";
 import Fish from "./fish";
 import HealthBar from "./health_bar";
+import Explosion from "./explosion";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -30,6 +32,7 @@ export default class Game extends Phaser.Scene {
       this.center_height = this.height / 2;
       this.trailLayer = this.add.layer();
       this.cameras.main.setBackgroundColor(0x000000);
+      console.log("Added scene number: ", this.number)
       this.addMap();
       this.addPlayer();
       this.addLight();
@@ -75,10 +78,12 @@ export default class Game extends Phaser.Scene {
       this.exits = this.add.group();
       this.bubbles = this.add.group();
       this.embers = this.add.group();
+      this.emberHeads = this.add.group();
       this.volcanos = this.add.group();
       this.waterVolcanos = this.add.group();
       this.volcanoShots = this.add.group();
       this.brokenBlocks = this.add.group();
+      this.checkpoints = this.add.group();
       this.mines = this.add.group();
       this.fish = this.add.group();
       this.texts = [];
@@ -95,9 +100,18 @@ export default class Game extends Phaser.Scene {
           this.exits.add(new Exit(this, object.x - 16, object.y))
         }
 
+        if (object.name.startsWith("checkpoint")){
+          this.checkpoints.add(new Checkpoint(this, object.x, object.y))
+        }
+
         if (object.name === "ember") {
           let ember = new Ember(this, object.x, object.y);
           this.embers.add(ember)
+        }
+
+        if (object.name === "ember_head") {
+          let emberHead = new Ember(this, object.x, object.y, "ember_head");
+          this.emberHeads.add(emberHead)
         }
 
         if (object.name === "fish") {
@@ -118,7 +132,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addPlayer () {
-      const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
+      const playerPosition = this.registry.get("checkpoint") ||  this.objectsLayer.objects.find( object => object.name === "player")
       this.player = new Player(this, playerPosition.x, playerPosition.y)
       this.addHealth();
       this.physics.add.collider(this.player, this.platform, this.hitPlatform, ()=>{
@@ -157,7 +171,19 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
+      this.physics.add.overlap(this.player, this.emberHeads, this.hitEmber, ()=>{
+        return true;
+      }, this);
+
       this.physics.add.overlap(this.healthBar, this.embers, this.pickEmber, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.healthBar, this.emberHeads, this.pickEmberHead, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.player, this.checkpoints, this.hitCheckpoint, ()=>{
         return true;
       }, this);
 
@@ -173,12 +199,16 @@ export default class Game extends Phaser.Scene {
     }
 
     hitVolcanos (player, volcano) {
-      if (!this.player.isHit)
-      this.player.hit();
+      if (!this.player.isHit) {
+        new Explosion(this, this.player.x, this.player.y, 0.5)
+        this.player.hit();
+      }
+
     }
 
     hitVolcanoShots (player, volcanoShot) {
       if (!this.player.isHit) {
+        new Explosion(this, this.player.x, this.player.y, 1)
         this.player.hit();
         volcanoShot.destroy();
       }
@@ -186,6 +216,7 @@ export default class Game extends Phaser.Scene {
 
     hitMines (player, mine) {
       if (!this.player.isHit) {
+        new Explosion(this, this.player.x, this.player.y, 3)
         this.player.hit();
         mine.destroy();
       }
@@ -209,6 +240,13 @@ export default class Game extends Phaser.Scene {
       ember.tween.stop();
     }
 
+    hitCheckpoint(player, checkpoint) {
+      const position = {x: checkpoint.x, y: player.y };
+      checkpoint.destroy();
+      player.showPoints("CHECKPOINT!")
+      this.registry.set("checkpoint", position)
+    }
+
     pickEmber (healthBar, ember) {
       ember.pick();
       this.updateEmbers();
@@ -219,6 +257,19 @@ export default class Game extends Phaser.Scene {
         duration: 50,
         repeat: 5
       })
+    }
+
+    pickEmberHead (healthBar, emberHead) {
+      emberHead.pick();
+      this.updateEmbers();
+      this.player.pickEmber();
+      this.tweens.add({
+        targets: [this.healthBar],
+        scale: { from: 1.2, to: 1},
+        duration: 50,
+        repeat: 5
+      })
+      this.finishScene()
     }
 
     exitScene(player, platform) {
@@ -254,9 +305,15 @@ export default class Game extends Phaser.Scene {
 
     }
 
-    finishScene () {
+    gameOver () {
       //this.sky.stop();
       //this.theme.stop();
+        this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number});
+ 
+    }
+
+    finishScene () {
+      this.game.sound.stopAll();
       this.scene.start("outro", {next: "underwater", name: "STAGE", number: this.number + 1});
     }
 
@@ -267,7 +324,7 @@ export default class Game extends Phaser.Scene {
     }
 
     updateHealth (health) {
-      console.log("Added health: ", health)
+      health = health < 0 ? 0 : health;
       this.healthBar.width = health * 5.8;
       this.playerLight.radius = health * 5;
     }

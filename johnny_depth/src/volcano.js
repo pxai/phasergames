@@ -29,6 +29,7 @@ export default class Volcano extends Phaser.GameObjects.Sprite {
     }
 
     shot() {
+        if (!this.scene) return;
         this.scene.tweens.add({
             targets: this,
             duration: 100,

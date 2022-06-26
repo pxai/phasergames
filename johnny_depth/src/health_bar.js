@@ -15,7 +15,7 @@ class HealthBar extends Phaser.GameObjects.Rectangle {
      update () {
          if (this.scene && this.scene.player) {
             this.x = this.scene.player.x
-            this.y = this.scene.player.y + 200
+            this.y = this.scene.cameras.main.worldView.y + 700
          }
      }
   
