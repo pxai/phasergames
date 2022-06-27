@@ -23,17 +23,12 @@ export default class Bootloader extends Phaser.Scene {
             this.scene.start("splash", { name: "tutorial", number: 0 });
         },this);
 
-       /* Array(7).fill(0).forEach((_,i) => {
-            this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
-        });*/
-
-        //
-        // this.load.audio("beam", "assets/sounds/beam.mp3");
 
         this.load.bitmapFont("wendy", "assets/fonts/wendy.png", "assets/fonts/wendy.xml");
         this.load.bitmapFont("pixelFont", "assets/fonts/arcade.png", "assets/fonts/arcade.xml");
         this.load.spritesheet("johnny", "assets/images/johnny.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("fireball", "assets/images/fireball.png",  { frameWidth: 32, frameHeight: 32 });
+        this.load.image("logo", "assets/images/logo.png");
         this.load.image("shot", "assets/images/shot.png");
         this.load.image('bubble', 'assets/images/bubble.png');
         this.load.image('volcano', 'assets/images/volcano.png');
@@ -58,7 +53,11 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("water_volcano", "assets/sounds/water_volcano.mp3");
         this.load.audio("volcano", "assets/sounds/volcano.mp3");
         this.load.audio("explosion", "assets/sounds/explosion.mp3");
-
+        this.load.audio("bump", "assets/sounds/bump.mp3");
+        this.load.audio("death", "assets/sounds/death.mp3");
+        this.load.audio("win", "assets/sounds/win.mp3");
+        this.load.audio("ember", "assets/sounds/ember.mp3");
+        this.load.audio("pick", "assets/sounds/pick.mp3");
 
         this.load.audio("splash", "assets/sounds/splash.mp3");
         this.load.audio("game", "assets/sounds/game.mp3");

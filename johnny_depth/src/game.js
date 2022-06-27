@@ -162,7 +162,7 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
-      this.physics.add.collider(this.player, this.volcanoShots, this.hitVolcanoShots, ()=>{
+      this.physics.add.overlap(this.player, this.volcanoShots, this.hitVolcanoShots, ()=>{
         return true;
       }, this);
 
@@ -265,6 +265,7 @@ export default class Game extends Phaser.Scene {
 
     hitFish (player, fish) {
       if (!this.player.isHit) {
+        this.playAudio("bump", 1);
         this.player.hit();
         fish.turn();
       }
@@ -272,11 +273,15 @@ export default class Game extends Phaser.Scene {
 
     hitPlatform(player, platform) {
       if (!this.player.isHit)
+        this.playAudio("bump", 0.6);
         this.player.hit();
     }
 
     hitEmber (player, ember) {
-      this.bubbleExplosion(ember)
+      if (ember.taken) return;
+      ember.taken = true;
+      this.bubbleExplosion(player)
+      this.playAudio("pick")
       ember.body.setImmovable(false);
       ember.body.setAllowGravity(true)
       ember.tween.stop();
@@ -294,6 +299,7 @@ export default class Game extends Phaser.Scene {
       ember.pick();
       this.updateEmbers();
       this.player.pickEmber();
+      this.playAudio("ember")
       this.tweens.add({
         targets: [this.healthBar],
         scale: { from: 1.2, to: 1},
@@ -306,13 +312,16 @@ export default class Game extends Phaser.Scene {
       emberHead.pick();
       this.updateEmbers();
       this.player.pickEmber();
+      this.playAudio("win")
       this.tweens.add({
         targets: [this.healthBar],
         scale: { from: 1.2, to: 1},
         duration: 50,
-        repeat: 5
+        repeat: 5,
+        onComplete: () => {
+          this.finishScene()
+        }
       })
-      this.finishScene()
     }
 
     exitScene(player, platform) {
@@ -322,6 +331,11 @@ export default class Game extends Phaser.Scene {
 
     loadAudios () {
       this.audios = {
+        "pick": this.sound.add("pick"),
+        "ember": this.sound.add("ember"),
+        "win": this.sound.add("win"),
+        "bump": this.sound.add("bump"),
+        "death": this.sound.add("death"),
         "explosion": this.sound.add("explosion"),
         "fireball": this.sound.add("fireball"),
         "volcano": this.sound.add("volcano"),
@@ -379,6 +393,7 @@ export default class Game extends Phaser.Scene {
     }
 
     gameOver () {
+      this.playAudio("death")
       //this.sky.stop();
       //this.theme.stop();
         this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number});

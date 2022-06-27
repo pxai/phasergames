@@ -10,3 +10,4 @@ Bitmap font generator:
 https://snowb.org/
 
 Music: ETC
+https://opengameart.org/content/8-bit-sound-effects-library

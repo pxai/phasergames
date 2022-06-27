@@ -16,7 +16,7 @@ export default class Splash extends Phaser.Scene {
         this.generateBubble()
 
         this.cameras.main.setBackgroundColor(0x000000);
-        //this.showLogo();        ;
+        this.showLogo();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
@@ -35,17 +35,17 @@ export default class Splash extends Phaser.Scene {
     }
 
     showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
+        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(1.2).setOrigin(0.5)
         this.tweens.add({
             targets: this.gameLogo,
             duration: 1000,
             x: {
-              from: this.center_width * 2,
+              from: this.center_width,
               to: this.center_width
             },
             y: {
                 from: -200,
-                to: 130
+                to: 200
               },
           })
     }
@@ -89,7 +89,7 @@ export default class Splash extends Phaser.Scene {
 
         this.space.setInteractive();
         this.space.on('pointerdown', () => {
-            //this.sound.add("success").play();
+            this.sound.add("ember").play()
             this.startGame()
         })
     }
