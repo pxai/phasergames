@@ -1,5 +1,5 @@
 import Shot from "./shot";
-import Bubble from "./bubble";
+import { Bubble } from "./bubble";
 
 class Player extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, name = "johnny", limited = true) {
@@ -11,7 +11,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.body.setAllowGravity(true);
-        this.body.setCircle(16);
+        this.body.setCircle(22);
         this.defaultVelocity = 300;
         this.body.setDrag(this.defaultVelocity/2)
         this.body.setBounce(1);
@@ -49,7 +49,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     setKeys () {
-        this.ESC = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
+        this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
         this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.scene.input.mouse.disableContextMenu();
         this.scene.input.on('pointerdown', (pointer) => this.handleClick(pointer), this);
@@ -73,13 +73,14 @@ class Player extends Phaser.GameObjects.Sprite {
         console.log("Move: ", position)
         const point = new Phaser.Geom.Point(position.x, position.y);
         const distance = 1 //Phaser.Math.Distance.BetweenPoints(this, point) / 100;
-        
+        this.moving = true;
         this.anims.play(this.name+"move", true);
         
         this.setScale(0.5, 1)
+        this.scene.playBubble();
         
         Array(Phaser.Math.Between(6, 10)).fill(0).forEach(i => {
-            this.scene.trailLayer.add(new Bubble(this.scene, this.x + (Phaser.Math.Between(-10, 10)) , this.y + (Phaser.Math.Between(-10, 10)),  50, 1))
+            this.scene.trailLayer.add(new Bubble(this.scene, this.x + (Phaser.Math.Between(-10, 10)) , this.y + (Phaser.Math.Between(-10, 10)),  50, 1, 600, 0x0099dc))
         })
         this.scene.physics.moveTo(this, position.x, position.y, this.defaultVelocity / distance);
     }
@@ -90,13 +91,15 @@ class Player extends Phaser.GameObjects.Sprite {
         //const distance = 1 //Phaser.Math.Distance.BetweenPoints(this, point) / 100;
         this.anims.play(this.name+"move", true);
         this.setScale(0.5, 1)
+        this.moving = true;
         console.log("Previous health: " + this.health, (Math.round((Math.abs(this.dy)/50 + Math.abs(this.dx)/50))));
         this.health = this.health - 5 - (Math.round((Math.abs(this.dy)/50 + Math.abs(this.dx)/50)));
         
+        this.scene.playBubble();
         console.log("Next health: " + this.health)
         this.scene.updateHealth(this.health)
         Array(Phaser.Math.Between(6, 10)).fill(0).forEach(i => {
-            this.scene.trailLayer.add(new Bubble(this.scene, this.x + (Phaser.Math.Between(-10, 10)) , this.y + (Phaser.Math.Between(-10, 10)),  50, 1))
+            this.scene.trailLayer.add(new Bubble(this.scene, this.x + (Phaser.Math.Between(-10, 10)) , this.y + (Phaser.Math.Between(-10, 10)),  50, 1, 600, 0x0099dc))
         })
         this.body.setVelocityX(this.dx * 3);
         this.body.setVelocityY(this.dy * 3)
@@ -107,13 +110,13 @@ class Player extends Phaser.GameObjects.Sprite {
 
 
     shot(position) {
-        console.log("Shot: ", position)
         const point = new Phaser.Geom.Point(position.x, position.y);
-
+        this.scene.playBubble();
+        this.scene.playAudio("fireball", 0.6)
         const fireball = new Shot(this.scene, this.x, this.y, 0.7) ;
         this.health -= 10;
         this.scene.updateHealth(this.health)
-        //this.scene.fireballs.add(fireball)
+        this.scene.fireballs.add(fireball)
         const distance = Phaser.Math.Distance.BetweenPoints(this, point) / 100;
        this.scene.physics.moveTo(fireball, point.x, point.y, 300);
     }
@@ -135,13 +138,18 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     update () {
-        if (this.health < 0) return;
-        //if (Phaser.Math.Between(0, 6) > 5)
-            //this.scene.trailLayer.add(new Trail(this.scene, this.x, this.y + 8, "particle3", -this.body.velocity.x, this.body.velocity.y === 0 ? 300 : -this.body.velocity.y))
+        if (!this.scene || this.health < 0) return;
+        if (Phaser.Math.Between(0, 6) > 4 && this.moving)
+            this.scene.trailLayer.add(new Bubble(this.scene, this.x + (Phaser.Math.Between(-4, 4)) , this.y + (Phaser.Math.Between(-4, 4)),  50, 1, 600, 0x0099dc))
+
     
 
         if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
             this.dash();
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.S)) {
+            this.scene.skip();
         }
 
         this.getSpeeds();
@@ -205,6 +213,7 @@ class Player extends Phaser.GameObjects.Sprite {
     hit (score = 0) {
         this.isHit = true;
         this.scene.cameras.main.shake(100);
+        this.scene.bubbleExplosion(this.x, this.y)
         this.health--;
         this.showPoints("-1", 0xcb0000);
         this.scene.updateHealth(this.health)

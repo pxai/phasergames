@@ -9,7 +9,7 @@ export default class Bootloader extends Phaser.Scene {
             "progress",
             function (value) {
                 this.progressBar.clear();
-                this.progressBar.fillStyle(0xffa609, 1);
+                this.progressBar.fillStyle(0x0777b7, 1);
                 this.progressBar.fillRect(
                     this.cameras.main.width / 4,
                     this.cameras.main.height / 2 - 16,
@@ -43,10 +43,21 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("ember_head", "assets/images/ember_head.png", { frameWidth: 128, frameHeight: 128 });
         this.load.spritesheet("fish", "assets/images/fish.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("explosion", "assets/images/explosion.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("blue_explosion", "assets/images/blue_explosion.png", { frameWidth: 32, frameHeight: 32 });
         this.load.image('cave', 'assets/maps/cave.png');
-        Array(1).fill(0).forEach((_,i) => {
+        Array(2).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`);
         });
+
+
+        Array(7).fill(0).forEach((_,i) => {
+            this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
+        });
+
+        this.load.audio("fireball", "assets/sounds/fireball.mp3");
+        this.load.audio("water_volcano", "assets/sounds/water_volcano.mp3");
+        this.load.audio("volcano", "assets/sounds/volcano.mp3");
+        this.load.audio("explosion", "assets/sounds/explosion.mp3");
 
 
         this.load.audio("splash", "assets/sounds/splash.mp3");
@@ -64,7 +75,7 @@ export default class Bootloader extends Phaser.Scene {
 
     createBars () {
         this.loadBar = this.add.graphics();
-        this.loadBar.fillStyle(0x0777b7, 1);
+        this.loadBar.fillStyle(0xffa609, 1);
         this.loadBar.fillRect(
             this.cameras.main.width / 4 - 2,
             this.cameras.main.height / 2 - 18,

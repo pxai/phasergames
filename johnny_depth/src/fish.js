@@ -1,3 +1,4 @@
+import { Bubble } from "./bubble";
 export default class Fish extends Phaser.Physics.Arcade.Sprite {
     constructor (scene, x, y, type="right") {
         super(scene, x, y, "fish");
@@ -15,26 +16,22 @@ export default class Fish extends Phaser.Physics.Arcade.Sprite {
     init () {
         this.scene.anims.create({
             key: this.name,
-            frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 0 }),
-            frameRate: 5,
-            repeat: -1
-          });
-
-          this.scene.anims.create({
-            key: this.name + "death",
-            frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 0 }),
-            frameRate: 5,
+            frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 1 }),
+            frameRate: 3,
             repeat: -1
           });
   
           this.anims.play(this.name, true)
           this.body.setVelocityX(this.direction * 150);
           this.flipX = this.direction > 0;
-          this.on('animationcomplete', this.animationComplete, this);
+          this.scene.events.on("update", this.update, this);
     }
 
 
     update () {
+      if (!this.scene) return;
+      if (Phaser.Math.Between(0, 5) > 4)
+        this.scene.trailLayer.add(new Bubble(this.scene, this.x + (Phaser.Math.Between(-4, 4)) , this.y + (Phaser.Math.Between(-4, 4)),  50, 1, 600, 0x0099dc))
     }
 
     turn () {
@@ -44,16 +41,7 @@ export default class Fish extends Phaser.Physics.Arcade.Sprite {
     }
 
     death () {
-        this.dead = true;
-        this.body.enable = false;
-        this.body.rotation = 0;
-        this.anims.play(this.name + "death")
-      }
-
-      animationComplete(animation, frame) {
-        if (animation.key === "death") {
-          this.destroy()
-        }
+        this.destroy();
     }
 }
 

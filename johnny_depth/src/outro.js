@@ -11,16 +11,16 @@ export default class Outro extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.add.image(0,0, "background").setOrigin(0);
+        //this.add.image(0,0, "background").setOrigin(0);
         this.introLayer = this.add.layer();
         this.splashLayer = this.add.layer();
 
         this.text = [ 
-            "You escaped from Atlantis!",
-            "After all your efforts,",
-            "nobody will believe",
-            "what you saw here...",
-            "maybe you got some coins though...",
+            "Ember Head is yours!",
+            "Your skills were under trail",
+            "but this is the day",
+            "you'll always remember",
+            "as the day you lost another jam!",
             "",
             "",
             "",
@@ -46,7 +46,7 @@ export default class Outro extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -56,7 +56,7 @@ export default class Outro extends Phaser.Scene {
       }
 
     showLine(text, y) {
-        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "pixelFont", text, 20).setTint(0x472e26).setOrigin(0.5).setAlpha(0));
+        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "pixelFont", text, 25).setTint(0x0777b7).setDropShadow(1, 2, 0xffffff, 0.7).setOrigin(0.5).setAlpha(0));
         this.tweens.add({
             targets: line,
             duration: 2000,

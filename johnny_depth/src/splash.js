@@ -1,3 +1,4 @@
+import { MovingBubble } from "./bubble";
 export default class Splash extends Phaser.Scene {
     constructor () {
         super({ key: "splash" });
@@ -12,7 +13,7 @@ export default class Splash extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-
+        this.generateBubble()
 
         this.cameras.main.setBackgroundColor(0x000000);
         //this.showLogo();        ;
@@ -21,6 +22,10 @@ export default class Splash extends Phaser.Scene {
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
 
         //this.showPlayer();
+    }
+    update() {
+        if (Phaser.Math.Between(0, 5) > 4)
+            this.generateBubble();
     }
 
     startGame () {
@@ -62,15 +67,18 @@ export default class Splash extends Phaser.Scene {
           delay: 0
       })
     }
-  
+
+    generateBubble () {
+        new MovingBubble(this, Phaser.Math.Between(0, this.width), 800, 100, -1, 20000)
+    }
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: track beam", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "pixelFont", "B: shoot coins", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 450, "pixelFont", "MOUSE TO MOVE", 30).setOrigin(0.5).setTint(0x0777b7).setDropShadow(1, 2, 0xffffff, 0.7);
+        this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: DASH", 30).setOrigin(0.5).setTint(0x0777b7).setDropShadow(1, 2, 0xffffff, 0.7);
+        this.add.bitmapText(this.center_width, 550, "pixelFont", "RIGHT CLICK: SHOOT", 30).setOrigin(0.5).setTint(0x0777b7).setDropShadow(1, 2, 0xffffff, 0.7);
         this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Click here/Press SPACE to start", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5).setTint(0x0777b7).setDropShadow(1, 2, 0xffffff, 0.7);
+        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Click here/Press SPACE to start", 30).setOrigin(0.5).setTint(0x0777b7).setDropShadow(1, 2, 0xffffff, 0.7);
         this.tweens.add({
             targets: this.space,
             duration: 300,
