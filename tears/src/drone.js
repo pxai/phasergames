@@ -38,7 +38,7 @@ export default class Drone extends Phaser.Physics.Arcade.Sprite {
     update () {
       super.update();
 
-      if (Phaser.Math.Between(0, 500) > 499) {
+      if (Phaser.Math.Between(0, 1000) > 999) {
           this.directShot()
       }
     }
@@ -49,7 +49,7 @@ export default class Drone extends Phaser.Physics.Arcade.Sprite {
       const fireball = new Fireball(this.scene, this.x, this.y + 16, 0)
       this.scene.playAudio("foeshot")
       this.scene.fireballs.add(fireball)
-      this.scene.physics.moveTo(fireball, this.scene.player.x, this.scene.player.y, 100);
+      this.scene.physics.moveTo(fireball, this.scene.player.x, this.scene.player.y, 150);
   }
 
     turn () {

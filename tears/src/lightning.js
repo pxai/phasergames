@@ -1,16 +1,11 @@
 export default class Lightning {
     constructor(scene) {
         this.scene = scene;
-        this.scene.events.on("update", this.update, this);
-    }
-
-    update () {
-      if (Phaser.Math.Between(1, 1001) < 1000) return;
-      this.lightning();
+        this.lightning();
     }
 
     lightning () {
-          this.scene.time.delayedCall(Phaser.Math.Between(1000, 4000), () => this.dewIt(), null, this);
+          this.scene.time.delayedCall(Phaser.Math.Between(10000, 20000), () => this.dewIt(), null, this);
     }
 
     dewIt() {
@@ -43,5 +38,6 @@ export default class Lightning {
 
       timeline.play();  
       this.scene.playAudioRandomly("thunder" + Phaser.Math.Between(0, 3))
+      this.scene.time.delayedCall(Phaser.Math.Between(10000, 20000), () => this.dewIt(), null, this);
     }
 }

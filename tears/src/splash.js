@@ -18,7 +18,7 @@ export default class Splash extends Phaser.Scene {
 
 
         this.cameras.main.setBackgroundColor(0x052c46)
-        this.add.tileSprite(0, 300 , 2048, 1543, "background").setScale(0.5).setOrigin(0);
+        this.add.tileSprite(0, 500 , 2048, 1543, "background").setScale(0.5).setOrigin(0);
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
@@ -88,7 +88,7 @@ export default class Splash extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -99,9 +99,8 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "type", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 500, "type", "S/DOWN: BUILD WALL", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "type", "SPACE: HAMMER", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 450, "type", "Arrows: move", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 500, "type", "Any key: place block", 30).setOrigin(0.5);
         this.add.sprite(this.center_width - 50, 620, "pello").setOrigin(0.5).setScale(0.3)
         this.add.bitmapText(this.center_width + 40, 620, "type", "By PELLO", 15).setOrigin(0.5);
         this.space = this.add.bitmapText(this.center_width, 670, "type", "Press SPACE to start", 30).setOrigin(0.5);

@@ -23,7 +23,7 @@ export default class Bootloader extends Phaser.Scene {
             this.scene.start("splash");
         },this);
 
-        Array(5).fill(0).forEach((_,i) => {
+        Array(1).fill(0).forEach((_,i) => {
             this.load.audio(`music${i}`,`assets/sounds/music${i}.mp3`)
         });
 
@@ -58,7 +58,7 @@ export default class Bootloader extends Phaser.Scene {
 
         this.load.spritesheet("walt", "assets/images/walt.png", { frameWidth: 64, frameHeight: 64 });
 
-        Array(5).fill(0).forEach((_,i) => {
+        Array(6).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`);
         });
         this.load.image('softbricks', 'assets/maps/softbricks.png');
@@ -67,6 +67,7 @@ export default class Bootloader extends Phaser.Scene {
 
         this.load.image('chain', 'assets/images/chain.png');
         this.load.image('gun', 'assets/images/gun.png');
+        this.load.image('score', 'assets/images/score.png');
 
         this.load.image('rain', 'assets/images/rain.png');
         this.load.image('snow', 'assets/images/snow.png');

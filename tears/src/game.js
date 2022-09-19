@@ -39,7 +39,7 @@ export default class Game extends Phaser.Scene {
 
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 100);
       this.cameraY = 0;
-      console.log(this.cameraY)
+
       this.physics.world.enable([ this.player ]);
       this.addScore();
       this.loadAudios(); 
@@ -59,6 +59,8 @@ export default class Game extends Phaser.Scene {
     addScore() {
       this.scoreGun = this.add.bitmapText(75, 10, "type", "x6 ", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
       this.scoreGunLogo = this.add.sprite(50, 25, "gun").setScale(1).setOrigin(0.5).setScrollFactor(0)
+      this.scoreText = this.add.bitmapText(this.center_width + 17, 10, "type", "x0 ", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.scoreLogo = this.add.sprite(this.center_width, 28, "score").setScale(0.9).setOrigin(0.5).setScrollFactor(0)
     }
 
     createMap() {
@@ -97,8 +99,10 @@ export default class Game extends Phaser.Scene {
           this.foesGroup.add(quanthuman);
         }
 
-        if (object.name === "platform") {
-          this.platformGroup.add(new Platform(this, object.x, object.y, object.type))
+        if (object.name.startsWith("platform")) {
+          const [name, size, type] = object.name.split(":");
+          console.log("Platform! ", size, type)
+          this.platformGroup .add(new Platform(this, object.x, object.y, size, type))
         }
 
         if (object.name === "turn") {
@@ -122,15 +126,7 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
-      this.physics.add.collider(this.quanthumanGroup, this.letters, this.turnFoe, ()=>{
-        return true;
-      }, this);
-
-      this.physics.add.collider(this.droneGroup, this.letters, this.turnFoe, ()=>{
-        return true;
-      }, this);
-
-      this.physics.add.collider(this.quanthumanGroup, this.turnGroup, this.turnFoe, ()=>{
+      this.physics.add.collider(this.droneGroup, this.turnGroup, this.turnFoe, ()=>{
         return true;
       }, this);
 
@@ -160,7 +156,7 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
-      this.physics.add.collider(this.player, this.platformGroup, this.hitFloor, ()=>{
+      this.physics.add.collider(this.player, this.platformGroup, this.hitPlatform, ()=>{
         return true;
       }, this);
   
@@ -239,9 +235,12 @@ export default class Game extends Phaser.Scene {
       }
     }
 
-    blowFoe(blow, foe) {
+    blowFoe(letter, foe) {
       this.playAudio("kill");
       this.playAudio("foedeath");
+      if (foe.name === "quanthuman"){
+        this.updateScore(1);
+      }
       foe.death();
     }
 
@@ -304,6 +303,10 @@ export default class Game extends Phaser.Scene {
       }
     }
 
+    hitPlatform(player, platform) {
+      this.player.isOnPlatform = true;
+    }
+
       loadAudios () {
         this.audios = {
           "build": this.sound.add("build"),
@@ -339,11 +342,11 @@ export default class Game extends Phaser.Scene {
       }
 
       playMusic (theme="game") {
-        this.theme = this.sound.add("music" + this.number);
+        this.theme = this.sound.add("music0") // + this.number);
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 0.7,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -355,7 +358,7 @@ export default class Game extends Phaser.Scene {
     update() {
       this.landscape.setTilePosition(this.cameras.main.scrollX);
       this.player.update();
-      if (this.number === 3 && this.player.y > 1500) this.restartScene();
+      if (this.number !== 3 && this.player.y > 1500) this.restartScene();
     }
 
     finishScene () {
@@ -376,7 +379,7 @@ export default class Game extends Phaser.Scene {
     updateScore (points = 0) {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
-        this.scoreText.setText(Number(score).toLocaleString());
+        this.scoreText.setText("x" +score);
     }
 
     updateGun (gun) {

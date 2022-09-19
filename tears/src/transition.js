@@ -1,3 +1,6 @@
+
+import Weather from "./weather";
+
 export default class Transition extends Phaser.Scene {
     constructor () {
         super({ key: "transition" });
@@ -18,8 +21,11 @@ export default class Transition extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
+        this.cameras.main.setBackgroundColor(0x052c46)
+        this.add.tileSprite(0, 500 , 2048, 1543, "background").setScale(0.5 ).setOrigin(0);
+        new Weather(this, "rain");
 
-        if (this.number === 5) this.loadOutro();
+        if (this.number === 5) this.loadOutro(); // CHANGE THIS
 
         //this.add.sprite(this.center_width, this.center_height - 170, "walt");
         //this.add.bitmapText(this.center_width, this.center_height - 20, "type", messages[this.number], 40).setOrigin(0.5)
@@ -59,12 +65,12 @@ export default class Transition extends Phaser.Scene {
 
     showText() {
         const texts = [
-            "It is the year 2079.\nAll replicants were retired,\n but Tyrell Corporation\nhad other plans...\nAgent Dickhard was called again\nThis time equiped with\n an advanced keyboard.\nUse it to create matter around\nyou and move forward!",
-            "transition1",
-            "transition2",
-            "transition3",
-            "transition4",
-            
+            "It is the year 2079.\nAll replicants were retired,\n but Tyrell Corporation\nhad other plans...\nAgent Dickhard was called again\nThis time equiped with\n an advanced weapon.",
+            "Beware the Drones!\nThey are hard to hit\nbut you can protect yourself \nplacing blocks to stop\ntheir shots...",
+            "Quanthumans on the loose\nTry to hit them\nplacing blocks!\nThey may appear\nand disappear",
+            "Now\nthis is getting\nway harder...",
+            "I've seen things\nstages without ground...",
+            "Time to die"
         ];
         this.characters = [];
         let jump = 0;

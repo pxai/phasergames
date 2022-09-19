@@ -26,20 +26,18 @@ class Player extends Phaser.GameObjects.Sprite {
         this.invincible = false;
         this.bullets = 6;
         this.loading = false;
-
+        this.isOnPlatform = false;
         this.health = health;
 
         this.dead = false;
         const numbers = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'ZERO'];
         "qwertyuiopasdfghjklzxcvbnm,.".split('').concat(numbers).forEach( k => {
-            console.log("adding for : ", 'keydown-'+k.toUpperCase())
             this.scene.input.keyboard.on('keydown-'+k.toUpperCase(), this.keyPressed.bind(this))
         })
     }
 
     keyPressed (params) {
         if (this.bullets === 0) return;
-        console.log('Presed : ', params);
         const key = params.key.toUpperCase()
         const { x, y } = LETTERS[key];
 
@@ -113,7 +111,7 @@ class Player extends Phaser.GameObjects.Sprite {
   
 
     update () {
-        if (this.y > 1500) this.die();
+        if (this.y > 1500 && this.scene.number !== 3) this.die();
         if (this.dead) return;
         if (this.jumping ) {
            // if (Phaser.Math.Between(1,101) > 100) new Star(this.scene, this.x, this.y + 5)
@@ -123,7 +121,8 @@ class Player extends Phaser.GameObjects.Sprite {
             }
         }
         //if (Phaser.Input.Keyboard.JustDown(this.down)) {Phaser.Input.Keyboard.JustDown(this.W)
-        if (Phaser.Input.Keyboard.JustDown(this.cursor.up) && this.body.blocked.down) {
+        if (Phaser.Input.Keyboard.JustDown(this.cursor.up) && (this.body.blocked.down || this.isOnPlatform )) {
+            this.isOnPlatform = false;
             // new Dust(this.scene, this.x, this.y)
             this.building = false;
             this.body.setVelocityY(this.jumpVelocity);

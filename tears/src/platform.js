@@ -1,9 +1,10 @@
 export default class Platform extends Phaser.GameObjects.Container {
-    constructor (scene, x, y, size = 4, demo = false) {
+    constructor (scene, x, y, size = 4, type = 3) {
         super(scene, x, y);
         this.x = x;
         this.y = y;
         this.scene = scene;
+        this.type = type; 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
@@ -17,25 +18,23 @@ export default class Platform extends Phaser.GameObjects.Container {
         this.add(this.chain);
         this.platform = new Phaser.GameObjects.Sprite(this.scene, 0, 0, "platform" + size).setOrigin(0);
         this.add(this.platform);
-
+        
         this.init();
     }
 
     init() {
-        const type = Phaser.Math.Between(0, 7);
         let offsetX = this.x;
         let offsetY = this.y;
 
-        switch (type) {
+        switch (+this.type) {
             case 0: 
-                offsetX = Phaser.Math.Between(-50, 50); 
+                offsetY = Phaser.Math.Between(0, 50); 
                 break;
             case 1:
-                offsetY = Phaser.Math.Between(-50, 50); 
+                offsetY = Phaser.Math.Between(0, 100); 
                 break;
             case 2:
-                offsetX = Phaser.Math.Between(-100, 100); 
-                offsetY = Phaser.Math.Between(-100, 100); 
+                offsetY = Phaser.Math.Between(0, 200); 
                 break;
             case 3: 
             case 4:
@@ -44,7 +43,6 @@ export default class Platform extends Phaser.GameObjects.Container {
             case 6: 
             default: break;
         }
-
         this.scene.tweens.add({
             targets: this,
             duration: Phaser.Math.Between(4000, 6000),
