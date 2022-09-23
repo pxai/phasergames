@@ -1,9 +1,11 @@
-class Bubble extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, velocity = 1, direction) {
+export class Bubble extends Phaser.GameObjects.Sprite {
+    constructor (scene, x, y, velocity = 1, direction, duration = 600, tint = 0xffffff) {
         super(scene, x, y, "bubble");
         this.name = "bubble";
         this.scene = scene;
         this.setOrigin(0.5)
+        this.setTint(tint)
+        this.duration = duration;
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -17,7 +19,7 @@ class Bubble extends Phaser.GameObjects.Sprite {
     init () {
         this.scene.tweens.add({
             targets: this,
-            duration: Phaser.Math.Between(600, 1000),
+            duration: Phaser.Math.Between(this.duration, this.duration + 400),
             y: {from: this.y, to: this.y + (this.direction * Phaser.Math.Between(20, 40))},
             scale: {from: Phaser.Math.Between(0.8, 1.2), to: 0.1},
             alpha: { from: 1, to: 0 },
@@ -26,4 +28,27 @@ class Bubble extends Phaser.GameObjects.Sprite {
     }
 }
 
-export default Bubble;
+export class MovingBubble extends Bubble {
+    constructor (scene, x, y, velocity = 1, direction, duration = 600) {
+        super(scene, x, y, velocity, direction, duration);
+    }
+
+    init () {
+        const size = Phaser.Math.Between(0.8, 1.2)
+        this.scene.tweens.add({
+            targets: this,
+            duration: Phaser.Math.Between(this.duration, this.duration + 400),
+            scale: {from: Phaser.Math.Between(0.8, 1.2), to: 0.1},
+            alpha: { from: 1, to: 0 },
+            onComplete: () => { this.destroy() }
+        });
+
+        this.scene.tweens.add({
+            targets: this,
+            duration: Phaser.Math.Between(50, 400),
+            scale: {from: size - 0.1, to: size},
+           repeat: -1
+        })
+    }
+}
+

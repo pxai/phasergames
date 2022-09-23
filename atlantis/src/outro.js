@@ -11,25 +11,30 @@ export default class Outro extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
+        this.add.image(0,0, "background").setOrigin(0);
         this.introLayer = this.add.layer();
         this.splashLayer = this.add.layer();
+
         this.text = [ 
-            "The U.F.I.S.H. recovered the engines.",
-            "After a terrible fishing day,",
-            "they decided to move to Europa moon,",
-            "to fish under the ice",
-            "But that is another story..."
+            "You escaped from Atlantis!",
+            "After all your efforts,",
+            "nobody will believe",
+            "what you saw here...",
+            "maybe you got some coins though...",
+            "",
+            "ENTER to start again!"
         ];
         this.showHistory();
+
         //this.showPlayer();
-        //this.playMusic();
+        this.playMusic();
         this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
     }
 
     showHistory () {
         this.text.forEach((line, i) => {
-                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this); 
+                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 50), null, this); 
         });
         this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
     }
@@ -49,7 +54,7 @@ export default class Outro extends Phaser.Scene {
       }
 
     showLine(text, y) {
-        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "pixelFont", text, 25).setOrigin(0.5).setAlpha(0));
+        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "pixelFont", text, 20).setTint(0x472e26).setOrigin(0.5).setAlpha(0));
         this.tweens.add({
             targets: line,
             duration: 2000,
@@ -57,9 +62,19 @@ export default class Outro extends Phaser.Scene {
         })
     }
 
+    showPlayer () {
+        this.player = this.add.sprite(this.center_width, 350, "indy").setScale(3);
+        this.anims.create({
+            key: "playeridle",
+            frames: this.anims.generateFrameNumbers("indy", { start: 0, end: 1 }),
+            frameRate: 1,
+            repeat: -1
+        });
+        this.player.anims.play("playeridle", true)
+    }
 
     startSplash () {
-        // this.theme.stop();
+        this.theme.stop();
         this.scene.start("splash");
     }
 }

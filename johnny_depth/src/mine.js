@@ -1,15 +1,17 @@
 
 import { RockSmoke } from "./particle";
-import Bubble from "./bubble";
+import { Bubble } from "./bubble";
 
 export default class Mine extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, name = "mine") {
         super(scene, x, y , name);
-        this.setOrigin(0.5)
+        this.setOrigin(0)
+        this.setScale(0.7)
         this.scene = scene;
         this.name = name;
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
+        this.body.setCircle(26)
         this.body.setAllowGravity(false)
         this.body.setImmovable(true)
         this.scene.tweens.add({

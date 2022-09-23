@@ -148,34 +148,51 @@ export class Rock extends Phaser.GameObjects.Sprite {
     }
 }
 
-export class Gold extends Phaser.GameObjects.Sprite {
+export class Burst extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y ) {
-        super(scene, x, y, "rock", Phaser.Math.RND.pick([9, 10, 11, 12]));
-       // this.setStrokeStyle(4, 0x000000);
+        super(scene, x, y, "burst");
         scene.add.existing(this)
+        this.init();
+    }
+
+    init () {
+
+        this.scene.tweens.add({
+            targets: this,
+            duration: 100,
+            scale: {from: 1, to: 0.8},
+            onComplete: () => this.destroy()
+        })
+    }
+}
+
+export class Sand extends Phaser.GameObjects.Rectangle {
+    constructor (scene, x, y, move, color = 0xffc269) {
+        super(scene, x + move, y, 8, 8, color);
+        this.name = "sand";
+        this.scene = scene;
+        this.setOrigin(0.5)
+
+        scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.body.setAllowGravity(false);
-        this.body.immovable = true;
+        this.direction = move > 0 ? 1 : -1;
+        this.body.setVelocityX(this.direction * Phaser.Math.Between(15, 25))
 
         this.init();
     }
 
     init () {
-        this.scene.events.on("update", this.update, this);
         this.scene.tweens.add({
             targets: this,
-            duration: 300,
-            repeat: -1,
-            scale: {from: 0.95, to: 1},
-            yoyo: true
-        })
-    }
-
-    update() {
-        if (this.active && Phaser.Math.Between(0,10) > 8)
-            new Glitter(this.scene, Phaser.Math.Between(this.x-18, this.x+18), Phaser.Math.Between(this.y - 18, this.y + 18), 3,5)
+            duration: Phaser.Math.Between(300, 400),
+            scale: { from: 1, to: 0 },
+            onComplete: () => { this.destroy() }
+        });
     }
 }
+
+export default Sand;
+
 
 export const elements = {
     "gold": { color: 0xb06f00, hits: 5, points: 1000, rate: 0.8 },

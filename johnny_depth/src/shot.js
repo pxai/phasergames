@@ -1,5 +1,5 @@
 import { Particle } from "./particle";
-import Bubble from "./bubble";
+import { Bubble } from "./bubble";
 
 export default class Shot extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, scale = 0.7) {
@@ -7,7 +7,7 @@ export default class Shot extends Phaser.GameObjects.Sprite {
         this.name = "shot";
         scene.add.existing(this)
         scene.physics.add.existing(this);
-        this.setScale(scale)
+        this.setScale(0.5)
         this.body.setBounce(1)
         this.body.setAllowGravity(false);
         this.init();
@@ -18,7 +18,7 @@ export default class Shot extends Phaser.GameObjects.Sprite {
         this.scene.tweens.add({
             targets: this,
             duration: 200,
-            scale: {from: this.scale - 1, to: this.scale},
+            scale: {from: 0.2, to: this.scale},
             repeat: -1
         });
         this.scene.time.delayedCall(5000, () => {this.destroy()}, null, this)

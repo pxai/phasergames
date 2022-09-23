@@ -1,3 +1,4 @@
+import { MovingBubble } from "./bubble";
 export default class Splash extends Phaser.Scene {
     constructor () {
         super({ key: "splash" });
@@ -7,38 +8,44 @@ export default class Splash extends Phaser.Scene {
     }
 
     create () {
+        this.playMusic();
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-
+        this.generateBubble()
 
         this.cameras.main.setBackgroundColor(0x000000);
-        //this.showLogo();        ;
+        this.showLogo();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
-        //this.playMusic();
+
         //this.showPlayer();
+    }
+    update() {
+        if (Phaser.Math.Between(0, 5) > 4)
+            this.generateBubble();
     }
 
     startGame () {
         if (this.theme) this.theme.stop();
-        this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
+        this.playMusic("game")
+        this.scene.start("transition", {next: "game", name: "STAGE", number: 0})
     }
 
     showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
+        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(1.2).setOrigin(0.5)
         this.tweens.add({
             targets: this.gameLogo,
             duration: 1000,
             x: {
-              from: this.center_width * 2,
+              from: this.center_width,
               to: this.center_width
             },
             y: {
                 from: -200,
-                to: 130
+                to: 200
               },
           })
     }
@@ -52,23 +59,26 @@ export default class Splash extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,
           loop: true,
           delay: 0
       })
-      }
-  
+    }
+
+    generateBubble () {
+        new MovingBubble(this, Phaser.Math.Between(0, this.width), 800, 100, -1, 20000)
+    }
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: track beam", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "pixelFont", "B: shoot coins", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 450, "pixelFont", "MOUSE TO MOVE", 30).setOrigin(0.5).setTint(0x0777b7).setDropShadow(1, 2, 0xffffff, 0.7);
+        this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: DASH", 30).setOrigin(0.5).setTint(0x0777b7).setDropShadow(1, 2, 0xffffff, 0.7);
+        this.add.bitmapText(this.center_width, 550, "pixelFont", "RIGHT CLICK: SHOOT", 30).setOrigin(0.5).setTint(0x0777b7).setDropShadow(1, 2, 0xffffff, 0.7);
         this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Press SPACE to start", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5).setTint(0x0777b7).setDropShadow(1, 2, 0xffffff, 0.7);
+        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Click here/Press SPACE to start", 30).setOrigin(0.5).setTint(0x0777b7).setDropShadow(1, 2, 0xffffff, 0.7);
         this.tweens.add({
             targets: this.space,
             duration: 300,
@@ -76,5 +86,11 @@ export default class Splash extends Phaser.Scene {
             repeat: -1,
             yoyo: true
         });
+
+        this.space.setInteractive();
+        this.space.on('pointerdown', () => {
+            this.sound.add("ember").play()
+            this.startGame()
+        })
     }
 }

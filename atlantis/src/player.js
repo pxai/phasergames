@@ -3,8 +3,9 @@ import { Smoke, JumpSmoke, RockSmoke } from "./particle";
 
 class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y) {
-        super(scene, x, y, "willie")
+        super(scene, x, y, "indy")
         this.setOrigin(0.5)
+        //this.setScale(1.2)
         this.scene = scene;
 
         this.scene.add.existing(this);
@@ -29,54 +30,44 @@ class Player extends Phaser.GameObjects.Sprite {
         this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        this.R = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.scene.events.on("update", this.update, this);
+        this.activeWhip = false;
     }
 
     init () {
 
         this.scene.anims.create({
             key: "startidle",
-            frames: this.scene.anims.generateFrameNumbers("willie", { start: 0, end: 1 }),
+            frames: this.scene.anims.generateFrameNumbers("indy", { start: 0, end: 1 }),
             frameRate: 3,
             repeat: -1
         });
 
         this.scene.anims.create({
             key: "playeridle",
-            frames: this.scene.anims.generateFrameNumbers("willie", { start: 2, end: 3 }),
+            frames: this.scene.anims.generateFrameNumbers("indy", { start: 2, end: 3 }),
             frameRate: 3,
             repeat: -1
         });
 
         this.scene.anims.create({
             key: "playerwalk",
-            frames: this.scene.anims.generateFrameNumbers("willie", { start: 4, end: 6 }),
+            frames: this.scene.anims.generateFrameNumbers("indy", { start: 4, end: 6 }),
             frameRate: 10,
         });
 
         this.scene.anims.create({
             key: "playerjump",
-            frames: this.scene.anims.generateFrameNumbers("willie", { start: 4, end: 4 }),
+            frames: this.scene.anims.generateFrameNumbers("indy", { start: 4, end: 4 }),
             frameRate: 1,
         });
 
-        this.scene.anims.create({
-            key: "playerhammer",
-            frames: this.scene.anims.generateFrameNumbers("willie", { start: 7, end: 8 }),
-            frameRate: 10
-        });
-
-        this.scene.anims.create({
-            key: "playerbuild",
-            frames: this.scene.anims.generateFrameNumbers("willie", { start: 9, end: 10 }),
-            frameRate: 10,
-            repeat: 2
-        });
 
         this.scene.anims.create({
             key: "playerdead",
-            frames: this.scene.anims.generateFrameNumbers("willie", { start: 11, end: 16 }),
+            frames: this.scene.anims.generateFrameNumbers("indy", { start: 7, end: 12 }),
             frameRate: 5,
         });
 
@@ -87,7 +78,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }    
 
     update () {
-        if (this.dead || this.finished) return;
+        if (this.dead || this.finished || !this.body) return;
         if (this.jumping) {
             // if (Phaser.Math.Between(1,101) > 100) new Star(this.scene, this.x, this.y + 5)
             if (this.body.velocity.y >= 0) {
@@ -131,15 +122,32 @@ class Player extends Phaser.GameObjects.Sprite {
 
         } else {
             this.body.setVelocityX(0)
-            this.anims.play("playeridle", true);
+            if (!this.jumping)
+                this.anims.play("playeridle", true);
         }
 
 
-        if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.S)) {
-          /*  if (this.scene.tnts.countActive(true) < this.totalTNTs) {
-                this.scene.tnts.add(new TNT(this.scene, this.x, this.y));
-            }*/ 
+        if (Phaser.Input.Keyboard.JustDown(this.R)) {
+            this.scene.restartScene();
         }
+    }
+
+    addWhip (color = 0xffffff) {
+        const x1 = this.x;
+        const y1 = this.y;
+        const x2 = x1 + (this.flipX ? -1 : 1) * 64
+        const y2 = y1 + (this.body.velocity.y === 0 ? 0 :(this.body.velocity.y > 0 ? 1 : -1) *  64);
+        const graphics = this.scene.add.graphics();
+        this.scene.trailLayer.add(graphics)
+        graphics.lineStyle(4, color);
+        const line = graphics.lineBetween(x1, y1, x2, y2);
+        console.log(line, graphics.stroke())
+        this.scene.tweens.add({
+            targets: line,
+            alpha: {from: 1, to: 0},
+            duration: 500,
+            onComplete: () => { line.destroy(); this.activeWhip = false }
+        })
     }
 
     landSmoke () {
@@ -185,7 +193,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
     hitFloor() {
         if (this.jumping) {
-            ////this.scene.playAudio("ground")
+            this.scene.playAudio("land")
 
             this.jumping = false;
         }
@@ -194,7 +202,6 @@ class Player extends Phaser.GameObjects.Sprite {
     hit () {
         //this.scene.showPoints(this.x, this.y, "-1 HEALTH", 0xff0000)
         this.flashing = true;
-        console.log("Player was hit: ", this.scene.registry.get("health"))
         this.flashPlayer();
         this.die();
     }
@@ -205,6 +212,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.body.immovable = true;
         this.body.moves = false;
         //this.scene.finishScene("outro");
+        this.destroy();
     }
 
 

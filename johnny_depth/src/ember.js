@@ -8,7 +8,7 @@ class Ember extends Phaser.GameObjects.Sprite {
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
-
+        this.taken = false;
         this.body.setAllowGravity(false)
         this.body.setImmovable(true)
         this.init();

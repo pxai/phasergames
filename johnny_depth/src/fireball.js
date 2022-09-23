@@ -1,5 +1,5 @@
 import { Particle } from "./particle";
-import Bubble from "./bubble";
+import { Bubble } from "./bubble";
 
 export default class Fireball extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, color = 0xffffff, size = 15) {

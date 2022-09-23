@@ -1,11 +1,14 @@
 import Player from "./player";
 import Exit from "./exit";
+import Checkpoint from "./checkpoint";
 import Volcano from "./volcano";
 import WaterVolcano from "./water_volcano";
 import Ember from "./ember";
 import Mine from "./mine";
 import Fish from "./fish";
 import HealthBar from "./health_bar";
+import Explosion from "./explosion";
+import { Bubble } from "./bubble";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -30,13 +33,14 @@ export default class Game extends Phaser.Scene {
       this.center_height = this.height / 2;
       this.trailLayer = this.add.layer();
       this.cameras.main.setBackgroundColor(0x000000);
+      console.log("Added scene number: ", this.number)
       this.addMap();
+      this.showTexts();
       this.addPlayer();
       this.addLight();
       this.addScore();
 
-      //this.loadAudios(); 
-      // this.playMusic();
+      this.loadAudios(); 
     }
 
     addScore() {
@@ -75,29 +79,41 @@ export default class Game extends Phaser.Scene {
       this.exits = this.add.group();
       this.bubbles = this.add.group();
       this.embers = this.add.group();
+      this.emberHeads = this.add.group();
       this.volcanos = this.add.group();
       this.waterVolcanos = this.add.group();
       this.volcanoShots = this.add.group();
       this.brokenBlocks = this.add.group();
+      this.checkpoints = this.add.group();
+      this.fireballs = this.add.group();
       this.mines = this.add.group();
       this.fish = this.add.group();
       this.texts = [];
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("volcano")){
-          this.volcanos.add(new Volcano(this, object.x - 16, object.y - 16))
+          this.volcanos.add(new Volcano(this, object.x - 16, object.y - 16, +object.type || 3000))
         }
 
         if (object.name.startsWith("water_volcano")){
-          this.waterVolcanos.add(new WaterVolcano(this, object.x - 16, object.y - 16))
+          this.waterVolcanos.add(new WaterVolcano(this, object.x - 16, object.y - 16, +object.type || 3000))
         }
 
         if (object.name.startsWith("exit")){
           this.exits.add(new Exit(this, object.x - 16, object.y))
         }
 
+        if (object.name.startsWith("checkpoint")){
+          this.checkpoints.add(new Checkpoint(this, object.x, object.y))
+        }
+
         if (object.name === "ember") {
           let ember = new Ember(this, object.x, object.y);
           this.embers.add(ember)
+        }
+
+        if (object.name === "ember_head") {
+          let emberHead = new Ember(this, object.x, object.y, "ember_head");
+          this.emberHeads.add(emberHead)
         }
 
         if (object.name === "fish") {
@@ -117,8 +133,21 @@ export default class Game extends Phaser.Scene {
       })
     }
 
+    showTexts() {
+      this.texts.forEach(text => {
+       let help = this.add.bitmapText(text.x, text.y, "pixelFont", text.type, 30).setOrigin(0).setTint(0x0777b7).setDropShadow(1, 2, 0xffffff, 0.7);
+       this.tweens.add({
+         targets: help,
+         duration: 10000,
+         alpha: { from: 1, to: 0.9},
+         yoyo: true,
+         repeat: -1
+       })
+     })
+   }
+
     addPlayer () {
-      const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
+      const playerPosition = this.registry.get("checkpoint") ||  this.objectsLayer.objects.find( object => object.name === "player")
       this.player = new Player(this, playerPosition.x, playerPosition.y)
       this.addHealth();
       this.physics.add.collider(this.player, this.platform, this.hitPlatform, ()=>{
@@ -133,7 +162,7 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
-      this.physics.add.collider(this.player, this.volcanoShots, this.hitVolcanoShots, ()=>{
+      this.physics.add.overlap(this.player, this.volcanoShots, this.hitVolcanoShots, ()=>{
         return true;
       }, this);
 
@@ -157,7 +186,31 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
+      this.physics.add.overlap(this.player, this.emberHeads, this.hitEmber, ()=>{
+        return true;
+      }, this);
+
       this.physics.add.overlap(this.healthBar, this.embers, this.pickEmber, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.healthBar, this.emberHeads, this.pickEmberHead, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.player, this.checkpoints, this.hitCheckpoint, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.fireballs, this.mines, this.hitFoe, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.fireballs, this.volcanoShots, this.hitFoe, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.fireballs, this.fish, this.hitFishFoe, ()=>{
         return true;
       }, this);
 
@@ -169,16 +222,34 @@ export default class Game extends Phaser.Scene {
     }
 
     fishHitPlatform (fish, platform) {
+      this.bubbleExplosion(fish)
       fish.turn();
     }
 
     hitVolcanos (player, volcano) {
-      if (!this.player.isHit)
-      this.player.hit();
+      if (!this.player.isHit) {
+        new Explosion(this, this.player.x, this.player.y, 0.5)
+        this.player.hit();
+      }
+
+    }
+
+    hitFoe(fireball, foe) {
+      new Explosion(this, foe.x, foe.y, 1)
+      new Explosion(this, fireball.x, fireball.y, 1, "blue_explosion")
+      fireball.destroy();
+      foe.destroy();
+    }
+
+    hitFishFoe(fireball, fish) {
+      new Explosion(this, fireball.x, fireball.y, 1, "blue_explosion")
+      fireball.destroy();
+      fish.destroy();
     }
 
     hitVolcanoShots (player, volcanoShot) {
       if (!this.player.isHit) {
+        new Explosion(this, this.player.x, this.player.y, 1)
         this.player.hit();
         volcanoShot.destroy();
       }
@@ -186,6 +257,7 @@ export default class Game extends Phaser.Scene {
 
     hitMines (player, mine) {
       if (!this.player.isHit) {
+        new Explosion(this, this.player.x, this.player.y, 3)
         this.player.hit();
         mine.destroy();
       }
@@ -193,6 +265,7 @@ export default class Game extends Phaser.Scene {
 
     hitFish (player, fish) {
       if (!this.player.isHit) {
+        this.playAudio("bump", 1);
         this.player.hit();
         fish.turn();
       }
@@ -200,24 +273,54 @@ export default class Game extends Phaser.Scene {
 
     hitPlatform(player, platform) {
       if (!this.player.isHit)
+        this.playAudio("bump", 0.6);
         this.player.hit();
     }
 
     hitEmber (player, ember) {
+      if (ember.taken) return;
+      ember.taken = true;
+      this.bubbleExplosion(player)
+      this.playAudio("pick")
       ember.body.setImmovable(false);
       ember.body.setAllowGravity(true)
       ember.tween.stop();
+    }
+
+    hitCheckpoint(player, checkpoint) {
+      const position = {x: checkpoint.x, y: player.y };
+      this.bubbleExplosion(player)
+      checkpoint.destroy();
+      player.showPoints("CHECKPOINT!")
+      this.registry.set("checkpoint", position)
     }
 
     pickEmber (healthBar, ember) {
       ember.pick();
       this.updateEmbers();
       this.player.pickEmber();
+      this.playAudio("ember")
       this.tweens.add({
         targets: [this.healthBar],
         scale: { from: 1.2, to: 1},
         duration: 50,
         repeat: 5
+      })
+    }
+
+    pickEmberHead (healthBar, emberHead) {
+      emberHead.pick();
+      this.updateEmbers();
+      this.player.pickEmber();
+      this.playAudio("win")
+      this.tweens.add({
+        targets: [this.healthBar],
+        scale: { from: 1.2, to: 1},
+        duration: 50,
+        repeat: 5,
+        onComplete: () => {
+          this.finishScene()
+        }
       })
     }
 
@@ -228,12 +331,41 @@ export default class Game extends Phaser.Scene {
 
     loadAudios () {
       this.audios = {
-        "beam": this.sound.add("beam"),
+        "pick": this.sound.add("pick"),
+        "ember": this.sound.add("ember"),
+        "win": this.sound.add("win"),
+        "bump": this.sound.add("bump"),
+        "death": this.sound.add("death"),
+        "explosion": this.sound.add("explosion"),
+        "fireball": this.sound.add("fireball"),
+        "volcano": this.sound.add("volcano"),
+        "water_volcano": this.sound.add("water_volcano"),
+        "bubble0": this.sound.add("bubble0"),
+        "bubble1": this.sound.add("bubble1"),
+        "bubble2": this.sound.add("bubble2"),
+        "bubble3": this.sound.add("bubble3"),
+        "bubble4": this.sound.add("bubble4"),
+        "bubble5": this.sound.add("bubble5"),
+        "bubble6": this.sound.add("bubble6"),
       };
     }
 
-    playAudio(key) {
-      this.audios[key].play();
+    playBubble() {
+      const bubble = Phaser.Math.Between(0, 6);
+      this.audios[`bubble${bubble}`].play({volume: 0.6});
+    }
+
+    playAudio(key, volume=1) {
+      this.audios[key].play({volume});
+    }
+
+    playRandom(key) {
+      this.audios[key].play({
+        rate: Phaser.Math.Between(1, 1.5),
+        detune: Phaser.Math.Between(-1000, 1000),
+        volume: Phaser.Math.Between(10.0, 5.0)/10.0,
+        delay: 0
+      });
     }
 
     playMusic (theme="game") {
@@ -250,14 +382,37 @@ export default class Game extends Phaser.Scene {
     })
     }
 
+    bubbleExplosion(x, y, min = 10, color = 0xffffff) {
+      Array(Phaser.Math.Between(min, min * 2)).fill(0).forEach(i => {
+        this.trailLayer.add(new Bubble(this, x + (Phaser.Math.Between(-32, 32)) , y + (Phaser.Math.Between(-32, 32)),  50, 1, 600, color))
+      })
+    } 
+
     update() {
 
     }
 
-    finishScene () {
+    gameOver () {
+      this.playAudio("death")
       //this.sky.stop();
       //this.theme.stop();
-      this.scene.start("outro", {next: "underwater", name: "STAGE", number: this.number + 1});
+        this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number});
+ 
+    }
+    skip () {
+      if (this.number === 0) {
+        this.finishScene();
+      }
+    }
+
+    finishScene () {
+      if (this.number === 1) {
+        this.game.sound.stopAll();
+        this.scene.start("outro", {next: "underwater", name: "STAGE", number: this.number + 1});
+      } else {
+        this.registry.set("checkpoint", null)
+        this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
+      }
     }
 
     updateScore (points = 0) {
@@ -267,7 +422,7 @@ export default class Game extends Phaser.Scene {
     }
 
     updateHealth (health) {
-      console.log("Added health: ", health)
+      health = health < 0 ? 0 : health;
       this.healthBar.width = health * 5.8;
       this.playerLight.radius = health * 5;
     }

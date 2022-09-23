@@ -14,21 +14,23 @@ export default class Splash extends Phaser.Scene {
 
 
         this.cameras.main.setBackgroundColor(0x000000);
-        //this.showLogo();        ;
+        this.add.image(0,0, "background").setOrigin(0);
+        this.showLogo();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
-        //this.playMusic();
-        //this.showPlayer();
+        this.playMusic();
+        this.showPlayer();
     }
 
     startGame () {
         if (this.theme) this.theme.stop();
-        this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
+        this.playMusic("game")
+        this.scene.start("transition", {next: "game", name: "STAGE", number: 0})
     }
 
     showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
+        this.gameLogo = this.add.image(this.center_width*2, -400, "logo").setScale(1.4).setOrigin(0.5)
         this.tweens.add({
             targets: this.gameLogo,
             duration: 1000,
@@ -38,13 +40,20 @@ export default class Splash extends Phaser.Scene {
             },
             y: {
                 from: -200,
-                to: 130
+                to: 200
               },
           })
     }
 
     showPlayer () {
-
+        this.player = this.add.sprite(this.center_width, 350, "indy").setScale(3);
+        this.anims.create({
+            key: "playeridle",
+            frames: this.anims.generateFrameNumbers("indy", { start: 0, end: 1 }),
+            frameRate: 1,
+            repeat: -1
+        });
+        this.player.anims.play("playeridle", true)
     }
 
     playMusic (theme="splash") {
@@ -52,23 +61,23 @@ export default class Splash extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.6,
           rate: 1,
           detune: 0,
           seek: 0,
           loop: true,
           delay: 0
       })
-      }
+    }
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: track beam", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "pixelFont", "B: shoot coins", 30).setOrigin(0.5);
-        this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Press SPACE to start", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 425, "pixelFont", "WASD/Arrows: move", 20).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 475, "pixelFont", "SPACE: jump", 20).setOrigin(0.5);
+
+        this.add.sprite(this.center_width - 70, 520, "pello").setOrigin(0.5).setScale(0.3)
+        this.add.bitmapText(this.center_width + 40, 520, "pixelFont", "By PELLO", 15).setOrigin(0.5);
+        this.space = this.add.bitmapText(this.center_width, 560, "pixelFont", "Press SPACE to start", 20).setOrigin(0.5);
         this.tweens.add({
             targets: this.space,
             duration: 300,

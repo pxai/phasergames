@@ -1,6 +1,7 @@
 import { RockSmoke, JumpSmoke } from "./particle";
 export default class Block extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, name = 0) {
+        name = name === 0 ? `block${Phaser.Math.Between(0, 3)}` : name
         super(scene, x, y , name);
         this.setOrigin(0)
         this.scene = scene;
@@ -16,9 +17,9 @@ export default class Block extends Phaser.GameObjects.Sprite {
     fall () {
         this.scene.tweens.add({
             targets: this,
-            x: "+=1",
+            x: "+=2",
             yoyo: true,
-            duration: 500,
+            duration: 200,
             onComplete: () => {
                 this.falling = true;
                 if (this && !this.destroyed) {
