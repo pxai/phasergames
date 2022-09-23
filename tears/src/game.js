@@ -86,7 +86,6 @@ export default class Game extends Phaser.Scene {
 
       this.objectsLayer.objects.forEach( object => {
         if (object.name === "drone") {
-          console.log('Drone: ', object);
           
           let drone = new Drone(this, object.x, object.y, object.type);
           this.droneGroup.add(drone)
@@ -101,7 +100,6 @@ export default class Game extends Phaser.Scene {
 
         if (object.name.startsWith("platform")) {
           const [name, size, type] = object.name.split(":");
-          console.log("Platform! ", size, type)
           this.platformGroup .add(new Platform(this, object.x, object.y, size, type))
         }
 

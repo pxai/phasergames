@@ -6,7 +6,6 @@ export default class Letter extends Phaser.GameObjects.Container {
         this.scene = scene;
         this.letter = letter;
         this.sticky = false;
-        console.log('This is W', letter);
         
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
