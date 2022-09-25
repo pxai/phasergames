@@ -20,7 +20,7 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("game_builder", {number: 0});
+            this.scene.start("splash", {number: 0});
         },this);
 
         Array(5).fill(0).forEach((_,i) => {
@@ -66,9 +66,11 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image('mapbackground1', 'assets/images/mapbackground1.png');
         this.load.image('platform', 'assets/images/platform.png');
         this.load.image('play', 'assets/images/play.png');
+        this.load.image('scenetitle', 'assets/images/scenetitle.png');
 
         this.load.image('chain', 'assets/images/chain.png');
         this.load.spritesheet("flag", "assets/images/flag.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("spike", "assets/images/spike.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("bat", "assets/images/bat.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("zombie", "assets/images/zombie.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("coin", "assets/images/coin.png", { frameWidth: 64, frameHeight: 64 });
@@ -78,7 +80,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("boots", "assets/images/boots.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("star", "assets/images/star.png", { frameWidth: 64, frameHeight: 64 });
 
-        this.load.bitmapFont("hammerfont", "assets/fonts/hammer.png", "assets/fonts/hammer.xml");
+        this.load.bitmapFont("logo", "assets/fonts/logo.png", "assets/fonts/logo.xml");
         this.registry.set("score", 0);
         this.registry.set("coins", 100);
         this.registry.set("hull", 10);

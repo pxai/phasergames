@@ -7,7 +7,7 @@ import Game from "./game";
 import GameBuilder from "./game_builder";
 
 const config = {
-    width: 1000,
+    width: 1024,
     height: 800,
     scale: {
         mode: Phaser.Scale.FIT,

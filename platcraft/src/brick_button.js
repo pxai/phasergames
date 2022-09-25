@@ -10,7 +10,7 @@ class BrickButton extends Phaser.GameObjects.Sprite {
         this.cost = this.scene.add.bitmapText(this.x, this.y - 64, "pixelFont", this.brick.cost + "$", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
         this.cost.visible = false;
 
-        this.description = this.scene.add.bitmapText(this.x, this.y + 64, "pixelFont", this.brick.description, 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
+        this.description = this.scene.add.bitmapText(this.x, this.y - 128, "pixelFont", this.brick.description, 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
         this.description.visible = false;
 
         this.setListeners();

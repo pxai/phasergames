@@ -11,6 +11,7 @@ import BrickButton from "./brick_button";
 import { JumpSmoke } from "./particle";
 import CustomBrick from "./custom_brick";
 import SpriteButton from "./sprite_button";
+import Spike from "./spike";
 
 
 export default class GameBuilder extends Phaser.Scene {
@@ -35,7 +36,7 @@ export default class GameBuilder extends Phaser.Scene {
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
       this.cameras.main.setBackgroundColor(0x62a2bf)
-      this.add.tileSprite(0, 200, 1024, 1024, "mapbackground1").setOrigin(0);
+      this.add.tileSprite(0, 220, 1024, 1024, "mapbackground1").setOrigin(0);
       this.createMap();
 
 
@@ -83,7 +84,7 @@ export default class GameBuilder extends Phaser.Scene {
       this.brickButtons = {};
       this.bricks = [];
       const x = (this.cameras.main.width / 2);
-      const y = (this.cameras.main.height - 100);
+      const y = (this.cameras.main.height - 50);
       this.brickTypes.forEach( (brick, i) => {
         this.brickButtons[brick.name] = new BrickButton(this, x + (i * 64), y, brick).setOrigin(0.5).setScrollFactor(0)
       });
@@ -91,9 +92,8 @@ export default class GameBuilder extends Phaser.Scene {
 
     addStartButton () {
       const x = (this.cameras.main.width / 2);
-      const y = (this.cameras.main.height - 100);
+      const y = (this.cameras.main.height - 50);
       this.startButton = new SpriteButton(this, x + (5* 54), y, "play", "Start Stage", this.startScene.bind(this));
-
     }
 
     chooseBrick (brickName) {
@@ -124,6 +124,7 @@ export default class GameBuilder extends Phaser.Scene {
       this.exitGroup = this.add.group();
       this.platformGroup = this.add.group();
       this.lunchBoxGroup = this.add.group();
+      this.spikeGroup = this.add.group();
 
       this.objectsLayer.objects.forEach( object => {
         if (object.name === "bat") {
@@ -136,6 +137,13 @@ export default class GameBuilder extends Phaser.Scene {
           let zombie = new Zombie(this, object.x, object.y, object.type);
           this.zombieGroup.add(zombie);
           this.foesGroup.add(zombie);
+        }
+
+        if (object.name.startsWith("spike")) {
+          const type = object.name.split(":")[1] || 0;
+          let spike = new Spike(this, object.x, object.y, +type);
+          this.spikeGroup.add(spike);
+          this.foesGroup.add(spike);
         }
 
         if (object.name === "platform") {

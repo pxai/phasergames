@@ -8,6 +8,8 @@ import LunchBox from "./lunchbox";
 import Platform from "./platform";
 import Brick from "./brick";
 import Exit from "./exit";
+import Spike from "./spike";
+
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -32,7 +34,7 @@ export default class Game extends Phaser.Scene {
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
       this.cameras.main.setBackgroundColor(0x62a2bf)
-      this.add.tileSprite(0, 1000, 1024 * 10, 512, "landscape").setOrigin(0.5);
+      this.add.tileSprite(0, 100, 1024, 1024, "mapbackground1").setOrigin(0);
       this.createMap();
 
       //this.cameras.main.setBounds(0, 0, 20920 * 2, 20080 * 2);
@@ -76,6 +78,7 @@ export default class Game extends Phaser.Scene {
       this.platformGroup = this.add.group();
       this.lunchBoxGroup = this.add.group();
       this.bricks = this.add.group();
+      this.spikeGroup = this.add.group();
 
       this.objectsLayer.objects.forEach( object => {
         if (object.name === "bat") {
@@ -94,6 +97,13 @@ export default class Game extends Phaser.Scene {
           this.platformGroup.add(new Platform(this, object.x, object.y, object.type))
         }
 
+        if (object.name.startsWith("spike")) {
+          const type = object.name.split(":")[1] || 0;
+          let spike = new Spike(this, object.x, object.y, +type);
+          this.spikeGroup.add(spike);
+          this.foesGroup.add(spike);
+        }
+
         if (object.name === "turn") {
           this.turnGroup.add(new Turn(this, object.x, object.y))
         }
@@ -107,7 +117,8 @@ export default class Game extends Phaser.Scene {
         }
 
         if (object.name === "exit") {
-          this.exitGroup.add(new Exit(this, object.x, object.y).setOrigin(0.5))
+          this.exit = new Exit(this, object.x, object.y).setOrigin(0.5);
+          this.exitGroup.add(this.exit)
         }
       });
 
@@ -182,6 +193,12 @@ export default class Game extends Phaser.Scene {
   
       this.physics.add.overlap(this.player, this.exitGroup, () => { 
         this.playAudio("stage");
+        this.tweens.add({
+          targets: [this.exit],
+          scale: { from: 1, to: 1.2},
+          y: "-=50",
+          duration: 300,
+        })
         this.time.delayedCall(1000, () => this.finishScene(), null, this);
       }, ()=>{
         return true;
@@ -205,13 +222,17 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
-      this.physics.add.collider(this.player, this.batGroup, this.hitPlayer, ()=>{
+      this.physics.add.overlap(this.player, this.batGroup, this.hitPlayer, ()=>{
         return true;
       }, this);
 
-      this.physics.add.collider(this.player, this.zombieGroup, this.hitPlayer, ()=>{
+      this.physics.add.overlap(this.player, this.zombieGroup, this.hitPlayer, ()=>{
         return true;
       }, this);
+
+      this.physics.add.overlap(this.player, this.spikeGroup, this.hitPlayer, ()=>{
+        return true;
+      }, this)
 
     }
 
@@ -243,7 +264,7 @@ export default class Game extends Phaser.Scene {
       if (player.invincible) {
         foe.death();
         this.playAudio("foedeath");
-      } else if (!player.dead && this.number > 0) {
+      } else if (!player.dead) {
         player.die();
         this.playAudio("death");
       }

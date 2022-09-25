@@ -1,9 +1,9 @@
 class Exit extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, name = "flag") {
-        super(scene, x, y, name);
+        super(scene, x + 16, y + 16, name);
         this.scene = scene;
         this.name = name;
-        this.setOrigin(0.5)
+        this.setOrigin(0)
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
