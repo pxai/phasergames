@@ -27,7 +27,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     showTitle () {
-        "WALL".split("").forEach((letter, i) => {
+        "PLATCRAFT".split("").forEach((letter, i) => {
             this.time.delayedCall(200 * (i+1),
                 () => {
                     this.playAudioRandomly("stone_fail")
