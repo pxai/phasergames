@@ -11,6 +11,7 @@ class Brick extends Phaser.GameObjects.Sprite {
         this.scene.physics.add.existing(this);
         this.body.immovable = true;
         this.body.moves = false;
+        this.markAsDestroyed = false;
         this.setListeners();
      }
 
@@ -34,12 +35,26 @@ class Brick extends Phaser.GameObjects.Sprite {
       });
     }
 
+    marked () {
+      if (this.markAsDestroyed) return;
+      
+      this.markAsDestroyed = true;
+      this.scene.tweens.add({
+        targets: this,
+        x: "+=2",
+        repeat: 5,
+        duration: 200,
+        onComplete: () => {
+          this.remove();
+        }
+      })
+    }
+
     remove () {
         this.scene.playAudioRandomly("stone")
         const {x, y} = this;
         Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this.scene, x, y))
         this.destroy();
-
     }
   }
   

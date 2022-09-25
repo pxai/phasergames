@@ -168,7 +168,7 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
   
-      this.physics.add.collider(this.player, this.bricks, this.hitFloor, ()=>{
+      this.physics.add.collider(this.player, this.bricks, this.playerHitFloor, ()=>{
         return true;
       }, this);
 
@@ -215,6 +215,15 @@ export default class Game extends Phaser.Scene {
 
     }
 
+
+    playerHitFloor(player, platform) {
+      console.log(platform)
+      if (platform.name === "brick0") {
+        platform.marked();
+      }
+    }
+
+
     pickCoin (player, coin) {
       if (!coin.disabled) {
         coin.pick();
@@ -248,6 +257,10 @@ export default class Game extends Phaser.Scene {
 
     foeBlowBrick(brick, foe) {
       foe.turn();
+      this.blowBrick(brick);
+    }
+
+    blowBrick(brick) {
       Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, brick.x, brick.y))
       brick.destroy();
     }

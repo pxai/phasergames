@@ -8,7 +8,7 @@ export default class Platform extends Phaser.GameObjects.Container {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
-        this.body.setBounce(1);
+        //this.body.setBounce(1);
         this.body.setSize(size * 32, 32)
         this.body.setOffset(-2, -2)
 
@@ -23,31 +23,12 @@ export default class Platform extends Phaser.GameObjects.Container {
     }
 
     init() {
-        let offsetX = this.x;
-        let offsetY = this.y;
-
-        switch (this.type) {
-            case 0: 
-                offsetX = Phaser.Math.Between(-50, 50); 
-                break;
-            case 1:
-                offsetY = -200; 
-                break;
-            case 2:
-                offsetX = Phaser.Math.Between(-100, 100); 
-                offsetY = Phaser.Math.Between(-100, 100); 
-                break;
-            case 3: 
-            case 4:
-            case 5:
-            case 6: 
-            case 6: 
-            default: break;
-        }
+        const offsetX = this.x;
+        const offsetY = -(800 - this.y);
 
         this.scene.tweens.add({
             targets: this,
-            duration: Phaser.Math.Between(4000, 6000),
+            duration: Phaser.Math.Between(6000, 8000),
             x: {from: this.x, to: offsetX},
             y: {from: this.y, to: offsetY},
             repeat: -1,

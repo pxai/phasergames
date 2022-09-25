@@ -22,6 +22,7 @@ class BrickButton extends Phaser.GameObjects.Sprite {
             if (this.scene.selectedBrick !== this.brick.name) {
               this.scene.chooseBrick(this.brick.name)
               this.setTint(0x00ff00)
+              this.scene.buildTime = 0;
             } else {
               this.clearTint();
             }

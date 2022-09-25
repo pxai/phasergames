@@ -34,7 +34,7 @@ export default class GameBuilder extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      //this.cameras.main.setBackgroundColor(0x62a2bf)
+      this.cameras.main.setBackgroundColor(0x62a2bf)
       this.add.tileSprite(0, 200, 1024, 1024, "mapbackground1").setOrigin(0);
       this.createMap();
 
