@@ -82,7 +82,7 @@ export default class Bootloader extends Phaser.Scene {
 
         this.load.bitmapFont("logo", "assets/fonts/logo.png", "assets/fonts/logo.xml");
         this.registry.set("score", 0);
-        this.registry.set("coins", 100);
+        this.registry.set("coins", 0);
         this.registry.set("hull", 10);
     }
 

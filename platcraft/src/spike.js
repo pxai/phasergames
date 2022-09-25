@@ -50,7 +50,7 @@ class Spike extends Phaser.GameObjects.Sprite {
             repeat: -1
         });
 
-        this.anims.play(this.name, true);
+       // this.anims.play(this.name, true);
     }
 }
 

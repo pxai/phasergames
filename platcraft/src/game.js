@@ -34,7 +34,7 @@ export default class Game extends Phaser.Scene {
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
       this.cameras.main.setBackgroundColor(0x62a2bf)
-      this.add.tileSprite(0, 100, 1024, 1024, "mapbackground1").setOrigin(0);
+      this.add.tileSprite(0, 220, 1024, 1024, "mapbackground1").setOrigin(0);
       this.createMap();
 
       //this.cameras.main.setBounds(0, 0, 20920 * 2, 20080 * 2);
@@ -393,7 +393,17 @@ export default class Game extends Phaser.Scene {
     restartScene () {
       this.time.delayedCall(1000, () => {
           if (this.theme) this.theme.stop();
-          this.scene.start("transition", { name: "STAGE", number: this.number});
+          this.scene.start("game", { name: "STAGE", number: this.number, customBricks: this.customBricks});
+        },
+        null,
+        this
+      );
+    }
+
+    rebuildScene () {
+      this.time.delayedCall(1000, () => {
+          if (this.theme) this.theme.stop();
+          this.scene.start("game_builder", { name: "STAGE", number: this.number, customBricks: this.customBricks});
         },
         null,
         this

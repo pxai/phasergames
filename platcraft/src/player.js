@@ -13,7 +13,6 @@ class Player extends Phaser.GameObjects.Sprite {
       this.scene.add.existing(this);
       this.scene.physics.add.existing(this);
       this.cursor = this.scene.input.keyboard.createCursorKeys();
-      this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
       this.down = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
       this.right = true;
       this.body.setGravityY(100)
@@ -35,6 +34,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
       this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
       this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+      this.R = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     }
 
     init () {
@@ -123,6 +123,11 @@ class Player extends Phaser.GameObjects.Sprite {
             }
 
             this.body.setVelocityX(0)
+        }
+
+        if (this.R.isDown) {
+            console.log("R is down!")
+            this.scene.rebuildScene();
         }
     }
 
