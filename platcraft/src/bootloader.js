@@ -23,9 +23,11 @@ export default class Bootloader extends Phaser.Scene {
             this.scene.start("splash", {number: 0});
         },this);
 
-        Array(5).fill(0).forEach((_,i) => {
+        Array(1).fill(0).forEach((_,i) => {
             this.load.audio(`music${i}`,`assets/sounds/music${i}.mp3`)
         });
+
+        this.load.audio(`build_phase`,`assets/sounds/build_phase.mp3`)
 
         this.load.image("pello", "assets/images/pello.png");
         this.load.image("landscape", "assets/images/landscape.png");
@@ -42,10 +44,12 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("stone", "assets/sounds/stone.mp3");
         this.load.audio("foedeath", "assets/sounds/foedeath.mp3");
         this.load.audio("stage", "assets/sounds/stage.mp3");
-
+        this.load.audio("slots", "assets/sounds/slots.mp3");
+        this.load.audio("resolve", "assets/sounds/resolve.mp3");
         this.load.audio("splash", "assets/sounds/splash.mp3");
+        this.load.audio("success", "assets/sounds/success.mp3");
 
-        Array(2).fill(0).forEach((_,i) => {
+        Array(3).fill(0).forEach((_,i) => {
             this.load.image(`brick${i}`,`assets/images/brick${i}.png`)
         });
 
@@ -56,7 +60,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
         this.load.spritesheet("walt", "assets/images/walt.png", { frameWidth: 64, frameHeight: 64 });
 
-        Array(5).fill(0).forEach((_,i) => {
+        Array(7).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`);
         });
         this.load.image('softbricks', 'assets/maps/softbricks.png');
@@ -83,6 +87,9 @@ export default class Bootloader extends Phaser.Scene {
         this.load.bitmapFont("logo", "assets/fonts/logo.png", "assets/fonts/logo.xml");
         this.registry.set("score", 0);
         this.registry.set("coins", 0);
+        this.registry.set("legit_coins", 0);
+        this.registry.set("last_budget", 0);
+        this.registry.set("last_spent", 0);
         this.registry.set("hull", 10);
     }
 

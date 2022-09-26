@@ -46,11 +46,22 @@ export default class Game extends Phaser.Scene {
       this.addScore();
       this.loadAudios(); 
       this.playMusic();
+
+      this.buildPhaseText = this.add.bitmapText(this.center_width, 100, "pixelFont", "Press R to rebuild", 40).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
+      this.tweens.add({
+        targets: this.buildPhaseText,
+        alpha: {from: 0.4, to: 1},
+        repeat: 10,
+        repeat: -1,
+        onComplete: () => {
+          this.buildPhaseText.destroy();
+        }
+      })
     }
 
     addScore() {
-      this.scoreCoins = this.add.bitmapText(75, 10, "pixelFont", "x0", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
-      this.scoreCoinsLogo = this.add.sprite(50, 25, "coin").setScale(1).setOrigin(0.5).setScrollFactor(0)
+      this.scoreCoins = this.add.bitmapText(78, 10, "pixelFont", "x" + this.registry.get("legit_coins"), 20).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.scoreCoinsLogo = this.add.sprite(55, 20, "coin").setScale(0.5).setOrigin(0.5).setScrollFactor(0)
       const coinAnimation = this.anims.create({
         key: "coinscore",
         frames: this.anims.generateFrameNumbers("coin", { start: 0, end: 7 }, ),
@@ -79,6 +90,7 @@ export default class Game extends Phaser.Scene {
       this.lunchBoxGroup = this.add.group();
       this.bricks = this.add.group();
       this.spikeGroup = this.add.group();
+      this.coins = this.add.group();
 
       this.objectsLayer.objects.forEach( object => {
         if (object.name === "bat") {
@@ -116,6 +128,10 @@ export default class Game extends Phaser.Scene {
           this.add.bitmapText(object.x, object.y, "pixelFont", object.text.text, 30).setDropShadow(2, 4, 0x222222, 0.9).setOrigin(0)
         }
 
+        if (object.name === "coin") {
+          this.coins.add(new Coin(this, object.x, object.y))
+        }
+
         if (object.name === "exit") {
           this.exit = new Exit(this, object.x, object.y).setOrigin(0.5);
           this.exitGroup.add(this.exit)
@@ -130,7 +146,6 @@ export default class Game extends Phaser.Scene {
           this.bricks.add(brick);
         }
 
-        console.log("Added custom:", customBrick.x, customBrick.y, customBrick.name );
       })
 
       this.physics.add.collider(this.batGroup, this.platform, this.turnFoe, ()=>{
@@ -165,10 +180,9 @@ export default class Game extends Phaser.Scene {
 
     addPlayer() {
       this.elements = this.add.group();
-      this.coins = this.add.group();
-
+      this.partialCoins = 0;
       const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
-      this.player = new Player(this, playerPosition.x, playerPosition.y, 0);
+      this.player = new Player(this, playerPosition.x, playerPosition.y, 10);
 
 
       this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
@@ -238,9 +252,8 @@ export default class Game extends Phaser.Scene {
 
 
     playerHitFloor(player, platform) {
-      console.log(platform)
-      if (platform.name === "brick0") {
-        platform.marked();
+      if (platform.name === "brick0" || platform.name === "brick2") {
+        platform.marked(platform.name);
       }
     }
 
@@ -278,7 +291,7 @@ export default class Game extends Phaser.Scene {
 
     foeBlowBrick(brick, foe) {
       foe.turn();
-      this.blowBrick(brick);
+      //this.blowBrick(brick);
     }
 
     blowBrick(brick) {
@@ -291,19 +304,15 @@ export default class Game extends Phaser.Scene {
       if (this.isBreakable(tile)) {
         this.playAudioRandomly("stone_fail");
         this.playAudioRandomly("stone");
-        if (this.player.mjolnir) this.cameras.main.shake(30);
         blow.destroy();
         Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY))
         this.platform.removeTileAt(tile.x, tile.y);
         this.spawnCoin(tile)
-
       } 
     }
 
     spawnCoin(tile) {
-      if (Phaser.Math.Between(0, 11) > 5) {
-        this.time.delayedCall(500, () => { this.coins.add(new Coin(this, tile.pixelX, tile.pixelY))}, null, this);
-      }
+      this.time.delayedCall(500, () => { this.coins.add(new Coin(this, tile.pixelX, tile.pixelY))}, null, this);
     }
 
     blowBrick (blow, brick) {
@@ -331,6 +340,7 @@ export default class Game extends Phaser.Scene {
           this.playAudioRandomly("stone");
           Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY))
           this.platform.removeTileAt(tile.x, tile.y);
+          this.spawnCoin(tile);
         } else if (platform?.name === "brick0") {
           this.playAudioRandomly("stone");
           Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, platform.x, platform.y))
@@ -367,11 +377,11 @@ export default class Game extends Phaser.Scene {
       }
 
       playMusic (theme="game") {
-        this.theme = this.sound.add("music" + this.number);
+        this.theme = this.sound.add("music0");
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 0.7,
+          volume: 0.3,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -393,6 +403,7 @@ export default class Game extends Phaser.Scene {
     restartScene () {
       this.time.delayedCall(1000, () => {
           if (this.theme) this.theme.stop();
+          this.updateCoins(-this.partialCoins)
           this.scene.start("game", { name: "STAGE", number: this.number, customBricks: this.customBricks});
         },
         null,
@@ -403,7 +414,9 @@ export default class Game extends Phaser.Scene {
     rebuildScene () {
       this.time.delayedCall(1000, () => {
           if (this.theme) this.theme.stop();
-          this.scene.start("game_builder", { name: "STAGE", number: this.number, customBricks: this.customBricks});
+          this.registry.set("legit_coins", 0);
+          const customBricks = this.customBricks.filter(brick => !brick.isDestroyed )
+          this.scene.start("game_builder", { name: "STAGE", number: this.number, customBricks});
         },
         null,
         this
@@ -416,10 +429,12 @@ export default class Game extends Phaser.Scene {
         this.scoreText.setText(Number(score).toLocaleString());
     }
 
-    updateCoins () {
-      const coins = +this.registry.get("coins") + 1;
+    updateCoins (value = 1) {
+      const coins = +this.registry.get("coins") + value;
+      this.partialCoins++;
       this.registry.set("coins", coins);
       this.scoreCoins.setText("x"+coins);
+      this.registry.set("legit_coins", coins);
       this.tweens.add({
         targets: [this.scoreCoins, this.scoreCoinsLogo],
         scale: { from: 1.4, to: 1},

@@ -12,7 +12,7 @@ class Brick extends Phaser.GameObjects.Sprite {
         this.body.immovable = true;
         this.body.moves = false;
         this.markAsDestroyed = false;
-        this.setListeners();
+        //this.setListeners();
      }
 
      setListeners () {
@@ -35,15 +35,16 @@ class Brick extends Phaser.GameObjects.Sprite {
       });
     }
 
-    marked () {
+    marked (name) {
       if (this.markAsDestroyed) return;
-      
+      const duration = name === "brick0" ? 200 : 50; 
+
       this.markAsDestroyed = true;
       this.scene.tweens.add({
         targets: this,
         x: "+=2",
         repeat: 5,
-        duration: 200,
+        duration,
         onComplete: () => {
           this.remove();
         }

@@ -2,6 +2,7 @@ export default class Zombie extends Phaser.Physics.Arcade.Sprite {
     constructor (scene, x, y, type="right") {
         super(scene, x, y, "zombie");
         this.name = "zombie";
+        this.setScale(0.5)
         this.scene = scene;
         this.scene.physics.add.existing(this);
         this.scene.physics.world.enable(this);

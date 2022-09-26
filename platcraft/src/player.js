@@ -11,12 +11,15 @@ class Player extends Phaser.GameObjects.Sprite {
       this.scene = scene;
 
       this.scene.add.existing(this);
-      this.scene.physics.add.existing(this);
+
       this.cursor = this.scene.input.keyboard.createCursorKeys();
       this.down = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
       this.right = true;
-      this.body.setGravityY(100)
-      this.body.setSize(48, 60)
+      if (health > 0) {
+        this.scene.physics.add.existing(this);
+        this.body.setGravityY(100)
+        this.body.setSize(48, 60)
+      }
       this.init();
       this.jumping = false;
       this.building = false;
@@ -126,7 +129,6 @@ class Player extends Phaser.GameObjects.Sprite {
         }
 
         if (this.R.isDown) {
-            console.log("R is down!")
             this.scene.rebuildScene();
         }
     }
@@ -186,6 +188,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
     die () {
         this.dead = true;
+        this.scene.cameras.main.shake(100);
         this.anims.play("playerdead", true);
         this.body.immovable = true;
         this.body.moves = false;

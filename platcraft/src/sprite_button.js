@@ -20,7 +20,6 @@ class SpriteButton extends Phaser.GameObjects.Sprite {
      setListeners () {
           this.setInteractive();
         this.on("pointerdown", (pointer) => {
-            console.log(this.action)
             this.action();
         });
       

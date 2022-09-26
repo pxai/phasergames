@@ -21,11 +21,11 @@ export default class Splash extends Phaser.Scene {
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
         this.input.keyboard.on("keydown-ENTER", () => this.startGame(), this);
-        //this.playMusic();
+        this.playMusic();
         //this.showPlayer();
         this.showTitle();
         this.playAudioRandomly("stone")
-    this.addStartButton();
+        this.addStartButton();
     }
 
     showTitle () {
@@ -64,7 +64,7 @@ export default class Splash extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,

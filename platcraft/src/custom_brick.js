@@ -11,6 +11,7 @@ class CustomBrick extends Phaser.GameObjects.Sprite {
         this.scene.physics.add.existing(this);
         this.body.immovable = true;
         this.body.moves = false;
+        this.isDestroyed = false;
         this.setListeners();
      }
 
@@ -19,7 +20,7 @@ class CustomBrick extends Phaser.GameObjects.Sprite {
       this.on("pointerdown", (pointer) => {
         this.scene.onABuiltBlock = true;
         if (this.scene.currentBlockSprite) this.scene.currentBlockSprite.visible = false;
-            this.remove();
+        this.remove();
       });
 
       this.on("pointerover", () => {
@@ -42,6 +43,9 @@ class CustomBrick extends Phaser.GameObjects.Sprite {
         this.scene.onABuiltBlock = false;
         this.scene.buildTime = 0;
         const {x, y} = this;
+        this.isDestroyed = true;
+        this.scene.bricks = this.scene.bricks.filter(brick => brick.x !== x || brick.y !== y)
+        this.scene.customBricks = this.scene.customBricks.filter(brick => brick.x !== x || brick.y !== y)
         Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this.scene, x, y))
         this.destroy();
 

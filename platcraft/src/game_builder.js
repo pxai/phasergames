@@ -26,6 +26,7 @@ export default class GameBuilder extends Phaser.Scene {
       this.name = data.name;
       this.number = data.number;
       this.customBricks = data.customBricks || [];
+      this.registry.set("coins", +this.registry.get("last_budget") - +this.registry.get("last_spent") + +this.registry.get("legit_coins"))
   }
 
     preload () {
@@ -40,22 +41,28 @@ export default class GameBuilder extends Phaser.Scene {
       this.add.tileSprite(0, 220, 1024, 1024, "mapbackground1").setOrigin(0);
       this.createMap();
 
-
-
       this.cameras.main.setBounds(0, 0, 20920 * 2, 20080 * 2);
       this.physics.world.setBounds(0, 0, 20920 * 2, 20080 * 2);
       this.addPlayer();
 
-     // this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 100);
-      //this.physics.world.enable([ this.player ]);
       this.addPointer();
       this.addScore();
       this.loadAudios(); 
       this.addPanel();
       this.addStartButton();
-      //this.playMusic();
+      this.playMusic();
       this.firstPlaced = false;
       if (this.number === 0) this.showTutorial();
+      this.buildPhaseText = this.add.bitmapText(this.center_width, 100, "pixelFont", "BUILD PHASE", 50).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
+      this.tweens.add({
+        targets: this.buildPhaseText,
+        alpha: {from: 0.4, to: 1},
+        repeat: 10,
+        repeat: -1,
+        onComplete: () => {
+          this.buildPhaseText.destroy();
+        }
+      })
     }
 
     addPointer() {
@@ -66,14 +73,15 @@ export default class GameBuilder extends Phaser.Scene {
     }
 
     showTutorial () {
+      if (this.number > 0) return;
       if (!this.firstPlaced) {
         this.tutorial1 = this.add.bitmapText(this.center_width, this.center_height - 50, "pixelFont", "Select brick type", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
         this.tutorial2 = this.add.bitmapText(this.center_width, this.center_height, "pixelFont", "and place it", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)  
         this.tutorial3 = this.add.bitmapText(this.center_width, this.center_height + 50, "pixelFont", "", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)  
       } else {
-        this.tutorial1.setText("Click again to delete")
-        this.tutorial2.setText("Keep building")  
-        this.tutorial3.setText("When ready, press play")  
+        this.tutorial1.setText("Click again to delete.")
+        this.tutorial2.setText("Keep building...")  
+        this.tutorial3.setText("When ready, press play!")  
       }
 
       this.tweens.add({
@@ -85,8 +93,8 @@ export default class GameBuilder extends Phaser.Scene {
     }
 
     addScore() {
-      this.scoreCoins = this.add.bitmapText(75, 10, "pixelFont", "x" + this.registry.get("coins"), 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
-      this.scoreCoinsLogo = this.add.sprite(50, 25, "coin").setScale(1).setOrigin(0.5).setScrollFactor(0)
+      this.scoreCoins = this.add.bitmapText(78, 10, "pixelFont", "x" + this.registry.get("coins"), 20).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.scoreCoinsLogo = this.add.sprite(55, 20, "coin").setScale(0.5).setOrigin(0.5).setScrollFactor(0)
       const coinAnimation = this.anims.create({
         key: "coinscore",
         frames: this.anims.generateFrameNumbers("coin", { start: 0, end: 7 }, ),
@@ -99,13 +107,14 @@ export default class GameBuilder extends Phaser.Scene {
       this.selectedBrick = null;
       this.onABuiltBlock = false;
       this.brickTypes = [
+        { name: "brick2", cost: 5, description: "Micro breakable brick"},
         { name: "brick0", cost: 10, description: "Breakable brick"},
         { name: "brick1", cost: 20, description: "Fixed brick"},
         { name: "platform", cost: 50, description: "Moving platform"},
       ];
       this.brickButtons = {};
-      this.bricks = [];
-      const x = (this.cameras.main.width / 2);
+      this.bricks = [] //this.customBricks;
+      const x = (this.cameras.main.width / 2) - 64;
       const y = (this.cameras.main.height - 50);
       this.brickTypes.forEach( (brick, i) => {
         this.brickButtons[brick.name] = new BrickButton(this, x + (i * 64), y, brick).setOrigin(0.5).setScrollFactor(0)
@@ -136,7 +145,6 @@ export default class GameBuilder extends Phaser.Scene {
       this.platform = this.tileMap.createLayer("scene" + this.number, this.tileSet);
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
 
-      console.log(" SCENE: ", 'scene' + this.number, this.tileSet, this.platform, this.objectsLayer )
       this.platform.setCollisionByExclusion([-1]);
 
       this.batGroup = this.add.group();
@@ -147,6 +155,7 @@ export default class GameBuilder extends Phaser.Scene {
       this.platformGroup = this.add.group();
       this.lunchBoxGroup = this.add.group();
       this.spikeGroup = this.add.group();
+      this.coins = this.add.group();
 
       this.objectsLayer.objects.forEach( object => {
         if (object.name === "bat") {
@@ -184,6 +193,10 @@ export default class GameBuilder extends Phaser.Scene {
           this.add.bitmapText(object.x, object.y, "pixelFont", object.text.text, 30).setDropShadow(2, 4, 0x222222, 0.9).setOrigin(0)
         }
 
+        if (object.name === "coin") {
+          this.coins.add(new Coin(this, object.x, object.y))
+        }
+
         if (object.name === "exit") {
           this.exitGroup.add(new Exit(this, object.x, object.y).setOrigin(0.5))
         }
@@ -191,7 +204,6 @@ export default class GameBuilder extends Phaser.Scene {
 
       this.customBricks.forEach( customBrick => {
         this.bricks.push(new CustomBrick(this  , customBrick.x, customBrick.y, customBrick.name))
-        console.log("Added custom:", customBrick.x, customBrick.y, customBrick.name );
       })
 
       this.physics.add.collider(this.batGroup, this.platform, this.turnFoe, ()=>{
@@ -223,10 +235,8 @@ export default class GameBuilder extends Phaser.Scene {
 
     addPlayer() {
       this.elements = this.add.group();
-      this.coins = this.add.group();
       this.spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
       const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
-      console.log("Player: ", playerPosition.x, playerPosition.y)
       this.player = new Player(this, playerPosition.x, playerPosition.y, 0);
 
       this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
@@ -256,19 +266,6 @@ export default class GameBuilder extends Phaser.Scene {
       this.blows = this.add.group();
 
       this.physics.add.overlap(this.blows, this.platform, this.blowPlatform, ()=>{
-        return true;
-      }, this);
-
-
-      this.physics.add.overlap(this.blows, this.foesGroup, this.blowFoe, ()=>{
-        return true;
-      }, this);
-
-      this.physics.add.collider(this.player, this.batGroup, this.hitPlayer, ()=>{
-        return true;
-      }, this);
-
-      this.physics.add.collider(this.player, this.zombieGroup, this.hitPlayer, ()=>{
         return true;
       }, this);
 
@@ -392,11 +389,11 @@ export default class GameBuilder extends Phaser.Scene {
       }
 
       playMusic (theme="game") {
-        this.theme = this.sound.add("music" + this.number);
+        this.theme = this.sound.add("build_phase");
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 0.7,
+          volume: 0.4,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -411,7 +408,7 @@ export default class GameBuilder extends Phaser.Scene {
       if (this.pointer.isDown) {
         const {worldX, worldY}  = this.pointer;
         const point = new Phaser.Geom.Point(worldX, worldY);
-        console.log(point.y, this.cameras.main.height - 110)
+
         if (point.y >= this.cameras.main.height - 110) return;
         if (!this.pointer.rightButtonDown()) {
           this.buildBlock(this.currentBlockSprite);
@@ -463,8 +460,12 @@ export default class GameBuilder extends Phaser.Scene {
     }
 
     startScene () {
-      const customBricks = this.bricks.filter(brick => brick.active )
+      let customBricks = this.bricks.concat(this.customBricks).filter(brick => brick !== null)
+      this.registry.set("last_spent", +this.registry.get("last_budget") - +this.registry.get("coins"))
+      this.registry.set("coins", this.registry.get("legit_coins"))
+
       this.time.delayedCall(1000, () => {
+        this.sound.stopAll();
         if (this.theme) this.theme.stop();
         this.scene.start("game", { name: "STAGE", number: this.number, customBricks});
       },
@@ -498,7 +499,7 @@ export default class GameBuilder extends Phaser.Scene {
     }
 
     recoverCoins (blockType) {
-      this.updateCoins(this.brickButtons[this.selectedBrick].brick.cost);
+      this.updateCoins(this.brickButtons[blockType].brick.cost);
     }
 
     updateCoins (amount = 1) {

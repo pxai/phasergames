@@ -24,7 +24,7 @@ export default class Platform extends Phaser.GameObjects.Container {
 
     init() {
         const offsetX = this.x;
-        const offsetY = -(800 - this.y);
+        const offsetY = 20;
 
         this.scene.tweens.add({
             targets: this,

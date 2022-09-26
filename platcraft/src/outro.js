@@ -1,3 +1,5 @@
+import SpriteButton from "./sprite_button";
+
 export default class Outro extends Phaser.Scene {
     constructor () {
         super({ key: "outro" });
@@ -16,20 +18,31 @@ export default class Outro extends Phaser.Scene {
         this.text = [ 
             "You did it!!",
             "Thanks to your building skills",
-            "and your mighty hammer,",
-            "you saved the earth.",
-            "Made in 3 days for Minijam\n by Pello\n\n Press SPACE"
+            "and your moves",
+            "you saved the day.",
+            "Made in 2 days for a JAM", "by Pello", "Press SPACE"
         ];
         this.showHistory();
-        //this.showPlayer();
+        this.showPlayer();
         //this.playMusic();
         this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
+        this.addStartButton();
     }
+
+    showPlayer () {
+
+    }
+
+    addStartButton () {
+        const x = (this.cameras.main.width / 2);
+        const y = (this.cameras.main.height - 50);
+        this.startButton = new SpriteButton(this, this.center_width, y, "play", "Start Stage", this.startSplash.bind(this));
+      }
 
     showHistory () {
         this.text.forEach((line, i) => {
-                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this); 
+                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 50), null, this); 
         });
         //this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
     }
@@ -59,7 +72,7 @@ export default class Outro extends Phaser.Scene {
 
 
     startSplash () {
-        // this.theme.stop();
+        this.sound.stopAll();
         this.scene.start("splash");
     }
 }
