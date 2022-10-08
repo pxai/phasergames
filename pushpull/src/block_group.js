@@ -2,16 +2,17 @@ import { Particle } from "./particle";
 import Block from "./block";
 
 export default class BlockGroup extends Phaser.GameObjects.Container {
-    constructor(scene, x, y, width=2, height=3, defaultVelocity=100) {
+    constructor(scene, x, y, w=2, h=3, defaultVelocity=100) {
         super(scene, x, y );
         this.scene = scene;
+        this.w = w;
+        this.h = h;
         this.id = Math.random();
         this.name = "block_blue";
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.body.immovable = true;
-        this.width = width;
-        this.height = height;
+
         //this.body.setSize(32, 32)
         //this.body.moves = false;
         this.active = false;
@@ -25,13 +26,15 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     }
 
     createBlock () {
-      this.body.setSize(this.width * 32, this.height * 32)
+      this.body.setSize(this.w * 32, this.h * 32)
 
-      for(let i=0;i<this.width; i++) {
-        for(let j=0;j< this.height; j++) {
+      for(let i=0;i<this.w; i++) {
+        for(let j=0;j< this.h; j++) {
           this.add(new Block(this.scene, i * 32, j * 32, this.name))
         }
       }
+
+      console.log("Created:", this.x, this.y, this.w, this.h, this.width, this.height, this.getBounds(), this.id)
     }
 
     setKeys() {
@@ -99,8 +102,12 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
 
         let myBounds = this.getBounds();
         let otherBounds = block.getBounds();
-        /*myBounds.x += x;
-        myBounds.y += y;*/
+        myBounds.x += 1;
+        myBounds.y += 1;
+        myBounds.width = (this.w * 32) - 2
+        myBounds.height = (this.h * 32) - 2;
+        myBounds.x += x;
+        myBounds.y += y;
         const intersect = Phaser.Geom.Intersects.RectangleToRectangle(myBounds, otherBounds);
         console.log("ET SEE: ", intersect, myBounds, otherBounds, block.name, this.name)
         return intersect;
