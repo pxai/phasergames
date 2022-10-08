@@ -162,9 +162,9 @@ class Player extends Phaser.GameObjects.Sprite {
             this.anims.play("playeridle", true)
         }
 
-        if (animation.key === "playerhammer" || animation.key === "playerbuild" ) {
-            this.building = false;
-            this.anims.play(this.jumping ? "playerjump" : "playeridle", true);
+        if (animation.key === "playerwalk") {
+            this.scene.playAudioRandomly("step", Phaser.Math.Between(2, 7) / 10);
+            new JumpSmoke(this.scene, this.x, this.y + 10)
         }
     }
 

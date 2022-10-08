@@ -363,6 +363,7 @@ export default class Game extends Phaser.Scene {
           "stone": this.sound.add("stone"),
           "foedeath": this.sound.add("foedeath"),
           "stage": this.sound.add("stage"),
+          "step": this.sound.add("step"),
         };
       }
 
