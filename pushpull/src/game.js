@@ -100,7 +100,6 @@ export default class Game extends Phaser.Scene {
       this.activeBlock = null;
       this.blocks.setInteractive();
       this.blocks.on("pointerdown", (pointer) => {
-        console.log("pointer")
         if (this.activeBlock)
           this.activeBlock.deactivate()
       });

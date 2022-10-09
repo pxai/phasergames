@@ -33,8 +33,6 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
           this.add(new Block(this.scene, i * 32, j * 32, this.name))
         }
       }
-
-      console.log("Created:", this.x, this.y, this.w, this.h, this.width, this.height, this.getBounds(), this.id)
     }
 
     setKeys() {
@@ -60,10 +58,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     });
 
     this.on("pointerout", () => {
-      console.log("OUT")
       this.iterate(block => block.clearTint());
-        this.setScale(1)
-        //if (!this.active) this.sprite.
     });
   }
 
@@ -123,7 +118,6 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
         myBounds.x += x;
         myBounds.y += y;
         const intersect = Phaser.Geom.Intersects.RectangleToRectangle(myBounds, otherBounds);
-        console.log("ET SEE: ", intersect, myBounds, otherBounds, block.name, this.name)
         return intersect;
       })
       return !overlaps.every(block => !block)

@@ -32,7 +32,7 @@ export default class Transition extends Phaser.Scene {
         this.cameras.main.setBackgroundColor(0x3c97a6);
         //this.addStartButton();
 
-        if (this.number === 2) {
+        if (this.number === 9) {
             this.scene.start("outro", { name: this.name, number: this.number });
         }
 

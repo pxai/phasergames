@@ -14,12 +14,12 @@ export default class Splash extends Phaser.Scene {
         this.background = this.add.tileSprite(0, 0, 1024, 1024, "background").setOrigin(0);
 
         this.cameras.main.setBackgroundColor(0x3c97a6);
-        //this.showLogo();        ;
+
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
         this.addStartButton();
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
-        //this.playMusic();
-        //this.showPlayer();
+        this.playMusic();
+
         this.showTitle();
         this.addStartButton();
     }
@@ -36,8 +36,8 @@ export default class Splash extends Phaser.Scene {
     }
 
     showTitle() {
-        this.gameLogo1 = this.add.bitmapText(this.center_width - 1000, 120, "mario", "Push", 90).setOrigin(0.5).setTint(0xffffff).setDropShadow(3, 4, 0x75b947, 0.7);//.setTint(0xa6f316).setDropShadow(3, 4, 0x75b947, 0.7);
-        this.gameLogo2 = this.add.bitmapText(this.center_width + 1000, 220, "mario", "Pull", 100).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x693600, 0.7);
+        this.gameLogo1 = this.add.bitmapText(this.center_width - 1000, 100, "mario", "Push", 120).setOrigin(0.5).setTint(0xffffff).setDropShadow(3, 4, 0x75b947, 0.7);//.setTint(0xa6f316).setDropShadow(3, 4, 0x75b947, 0.7);
+        this.gameLogo2 = this.add.bitmapText(this.center_width + 1000, 220, "mario", "Pull", 120).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x693600, 0.7);
        
         this.tweens.add({
             targets: [this.gameLogo2],
@@ -70,28 +70,12 @@ export default class Splash extends Phaser.Scene {
 
     }
 
-    showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
-        this.tweens.add({
-            targets: this.gameLogo,
-            duration: 1000,
-            x: {
-              from: this.center_width * 2,
-              to: this.center_width
-            },
-            y: {
-                from: -200,
-                to: 130
-              },
-          })
-    }
-
     playMusic (theme="splash") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -105,7 +89,7 @@ export default class Splash extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 0.6,
+          volume: 0.2,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -119,7 +103,7 @@ export default class Splash extends Phaser.Scene {
     }
   
     addStartButton () {
-        this.startButton = this.add.bitmapText(this.center_width, 500, "mario", "Click to start", 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x693600, 0.7);
+        this.startButton = this.add.bitmapText(this.center_width, 500, "mario", "start", 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x693600, 0.7);
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {
             this.sound.add("move").play();
@@ -143,8 +127,8 @@ export default class Splash extends Phaser.Scene {
     }
 
     showInstructions() {
-        this.add.sprite(this.center_width - 80, 420, "pello").setOrigin(0.5).setScale(0.5)
-        this.add.bitmapText(this.center_width + 40, 420, "mario", "By PELLO", 15).setOrigin(0.5);
+        this.add.sprite(this.center_width - 80, 400, "pello").setOrigin(0.5).setScale(0.5)
+        this.add.bitmapText(this.center_width + 40, 400, "mario", "By PELLO", 15).setOrigin(0.5);
 
         this.tweens.add({
             targets: this.space,
