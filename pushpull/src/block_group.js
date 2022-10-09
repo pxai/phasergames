@@ -5,8 +5,8 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     constructor(scene, x, y, w=2, h=3, defaultVelocity=100) {
         super(scene, x, y );
         this.scene = scene;
-        this.w = w;
-        this.h = h;
+        this.w = +w;
+        this.h = +h;
         this.id = Math.random();
         this.name = "block_blue";
         this.scene.add.existing(this);
@@ -117,8 +117,9 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
 
     canMoveDown(distance = 32) {
       if (this.isOverlap(0, 1)) return false;
-      distance = this.height * 32;
-      const blocks = Array(this.width).fill(0).map( (_, i) => {
+      distance = (this.h * 32);
+
+      const blocks = Array(this.w).fill(0).map( (_, i) => {
         return this.scene.platform.getTileAtWorldXY(this.x + (i*32), this.y + distance)
       })
 
@@ -127,22 +128,34 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
 
     canMoveUp(distance = 32) {
       if (this.isOverlap(0, -1)) return false;
+
+      const blocks = Array(this.w).fill(0).map( (_, i) => {
+        return this.scene.platform.getTileAtWorldXY(this.x + (i*32), this.y - 1)
+      })
+      return blocks.every(block => !block)
+      /*
       const tile = this.scene.platform.getTileAtWorldXY(this.x, this.y - distance);
 
-      return !tile;
+      return !tile;*/
     }
 
     canMoveLeft(distance = 32) {   
       if (this.isOverlap(-1, 0)) return false;   
 
-      const tile = this.scene.platform.getTileAtWorldXY(this.x - distance, this.y );
-      return !tile;
+      const blocks = Array(this.h).fill(0).map( (_, i) => {
+        return this.scene.platform.getTileAtWorldXY(this.x  - distance, this.y + (i*32))
+      })
+      return blocks.every(block => !block)
+      /*const tile = this.scene.platform.getTileAtWorldXY(this.x - distance, this.y );
+      return !tile;*/
     }
 
     canMoveRight(distance = 32) {
       if (this.isOverlap(1, 0)) return false;
-      distance = this.width * 32;
-      const tile = this.scene.platform.getTileAtWorldXY(this.x + distance, this.y );
-      return !tile;
+      distance = this.w * 32;
+      const blocks = Array(this.h).fill(0).map( (_, i) => {
+        return this.scene.platform.getTileAtWorldXY(this.x  + distance, this.y + (i*32))
+      })
+      return blocks.every(block => !block)
     }
 }
