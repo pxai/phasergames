@@ -2,13 +2,13 @@ import { Particle } from "./particle";
 import Block from "./block";
 
 export default class BlockGroup extends Phaser.GameObjects.Container {
-    constructor(scene, x, y, w=2, h=3, defaultVelocity=100) {
+    constructor(scene, x, y, w=2, h=3, color="blue", defaultVelocity=100) {
         super(scene, x, y );
         this.scene = scene;
         this.w = +w;
         this.h = +h;
         this.id = Math.random();
-        this.name = "block_blue";
+        this.name = "block_" + color;
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.body.immovable = true;
@@ -38,7 +38,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     }
 
     setKeys() {
-
+      this.cursor = this.scene.input.keyboard.createCursorKeys();
       this.W = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
       this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
       this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
@@ -49,27 +49,25 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
   setListeners () {
     this.setInteractive(new Phaser.Geom.Rectangle(0,0,64, 96), Phaser.Geom.Rectangle.Contains);
     this.on("pointerdown", (pointer) => {
-      console.log("Click")
-      //this.setTint(0x00ff00)
+      this.scene.playAudio("select")
+      this.iterate(block => block.setTint(0x306070));
       this.activate()
     });
 
     this.on("pointerover", () => {
-      console.log("OVER")
-      //this.setTint(0x3E6875);
-      //this.setScale(1.1)
+      this.scene.playAudio("hover")
+      this.iterate(block => block.setTint(0x306070));
     });
 
     this.on("pointerout", () => {
       console.log("OUT")
-      //this.clearTint();
+      this.iterate(block => block.clearTint());
         this.setScale(1)
         //if (!this.active) this.sprite.
     });
   }
 
   activate () {
-    this.scene.playRandom("change")
     if (this.scene.activeBlock) this.scene.activeBlock.deactivate();
     this.active = true;
     this.scene.activeBlock = this;
@@ -81,21 +79,37 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
 
     update() {
       if (!this.active) return;
-      if (Phaser.Input.Keyboard.JustUp(this.S) && this.canMoveDown()) {
-        //this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y));
+      if ((Phaser.Input.Keyboard.JustUp(this.S) || Phaser.Input.Keyboard.JustUp(this.cursor.down)) && this.canMoveDown()) {
+        this.leaveTrail(this.w * 32, 32);
         this.y += 32;
-      } else if (Phaser.Input.Keyboard.JustUp(this.W) && this.canMoveUp()) {
-        //this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y));
+        this.scene.updateMoves();
+      } else if ((Phaser.Input.Keyboard.JustUp(this.W) || Phaser.Input.Keyboard.JustUp(this.cursor.up)) && this.canMoveUp()) {
+        this.leaveTrail(this.w * 32, 32, 0, (this.h - 1) * 32);
         this.y -= 32;
-      } else if (Phaser.Input.Keyboard.JustUp(this.D) && this.canMoveRight()) {
-        //this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y));
+        this.scene.updateMoves();
+      } else if ((Phaser.Input.Keyboard.JustUp(this.D) || Phaser.Input.Keyboard.JustUp(this.cursor.right)) && this.canMoveRight()) {
+        this.leaveTrail(32, this.h * 32);
         this.x += 32;
-      } else if (Phaser.Input.Keyboard.JustUp(this.A) && this.canMoveLeft()) {
-        //this.scene && this.scene.trailLayer.add(new Particle(this.scene, this.x, this.y));
+        this.scene.updateMoves();
+      } else if ((Phaser.Input.Keyboard.JustUp(this.A) || Phaser.Input.Keyboard.JustUp(this.cursor.left)) && this.canMoveLeft()) {
+        this.leaveTrail(32, this.h * 32, (this.w - 1) * 32);
         this.x -= 32;
+        this.scene.updateMoves();
       }
     }
 
+    leaveTrail(w, h, offsetX = 0, offsetY = 0) {
+      this.scene.playAudio("move")
+      const trail = this.scene.add.rectangle(this.x + offsetX, this.y + offsetY, w, h, 0xcccccc).setOrigin(0);
+      this.scene.tweens.add({
+        targets: [trail],
+        duration: 300,
+        alpha: {from: 1, to: 0},
+        onComplete: () => {
+          trail.destroy()
+        }
+     })
+    }
     isOverlap (x = 0, y = 0) {
       const overlaps = this.scene.blocks.children.entries.map((block) => {
         if (block.id === this.id) return false;
@@ -116,46 +130,68 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     }
 
     canMoveDown(distance = 32) {
-      if (this.isOverlap(0, 1)) return false;
+      if (this.isOverlap(0, 1)) {
+        this.scene.playAudio("bump")
+        return false;
+      }
       distance = (this.h * 32);
 
       const blocks = Array(this.w).fill(0).map( (_, i) => {
         return this.scene.platform.getTileAtWorldXY(this.x + (i*32), this.y + distance)
       })
 
-      return blocks.every(block => !block)
+      const canMove =  blocks.every(block => !block)
+      if (!canMove)  {
+        this.scene.playAudio("bump")
+      }
+      return canMove;
     }
 
     canMoveUp(distance = 32) {
-      if (this.isOverlap(0, -1)) return false;
+      if (this.isOverlap(0, -1)) {
+        this.scene.playAudio("bump")
+        return false;
+      }
 
       const blocks = Array(this.w).fill(0).map( (_, i) => {
         return this.scene.platform.getTileAtWorldXY(this.x + (i*32), this.y - 1)
       })
-      return blocks.every(block => !block)
-      /*
-      const tile = this.scene.platform.getTileAtWorldXY(this.x, this.y - distance);
-
-      return !tile;*/
+      const canMove =  blocks.every(block => !block)
+      if (!canMove)  {
+        this.scene.playAudio("bump")
+      }
+      return canMove;
     }
 
     canMoveLeft(distance = 32) {   
-      if (this.isOverlap(-1, 0)) return false;   
+      if (this.isOverlap(-1, 0)) {
+        this.scene.playAudio("bump")
+        return false;
+      }  
 
       const blocks = Array(this.h).fill(0).map( (_, i) => {
         return this.scene.platform.getTileAtWorldXY(this.x  - distance, this.y + (i*32))
       })
-      return blocks.every(block => !block)
-      /*const tile = this.scene.platform.getTileAtWorldXY(this.x - distance, this.y );
-      return !tile;*/
+      const canMove =  blocks.every(block => !block)
+      if (!canMove)  {
+        this.scene.playAudio("bump")
+      }
+      return canMove;
     }
 
     canMoveRight(distance = 32) {
-      if (this.isOverlap(1, 0)) return false;
+      if (this.isOverlap(1, 0)) {
+        this.scene.playAudio("bump")
+        return false;
+      }
       distance = this.w * 32;
       const blocks = Array(this.h).fill(0).map( (_, i) => {
         return this.scene.platform.getTileAtWorldXY(this.x  + distance, this.y + (i*32))
       })
-      return blocks.every(block => !block)
+      const canMove =  blocks.every(block => !block)
+      if (!canMove)  {
+        this.scene.playAudio("bump")
+      }
+      return canMove;
     }
 }

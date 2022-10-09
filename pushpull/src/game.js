@@ -32,7 +32,7 @@ export default class Game extends Phaser.Scene {
 
       this.addMap();
       //this.setListeners();  
-      this.addTimer();
+      this.addMoves();
       this.addRetry();
 
       this.loadAudios(); 
@@ -44,23 +44,9 @@ export default class Game extends Phaser.Scene {
       this.R = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     }
 
-    addTimer() {
-      this.timerText = this.add.bitmapText(this.center_width, 32, "mario", this.limitedTime, 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(3, 4, 0x75b947, 0.7);
-      this.totalTime = this.limitedTime;
-      this.timer = this.time.addEvent({ delay: 1000, callback: this.subSecond, callbackScope: this, loop: true });
-
-    }
-
-    subSecond () {
-      this.totalTime--;
-      this.updateTimer()
-
-      if (this.totalTime <= 0) { 
-        this.timer.destroy();
-        if (this.number > 2)
-         this.failScene() 
-      }
-
+    addMoves() {
+      this.movesText = this.add.bitmapText(this.center_width, 32, "mario", "0", 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(3, 4, 0x75b947, 0.7);
+      this.totalMoves = 0;
     }
 
     addMap() {
@@ -79,9 +65,12 @@ export default class Game extends Phaser.Scene {
       this.texts = [];
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("block")){
-          const [name, width, height] = object.name.split("_");
-          this.activeBlock = new BlockGroup(this, object.x, object.y, width, height);
+          const [name, width, height, color] = object.name.split("_");
+          this.activeBlock = new BlockGroup(this, object.x, object.y, width, height, color);
           this.blocks.add(this.activeBlock)
+          if (object.name.startsWith("block_1_1")) {
+            this.addPlayer(this.activeBlock);
+          }
         }
 
         if (object.name.startsWith("exit")){
@@ -93,21 +82,17 @@ export default class Game extends Phaser.Scene {
         }
 
 
-        if (object.name === "text") {
+        if (object.name.startsWith("exit")) {
           this.texts.push(object);
         }
       })
     }
 
     showTexts() {
-      this.texts.forEach(text => {
-       let help = this.add.bitmapText(text.x, text.y, "mario", text.type, 15).setOrigin(0.5).setTint(0xffe066).setDropShadow(1, 2, 0xbf2522, 0.7);
-       this.tweens.add({
-         targets: help,
-         duration: 20000,
-         alpha: { from: 1, to: 0},
-         ease: 'Linear'
-       })
+      if (this.number > 0) return;
+      const texts = ["Select cubes", "Pull/push them with WASD/Arrows", "MOVE the red to exit"]
+      texts.forEach((text, i) => {
+       let help = this.add.bitmapText(this.center_width, 425 + (35 * i), "mario", text, 15).setOrigin(0.5).setTint(0xffe066).setDropShadow(1, 2, 0xbf2522, 0.7);
      })
    }
 
@@ -121,32 +106,8 @@ export default class Game extends Phaser.Scene {
       });
     }
 
-    addPlayer() {
-      this.trailLayer = this.add.layer();
-      const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
-      this.player = new Player(this, playerPosition.x, playerPosition.y)
-
-      this.physics.add.collider(this.player, this.platform, this.hitPlatform, ()=>{
-        return true;
-      }, this);
-
-
-      this.physics.add.overlap(this.player, this.blocks, this.hitBlock, ()=>{
-        return true;
-      }, this);
-
-      this.physics.add.collider(this.blocks, this.blocks, this.hitBlockBlock, ()=>{
-        return true;
-      }, this);
-
-      this.physics.add.collider(this.blocks, this.platform, this.hitBlockBlock, ()=>{
-        return true;
-      }, this);
-
-      this.physics.add.overlap(this.player, this.hearts, this.hitExtraTime, ()=>{
-        return true;
-      }, this);
-
+    addPlayer(block) {
+      this.player = block;
       this.physics.add.overlap(this.player, this.exits, this.hitExit, ()=>{
         return true;
       }, this);
@@ -169,21 +130,12 @@ export default class Game extends Phaser.Scene {
       //else player.reverseDirection()
     }
 
-    hitExtraTime(player, heart) {
-      heart.destroy();
-      this.totalTime = this.totalTime + 10;
-      this.updateTimer()
-      Array(Phaser.Math.Between(3, 6)).fill().forEach( p => this.trailLayer.add(new WaterSplash(this, player.x, player.y)));
-      this.playRandom("coin")
-    }
-
     hitBlockBlock(block, platform) {
     }
 
-
     hitExit(player, exit) {
+      this.player.active = false;
       exit.destroy();
-      player.finish();
 
       this.finishScene();
     }
@@ -195,12 +147,11 @@ export default class Game extends Phaser.Scene {
 
       loadAudios () {
         this.audios = {
-          "platform": this.sound.add("platform"),
-          "block": this.sound.add("block"),
-          "change": this.sound.add("change"),
-          "fail": this.sound.add("fail"),
+          "bump": this.sound.add("bump"),
+          "hover": this.sound.add("hover"),
+          "select": this.sound.add("select"),
+          "move": this.sound.add("move"),
           "win": this.sound.add("win"),
-          "coin": this.sound.add("coin"),
         };
       }
 
@@ -225,9 +176,12 @@ export default class Game extends Phaser.Scene {
 
     finishScene () {
       if (this.solved) return;
-      this.timer.destroy();
+    
       this.playAudio("win")
       this.solved = true;
+      const totalMoves = +this.registry.get("moves") + this.totalMoves;
+      this.registry.set("moves", totalMoves)
+
       this.winText = this.add.bitmapText(this.center_width, -100, "mario", "STAGE CLEARED!", 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x75b947, 0.7);
       this.tweens.add({
         targets: this.winText,
@@ -235,7 +189,7 @@ export default class Game extends Phaser.Scene {
         y: {from: this.winText.y, to: this.center_height}
       })
       this.tweens.add({
-        targets: this.winText,
+        targets: [this.winText, this.movesText],
         duration: 100,
         scale: {from: 1, to: 1.1},
         repeat: -1,
@@ -246,37 +200,19 @@ export default class Game extends Phaser.Scene {
       }, null, this)
     }
 
-    failScene () {
-      this.playAudio("fail")
-      this.failText = this.add.bitmapText(this.center_width, this.height + 100, "mario", "TIME UP!!", 30).setOrigin(0.5).setTint(0x9A5000).setDropShadow(2, 3, 0x75b947, 0.7);
-      this.tweens.add({
-        targets: this.failText,
-        duration: 500,
-        y: {from: this.failText.y, to: this.center_height}
-      })
-      this.time.delayedCall(2000, () => {
-        this.scene.start("game", {next: "underwater", name: "STAGE", number: this.number, limitedTime: 10 + (this.number * 3)  });
-      }, null, this)
-    }
-
     restartScene () {
         this.scene.start("game", {next: "underwater", name: "STAGE", number: this.number });
     }
 
 
-
-    updateTimer () {
-      if (this.totalTime < 5) {
-        this.timerText.setText(this.totalTime).setTint(0xff0000);
-        this.tweens.add({
-          targets: [this.timerText],
-          duration: 200,
-          alpha: {from: 0.6, to: 1},
-          repeat: -1
-        })
-      } else {
-        this.timerText.setText(this.totalTime);
-      }
-
+    updateMoves () {
+      this.totalMoves++;
+      this.movesText.setText(this.totalMoves);
+      this.tweens.add({
+        targets: [this.timerText],
+        duration: 200,
+        alpha: {from: 0.6, to: 1},
+        repeat: -1
+      })
     }
 }

@@ -33,20 +33,19 @@ export default class Bootloader extends Phaser.Scene {
 
         this.load.bitmapFont("mario", "assets/fonts/mario.png", "assets/fonts/mario.xml");
         this.load.audio("music", "assets/sounds/music.mp3");
-        this.load.audio("pond", "assets/sounds/pond.mp3");
-        this.load.audio("splash", "assets/sounds/splash.mp3");
-        this.load.audio("platform", "assets/sounds/platform.mp3");
-        this.load.audio("block", "assets/sounds/block.mp3");
-        this.load.audio("change", "assets/sounds/change.mp3");
+
         this.load.audio("win", "assets/sounds/win.mp3");
-        this.load.audio("fail", "assets/sounds/fail.mp3");
-        this.load.audio("coin", "assets/sounds/coin.mp3");
+        this.load.audio("hover", "assets/sounds/hover.mp3");
+        this.load.audio("select", "assets/sounds/select.mp3");
+        this.load.audio("bump", "assets/sounds/bump.mp3");
+        this.load.audio("move", "assets/sounds/move.mp3");
 
         this.load.image('background', 'assets/images/background.png');
         this.load.image('tileset_fg', 'assets/maps/tileset_fg.png');
         this.load.image('block_red', 'assets/images/block_red.png');
         this.load.image('block_green', 'assets/images/block_green.png');
         this.load.image('block_blue', 'assets/images/block_blue.png');
+        this.load.image('block_yellow', 'assets/images/block_yellow.png');
         this.load.image('star', 'assets/images/star.png');
         this.load.spritesheet("heart", "assets/images/heart.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("frog", "assets/images/frog.png", { frameWidth: 32, frameHeight: 48 });
@@ -59,7 +58,7 @@ export default class Bootloader extends Phaser.Scene {
         });
 
         this.registry.set("score", 0);
-        this.registry.set("coins", 0);
+        this.registry.set("moves", 0);
     }
 
     create () {
@@ -67,7 +66,7 @@ export default class Bootloader extends Phaser.Scene {
 
     createBars () {
         this.loadBar = this.add.graphics();
-        this.loadBar.fillStyle(0x3c97a6, 1);
+        this.loadBar.fillStyle(0xffe066, 1);
         this.loadBar.fillRect(
             this.cameras.main.width / 4 - 2,
             this.cameras.main.height / 2 - 18,

@@ -23,7 +23,8 @@ export default class Outro extends Phaser.Scene {
             "croak, croak, ¡croak!",
             "¿Try again?"
         ];
-        this.showHistory();
+        this.showCount();
+        //this.showHistory();
         this.addStartButton()
         this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
@@ -51,7 +52,23 @@ export default class Outro extends Phaser.Scene {
     }
 
     showPlayer () {
-        this.add.sprite(this.center_width, 570, "frog").setOrigin(0.5).setScale(1.2);
+        this.add.sprite(this.center_width, 570, "block_blue").setOrigin(0.5).setScale(1.2);
+    }
+
+    showCount () {
+        this.winText = this.add.bitmapText(this.center_width, -100, "mario", "TOTAL MOVES: " + this.registry.get("moves"), 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x75b947, 0.7);
+        this.tweens.add({
+          targets: this.winText,
+          duration: 500,
+          y: {from: this.winText.y, to: this.center_height}
+        })
+        this.tweens.add({
+          targets: this.winText,
+          duration: 100,
+          scale: {from: 1, to: 1.1},
+          repeat: -1,
+          yoyo: true
+        })
     }
 
     showLine(text, y) {
