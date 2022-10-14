@@ -1,0 +1,332 @@
+{ "compressionlevel":-1,
+ "height":20,
+ "infinite":false,
+ "layers":[
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"objects",
+         "objects":[
+                {
+                 "class":"",
+                 "height":0,
+                 "id":31,
+                 "name":"player",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":128,
+                 "y":128
+                }, 
+                {
+                 "class":"",
+                 "height":0,
+                 "id":32,
+                 "name":"",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":768,
+                 "y":384
+                }, 
+                {
+                 "class":"",
+                 "height":0,
+                 "id":33,
+                 "name":"foe",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":768,
+                 "y":384
+                }, 
+                {
+                 "class":"",
+                 "height":0,
+                 "id":34,
+                 "name":"foe",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":448,
+                 "y":832
+                }, 
+                {
+                 "class":"",
+                 "height":0,
+                 "id":35,
+                 "name":"",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":256,
+                 "y":320
+                }, 
+                {
+                 "class":"",
+                 "height":0,
+                 "id":36,
+                 "name":"shell",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":256,
+                 "y":320
+                }, 
+                {
+                 "class":"",
+                 "height":0,
+                 "id":37,
+                 "name":"shell",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":256,
+                 "y":384
+                }, 
+                {
+                 "class":"",
+                 "height":0,
+                 "id":38,
+                 "name":"tnt",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":768,
+                 "y":832
+                }, 
+                {
+                 "class":"",
+                 "height":0,
+                 "id":39,
+                 "name":"shell",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":64,
+                 "y":384
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[45, 44, 43, 43, 45, 46, 43, 46, 45, 45, 43, 43, 45, 44, 45, 46, 43, 44, 43, 43,
+            43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 44,
+            43, 0, 0, 0, 0, 45, 45, 45, 43, 46, 45, 45, 46, 43, 44, 0, 0, 0, 0, 43,
+            46, 0, 46, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 43, 0, 43,
+            43, 0, 44, 0, 0, 0, 45, 44, 44, 44, 45, 46, 46, 43, 0, 0, 0, 45, 0, 44,
+            43, 0, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 43, 0, 43,
+            46, 0, 44, 0, 0, 45, 0, 0, 0, 0, 0, 0, 0, 0, 44, 0, 0, 44, 0, 46,
+            44, 0, 44, 0, 0, 43, 0, 0, 0, 0, 0, 0, 0, 0, 44, 0, 0, 43, 0, 45,
+            43, 0, 46, 0, 0, 45, 0, 0, 43, 0, 0, 44, 0, 0, 45, 0, 0, 44, 0, 45,
+            44, 0, 44, 0, 0, 45, 0, 0, 0, 45, 45, 0, 0, 0, 45, 0, 0, 46, 0, 43,
+            44, 0, 43, 0, 0, 43, 0, 0, 0, 44, 46, 0, 0, 0, 46, 0, 0, 45, 0, 45,
+            43, 0, 43, 0, 0, 46, 0, 0, 45, 0, 0, 45, 0, 0, 46, 0, 0, 45, 0, 44,
+            44, 0, 46, 0, 0, 44, 0, 0, 0, 0, 0, 0, 0, 0, 43, 0, 0, 46, 0, 45,
+            46, 0, 43, 0, 0, 45, 0, 0, 0, 0, 0, 0, 0, 0, 46, 0, 0, 45, 0, 43,
+            46, 0, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 46, 0, 46,
+            46, 0, 43, 0, 0, 0, 45, 46, 46, 43, 43, 43, 46, 46, 0, 0, 0, 45, 0, 43,
+            44, 0, 45, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 44, 0, 45,
+            43, 0, 0, 0, 0, 44, 44, 45, 44, 46, 44, 45, 43, 45, 44, 0, 0, 0, 0, 45,
+            43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 43,
+            45, 45, 45, 45, 44, 43, 46, 43, 46, 45, 43, 44, 45, 44, 43, 46, 46, 45, 45, 45],
+         "height":20,
+         "id":1,
+         "name":"scene0",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":20,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":20,
+         "id":4,
+         "name":"background",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":20,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":5,
+ "nextobjectid":40,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.9.2",
+ "tileheight":64,
+ "tilesets":[
+        {
+         "columns":6,
+         "firstgid":1,
+         "image":"background.png",
+         "imageheight":448,
+         "imagewidth":384,
+         "margin":0,
+         "name":"background",
+         "spacing":0,
+         "tilecount":42,
+         "tileheight":64,
+         "tilewidth":64
+        }, 
+        {
+         "columns":5,
+         "firstgid":43,
+         "image":"cave.png",
+         "imageheight":192,
+         "imagewidth":320,
+         "margin":0,
+         "name":"cave",
+         "spacing":0,
+         "tilecount":20,
+         "tileheight":64,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"break"
+                        }]
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"break"
+                        }]
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"break"
+                        }]
+                }, 
+                {
+                 "id":3,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"break"
+                        }]
+                }, 
+                {
+                 "id":4,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"break"
+                        }]
+                }, 
+                {
+                 "id":12,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"break"
+                        }]
+                }, 
+                {
+                 "id":13,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"break"
+                        }]
+                }, 
+                {
+                 "id":14,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"break"
+                        }]
+                }, 
+                {
+                 "id":15,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"break"
+                        }]
+                }, 
+                {
+                 "id":16,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"break"
+                        }]
+                }, 
+                {
+                 "id":17,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"break"
+                        }]
+                }, 
+                {
+                 "id":18,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"break"
+                        }]
+                }, 
+                {
+                 "id":19,
+                 "properties":[
+                        {
+                         "name":"element",
+                         "type":"string",
+                         "value":"break"
+                        }]
+                }],
+         "tilewidth":64
+        }],
+ "tilewidth":64,
+ "type":"map",
+ "version":"1.9",
+ "width":20
+}
