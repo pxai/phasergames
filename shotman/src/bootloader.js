@@ -9,7 +9,7 @@ export default class Bootloader extends Phaser.Scene {
             "progress",
             function (value) {
                 this.progressBar.clear();
-                this.progressBar.fillStyle(0x88d24c, 1);
+                this.progressBar.fillStyle(0xe5cc18, 1);
                 this.progressBar.fillRect(
                     this.cameras.main.width / 4,
                     this.cameras.main.height / 2 - 16,
@@ -51,8 +51,9 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("willie", "assets/images/willie.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("shell", "assets/images/shell.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("shot", "assets/images/shot.png", { frameWidth: 32, frameHeight: 32 });
-
+        this.load.spritesheet("debris", "assets/images/debris.png", { frameWidth:64, frameHeight: 64 });
         this.load.image("shadow", "assets/images/shadow.png");
+        this.load.image("tnt", "assets/images/tnt.png");
 
         this.load.image('cave', 'assets/maps/cave.png');
         this.load.image('background', 'assets/maps/background.png');
@@ -63,8 +64,6 @@ export default class Bootloader extends Phaser.Scene {
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
 
         this.registry.set("score", 0);
-        this.registry.set("coins", 0);
-        this.registry.set("hull", 10);
     }
 
     create () {
@@ -72,7 +71,7 @@ export default class Bootloader extends Phaser.Scene {
 
     createBars () {
         this.loadBar = this.add.graphics();
-        this.loadBar.fillStyle(0x008483, 1);
+        this.loadBar.fillStyle(0xb85d08, 1);
         this.loadBar.fillRect(
             this.cameras.main.width / 4 - 2,
             this.cameras.main.height / 2 - 18,

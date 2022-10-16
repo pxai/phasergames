@@ -120,10 +120,13 @@ export default class Foe extends Phaser.GameObjects.Container  {
     }
 
     death () {
+      //this.delayedMove.stop();
+        this.moveTimeline.destroy();
         this.dead = true;
         this.body.enable = false;
         this.body.rotation = 0;
-        this.anims.play(this.name + "death")
+        //this.anims.play(this.name + "death")
+        this.destroy();
       }
 
       animationComplete(animation, frame) {

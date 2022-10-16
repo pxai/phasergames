@@ -1,5 +1,5 @@
 import Shot from "./shot";
-import { JumpSmoke } from "./particle";
+import { JumpSmoke, ShotSmoke } from "./particle";
 
 export default class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y) {
@@ -128,6 +128,9 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.shooting = true;
             this.shoot();
         }
+
+        this.scene.playerLight.x = this.x;
+        this.scene.playerLight.y = this.y;
     }
 
     shoot () {
@@ -138,6 +141,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
             {x: -1, y: 0},
         ][this.lastDirection];
         this.anims.play("shoot" + this.lastDirection, true);
+        Array(Phaser.Math.Between(6, 10)).fill(0).forEach( i => { this.scene.smokeLayer.add(new ShotSmoke(this.scene,  this.x + (x * 64), this.y + (y * 64), x, y))});
         this.scene.shots.add(new Shot(this.scene, this.x + (x * 64), this.y + (y * 64), x, y))
         this.shells--;
         this.body.setVelocityX(200 * -x);
@@ -148,11 +152,13 @@ export default class Player extends Phaser.GameObjects.Sprite {
             repeat: 5,
             duration: 20 ,
             onComplete: () => {
+                Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => { this.scene.smokeLayer.add(new JumpSmoke(this.scene, this.x , this.y + 32))});
                 this.shooting = false;
                 this.scene.playAudio("cock");
                 this.initialAnimation();
             }
         })
+
 
     }
 
@@ -164,6 +170,13 @@ export default class Player extends Phaser.GameObjects.Sprite {
             case 3: this.anims.play("walkside", true); break;
             default: break;
         }
+    }
+
+    death () {
+        this.dead = true;
+        this.body.stop();
+        this.body.enable = false;
+        this.anims.play("playerdead", true)
     }
 
     animationComplete (animation, frame) {

@@ -1,7 +1,9 @@
 export class Smoke extends Phaser.GameObjects.Rectangle {
-    constructor (scene, x, y, width, height, color = 0xffffff, gravity = false ) {
-        width = width || Phaser.Math.Between(10, 25)
-        height = height || Phaser.Math.Between(10, 25)
+    constructor (scene, x, y, color = 0xffffff, gravity = false ) {
+        x += Phaser.Math.Between(-32, 32)
+        y += Phaser.Math.Between(-32, 32)
+        const width = Phaser.Math.Between(10, 25)
+        const height = Phaser.Math.Between(10, 25)
         super(scene, x, y, width, height, color)
         scene.add.existing(this)
         this.scene = scene;
@@ -123,14 +125,42 @@ export class Light extends Phaser.GameObjects.PointLight {
 // 0x4d4d4d grey brick
 
 export class RockSmoke extends Phaser.GameObjects.Rectangle {
-    constructor (scene, x, y, width, height, color = 0xFFEAAB, gravity = false ) {
-        width = width || Phaser.Math.Between(30, 55)
-        height = height || Phaser.Math.Between(30, 55)
+    constructor (scene, x, y, color = 0xFFEAAB, gravity = false ) {
+        x += Phaser.Math.Between(-20, 20)
+        y += Phaser.Math.Between(-20, 20)
+        const width = Phaser.Math.Between(40, 65)
+        const height = Phaser.Math.Between(40, 65)
         super(scene, x, y, width, height, color)
         scene.add.existing(this)
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
         this.body.setVelocityY(-100);
+        this.init();
+    }
+
+    init () {
+        this.scene.tweens.add({
+            targets: this,
+            duration: 800,
+            scale: {from: 1, to: 0},
+            onComplete: () => { this.destroy()  }
+        });
+
+    }
+}
+
+export class ShotSmoke extends Phaser.GameObjects.Rectangle {
+    constructor (scene, x, y, directionX, directionY, color = 0xFFEAAB ) {
+        x += Phaser.Math.Between(-30, 30)
+        y += Phaser.Math.Between(-30, 30)
+        const width =  Phaser.Math.Between(30, 55)
+        const height = Phaser.Math.Between(30, 55)
+        super(scene, x, y, width, height, color)
+        scene.add.existing(this)
+        scene.physics.add.existing(this);
+        this.body.setAllowGravity(false);
+        this.body.setVelocityX(100 * directionX);
+        this.body.setVelocityY(100 * directionY);
         this.init();
     }
 

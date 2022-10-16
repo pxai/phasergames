@@ -1,8 +1,12 @@
 import Player from "./player";
 import Shell from "./shell";
 import Gold from "./gold";
+import Tnt from "./tnt";
 import Foe from "./foe";
-import { Debris, Smoke } from "./particle";
+import { Smoke, RockSmoke, ShotSmoke } from "./particle";
+import places from "./places";
+import Debris from "./debris";
+import { Explosion } from "./steam";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -25,24 +29,57 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      this.cameras.main.setBackgroundColor(0x8f532b);
+      this.cameras.main.setBackgroundColor(0x000000); 
+      this.addLight();
       this.createMap();
       this.smokeLayer = this.add.layer();
       this.addPlayer();
 
+      this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 100);
+      this.addScore();
+      this.addShells();
+      this.addMineName();
       this.loadAudios(); 
       // this.playMusic();
     }
 
+    addScore() {
+      this.scoreText = this.add.bitmapText(75, 10, "shotman", "x" +this.registry.get("score"), 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.scoreLogo = this.add.sprite(50, 28, "gold0").setScale(0.5).setOrigin(0.5).setScrollFactor(0)
+
+     // this.scoreLogo.play({ key: "goldscore", repeat: -1 });
+    }
+
+    addShells() {
+      this.shellText = this.add.bitmapText(875, 10, "shotman", "x" +this.player.shells, 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.shellLogo = this.add.sprite(850, 28, "shell").setScale(0.8).setOrigin(0.5).setScrollFactor(0)
+      const coinAnimation = this.anims.create({
+        key: "shellscore",
+        frames: this.anims.generateFrameNumbers("shell", { start: 0, end: 5 }, ),
+        frameRate: 5,
+      });
+      this.shellLogo.play({ key: "shellscore", repeat: -1 });
+    }
+
+    addMineName () {
+      const name = "\"" + Phaser.Math.RND.pick(places) + "\"";
+      this.mineName = this.add.bitmapText(this.center_width, 27, "shotman", name, 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
+    }
+
+    addLight() {
+      this.lights.enable();
+      this.lights.setAmbientColor(0x707070);
+      this.playerLight = this.lights.addLight(0, 100, 100).setColor(0xffffff).setIntensity(3.0);
+    }
 
     createMap() {
       this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 64, tileHeight: 64 });
-      this.tileSetBg = this.tileMap.addTilesetImage("background");
-      this.tileMap.createStaticLayer('background', this.tileSetBg)
+      this.tileSetBg = this.tileMap.addTilesetImage("cave");
+      this.tileMap.createStaticLayer('background', this.tileSetBg).setPipeline('Light2D');
   
       this.tileSet = this.tileMap.addTilesetImage("cave");
-      this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet);
-      this.border = this.tileMap.createLayer('border', this.tileSet);
+      this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet).setPipeline('Light2D');;
+      this.border = this.tileMap.createLayer('border', this.tileSet).setPipeline('Light2D');;
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
       this.border.setCollisionByExclusion([-1]);
       this.platform.setCollisionByExclusion([-1]);
@@ -68,22 +105,16 @@ export default class Game extends Phaser.Scene {
         if (object.name.startsWith("gold")) {
           this.golds.add(new Gold(this, object.x - 16, object.y - 16));
         }
+
+        if (object.name.startsWith("tnt")) {
+          this.tnts.add(new Tnt(this, object.x - 16, object.y - 16));
+        }
       });
 
     }
 
     createGrid () {
       this.grid = [];
-
-      /*Array(20 * 64).fill(0).forEach((_,i) => {
-          this.grid[i] = []
-          Array(20 * 64).fill(0).forEach((_, j) => {
-            let rock = this.platform.getTileAt(Math.floor(i/64), Math.floor(j/64));
-            let wall = this.border.getTileAt(Math.floor(i/64), Math.floor(j/64));
-            this.grid[i][j] = (rock || wall) ?  1 : 0;
-          });
-      });*/
-
 
       Array(20).fill(0).forEach((_,i) => {
         this.grid[i] = []
@@ -158,18 +189,23 @@ export default class Game extends Phaser.Scene {
 
     pickGold (player, gold) {
       this.playAudio("gold");
+  
       gold.destroy()
-      //this.playAudio("gold");
-      //let points = Phaser.Math.Between(1, 4);
+
       this.showPoints(player.x, player.y, "+1", 0xe5cc18)
-      //this.updateScore(points);
+      this.updateScore()
+
+      if (this.isAllGoldTaken()) {
+        this.finishScene()
+      }
   }
 
     playerPickShell (player, shell) {
+      shell.destroy();
       this.playAudio("shell");
       player.shells++;
       this.showPoints(player.x, player.y, "+1")
-      shell.destroy();
+      this.updateShells()
     }
 
     playerHitByFireball (player, fireball) {
@@ -177,30 +213,45 @@ export default class Game extends Phaser.Scene {
     }
 
     playerHitByFoe (player, foe) {
-
+      player.death();
+      this.restartScene();
     } 
 
     foeHitByShot (shot, foe) {
       shot.destroy();
       foe.freeze();
+      Array(Phaser.Math.Between(8, 14)).fill(0).forEach( i => { this.smokeLayer.add(new Smoke(this, foe.x + 32, foe.y + 32, 0xb79860))});
     }
 
     foeHitByBlast (blast, foe) {
-
+      this.playAudio("yee-haw")
+      Array(Phaser.Math.Between(20, 34)).fill(0).forEach( i => { this.smokeLayer.add(new Smoke(this, foe.x + 32, foe.y + 32, 0xb79860))});
+      foe.destroy();
     }
 
     tntHitByShot (shot, tnt) {
+      this.playAudio("explosion")
+      Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => { this.smokeLayer.add(new RockSmoke(this, tnt.x, tnt.y))});
+      this.blasts.add(new Explosion(this, tnt.x, tnt.y))
       shot.destroy();
       tnt.destroy();
     }
 
     shotHitPlatform (shot, tile) {
       if (!tile.collideDown) return;
-      console.log("HIT TILE?", tile)
       shot.destroy();
       Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY))
       this.platform.removeTileAt(tile.x, tile.y);
-      new Smoke(this, tile.pixelX, tile.pixelY)
+      Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => { this.smokeLayer.add(new RockSmoke(this, tile.pixelX, tile.pixelY))});
+      const {x, y} = [
+        {x: 0, y: -1},
+        {x: 1, y: 0},
+        {x: 0, y: 1},
+        {x: -1, y: 0},
+      ][this.player.lastDirection];
+      Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => { this.smokeLayer.add(new ShotSmoke(this, tile.pixelX + (x * 64), tile.pixelY + (y * 64), x, y))});
+      Array(Phaser.Math.Between(3,6)).fill(0).forEach( i => this.smokeLayer.add(new Debris(this, tile.pixelX  + 32 + (x * Phaser.Math.Between(16, 32)), tile.pixelY + 32 + (y * Phaser.Math.Between(16, 32)))))
+      this.playAudio("stone")
     }
 
       loadAudios () {
@@ -248,16 +299,28 @@ export default class Game extends Phaser.Scene {
 
     }
 
-    finishScene () {
-      this.sky.stop();
-      this.theme.stop();
-      this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
+    restartScene () {
+      //this.theme.stop();
+      this.time.delayedCall(3000, () => {
+        this.scene.start("game", {number: this.number});
+      }, null, this);
     }
 
-    updateScore (points = 0) {
+    finishScene () {
+      this.player.dead = true;
+      this.player.body.stop();
+      this.playAudio("yee-haw");
+      this.playAudio("win");
+      //this.theme.stop();
+      this.time.delayedCall(3000, () => {
+        this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
+      }, null, this);
+    }
+
+    updateScore (points = 1) {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
-        this.scoreText.setText(Number(score).toLocaleString());
+        this.scoreText.setText("x" + score);
     }
 
     showPoints (x, y, msg, color = 0xff0000) {
@@ -273,4 +336,37 @@ export default class Game extends Phaser.Scene {
           }
       });
     }
+
+    isAllGoldTaken () {
+      return this.golds.getChildren().map(gold => gold.active).every(gold => !gold);
+    }
+
+    updateScore (points = 1) {
+      const score = +this.registry.get("score") + points;
+      this.registry.set("score", score);
+      this.scoreText.setText("x"+ score);
+      this.tweens.add({
+        targets: [this.scoreLogo],
+        scale: { from: 1, to: 0.5},
+        duration: 100,
+        repeat: 5
+      })
+
+      this.tweens.add({
+        targets: [this.scoreText],
+        scale: { from: 0.5, to: 1},
+        duration: 100,
+        repeat: 5
+      })
+  }
+
+  updateShells (shell, points = 1) {
+    this.shellText.setText("x"+ this.player.shells);
+    this.tweens.add({
+      targets: [this.shellText, this.shellLogo],
+      scale: { from: 0.5, to: 1},
+      duration: 100,
+      repeat: 5
+    })
+  }
 }
