@@ -1,4 +1,5 @@
 import Shot from "./shot";
+import { JumpSmoke } from "./particle";
 
 export default class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y) {
@@ -166,11 +167,16 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
     animationComplete (animation, frame) {
-        /*
-        if(animation.key == "playerwalk") {
+        const {x, y} = [
+            {x: 0, y: -1},
+            {x: 1, y: 0},
+            {x: 0, y: 1},
+            {x: -1, y: 0},
+        ][this.lastDirection];
+        if(animation.key.startsWith("walk")) {
             this.scene.playRandom("step", Phaser.Math.Between(2, 7) / 10);
-            new JumpSmoke(this.scene, this.x, this.y + 10)
-        }*/
+            this.scene.smokeLayer.add(new JumpSmoke(this.scene, this.x + (20 * -x) , this.y + 32 + (20 * -y)))
+        }
     }
 
 }

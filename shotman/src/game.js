@@ -27,6 +27,7 @@ export default class Game extends Phaser.Scene {
       this.center_height = this.height / 2;
       this.cameras.main.setBackgroundColor(0x8f532b);
       this.createMap();
+      this.smokeLayer = this.add.layer();
       this.addPlayer();
 
       this.loadAudios(); 
@@ -74,14 +75,24 @@ export default class Game extends Phaser.Scene {
     createGrid () {
       this.grid = [];
 
-      Array(20 * 64).fill(0).forEach((_,i) => {
+      /*Array(20 * 64).fill(0).forEach((_,i) => {
           this.grid[i] = []
           Array(20 * 64).fill(0).forEach((_, j) => {
             let rock = this.platform.getTileAt(Math.floor(i/64), Math.floor(j/64));
             let wall = this.border.getTileAt(Math.floor(i/64), Math.floor(j/64));
             this.grid[i][j] = (rock || wall) ?  1 : 0;
           });
-      });
+      });*/
+
+
+      Array(20).fill(0).forEach((_,i) => {
+        this.grid[i] = []
+        Array(20).fill(0).forEach((_, j) => {
+          let rock = this.platform.getTileAt(Math.floor(j), Math.floor(i));
+          let wall = this.border.getTileAt(Math.floor(j), Math.floor(i));
+          this.grid[i][j] = (rock || wall) ?  1 : 0;
+        });
+    });
     }
 
     addPlayer () {
@@ -143,7 +154,6 @@ export default class Game extends Phaser.Scene {
     }
 
     hitFloor (player, platform) {
-      console.log("Hit smt: ", platform)
     }
 
     pickGold (player, gold) {

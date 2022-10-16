@@ -70,8 +70,8 @@ export default class Foe extends Phaser.GameObjects.Container  {
     move () {
       try {
           if (this.moveTimeline) this.moveTimeline.destroy();
-          console.log(Math.floor(this.x), Math.floor(this.y), Math.floor(this.scene.player.x), Math.floor(this.scene.player.y), this.grid)
-          this.easystar.findPath(Math.floor(this.x), Math.floor(this.y), Math.floor(this.scene.player.x), Math.floor(this.scene.player.y), this.moveIt.bind(this));
+//          console.log(Math.floor(this.x/64), Math.floor(this.y/64), Math.floor(this.scene.player.x/64), Math.floor(this.scene.player.y/64), this.grid)
+          this.easystar.findPath(Math.floor(this.x/64), Math.floor(this.y/64), Math.floor(this.scene.player.x/64), Math.floor(this.scene.player.y/64), this.moveIt.bind(this));
           this.easystar.setIterationsPerCalculation(10000);
           this.easystar.enableSync();
           this.easystar.calculate();
@@ -89,11 +89,11 @@ export default class Foe extends Phaser.GameObjects.Container  {
           this.i = 0;
           this.path = path;
           for(let i = 0; i < path.length-1; i++){
-              let ex = path[i+1].x;
-              let ey = path[i+1].y;
+              let ex = path[i+1].x * 64;
+              let ey = path[i+1].y * 64;
               tweens.push({
                   targets: this,
-                  duration: 16,
+                  duration: 500,
                   x: ex,
                   y: ey
               });
