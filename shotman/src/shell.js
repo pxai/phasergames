@@ -1,14 +1,21 @@
-class Shell extends Phaser.GameObjects.Sprite {
+class Shell  extends Phaser.GameObjects.Container {
     constructor (scene, x, y, name = "shell") {
-        super(scene, x, y, name);
+        super(scene, x, y);
         this.scene = scene;
         this.name = name;
-        this.setScale(0.8  );
-        this.setOrigin(0, 1)
+        this.setScale(0.9);
+        //this.setOrigin(0, 1)
+
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
-
+        this.body.setSize(32, 32)
+        this.sprite = this.scene.add.sprite(0, 0 , "shell");
+        this.shadow = this.scene.add.rectangle(8, 32, 16, 4, 0x000000);
+        this.sprite.setOrigin(0)
+        this.shadow.setOrigin(0)
+        this.add(this.shadow);
+        this.add(this.sprite);
         this.body.immovable = true;
         this.body.moves = false;
         this.disabled = false;
@@ -18,16 +25,24 @@ class Shell extends Phaser.GameObjects.Sprite {
     init () {
         this.scene.anims.create({
             key: this.name,
-            frames:  this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 7 }),
-            frameRate: 10,
+            frames:  this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 5 }),
+            frameRate: 5,
             repeat: -1
         });
 
-        this.anims.play(this.name, true);
+        this.sprite.anims.play(this.name, true);
         this.scene.tweens.add({
-            targets: this,
+            targets: this.sprite,
             duration: 500,
-            y: this.y - 20,
+            y: this.sprite.y - 10,
+            repeat: -1,
+            yoyo: true
+        })  
+
+        this.scene.tweens.add({
+            targets: this.shadow,
+            duration: 500,
+            scale: { from: 1, to: 0.5},
             repeat: -1,
             yoyo: true
         })  

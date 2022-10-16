@@ -1,3 +1,25 @@
+export class Smoke extends Phaser.GameObjects.Rectangle {
+    constructor (scene, x, y, width, height, color = 0xffffff, gravity = false ) {
+        width = width || Phaser.Math.Between(10, 25)
+        height = height || Phaser.Math.Between(10, 25)
+        super(scene, x, y, width, height, color)
+        scene.add.existing(this)
+        this.scene = scene;
+        this.color = color;
+        this.init();
+    }
+
+    init () {
+        this.scene.tweens.add({
+            targets: this,
+            duration: 800,
+            scale: {from: 1, to: 0},
+            onComplete: () => { this.destroy()  }
+        });
+
+    }
+}
+
 export class Particle extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, color = 0x00ffaf, size = 5) {
         super(scene, x, y, size, size, color)

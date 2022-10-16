@@ -1,4 +1,4 @@
-import Particle from "./particle";
+import { Particle } from "./particle";
 
 class Shot extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, speed_x, speed_y, id) {
@@ -50,7 +50,7 @@ class Shot extends Phaser.GameObjects.Sprite {
     update () {
         if (this.death) return;
         if (Phaser.Math.Between(1, 2) > 1) {
-            //new Particle(this.scene, this.x, this.y,  4)
+            new Particle(this.scene, this.x, this.y,  0xe5cc18, 4)
         }
 
         if (this.id === "FOE") return;

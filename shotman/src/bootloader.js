@@ -20,7 +20,7 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("splash");
+            this.scene.start("game");
         },this);
 
        /* Array(7).fill(0).forEach((_,i) => {
@@ -28,13 +28,31 @@ export default class Bootloader extends Phaser.Scene {
         });*/
 
         //this.load.image("logo", "assets/images/logo.png");
-        // this.load.audio("beam", "assets/sounds/beam.mp3");
+        this.load.audio("gold", "assets/sounds/gold.mp3");
+        this.load.audio("shell", "assets/sounds/shell.mp3");
+        this.load.audio("step", "assets/sounds/step.mp3");
+        this.load.audio("stone", "assets/sounds/stone.mp3");
+        this.load.audio("yee-haw", "assets/sounds/yee-haw.mp3");
+        this.load.audio("explosion", "assets/sounds/explosion.mp3");
+        this.load.audio("win", "assets/sounds/win.mp3");
+        this.load.audio("cock", "assets/sounds/cock.mp3");
+        this.load.audio("shot", "assets/sounds/shot.mp3");
 
 
+        Array(4).fill(0).forEach((_,i) => {
+            this.load.image(`gold${i}`, `assets/images/gold${i}.png`);
+        });
+
+        this.load.bitmapFont("pico", "assets/fonts/pico.png", "assets/fonts/pico.xml");
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
+        this.load.bitmapFont("cowboy", "assets/fonts/cowboy.png", "assets/fonts/cowboy.xml");
+        this.load.bitmapFont("shotman", "assets/fonts/shotman.png", "assets/fonts/shotman.xml");
+        this.load.spritesheet("ghost", "assets/images/ghost.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("willie", "assets/images/willie.png", { frameWidth: 64, frameHeight: 64 });
-        this.load.spritesheet("shell", "assets/images/coin.png", { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet("shell", "assets/images/shell.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("shot", "assets/images/shot.png", { frameWidth: 32, frameHeight: 32 });
+
+        this.load.image("shadow", "assets/images/shadow.png");
 
         this.load.image('cave', 'assets/maps/cave.png');
         this.load.image('background', 'assets/maps/background.png');
