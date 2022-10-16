@@ -16,13 +16,14 @@ export default class Transition extends Phaser.Scene {
             "Tutorial 1",
             "Tutorial 2",
             "Tutorial 3",
+            "Let's get serious!"
         ];
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2; 
 
-        if (this.number === 5) {
+        if (this.number === 8) {
             this.scene.start("outro", { number: this.number });
         }
         

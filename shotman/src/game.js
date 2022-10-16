@@ -58,7 +58,8 @@ export default class Game extends Phaser.Scene {
         "Shoot at the walls if necessary",
         "Shoot at barrels and catch ghosts with the blast"
       ];
-      this.helpText = this.add.bitmapText(this.center_width, this.center_height, "pixelFont", help[this.number], 20).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
+      this.helpText = this.add.bitmapText(this.center_width, this.center_height - 200, "pixelFont", help[this.number], 20).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
+      this.add.bitmapText(this.center_width, this.center_height + 340, "pixelFont", "ENTER TO SKIP", 20).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
 
     }
 
@@ -107,19 +108,19 @@ export default class Game extends Phaser.Scene {
 
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("shell")) {
-          this.shells.add(new Shell(this, object.x - 16, object.y - 16));
+          this.shells.add(new Shell(this, object.x + 16, object.y + 16));
         }
 
         if (object.name.startsWith("foe")) {
-          this.foes.add(new Foe(this, object.x - 16, object.y - 16, this.grid));
+          this.foes.add(new Foe(this, object.x + 16, object.y + 16, this.grid));
         }
 
         if (object.name.startsWith("gold")) {
-          this.golds.add(new Gold(this, object.x - 16, object.y - 16));
+          this.golds.add(new Gold(this, object.x + 16, object.y + 16));
         }
 
         if (object.name.startsWith("tnt")) {
-          this.tnts.add(new Tnt(this, object.x - 16, object.y - 16));
+          this.tnts.add(new Tnt(this, object.x + 16, object.y + 16));
         }
       });
 
@@ -205,7 +206,7 @@ export default class Game extends Phaser.Scene {
 
     pickGold (player, gold) {
       this.playAudio("gold");
-  
+      this.lights.removeLight(gold.light);
       gold.destroy()
 
       this.showPoints(player.x, player.y, "+1", 0xe5cc18)
@@ -217,6 +218,7 @@ export default class Game extends Phaser.Scene {
   }
 
     playerPickShell (player, shell) {
+      this.lights.removeLight(shell.light);
       shell.destroy();
       this.playAudio("shell");
       player.shells++;
@@ -302,6 +304,7 @@ export default class Game extends Phaser.Scene {
           "cock": this.sound.add("cock"),
           "ghost": this.sound.add("ghost"),
           "ghostdead": this.sound.add("ghostdead"),
+          "dead": this.sound.add("dead"),
           "empty": this.sound.add("empty")
         };
       }
@@ -346,6 +349,8 @@ export default class Game extends Phaser.Scene {
 
     skipThis () {
       if (this.number > 3) return;
+      this.player.dead = true;
+      this.player.body.stop();
       this.scene.start("transition", { number: this.number + 1});
     }
 

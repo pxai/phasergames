@@ -15,9 +15,12 @@ class Gold  extends Phaser.GameObjects.Container {
         this.sprite.setOrigin(0)
         //this.sprite.rotation = Phaser.Math.Between(0.0, 2.0)
         this.shadow = this.scene.add.rectangle(12, 128, 48, 8, 0x000000);
+
+        this.light = this.scene.lights.addLight(x + 16, y + 16, 50).setColor(0xffffff).setIntensity(1.5);
         this.shadow.setOrigin(0)
         this.add(this.shadow);
         this.add(this.sprite);
+
         this.body.immovable = true;
         this.body.moves = false;
         this.disabled = false;

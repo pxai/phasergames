@@ -186,6 +186,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
     death () {
+        this.scene.playAudio("dead");
         this.dead = true;
         this.body.stop();
         this.body.enable = false;

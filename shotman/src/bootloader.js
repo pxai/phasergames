@@ -40,11 +40,13 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("empty", "assets/sounds/empty.mp3");
         this.load.audio("ghost", "assets/sounds/ghost.mp3");
         this.load.audio("ghostdead", "assets/sounds/ghostdead.mp3");
+        this.load.audio("dead", "assets/sounds/dead.mp3");
+
         this.load.audio("splash", "assets/sounds/splash.mp3");
         this.load.audio("outro", "assets/sounds/outro.mp3");
 
 
-        Array(5).fill(0).forEach((_,i) => {
+        Array(4).fill(0).forEach((_,i) => {
             this.load.image(`gold${i}`, `assets/images/gold${i}.png`);
         });
 
@@ -65,7 +67,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image('cave', 'assets/maps/cave.png');
         this.load.image('background', 'assets/maps/background.png');
 
-        Array(4).fill(0).forEach((_,i) => {
+        Array(8).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`,`assets/maps/scene${i}.json`)
         });
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");

@@ -12,6 +12,7 @@ class Shell  extends Phaser.GameObjects.Container {
         this.body.setSize(32, 32)
         this.sprite = this.scene.add.sprite(0, 0 , "shell");
         this.shadow = this.scene.add.rectangle(8, 32, 16, 4, 0x000000);
+        this.light = this.scene.lights.addLight(x + 16, y + 16, 50).setColor(0xff0000).setIntensity(1.0);
         this.sprite.setOrigin(0)
         this.shadow.setOrigin(0)
         this.add(this.shadow);
