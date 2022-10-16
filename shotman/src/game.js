@@ -18,7 +18,7 @@ export default class Game extends Phaser.Scene {
 
     init (data) {
       this.name = data.name;
-      this.number = 0 //data.number;
+      this.number = data.number;
   }
 
     preload () {
@@ -34,20 +34,32 @@ export default class Game extends Phaser.Scene {
       this.createMap();
       this.smokeLayer = this.add.layer();
       this.addPlayer();
-
+      this.addHelp();
+      this.input.keyboard.on("keydown-ENTER", () => this.skipThis(), this);
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 100);
       this.addScore();
       this.addShells();
       this.addMineName();
       this.loadAudios(); 
+
       // this.playMusic();
     }
 
     addScore() {
       this.scoreText = this.add.bitmapText(75, 10, "shotman", "x" +this.registry.get("score"), 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
       this.scoreLogo = this.add.sprite(50, 28, "gold0").setScale(0.5).setOrigin(0.5).setScrollFactor(0)
+    }
 
-     // this.scoreLogo.play({ key: "goldscore", repeat: -1 });
+    addHelp () {
+      if (this.number > 3) return;
+      const help = [
+        "Collect all the gold to clear the stage",
+        "Pick shells to shoot ghosts, but they will respawn!",
+        "Shoot at the walls if necessary",
+        "Shoot at barrels and catch ghosts with the blast"
+      ];
+      this.helpText = this.add.bitmapText(this.center_width, this.center_height, "pixelFont", help[this.number], 20).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
+
     }
 
     addShells() {
@@ -179,6 +191,10 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
+      this.physics.add.overlap(this.blasts, this.platform, this.blastHitPlatform, ()=>{
+        return true;
+      }, this);
+
       this.physics.add.overlap(this.shots, this.tnts, this.tntHitByShot, ()=>{
         return true;
       }, this);
@@ -220,11 +236,13 @@ export default class Game extends Phaser.Scene {
     foeHitByShot (shot, foe) {
       shot.destroy();
       foe.freeze();
+      this.playAudio("ghostdead");
       Array(Phaser.Math.Between(8, 14)).fill(0).forEach( i => { this.smokeLayer.add(new Smoke(this, foe.x + 32, foe.y + 32, 0xb79860))});
     }
 
     foeHitByBlast (blast, foe) {
       this.playAudio("yee-haw")
+      this.playAudio("ghost");
       Array(Phaser.Math.Between(20, 34)).fill(0).forEach( i => { this.smokeLayer.add(new Smoke(this, foe.x + 32, foe.y + 32, 0xb79860))});
       foe.destroy();
     }
@@ -254,6 +272,23 @@ export default class Game extends Phaser.Scene {
       this.playAudio("stone")
     }
 
+    blastHitPlatform (blast, tile) {
+      if (!tile.collideDown) return;
+
+      Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY))
+      this.platform.removeTileAt(tile.x, tile.y);
+      Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => { this.smokeLayer.add(new RockSmoke(this, tile.pixelX, tile.pixelY))});
+      const {x, y} = [
+        {x: 0, y: -1},
+        {x: 1, y: 0},
+        {x: 0, y: 1},
+        {x: -1, y: 0},
+      ][this.player.lastDirection];
+      Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => { this.smokeLayer.add(new ShotSmoke(this, tile.pixelX + (x * 64), tile.pixelY + (y * 64), x, y))});
+      Array(Phaser.Math.Between(3,6)).fill(0).forEach( i => this.smokeLayer.add(new Debris(this, tile.pixelX  + 32 + (x * Phaser.Math.Between(16, 32)), tile.pixelY + 32 + (y * Phaser.Math.Between(16, 32)))))
+      this.playAudio("stone")
+    }
+
       loadAudios () {
         this.audios = {
           "shell": this.sound.add("shell"),
@@ -265,6 +300,9 @@ export default class Game extends Phaser.Scene {
           "win": this.sound.add("win"),
           "shot": this.sound.add("shot"),
           "cock": this.sound.add("cock"),
+          "ghost": this.sound.add("ghost"),
+          "ghostdead": this.sound.add("ghostdead"),
+          "empty": this.sound.add("empty")
         };
       }
 
@@ -286,7 +324,7 @@ export default class Game extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -306,9 +344,15 @@ export default class Game extends Phaser.Scene {
       }, null, this);
     }
 
+    skipThis () {
+      if (this.number > 3) return;
+      this.scene.start("transition", { number: this.number + 1});
+    }
+
     finishScene () {
       this.player.dead = true;
       this.player.body.stop();
+      this.player.anims.play("playerwin", true);
       this.playAudio("yee-haw");
       this.playAudio("win");
       //this.theme.stop();
@@ -360,7 +404,7 @@ export default class Game extends Phaser.Scene {
       })
   }
 
-  updateShells (shell, points = 1) {
+  updateShells (points = 1) {
     this.shellText.setText("x"+ this.player.shells);
     this.tweens.add({
       targets: [this.shellText, this.shellLogo],

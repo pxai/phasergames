@@ -70,7 +70,7 @@ export default class Foe extends Phaser.GameObjects.Container  {
     move () {
       try {
           if (this.moveTimeline) this.moveTimeline.destroy();
-//          console.log(Math.floor(this.x/64), Math.floor(this.y/64), Math.floor(this.scene.player.x/64), Math.floor(this.scene.player.y/64), this.grid)
+
           this.easystar.findPath(Math.floor(this.x/64), Math.floor(this.y/64), Math.floor(this.scene.player.x/64), Math.floor(this.scene.player.y/64), this.moveIt.bind(this));
           this.easystar.setIterationsPerCalculation(10000);
           this.easystar.enableSync();
@@ -103,7 +103,8 @@ export default class Foe extends Phaser.GameObjects.Container  {
               tweens: tweens,
               onComplete: () => {
                   this.delayedMove.remove()
-                  this.launchMove();
+                  if (this.alpha > 0)
+                    this.launchMove();
               }
           });
       }
@@ -137,10 +138,13 @@ export default class Foe extends Phaser.GameObjects.Container  {
 
     freeze () {
       this.setAlpha(0);
+      this.delayedMove.remove();
       this.body.enable = false;
       this.scene.time.delayedCall(5000, () => {
         this.setAlpha(1);
         this.body.enable = true;
+        this.delayedMove.paused = false;
+        this.launchMove();
       }, null, this);
     }
 }

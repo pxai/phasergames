@@ -14,15 +14,15 @@ export default class Outro extends Phaser.Scene {
         this.introLayer = this.add.layer();
         this.splashLayer = this.add.layer();
         this.text = [ 
-            "The U.F.I.S.H. recovered the engines.",
-            "After a terrible fishing day,",
-            "they decided to move to Europa moon,",
-            "to fish under the ice",
-            "But that is another story..."
+            "Finally! Greedy Willie was able",
+            "to escape from the haunted mines,", 
+            "with enough gold",
+            "to buy Twitter and",
+            "shut it down forever!"
         ];
         this.showHistory();
-        //this.showPlayer();
-        //this.playMusic();
+        this.addScore();
+        this.playMusic();
         this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
     }
@@ -39,7 +39,7 @@ export default class Outro extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.6,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -57,9 +57,25 @@ export default class Outro extends Phaser.Scene {
         })
     }
 
+    addScore() {
+        this.scoreText = this.add.bitmapText(this.center_width + 32, this.center_height + 215, "shotman", "x" +this.registry.get("score"), 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+        this.scoreLogo = this.add.sprite(this.center_width, this.center_height + 230, "gold0").setScale(0.5).setScrollFactor(0)
+      }
+
+    showPlayer() {
+        this.player = this.add.sprite(this.center_width, this.center_height + 100, "willie").setScale(3).setOrigin(0.5);
+        this.anims.create({
+            key: "willieidle",
+            frames: this.anims.generateFrameNumbers("willie", { start: 0, end: 1 }),
+            frameRate: 3,
+            repeat: -1
+          });
+          this.player.anims.play("willieidle", true);
+    }
+
 
     startSplash () {
-        // this.theme.stop();
+        this.theme.stop();
         this.scene.start("splash");
     }
 }

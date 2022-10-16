@@ -1,3 +1,5 @@
+import { ShotSmoke } from "./particle";
+
 export default class Splash extends Phaser.Scene {
     constructor () {
         super({ key: "splash" });
@@ -15,16 +17,41 @@ export default class Splash extends Phaser.Scene {
 
         this.cameras.main.setBackgroundColor(0x000000);
         //this.showLogo();        ;
+        this.smokeLayer = this.add.layer();
+        this.showTitle();
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
-        //this.playMusic();
+        this.playMusic();
         //this.showPlayer();
     }
 
+    showTitle () {
+        const shot = this.sound.add("shot");
+        const cock = this.sound.add("cock");
+        "SHOTMAN".split("").forEach((letter, i) => {
+            this.time.delayedCall(200 * (i+1),
+                () => {
+                    shot.play();shot.resume();
+                    let text = this.add.bitmapText((140 * i) + 80, 200, "cowboy", letter, 110).setTint(0xca6702).setOrigin(0.5).setDropShadow(4, 6, 0xf09937, 0.9)
+                    Array(Phaser.Math.Between(4, 8)).fill(0).forEach( j => { this.smokeLayer.add(new ShotSmoke(this, (140 * i) + 80 + Phaser.Math.Between(-30, 30), 200 + Phaser.Math.Between(-30, 30), 0, -1))});
+                },
+                null,
+                this
+            );
+        })
+        this.time.delayedCall(200 * 8, () => {
+            cock.play();cock.resume();
+            this.add.sprite(this.center_width - 128, 350, "willie", 0)
+            this.add.sprite(this.center_width + 32, 350, "ghosts")
+        }, null, this);
+    }
+
+
     startGame () {
         if (this.theme) this.theme.stop();
-        this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
+        this.sound.add("cock").play();
+        this.scene.start("transition", {next: "game", name: "STAGE", number: 0, time: 30})
     }
 
     showLogo() {
@@ -52,7 +79,7 @@ export default class Splash extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.6,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -63,12 +90,11 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: track beam", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "pixelFont", "B: shoot coins", 30).setOrigin(0.5);
-        this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Press SPACE to start", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 450, "shotman", "WASD - Arrows: move", 50).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 500, "shotman", "SPACE: shoot!", 50).setOrigin(0.5);
+        this.add.sprite(this.center_width - 110, 600, "pello").setOrigin(0.5).setScale(0.4)
+        this.add.bitmapText(this.center_width + 60, 600, "shotman", "By PELLO", 35).setOrigin(0.5);
+        this.space = this.add.bitmapText(this.center_width, 670, "shotman", "Press SPACE to start", 30).setOrigin(0.5);
         this.tweens.add({
             targets: this.space,
             duration: 300,

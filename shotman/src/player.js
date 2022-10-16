@@ -53,6 +53,13 @@ export default class Player extends Phaser.GameObjects.Sprite {
         });
 
         this.scene.anims.create({
+            key: "playerwin",
+            frames: this.scene.anims.generateFrameNumbers("willie", { start: 16, end: 17 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.scene.anims.create({
             key: "shoot0",
             frames: this.scene.anims.generateFrameNumbers("willie", { start: 9, end: 9 }),
             frameRate: 10,
@@ -123,10 +130,14 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.body.stop();
         }
 
-        if (Phaser.Input.Keyboard.JustDown(this.spaceBar) && this.shells > 0) {
-            this.scene.playAudio("shot");
-            this.shooting = true;
-            this.shoot();
+        if (Phaser.Input.Keyboard.JustDown(this.spaceBar) ) {
+            if (this.shells > 0) {
+                this.scene.playAudio("shot");
+                this.shooting = true;
+                this.shoot();
+            } else {
+                this.scene.playAudio("empty");
+            }
         }
 
         this.scene.playerLight.x = this.x;
@@ -144,6 +155,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
         Array(Phaser.Math.Between(6, 10)).fill(0).forEach( i => { this.scene.smokeLayer.add(new ShotSmoke(this.scene,  this.x + (x * 64), this.y + (y * 64), x, y))});
         this.scene.shots.add(new Shot(this.scene, this.x + (x * 64), this.y + (y * 64), x, y))
         this.shells--;
+        this.scene.showPoints(this.x, this.y, "-1")
+        this.scene.updateShells();
         this.body.setVelocityX(200 * -x);
         this.body.setVelocityY(200 * -y)
         this.scene.tweens.add({

@@ -20,7 +20,7 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("game");
+            this.scene.start("splash");
         },this);
 
        /* Array(7).fill(0).forEach((_,i) => {
@@ -37,9 +37,14 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("win", "assets/sounds/win.mp3");
         this.load.audio("cock", "assets/sounds/cock.mp3");
         this.load.audio("shot", "assets/sounds/shot.mp3");
+        this.load.audio("empty", "assets/sounds/empty.mp3");
+        this.load.audio("ghost", "assets/sounds/ghost.mp3");
+        this.load.audio("ghostdead", "assets/sounds/ghostdead.mp3");
+        this.load.audio("splash", "assets/sounds/splash.mp3");
+        this.load.audio("outro", "assets/sounds/outro.mp3");
 
 
-        Array(4).fill(0).forEach((_,i) => {
+        Array(5).fill(0).forEach((_,i) => {
             this.load.image(`gold${i}`, `assets/images/gold${i}.png`);
         });
 
@@ -52,13 +57,15 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("shell", "assets/images/shell.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("shot", "assets/images/shot.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("debris", "assets/images/debris.png", { frameWidth:64, frameHeight: 64 });
+        this.load.image("ghosts", "assets/images/ghost.png");
         this.load.image("shadow", "assets/images/shadow.png");
         this.load.image("tnt", "assets/images/tnt.png");
+        this.load.image("pello", "assets/images/pello_ok.png");
 
         this.load.image('cave', 'assets/maps/cave.png');
         this.load.image('background', 'assets/maps/background.png');
 
-        Array(1).fill(0).forEach((_,i) => {
+        Array(4).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`,`assets/maps/scene${i}.json`)
         });
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
