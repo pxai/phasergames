@@ -42,7 +42,7 @@ export default class Game extends Phaser.Scene {
       this.addMineName();
       this.loadAudios(); 
 
-      // this.playMusic();
+      this.playMusic();
     }
 
     addScore() {
@@ -277,7 +277,7 @@ export default class Game extends Phaser.Scene {
     blastHitPlatform (blast, tile) {
       if (!tile.collideDown) return;
 
-      Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY))
+      Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => this.smokeLayer.add(new Debris(this, tile.pixelX, tile.pixelY)))
       this.platform.removeTileAt(tile.x, tile.y);
       Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => { this.smokeLayer.add(new RockSmoke(this, tile.pixelX, tile.pixelY))});
       const {x, y} = [
@@ -322,7 +322,8 @@ export default class Game extends Phaser.Scene {
         });
       }
 
-      playMusic (theme="game") {
+      playMusic () {
+        const theme =  (this.number > 3) ? "music" : "tutorial";
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
@@ -341,7 +342,7 @@ export default class Game extends Phaser.Scene {
     }
 
     restartScene () {
-      //this.theme.stop();
+      this.theme.stop();
       this.time.delayedCall(3000, () => {
         this.scene.start("game", {number: this.number});
       }, null, this);
@@ -351,6 +352,7 @@ export default class Game extends Phaser.Scene {
       if (this.number > 3) return;
       this.player.dead = true;
       this.player.body.stop();
+      this.theme.stop();
       this.scene.start("transition", { number: this.number + 1});
     }
 
@@ -360,7 +362,7 @@ export default class Game extends Phaser.Scene {
       this.player.anims.play("playerwin", true);
       this.playAudio("yee-haw");
       this.playAudio("win");
-      //this.theme.stop();
+      this.theme.stop();
       this.time.delayedCall(3000, () => {
         this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
       }, null, this);

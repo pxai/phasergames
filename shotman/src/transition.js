@@ -16,7 +16,10 @@ export default class Transition extends Phaser.Scene {
             "Tutorial 1",
             "Tutorial 2",
             "Tutorial 3",
-            "Let's get serious!"
+            "Let's get serious!",
+            "Hurt me if you can",
+            "I'll blow you all",
+            "Finale"
         ];
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;

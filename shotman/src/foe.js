@@ -69,6 +69,7 @@ export default class Foe extends Phaser.GameObjects.Container  {
 
     move () {
       try {
+          if (!this.scene.player) return;
           if (this.moveTimeline) this.moveTimeline.destroy();
 
           this.easystar.findPath(Math.floor(this.x/64), Math.floor(this.y/64), Math.floor(this.scene.player.x/64), Math.floor(this.scene.player.y/64), this.moveIt.bind(this));

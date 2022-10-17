@@ -1,9 +1,9 @@
 {
-  "name": "generic",
-  "productName": "Generic",
+  "name": "shotman",
+  "productName": "Shotman",
   "main": "index.html",
   "window": {
-    "title": "Generic - by Pello",
+    "title": "Shotman - by Pello",
     "width": 800,
     "height": 600,
     "fullscreen": false,
@@ -18,7 +18,9 @@
     "build": "webpack --config webpack.prod.js",
     "test": "npm run lint && npm run unit",
     "lint": "eslint src/**/*.js test/**/*.js --fix",
-    "unit": "mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js"
+    "unit": "mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js",
+    "publish": "npm run-script build && npm run-script itchio",
+    "itchio": "cd dist && rm -f assets/html/index.html && butler push . pello/shotman:html --userversion 0.0.3 && cd .. && butler status pello/shotman:html"
   },
   "dependencies": {
     "easystarjs": "^0.4.4",
