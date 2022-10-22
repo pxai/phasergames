@@ -2,7 +2,7 @@ import { JumpSmoke, ShotSmoke } from "./particle";
 import Step from "./step";
 
 export default class Player extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y) {
+    constructor (scene, x, y, oxygen = 100) {
         super(scene, x, y, "player")
         this.scene = scene;
         this.setOrigin(0)
@@ -20,6 +20,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.stepDelta = 0;
         this.rate = 0.2;
         this.previousRate = 0.2;
+        this.oxygen = oxygen;
     }
 
     init () {
@@ -113,22 +114,38 @@ export default class Player extends Phaser.GameObjects.Sprite {
                 this.previousRate = this.rate;
                 this.rate = this.steps < 11 ? this.steps / 10: 1
                 this.scene.breath(this.rate)
-
+                this.updateOxygen(this.steps + Math.round(this.steps/2));
             } else if (this.rate !== this.previousRate) {
                 this.previousRate = this.rate;
                 this.rate = this.rate > 0.2 ? this.rate - 0.1 : 0.2;
                 this.scene.breath(this.rate)
+                this.scene.updateOxygen(this.steps)
+            } else {
+                this.scene.updateOxygen(this.steps)
             }
             this.steps = this.stepDelta = 0;
         }
     }
 
+    updateOxygen (waste) {
+        if (waste >= this.oxygen) {
+            this.oxygen = 0;
+            this.death();
+        } else {
+            this.oxygen -= waste;
+        }
+        console.log("waste: ", waste, " Oxygen: ", this.oxygen)
+        this.scene.updateOxygen()
+    }
+
 
     death () {
-        this.scene.playAudio("dead");
+        console.log("Player dead")
+       // this.scene.playAudio("dead");
         this.dead = true;
         this.body.stop();
         this.body.enable = false;
-        this.anims.play("playerdead", true)
+        this.scene.restartScene();
+        //this.anims.play("playerdead", true)
     }
 }

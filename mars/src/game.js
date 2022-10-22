@@ -34,16 +34,22 @@ export default class Game extends Phaser.Scene {
       this.createMap();
       this.smokeLayer = this.add.layer();
       this.addPlayer();
+      this.addOxygen();
       //this.addHelp();
       this.input.keyboard.on("keydown-ENTER", () => this.skipThis(), this);
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 0);
       this.addPosition();
-      this.addDay();
+      //this.addDay();
       //this.addMineName();
       this.loadAudios(); 
       this.addEffects();
       this.playMusic();
       this.playOfficer();
+    }
+
+    addOxygen () {
+      //this.checkManaEvent = this.time.addEvent({ delay: 1000, callback: this.recoverMana, callbackScope: this, loop: true });
+      this.oxygenBar = this.add.rectangle(this.center_width - 1, this.height - 41, this.player.oxygen * 1.8, 20, 0xffffff).setOrigin(0.5).setScrollFactor(0);
     }
 
     addEffects() {
@@ -60,8 +66,8 @@ export default class Game extends Phaser.Scene {
     }
 
     addPosition() {
-      this.positionText = this.add.bitmapText(this.center_width, 10, "pico", "x x x", 10).setOrigin(0.5).setScrollFactor(0)
-      this.updatePosition(this.player.x, this.player.y)
+      this.positionText = this.add.bitmapText(this.center_width, 10, "pico", "x x x", 15).setOrigin(0.5).setScrollFactor(0)
+      this.updatePosition(this.player.x/64, this.player.y/64)
     }
 
     addHelp () {
@@ -221,7 +227,7 @@ export default class Game extends Phaser.Scene {
       const duration = Phaser.Math.Between(500, 1000)
       this.tweens.add({
         targets:  this.breathing,
-        volume:   0,
+        volume: 0,
         duration,
         onComplete: () => {
           this.breathing.play({rate, volume})
@@ -236,9 +242,20 @@ export default class Game extends Phaser.Scene {
     }
 
     restartScene () {
-      this.theme.stop();
+      const x = this.cameras.main.worldView.centerX;
+      const y = this.cameras.main.worldView.centerY;
+
+      this.fadeBlack = this.add.rectangle(x - 100, y - 50, 1000, 1100, 0x000000).setOrigin(0.5).setAlpha(0) 
+      this.failure = this.add.bitmapText(x, y, "pico", "FAILURE", 40).setOrigin(0.5).setAlpha(0)
+
+      this.tweens.add({
+        targets: [this.failure, this.fadeBlack],
+        alpha: {from: 0, to: 1},
+        duration: 2000
+      })
       this.time.delayedCall(3000, () => {
-        this.scene.start("game", {number: this.number});
+        this.sound.stopAll();
+        this.scene.start("transition", {number: this.number});
       }, null, this);
     }
 
@@ -286,8 +303,13 @@ export default class Game extends Phaser.Scene {
     }
 
     updatePosition (x, y , z = 0) {
-      this.positionText.setText(`Lt: ${x} Lt: ${y} Lt: ${z}`);
+      this.positionText.setText(`Lt: ${x*10} Lg: ${y*10} Lt: ${z}`);
     }
+
+    updateOxygen () {
+      this.oxygenBar.width = this.player.oxygen * 1.8;
+    }
+
 
   updateShells (points = 1) {
     this.shellText.setText("x"+ this.player.shells);

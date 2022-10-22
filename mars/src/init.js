@@ -8,7 +8,7 @@ import HorrifiPostFx from 'phaser3-rex-plugins/plugins/horrifipipeline.js';
 
 
 const config = {
-    width: 1000,
+    width: 800,
     height: 800,
     scale: {
         mode: Phaser.Scale.FIT,

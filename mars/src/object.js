@@ -8,7 +8,7 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
         this.activated = false;
-        this.scene.events.on("update", this.update, this);
+        //this.scene.events.on("update", this.update, this);
         console.log("So: ", !this.body.touching.none && !this.body.wasTouching.none)
     }
 
@@ -22,13 +22,7 @@ export default class Object extends Phaser.GameObjects.Rectangle {
     }
 
     update () {
-        var touching = !this.body.touching.none;
-        var wasTouching = !this.body.wasTouching.none;
-        //console.log("See: ", this.body.checkCollision.none)
-        if (!touching && wasTouching) {
-            console.log("NOPE")
-            this.activated = false;
-        }
+
     }
 
     touch () {
