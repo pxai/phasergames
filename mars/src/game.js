@@ -2,7 +2,7 @@ import Player from "./player";
 import Object from "./object";
 import { Smoke, RockSmoke, ShotSmoke } from "./particle";
 import places from "./places";
-import Debris from "./debris";
+import Drone from "./drone";
 import { Explosion } from "./steam";
 import HorrifiPostFx from 'phaser3-rex-plugins/plugins/horrifipipeline.js';
 
@@ -120,6 +120,10 @@ export default class Game extends Phaser.Scene {
         if (object.name.startsWith("object")) {
           const [name, type, description] = object.name.split(":") 
           this.objects.add(new Object(this, object.x, object.y, type, description));
+        }
+
+        if (object.name.startsWith("drone")) {
+          this.foes.add(new Drone(this, object.x, object.y, this.grid));
         }
       });
 

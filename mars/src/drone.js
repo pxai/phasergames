@@ -1,22 +1,15 @@
 import EasyStar from "easystarjs";
 
-export default class Foe extends Phaser.GameObjects.Container  {
+export default class Drone extends Phaser.GameObjects.Sprite  {
     constructor (scene, x, y, grid) {
-        super(scene, x, y);
-        this.name = "ghost";
+        super(scene, x, y, "drone");
+        this.name = "drone";
         this.setScale(1)
         this.grid = grid;
         this.scene = scene;
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
-        this.body.setSize(64, 64)
-        this.sprite = this.scene.add.sprite(0, 0 , "ghost");
-        this.sprite.setOrigin(0)
-        this.shadow = this.scene.add.sprite(12, 64, "shadow");
-        this.shadow.setOrigin(0)
-        this.add(this.shadow);
-        this.add(this.sprite);
         this.easystar = new EasyStar.js();
        this.init();
     }
@@ -39,19 +32,13 @@ export default class Foe extends Phaser.GameObjects.Container  {
             frameRate: 5,
             repeat: -1
           });
-
-          this.scene.anims.create({
-            key: this.name + "death",
-            frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 2 }),
-            frameRate: 5
-          });
   
-          this.sprite.anims.play(this.name, true)
+          this.anims.play(this.name, true)
           //this.body.setVelocityX(this.direction * 100);
           this.flipX = this.direction < 0;
           this.on('animationcomplete', this.animationComplete, this);
 
-          console.log("Created ghost")
+          console.log("Created drone")
           this.launchMove();
     }
 

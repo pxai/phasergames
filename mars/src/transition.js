@@ -1,3 +1,5 @@
+import Utils from "./utils";
+
 export default class Transition extends Phaser.Scene {
     constructor () {
         super({ key: "transition" });
@@ -12,6 +14,7 @@ export default class Transition extends Phaser.Scene {
 
     create () {
         const messages = [
+            "DAY 0",
             "DAY 1",
             "DAY 2",
             "DAY 3",
@@ -30,6 +33,8 @@ export default class Transition extends Phaser.Scene {
             "Locate wreckage at point 121º 221º",
             "Locate wreckage at point 121º 221º",
         ];
+
+        this.utils = new Utils(this);
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
@@ -39,20 +44,46 @@ export default class Transition extends Phaser.Scene {
         if (this.number === 8) {
             this.scene.start("outro", { number: this.number });
         }
-        
+
         this.text1 = this.add.bitmapText(this.center_width, 20, "pico", messages[this.number], 30).setOrigin(0.5).setAlpha(0)
         this.text2 = this.add.bitmapText(this.center_width, 70, "pico", "AUDIO RECORD OF CAPTAIN BRAUN", 20).setOrigin(0.5).setAlpha(0)
-        //this.play = this.add.sprite(this.center_width, 170, "record").setOrigin(0.5).setAlpha(0)
-        this.tweens.add({
-            targets: [this.text1, this.text2, this.play],
-            duration: 1000,
-            alpha: {from: 0, to: 1},
-            onComplete: () => {
-                this.playDiary();
-            }
-        })
+
+        if (this.number > 0) {
+            //this.play = this.add.sprite(this.center_width, 170, "record").setOrigin(0.5).setAlpha(0)
+            this.tweens.add({
+                targets: [this.text1, this.text2, this.play],
+                duration: 1000,
+                alpha: {from: 0, to: 1},
+                onComplete: () => {
+                    this.playDiary();
+                }
+            })
+        } else {
+            this.text2 = this.add.bitmapText(this.center_width, 70, "pico", "THE CRASH", 20).setOrigin(0.5).setAlpha(0)
+            this.playCreepy();
+            this.tweens.add({
+                targets: [this.text1],
+                duration: 2000,
+                alpha: {from: 0, to: 1},
+                onComplete: () => {
+                    this.playIntro();
+                }
+            })
+        }
+
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
-        this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);''
+        this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
+    }
+
+    playIntro () {
+        const text =
+            "YOU JUST CRASHED ON MARS\n"+
+        "YOU ARE ALIVE BUT YOUR\n"+
+        "SHIP IS COMPLETELY LOST\n" +
+        "IF YOU WANT TO LIVE YOU\n" +
+        "MUST FIND LANDING REMAINS...";
+
+        this.utils.typeText(text, "pico", this.center_width, 150, 0xffffff, 20)
     }
 
     playDiary () {
@@ -69,17 +100,22 @@ export default class Transition extends Phaser.Scene {
             //log("Dale fin")
             this.wave.destroy();
             this.showMission();
-            this.sound.add("creepy").play({
-                mute: false,
-                volume: 1,
-                rate: 1,
-                detune: 0,
-                seek: 0,
-                loop: true,
-                delay: 0
-              })
+            this.playCreepy();
         }.bind(this))
         this.recording.play();
+      }
+    
+      playCreepy() {
+        this.creepy = this.sound.add("creepy")
+        this.creepy.play({
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+          })
       }
 
     update () {
@@ -87,7 +123,9 @@ export default class Transition extends Phaser.Scene {
 
     showMission () {
         this.text3 = this.add.bitmapText(this.center_width, 300, "pico", "MISSION OBJECTIVE", 30).setOrigin(0.5)
-        this.text4 = this.add.bitmapText(this.center_width, 400, "pico", this.missions[this.number], 20).setOrigin(0.5)
+        //this.text4 = this.add.bitmapText(this.center_width, 400, "pico", this.missions[this.number], 20).setOrigin(0.5)
+
+        this.utils.typeText(this.missions[this.number], "pico", this.center_width, 400, 0xffffff, 20)
     }
 
     loadNext () {

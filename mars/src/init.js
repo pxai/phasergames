@@ -4,8 +4,6 @@ import Outro from "./outro";
 import Splash from "./splash";
 import Transition from "./transition";
 import Game from "./game";
-import HorrifiPostFx from 'phaser3-rex-plugins/plugins/horrifipipeline.js';
-
 
 const config = {
     width: 800,
@@ -16,7 +14,6 @@ const config = {
     },
     autoRound: false,
     parent: "contenedor",
-    pipeline: [HorrifiPostFx],
     physics: {
         default: "arcade",
         arcade: {

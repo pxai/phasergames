@@ -70,6 +70,17 @@
                  "width":0,
                  "x":960,
                  "y":64
+                }, 
+                {
+                 "class":"",
+                 "height":0,
+                 "id":67,
+                 "name":"drone",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":704,
+                 "y":640
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -100,7 +111,7 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":20,
          "id":2,
-         "name":"scene0",
+         "name":"scene1",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
