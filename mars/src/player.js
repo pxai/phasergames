@@ -18,6 +18,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.lastDirection = 0;
         this.steps = 0;
         this.stepDelta = 0;
+        this.moveDelta = 0;
         this.rate = 0.2;
         this.previousRate = 0.2;
         this.oxygen = oxygen;
@@ -40,24 +41,33 @@ export default class Player extends Phaser.GameObjects.Sprite {
     update(time, delta) {
         if (this.dead) return;
         this.stepDelta += delta;
+        this.moveDelta += delta;
 
         if ((Phaser.Input.Keyboard.JustDown(this.W) || Phaser.Input.Keyboard.JustDown(this.cursor.up)) && this.canMoveUp()) {
+            this.moveDelta = 0;
             const {x, y} = this;
-            this.y -= 64;
+            this.scene.tweens.add({ targets: this, y: "-=64", duration: 200})
+            //this.y -= 64;
             this.step(x, y);
         } else if ((Phaser.Input.Keyboard.JustDown(this.D) || Phaser.Input.Keyboard.JustDown(this.cursor.right)) && this.canMoveRight()) {
+            this.moveDelta = 0;
             const {x, y} = this;
-            this.x += 64;
+            this.scene.tweens.add({ targets: this, x: "+=64", duration: 200})
+            //this.x += 64;
 
             this.step(x, y);
         } else if ((Phaser.Input.Keyboard.JustDown(this.A) || Phaser.Input.Keyboard.JustDown(this.cursor.left)) && this.canMoveLeft()) {
+            this.moveDelta = 0;
             const {x, y} = this;
-            this.x -= 64;
+            this.scene.tweens.add({ targets: this, x: "-=64", duration: 200})
+            //this.x -= 64;
 
             this.step(x, y);
-        } else if ((Phaser.Input.Keyboard.JustDown(this.S) || Phaser.Input.Keyboard.JustDown(this.cursor.down)) && this.canMoveDown())  {
+        } else if ((Phaser.Input.Keyboard.JustDown(this.S) || Phaser.Input.Keyboard.JustDown(this.cursor.down)) && this.canMoveDown())  {            
+            this.moveDelta = 0;
             const {x, y} = this;
-            this.y += 64;
+            this.scene.tweens.add({ targets: this, y: "+=64", duration: 200})
+            //this.y += 64;
             this.step(x, y);
         }
 
@@ -77,19 +87,19 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
     canMoveUp() {
-        return !this.scene.platform.getTileAtWorldXY(this.x, this.y - 1)
+        return !this.scene.platform.getTileAtWorldXY(this.x, this.y - 1) && this.moveDelta > 200
     }
 
     canMoveRight() {
-        return !this.scene.platform.getTileAtWorldXY(this.x + 64, this.y)
+        return !this.scene.platform.getTileAtWorldXY(this.x + 64, this.y) && this.moveDelta > 200
     }
 
     canMoveDown() {
-        return !this.scene.platform.getTileAtWorldXY(this.x, this.y + 64)
+        return !this.scene.platform.getTileAtWorldXY(this.x, this.y + 64) && this.moveDelta > 200
     }
 
     canMoveLeft() {
-        return !this.scene.platform.getTileAtWorldXY(this.x - 1, this.y)
+        return !this.scene.platform.getTileAtWorldXY(this.x - 1, this.y) && this.moveDelta > 200
     }
 
     step (x, y) {
