@@ -118,8 +118,8 @@ export default class Game extends Phaser.Scene {
 
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("object")) {
-          const [name, type, description] = object.name.split(":") 
-          this.objects.add(new Object(this, object.x, object.y, type, description));
+          const [name, type, description, extra] = object.name.split(":") 
+          this.objects.add(new Object(this, object.x, object.y, type, description, extra));
         }
 
         if (object.name.startsWith("drone")) {
@@ -181,6 +181,10 @@ export default class Game extends Phaser.Scene {
         this.audios = {
           "mars_background": this.sound.add("mars_background"),
           "step": this.sound.add("step"),
+          "kill": this.sound.add("kill"),
+          "blip": this.sound.add("blip"),
+          "ohmygod": this.sound.add("ohmygod"),
+          "tracker": this.sound.add("tracker"),
         };
       }
 
@@ -275,9 +279,10 @@ export default class Game extends Phaser.Scene {
       this.sound.stopAll();
       this.player.dead = true;
       this.player.body.stop();
-
+      this.sound.add("blip").play();
       //this.theme.stop();
       this.time.delayedCall(3000, () => {
+
         this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
       }, null, this);
     }

@@ -129,7 +129,7 @@ export default class Transition extends Phaser.Scene {
     }
 
     loadNext () {
-        //this.sound.add("cock").play();
+        this.sound.add("blip").play();
         console.log('Start scene: ', this.number);
         
         this.sound.stopAll();

@@ -34,8 +34,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.W = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-        this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D); 
     }
 
     update(time, delta) {
@@ -69,16 +68,6 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.scene.tweens.add({ targets: this, y: "+=64", duration: 200})
             //this.y += 64;
             this.step(x, y);
-        }
-
-        if (Phaser.Input.Keyboard.JustDown(this.spaceBar) ) {
-            if (this.shells > 0) {
-                this.scene.playAudio("shot");
-                this.shooting = true;
-                this.shoot();
-            } else {
-                this.scene.playAudio("empty");
-            }
         }
 
         this.adaptBreath()
