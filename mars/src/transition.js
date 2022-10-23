@@ -59,6 +59,7 @@ export default class Transition extends Phaser.Scene {
                 }
             })
         } else {
+            this.playBackground();
             this.text2 = this.add.bitmapText(this.center_width, 70, "pico", "THE CRASH", 20).setOrigin(0.5).setAlpha(0)
             this.playCreepy();
             this.tweens.add({
@@ -84,6 +85,21 @@ export default class Transition extends Phaser.Scene {
         "MUST FIND LANDING REMAINS...";
 
         this.utils.typeText(text, "pico", this.center_width, 150, 0xffffff, 20)
+    }
+
+    playBackground () {
+        const theme =  "mars_background";
+        this.theme = this.sound.add(theme);
+        this.theme.stop();
+        this.theme.play({
+          mute: false,
+          volume: 1,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+        })
     }
 
     playDiary () {

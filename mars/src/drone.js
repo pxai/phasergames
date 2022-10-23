@@ -77,6 +77,7 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
           this.i = 0;
           this.path = path;
           for(let i = 0; i < path.length-1; i++){
+            if (this.scene.player.dead) return;
               let ex = path[i+1].x * 64;
               let ey = path[i+1].y * 64;
               tweens.push({
@@ -91,7 +92,7 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
               tweens: tweens,
               onComplete: () => {
                   this.delayedMove.remove()
-                  if (this.alpha > 0)
+                  if (this.alpha > 0 && !this.scene.player.dead)
                     this.launchMove();
               }
           });

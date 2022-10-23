@@ -9,7 +9,7 @@ export default class Bootloader extends Phaser.Scene {
             "progress",
             function (value) {
                 this.progressBar.clear();
-                this.progressBar.fillStyle(0xe5cc18, 1);
+                this.progressBar.fillStyle(0xae2012, 1);
                 this.progressBar.fillRect(
                     this.cameras.main.width / 4,
                     this.cameras.main.height / 2 - 16,
@@ -20,7 +20,7 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("transition", {number: 0});
+            this.scene.start("transition", {number: 8});
         },this);
 
         this.load.image("body", "assets/images/body.png");
@@ -33,8 +33,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("ohmygod", "assets/sounds/ohmygod.mp3");
         this.load.audio("kill", "assets/sounds/kill.mp3");
         this.load.audio("tracker", "assets/sounds/tracker.mp3");
-
-
+        this.load.audio("holeshout", "assets/sounds/holeshout.mp3");
 
         //this.load.audio("splash", "assets/sounds/splash.mp3");
         //this.load.audio("music", "assets/sounds/music.mp3");
@@ -55,14 +54,16 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("step", "assets/images/step.png", { frameWidth:64, frameHeight: 64 });
         this.load.spritesheet("wave", "assets/images/wave.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("drone", "assets/images/drone.png", { frameWidth: 64, frameHeight: 64 });
+
         this.load.image("landscape", "assets/images/landscape.png");
         this.load.image("record", "assets/images/record.png");
+        this.load.image("hole", "assets/images/hole.png");
         this.load.image("pello", "assets/images/pello_ok.png");
 
         this.load.image('mars', 'assets/maps/mars64.png');
         this.load.image('background', 'assets/maps/mars.png');
 
-        Array(2).fill(0).forEach((_,i) => {
+        Array(7).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`,`assets/maps/scene${i}.json`)
         });
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
@@ -75,7 +76,7 @@ export default class Bootloader extends Phaser.Scene {
 
     createBars () {
         this.loadBar = this.add.graphics();
-        this.loadBar.fillStyle(0xb85d08, 1);
+        this.loadBar.fillStyle(0x6b140b, 1);
         this.loadBar.fillRect(
             this.cameras.main.width / 4 - 2,
             this.cameras.main.height / 2 - 18,

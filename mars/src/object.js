@@ -1,8 +1,10 @@
 import Utils from "./utils";
+import Hole from "./hole";
 
 export default class Object extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, type, description, extra = "") {
         super(scene, x, y, 64 * 3, 64 * 3)
+        this.scene = scene;
         this.setOrigin(0)
         this.type = type;
         this.description = description;
@@ -38,6 +40,16 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         })
     }
 
+    useRadio() {
+        console.log("Playing : ", this.description, this.extra)
+        this.officerAudio = this.scene.sound.add(this.description)
+        this.officerAudio.play();
+        this.officerAudio.on('complete', function () {
+            if (!this.extra)
+                this.scene.sound.add(this.extra).play();
+        }.bind(this))
+    }
+
     exitScene () {
         this.showExit(this.description)
         this.showNote(this.extra)
@@ -49,13 +61,23 @@ export default class Object extends Phaser.GameObjects.Rectangle {
 
     }
 
+    activateHole () {
+        this.scene.holes.add(new Hole(this.scene, this.x + 64, this.y + 64))
+    }
+
     touch () {
         switch (this.type) {
             case "note":
                 this.showNote(this.description);
                 break;
+            case "radio":
+                this.useRadio();
+                break;
             case "exit":
                 this.exitScene();
+                break;
+            case "hole":
+                this.activateHole();
                 break;
             default:
                 break;

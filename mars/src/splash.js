@@ -27,30 +27,24 @@ export default class Splash extends Phaser.Scene {
     }
 
     showTitle () {
-        const shot = this.sound.add("shot");
-        const cock = this.sound.add("cock");
-        "Marstranded".split("").forEach((letter, i) => {
-            this.time.delayedCall(200 * (i+1),
-                () => {
-                    shot.play();shot.resume();
-                    let text = this.add.bitmapText((70 * i) + 80, 200, "pico", letter, 70).setTint(0xca6702).setOrigin(0.5).setDropShadow(4, 6, 0xf09937, 0.9)
-                    Array(Phaser.Math.Between(4, 8)).fill(0).forEach( j => { this.smokeLayer.add(new ShotSmoke(this, (70 * i) + 80 + Phaser.Math.Between(-30, 30), 200 + Phaser.Math.Between(-30, 30), 0, -1))});
+        this.step = this.sound.add("step")
+        "MARSTRANDED".split("").forEach((letter, i) => {
+            this.time.delayedCall(600 * (i+1),
+                () => { 
+                    let text = this.add.bitmapText((70 * i) + 50, 200, "pico", letter, 70).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 4, 0x6b302a, 0.9)
+                    Array(Phaser.Math.Between(2, 4)).fill(0).forEach( j => { this.smokeLayer.add(new ShotSmoke(this, (70 * i) + 80 + Phaser.Math.Between(-30, 30), 200 + Phaser.Math.Between(-30, 30), 0, -1, 0x6b302a))});
+                    this.step.play({rate: 0.8 });this.step.resume();
                 },
                 null,
                 this
             );
         })
-        this.time.delayedCall(200 * 8, () => {
-            cock.play();cock.resume();
-            this.add.sprite(this.center_width - 128, 350, "willie", 0)
-            this.add.sprite(this.center_width + 32, 350, "ghosts")
-        }, null, this);
     }
 
 
     startGame () {
         if (this.theme) this.theme.stop();
-        this.sound.add("cock").play();
+        this.sound.add("blip").play();
         this.scene.start("transition", {next: "game", name: "STAGE", number: 0, time: 30})
     }
 
@@ -74,12 +68,12 @@ export default class Splash extends Phaser.Scene {
 
     }
 
-    playMusic (theme="splash") {
+    playMusic (theme="mars_background") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 0.6,
+          volume: 2,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -90,11 +84,10 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pico", "WASD - Arrows: move", 50).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 500, "pico", "SPACE: shoot!", 50).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 450, "pico", "WASD -  Arrows", 50).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 3, 0x6b302a, 0.9)
         this.add.sprite(this.center_width - 110, 600, "pello").setOrigin(0.5).setScale(0.4)
-        this.add.bitmapText(this.center_width + 60, 600, "pico", "By PELLO", 35).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "pico", "Press SPACE to start", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width + 60, 600, "pico", "By PELLO", 35).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 3, 0x6b302a, 0.9);
+        this.space = this.add.bitmapText(this.center_width, 670, "pico", "SPACE start", 30).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 2, 0x6b302a, 0.9);
         this.tweens.add({
             targets: this.space,
             duration: 300,

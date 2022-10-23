@@ -44,12 +44,12 @@ export default class Game extends Phaser.Scene {
       this.loadAudios(); 
       this.addEffects();
       this.playMusic();
-      this.playOfficer();
+      //this.playOfficer();
     }
 
     addOxygen () {
       //this.checkManaEvent = this.time.addEvent({ delay: 1000, callback: this.recoverMana, callbackScope: this, loop: true });
-      this.oxygenBar = this.add.rectangle(this.center_width - 1, this.height - 41, this.player.oxygen * 1.8, 20, 0xffffff).setOrigin(0.5).setScrollFactor(0);
+      this.oxygenBar = this.add.rectangle(this.center_width - 1, this.height - 41, this.player.oxygen * 1.8, 20, 0x6b140b).setOrigin(0.5).setScrollFactor(0)
     }
 
     addEffects() {
@@ -66,7 +66,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addPosition() {
-      this.positionText = this.add.bitmapText(this.center_width, 10, "pico", "x x x", 15).setOrigin(0.5).setScrollFactor(0)
+      this.positionText = this.add.bitmapText(this.center_width, 20, "pico", "x x", 15).setTint(0x6b140b).setOrigin(0.5).setScrollFactor(0).setDropShadow(0, 2, 0x6b302a, 0.9)
       this.updatePosition(this.player.x/64, this.player.y/64)
     }
 
@@ -78,19 +78,14 @@ export default class Game extends Phaser.Scene {
         "Shoot at the walls if necessary",
         "Shoot at barrels and catch ghosts with the blast"
       ];
-      this.helpText = this.add.bitmapText(this.center_width, this.center_height - 200, "pico", help[this.number], 20).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
+      this.helpText = this.add.bitmapText(this.center_width, this.center_height - 200, "pico", help[this.number], 20).setDropShadow(0, 2, 0x6b302a, 0.9).setOrigin(0.5).setScrollFactor(0)
       this.add.bitmapText(this.center_width, this.center_height + 340, "pico", "ENTER TO SKIP", 20).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
 
     }
 
     addDay() {
-      this.dayText = this.add.bitmapText(20, 10, "pico", "Day " + (this.number + 1), 20).setOrigin(0).setScrollFactor(0)//.setDropShadow(0, 4, 0x222222, 0.9)
+      this.dayText = this.add.bitmapText(20, 10, "pico", "Day " + (this.number + 1), 20).setTint(0x6b140b).setOrigin(0).setScrollFactor(0).setDropShadow(0, 2, 0x6b302a, 0.9)
       //this.dayLogo = this.add.sprite(850, 28, "shell").setScale(0.8).setOrigin(0.5).setScrollFactor(0)
-    }
-
-    addMineName () {
-      const name = "\"" + Phaser.Math.RND.pick(places) + "\"";
-      this.mineName = this.add.bitmapText(this.center_width, 27, "pico", name, 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
     }
 
     addLight() {
@@ -111,7 +106,7 @@ export default class Game extends Phaser.Scene {
       this.border.setCollisionByExclusion([-1]);
       this.platform.setCollisionByExclusion([-1]);
 
-      this.shells = this.add.group();
+      this.holes = this.add.group();
       this.foes = this.add.group();
       this.objects = this.add.group();
       this.createGrid();
@@ -158,17 +153,21 @@ export default class Game extends Phaser.Scene {
       this.physics.add.overlap(this.player, this.foes, this.playerHitByFoe, ()=>{
         return true;
       }, this);
+
+      this.physics.add.overlap(this.player, this.holes, this.playerHitHole, ()=>{
+        return true;
+      }, this);
     }
 
     hitFloor (player, platform) {
     }
 
     touchObject (player, object) {
-      console.log("Touched! ", object.activated)
-      if (!object.activated) {
-        object.activated = true;
-        object.touch();
-      }
+        if (object.type === "hole") this.playTracker()
+        if (!object.activated) {
+          object.activated = true;
+          object.touch();
+        }
     }
 
     playerHitByFoe (player, foe) {
@@ -177,6 +176,16 @@ export default class Game extends Phaser.Scene {
       this.restartScene();
     } 
 
+    playerHitHole(player, hole) {
+      if (!player.dead) {
+        this.playAudio("holeshout")
+        hole.setAlpha(1)
+        this.cameras.main.shake(50);
+        player.death();
+        this.restartScene();
+      }
+    }
+
     loadAudios () {
         this.audios = {
           "mars_background": this.sound.add("mars_background"),
@@ -184,9 +193,14 @@ export default class Game extends Phaser.Scene {
           "kill": this.sound.add("kill"),
           "blip": this.sound.add("blip"),
           "ohmygod": this.sound.add("ohmygod"),
-          "tracker": this.sound.add("tracker"),
+          "holeshout": this.sound.add("holeshout"),
         };
+        this.tracker = this.sound.add("tracker");
       }
+    
+    playTracker () {
+      if (!this.tracker.isPlaying) this.tracker.play();
+    }
 
       playAudio(key) {
         this.audios[key].play();
@@ -211,7 +225,7 @@ export default class Game extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 1.5,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -253,8 +267,8 @@ export default class Game extends Phaser.Scene {
       const x = this.cameras.main.worldView.centerX;
       const y = this.cameras.main.worldView.centerY;
 
-      this.fadeBlack = this.add.rectangle(x - 100, y - 50, 1000, 1100, 0x000000).setOrigin(0.5).setAlpha(0) 
-      this.failure = this.add.bitmapText(x, y, "pico", "FAILURE", 40).setOrigin(0.5).setAlpha(0)
+      this.fadeBlack = this.add.rectangle(x - 100, y - 50, 1000, 1100,  0x000000).setOrigin(0.5)
+      this.failure = this.add.bitmapText(x, y, "pico", "FAILURE", 40).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 2, 0x6b302a, 0.9)
 
       this.tweens.add({
         targets: [this.failure, this.fadeBlack],
@@ -276,13 +290,23 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene () {
-      this.sound.stopAll();
+      const x = this.cameras.main.worldView.centerX;
+      const y = this.cameras.main.worldView.centerY;
+
+      this.fadeBlack = this.add.rectangle(x - 100, y - 50, 2000, 2000,  0x000000).setOrigin(0.5)
+
+      this.tweens.add({
+        targets: [this.fadeBlack],
+        alpha: {from: 0, to: 1},
+        duration: 3000
+      })
+
       this.player.dead = true;
       this.player.body.stop();
       this.sound.add("blip").play();
       //this.theme.stop();
       this.time.delayedCall(3000, () => {
-
+        this.sound.stopAll();
         this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
       }, null, this);
     }
@@ -312,21 +336,10 @@ export default class Game extends Phaser.Scene {
     }
 
     updatePosition (x, y , z = 0) {
-      this.positionText.setText(`Lt: ${x*10} Lg: ${y*10} Lt: ${z}`);
+      this.positionText.setText(`Lt: ${x*10} Lg: ${y*10}`);
     }
 
     updateOxygen () {
       this.oxygenBar.width = this.player.oxygen * 1.8;
     }
-
-
-  updateShells (points = 1) {
-    this.shellText.setText("x"+ this.player.shells);
-    this.tweens.add({
-      targets: [this.shellText, this.shellLogo],
-      scale: { from: 0.5, to: 1},
-      duration: 100,
-      repeat: 5
-    })
-  }
 }
