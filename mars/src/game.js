@@ -24,11 +24,15 @@ export default class Game extends Phaser.Scene {
     }
 
     create () {
+      this.backgroundColors = [
+        0xae2012, 0x961C10, 0x50120A, 0x40120A,
+        0x30120A, 0x2F120A, 0x000000
+      ];
       this.width = this.sys.game.config.width;
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      this.cameras.main.setBackgroundColor(0xae2012); 
+      this.cameras.main.setBackgroundColor(this.backgroundColors[this.number ]); 
 
       this.addLight();
       this.createMap();
@@ -38,18 +42,19 @@ export default class Game extends Phaser.Scene {
       //this.addHelp();
       this.input.keyboard.on("keydown-ENTER", () => this.skipThis(), this);
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 0);
-      this.addPosition();
+      //this.addPosition();
       //this.addDay();
       //this.addMineName();
       this.loadAudios(); 
       this.addEffects();
       this.playMusic();
       //this.playOfficer();
+      this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);
     }
 
     addOxygen () {
       //this.checkManaEvent = this.time.addEvent({ delay: 1000, callback: this.recoverMana, callbackScope: this, loop: true });
-      this.oxygenBar = this.add.rectangle(this.center_width - 1, this.height - 41, this.player.oxygen * 1.8, 20, 0x6b140b).setOrigin(0.5).setScrollFactor(0)
+      this.oxygenBar = this.add.rectangle(this.center_width, 40, this.player.oxygen * 1.8, 20, 0x6b140b).setOrigin(0.5).setScrollFactor(0)
     }
 
     addEffects() {
@@ -97,7 +102,7 @@ export default class Game extends Phaser.Scene {
     createMap() {
       this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 64, tileHeight: 64 });
       this.tileSetBg = this.tileMap.addTilesetImage("mars");
-      this.tileMap.createStaticLayer('background', this.tileSetBg)//.setPipeline('Light2D');
+      //this.tileMap.createStaticLayer('background', this.tileSetBg)//.setPipeline('Light2D');
   
       this.tileSet = this.tileMap.addTilesetImage("mars");
       this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet)//.setPipeline('Light2D');;
@@ -127,9 +132,9 @@ export default class Game extends Phaser.Scene {
     createGrid () {
       this.grid = [];
 
-      Array(20).fill(0).forEach((_,i) => {
+      Array(40).fill(0).forEach((_,i) => {
         this.grid[i] = []
-        Array(20).fill(0).forEach((_, j) => {
+        Array(40).fill(0).forEach((_, j) => {
           let rock = this.platform.getTileAt(Math.floor(j), Math.floor(i));
           let wall = this.border.getTileAt(Math.floor(j), Math.floor(i));
           this.grid[i][j] = (rock || wall) ?  1 : 0;
@@ -172,6 +177,7 @@ export default class Game extends Phaser.Scene {
 
     playerHitByFoe (player, foe) {
       this.cameras.main.shake(100);
+      this.playAudio("killed")
       player.death();
       this.restartScene();
     } 
@@ -194,10 +200,22 @@ export default class Game extends Phaser.Scene {
           "blip": this.sound.add("blip"),
           "ohmygod": this.sound.add("ohmygod"),
           "holeshout": this.sound.add("holeshout"),
+          "oxygen": this.sound.add("oxygen"),
+
+          "killed": this.sound.add("killed"),
         };
         this.tracker = this.sound.add("tracker");
       }
     
+    playRandomStatic () {
+      const file = this.number < 6 ? "static" + Phaser.Math.Between(0,3) : "creepy_static"
+      this.sound.add(file).play({
+        rate: Phaser.Math.Between(9, 11)/10,
+        delay: 0,
+        volume: Phaser.Math.Between(5, 10)/10
+      });
+    }
+
     playTracker () {
       if (!this.tracker.isPlaying) this.tracker.play();
     }
@@ -267,7 +285,7 @@ export default class Game extends Phaser.Scene {
       const x = this.cameras.main.worldView.centerX;
       const y = this.cameras.main.worldView.centerY;
 
-      this.fadeBlack = this.add.rectangle(x - 100, y - 50, 1000, 1100,  0x000000).setOrigin(0.5)
+      this.fadeBlack = this.add.rectangle(x - 100, y - 50, 10000, 11000,  0x000000).setOrigin(0.5)
       this.failure = this.add.bitmapText(x, y, "pico", "FAILURE", 40).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 2, 0x6b302a, 0.9)
 
       this.tweens.add({
@@ -289,7 +307,7 @@ export default class Game extends Phaser.Scene {
       this.scene.start("transition", { number: this.number + 1});
     }
 
-    finishScene () {
+    finishScene (mute = true) {
       const x = this.cameras.main.worldView.centerX;
       const y = this.cameras.main.worldView.centerY;
 
@@ -303,10 +321,10 @@ export default class Game extends Phaser.Scene {
 
       this.player.dead = true;
       this.player.body.stop();
-      this.sound.add("blip").play();
+      if (this.mute) this.sound.add("blip").play();
       //this.theme.stop();
       this.time.delayedCall(3000, () => {
-        this.sound.stopAll();
+        if (this.mute) this.sound.stopAll();
         this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
       }, null, this);
     }

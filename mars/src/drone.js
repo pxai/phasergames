@@ -39,7 +39,11 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
           this.on('animationcomplete', this.animationComplete, this);
 
           console.log("Created drone")
-          this.launchMove();
+
+          this.scene.time.delayedCall(Phaser.Math.Between(3000, 5000), () => {
+            this.scene.playAudio("kill");
+            this.launchMove()
+          }, null, this);
     }
 
 

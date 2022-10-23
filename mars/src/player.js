@@ -35,6 +35,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D); 
+        
     }
 
     update(time, delta) {
@@ -95,7 +96,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.steps++;
         this.scene.smokeLayer.add(new Step(this.scene, x , y))
         this.scene.playRandom("step", 1)//Phaser.Math.Between(8, 12) / 10);
-        this.scene.updatePosition(this.x/64, this.y/64)
+        //this.scene.updatePosition(this.x/64, this.y/64)
         /*const {x, y} = [
             {x: 0, y: -1},
             {x: 1, y: 0},

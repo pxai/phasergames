@@ -45,7 +45,7 @@ export default class Splash extends Phaser.Scene {
     startGame () {
         if (this.theme) this.theme.stop();
         this.sound.add("blip").play();
-        this.scene.start("transition", {next: "game", name: "STAGE", number: 0, time: 30})
+        this.scene.start("transition", {next: "game", name: "STAGE", number: 4, time: 30})
     }
 
     showLogo() {
@@ -84,10 +84,10 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pico", "WASD -  Arrows", 50).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 3, 0x6b302a, 0.9)
-        this.add.sprite(this.center_width - 110, 600, "pello").setOrigin(0.5).setScale(0.4)
-        this.add.bitmapText(this.center_width + 60, 600, "pico", "By PELLO", 35).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 3, 0x6b302a, 0.9);
-        this.space = this.add.bitmapText(this.center_width, 670, "pico", "SPACE start", 30).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 2, 0x6b302a, 0.9);
+        this.add.bitmapText(this.center_width, 450, "pico", "WASD/Arrows", 40).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 3, 0x6b302a, 0.9)
+        this.add.sprite(this.center_width - 140, 355, "pello").setOrigin(0.5).setScale(0.5)
+        this.add.bitmapText(this.center_width + 60, 350, "pico", "By PELLO", 35).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 3, 0x6b302a, 0.9);
+        this.space = this.add.bitmapText(this.center_width, 520, "pico", "SPACE start", 30).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 2, 0x6b302a, 0.9);
         this.tweens.add({
             targets: this.space,
             duration: 300,

@@ -13,8 +13,6 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
         this.activated = false;
-        //this.scene.events.on("update", this.update, this);
-        console.log("So: ", !this.body.touching.none && !this.body.wasTouching.none)
     }
 
     showNote (note) {
@@ -41,11 +39,12 @@ export default class Object extends Phaser.GameObjects.Rectangle {
     }
 
     useRadio() {
-        console.log("Playing : ", this.description, this.extra)
         this.officerAudio = this.scene.sound.add(this.description)
         this.officerAudio.play();
         this.officerAudio.on('complete', function () {
-            if (!this.extra)
+            this.scene.playRandomStatic();
+            console.log("Play random static")
+            if (this.extra)
                 this.scene.sound.add(this.extra).play();
         }.bind(this))
     }
@@ -53,8 +52,35 @@ export default class Object extends Phaser.GameObjects.Rectangle {
     exitScene () {
         this.showExit(this.description)
         this.showNote(this.extra)
-        console.log("Exit!;: ", this.name, this.description)
         this.scene.finishScene();
+    }
+
+    useOxygen () {
+        this.showNote("Oxygen supplies!")
+        this.scene.player.oxygen = 100;
+        this.scene.updateOxygen();
+        this.scene.playAudio("oxygen")
+    }
+
+    revealEnding () {
+        const ohmy = this.scene.sound.add("ohmygod")
+        ohmy.play();
+        this.scene.cameras.main.shake(10000)
+        this.showExit(this.description)
+        this.scene.sound.add("monster").play({volume: 1.5, rate: 0.8})
+        const monster = this.scene.add.sprite(this.x + 128, this.y + 128, "monster").setOrigin(0.5)
+        this.scene.anims.create({
+            key: "monster",
+            frames: this.scene.anims.generateFrameNumbers("monster", { start: 0, end: 5 }),
+            frameRate: 3
+          });
+          monster.anims.play("monster", true)
+        ohmy.on('complete', function () {
+            //log("Dale fin")
+            this.scene.breathing.pause();
+            this.scene.playAudio("holeshout")
+            this.scene.finishScene(false);
+        }.bind(this))
     }
 
     update () {
@@ -78,6 +104,12 @@ export default class Object extends Phaser.GameObjects.Rectangle {
                 break;
             case "hole":
                 this.activateHole();
+                break;
+            case "oxygen":
+                this.useOxygen();
+                break;
+            case "ending":
+                this.revealEnding();
                 break;
             default:
                 break;

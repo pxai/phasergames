@@ -25,13 +25,13 @@ export default class Transition extends Phaser.Scene {
         ];
 
         this.missions = [
-            "LOCATE WRECKAGE AT POINT 121º 221º",
-            "Locate wreckage at point 121º 221º",
-            "Locate wreckage at point 121º 221º",
-            "Locate wreckage at point 121º 221º",
-            "Locate wreckage at point 121º 221º",
-            "Locate wreckage at point 121º 221º",
-            "Locate wreckage at point 121º 221º",
+            "",
+            "Go north, locate containers.",
+            "Find landing zone. North East.",
+            "Locate landing, South East.",
+            "Go East, locate containers.",
+            "Other landings: North East",
+            "Find out ship origin...",
         ];
 
         this.utils = new Utils(this);
@@ -40,9 +40,11 @@ export default class Transition extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2; 
         this.add.tileSprite(0, 0, 800, 600, "landscape").setOrigin(0);
-        this.sound.stopAll();
-        if (this.number === 8) {
+
+        if (this.number === 7) {
             this.scene.start("outro", { number: this.number });
+        } else {
+            this.sound.stopAll();
         }
 
         this.text1 = this.add.bitmapText(this.center_width, 20, "pico", messages[this.number], 30).setOrigin(0.5).setAlpha(0)
@@ -82,7 +84,8 @@ export default class Transition extends Phaser.Scene {
         "YOU ARE ALIVE BUT YOUR\n"+
         "SHIP IS COMPLETELY LOST\n" +
         "IF YOU WANT TO LIVE YOU\n" +
-        "MUST FIND LANDING REMAINS...";
+        "MUST FIND LANDING REMAINS\n" +
+        "TRY GOING EAST...";
 
         this.utils.typeText(text, "pico", this.center_width, 150, 0xffffff, 20)
     }
@@ -111,7 +114,7 @@ export default class Transition extends Phaser.Scene {
             repeat: -1
           });
         this.wave.anims.play("wave", true)
-        this.recording = this.sound.add(`diary${this.number}`)
+        this.recording = this.sound.add(`diary${this.number - 1}`)
         this.recording.on('complete', function () {
             //log("Dale fin")
             this.wave.destroy();
@@ -138,7 +141,7 @@ export default class Transition extends Phaser.Scene {
     }
 
     showMission () {
-        this.text3 = this.add.bitmapText(this.center_width, 300, "pico", "MISSION OBJECTIVE", 30).setOrigin(0.5)
+        this.text3 = this.add.bitmapText(this.center_width, 300, "pico", "MISSION OBJECTIVE:", 30).setOrigin(0.5)
         //this.text4 = this.add.bitmapText(this.center_width, 400, "pico", this.missions[this.number], 20).setOrigin(0.5)
 
         this.utils.typeText(this.missions[this.number], "pico", this.center_width, 400, 0xffffff, 20)
