@@ -49,7 +49,7 @@ export default class Game extends Phaser.Scene {
       this.addEffects();
       this.playMusic();
       //this.playOfficer();
-      this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);
+      //this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);
     }
 
     addOxygen () {
