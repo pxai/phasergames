@@ -2,6 +2,7 @@ import FoeGenerator from "./foe_generator";
 import ObstacleGenerator from "./obstacle_generator";
 import Player from "./player";
 
+
 export default class Game extends Phaser.Scene {
     constructor () {
         super({ key: "game" });
@@ -35,6 +36,8 @@ export default class Game extends Phaser.Scene {
       this.background = this.add.tileSprite(0, 0, 0, 0, "road").setOrigin(0).setScrollFactor(0, 1);
       this.trees = this.add.group();
       this.obstacles = this.add.group();
+      this.bullets = this.add.group();
+      this.boxes = this.add.group();
     }
 
     addFoes () {
@@ -58,6 +61,18 @@ export default class Game extends Phaser.Scene {
       this.physics.add.collider(this.player, this.obstacles, this.hitObstacle, ()=>{
         return true;
       }, this);
+
+      this.physics.add.collider(this.bullets, this.obstacles, this.bulletObstacle, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.bullets, this.foes, this.bulletFoe, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.player, this.boxes, this.pickBox, ()=>{
+        return true;
+      }, this);
     }
 
     hitFoe (player, foe) {
@@ -74,6 +89,21 @@ export default class Game extends Phaser.Scene {
     hitObstacle (player, obstacle) {
       if (player.jumping) return;
       player.destroy();
+      obstacle.destroy();
+    }
+
+    pickBox (player, box) {
+      player.addBullets(Phaser.Math.Between(3, 5));
+      box.destroy();
+    }
+
+    bulletFoe (bullet, foe) {
+      bullet.destroy()
+      foe.destroy();
+    }
+
+    bulletObstacle (bullet, obstacle) {
+      bullet.destroy()
       obstacle.destroy();
     }
 
@@ -105,9 +135,27 @@ export default class Game extends Phaser.Scene {
       this.background.setTilePosition(this.cameras.main.scrollX);
     }
 
+    restartScene () {
+      const x = this.cameras.main.worldView.centerX;
+      const y = this.cameras.main.worldView.centerY;
+
+      this.fadeBlack = this.add.rectangle(x - 100, y - 50, 10000, 11000,  0x000000).setOrigin(0.5)
+      this.failure = this.add.bitmapText(x, y, "pico", "FAILURE", 40).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 2, 0x6b302a, 0.9)
+
+      this.tweens.add({
+        targets: [this.failure, this.fadeBlack],
+        alpha: {from: 0, to: 1},
+        duration: 2000
+      })
+      this.time.delayedCall(3000, () => {
+        this.sound.stopAll();
+        this.scene.start("game", {number: this.number});
+      }, null, this);
+    }
+
     finishScene () {
-      this.sky.stop();
-      this.theme.stop();
+    //  this.sky.stop();
+    //this.theme.stop();
       this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
     }
 

@@ -15,6 +15,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.body.setDrag(100);
         this.power = 0;
         this.body.setBounce(0.8)
+        this.bullets = 0;
 
         //this.friction = .95;
         this.death = false;
@@ -40,6 +41,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        this.Z = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
        // this.body.setDrag(300);
         //this.body.setAngularDrag(400);
         this.body.setMaxVelocity(600);
@@ -50,9 +52,9 @@ class Player extends Phaser.GameObjects.Sprite {
     shoot () {
         //if (this.power > 0) {
             // this.getSpeeds();
-            this.scene.playAudio("shot");   
-            this.scene.shots.add(new Shot(this.scene, this.x, this.y, Math.cos(this.rotation) * 500, Math.sin(this.rotation) * 500, this.id))
-            this.power--;
+           // this.scene.playAudio("shot");   
+            this.scene.bullets.add(new Shot(this.scene, this.x, this.y))
+            this.bullets--;
        // }
     }
 
@@ -98,6 +100,10 @@ class Player extends Phaser.GameObjects.Sprite {
             if (Phaser.Input.Keyboard.JustDown(this.SPACE)) {
                 this.jump();
             }
+
+            if (Phaser.Input.Keyboard.JustDown(this.Z) && this.bullets > 0) {
+                this.shoot();
+            }
         }
     
     }
@@ -122,13 +128,13 @@ class Player extends Phaser.GameObjects.Sprite {
         this.body.setAllowGravity(false)
     } 
 
-    addEnergy(power) {
-        this.power = this.power + power;
-        this.showPoints("+" + power)
+    addBullets(bullets) {
+        this.bullets = this.bullets + bullets;
+        this.showPoints("+" + bullets)
     }
 
     showPoints (score, color = 0xff0000) {
-        let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "starshipped", score, 20, 0xfffd37).setOrigin(0.5);
+        let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "pico", score, 20, 0xfffd37).setOrigin(0.5);
         this.scene.tweens.add({
             targets: text,
             duration: 1000,
@@ -139,6 +145,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
     destroy () {
         this.death = true;
+        this.scene.restartScene();
         super.destroy();
     }      
 }

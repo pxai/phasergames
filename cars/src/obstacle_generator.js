@@ -1,4 +1,5 @@
 import Obstacle from "./obstacle";
+import Box from "./box";
 
 export default class ObstacleGenerator {
     constructor (scene) {
@@ -11,7 +12,7 @@ export default class ObstacleGenerator {
     }
 
     generate() {
-        switch (Phaser.Math.RND.pick([0, 1, 2])) {
+        switch (Phaser.Math.RND.pick([0, 1, 2, 4])) {
             case 0:
                 this.scene.obstacles.add(new Obstacle(this.scene, this.scene.player.x + 600, Phaser.Math.Between(0, 224), "tree"))
                 break;
@@ -20,6 +21,10 @@ export default class ObstacleGenerator {
                 break;
             case 2:
                 this.scene.obstacles.add(new Obstacle(this.scene, this.scene.player.x + 600, Phaser.Math.Between(600, 824), "tree"))
+                break;
+            case 4:
+                //if (Phaser.Math.Between(1, 11) > 10)
+                    this.scene.boxes.add(new Box(this.scene, this.scene.player.x + 600, this.scene.player.y + Phaser.Math.Between(-100, 100)))
                 break;
             default:
                 break;

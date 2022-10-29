@@ -1,13 +1,11 @@
-class Obstacle extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, name = "player") {
+class Box extends Phaser.GameObjects.Sprite {
+    constructor (scene, x, y, name = "box") {
         super(scene, x, y, name);
         this.scene = scene;
         this.id = Math.random();
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
-        this.body.setCircle(24);
-        this.body.setOffset(6, 12)
     }
 
     showPoints (score, color = 0xff0000) {
@@ -21,4 +19,4 @@ class Obstacle extends Phaser.GameObjects.Sprite {
     }    
 }
 
-export default Obstacle;
+export default Box;

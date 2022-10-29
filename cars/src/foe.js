@@ -47,7 +47,7 @@ class Foe extends Phaser.GameObjects.Sprite {
     }
 
     showPoints (score, color = 0xff0000) {
-        let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "starshipped", score, 20, 0xfffd37).setOrigin(0.5);
+        let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "pico", score, 20, 0xfffd37).setOrigin(0.5);
         this.scene.tweens.add({
             targets: text,
             duration: 1000,
