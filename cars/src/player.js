@@ -10,18 +10,16 @@ class Player extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
-        this.body.setCircle(26);
-        this.body.setOffset(6, 9)
+        this.body.setCircle(24);
+        this.body.setOffset(6, 12)
         this.body.setDrag(100);
         this.power = 0;
         this.body.setBounce(0.8)
-        this.speed_x = 0;// This is the speed it's currently moving at
-        this.speed_y = 0;
-        this.angle = 0;
-        this.speed = 0; // This is the parameter for how fast it should move 
+
         //this.friction = .95;
         this.death = false;
-
+        this.jumping = false
+        this.jumpPoint = -1;
         this.init();
     }
 
@@ -66,81 +64,63 @@ class Player extends Phaser.GameObjects.Sprite {
 
     update (timestep, delta) {
         if (this.death) return;
-        if (this.cursor.left.isDown) {
-           this.body.setVelocityX(-100);
-        } else if (this.cursor.right.isDown) {
-            console.log("DALE")
-            this.body.setVelocityX(600);
-        }else {
-            this.body.setAngularVelocity(0);
-        }
 
-        if (this.cursor.up.isDown) {
-            this.rotation = -0.2;
-            this.body.setVelocityY(-100);
-
-        } else if (this.cursor.down.isDown) {
-            this.rotation = 0.2;
-            this.body.setVelocityY(100);
+        if (this.jumping) {
+            this.shadow.x = this.x; 
+            if (this.y >= this.jumpPoint) this.land();
+            if (this.body.velocity.y > 0) this.rotation = 0.3;
         } else {
-            this.rotation = 0;
-        }
 
+            if (this.cursor.left.isDown || this.A.isDown) {
+                this.body.setVelocityX(-100);
+             } else if (this.cursor.right.isDown || this.D.isDown) {
+                 this.body.setVelocityX(600);
+             } else {
+                 this.body.setAngularVelocity(0);
+             }
+     
+             if (this.cursor.up.isDown || this.W.isDown) {
+                 this.rotation = -0.2;
+                 this.body.setVelocityY(-100);
+             } else if (this.cursor.down.isDown || this.S.isDown) {
+                 this.rotation = 0.2;
+                 this.body.setVelocityY(100);
+             } else {
+                 this.rotation = 0;
+             }
 
-        if (Phaser.Input.Keyboard.JustDown(this.SPACE)) {
-            this.shoot();
-        }
-
-        if (Phaser.Math.Between(1, 4) > 1) {
-            this.scene.thrust.add(new Particle(this.scene, this.x , this.y , 0xffffff, 10))
-            //new Particle(this.scene, this.x , this.y ,  50, -1)
-            //new Particle(this.scene, this.x , this.y,  50, -1)
-        }
-    }
-
-    update2 () {
-        if (this.death) return;
-        // Lerp rotation towards mouse
-        this.getSpeeds()
-
-            this.speed_x += Math.cos(this.rotation + Math.PI/2) * this.speed;
-            this.speed_y += Math.sin(this.rotation + Math.PI/2) * this.speed;
-
-            if (Phaser.Math.Between(1, 4) > 1) {
-                this.scene.thrust.add(new Particle(this.scene, this.x , this.y , 0xffffff, 10))
+             if (Phaser.Math.Between(1, 4) > 1) {
+                this.scene.thrust.add(new Particle(this.scene, this.x  , this.y + Phaser.Math.Between(-16, 16), 0xffffff, 10))
                 //new Particle(this.scene, this.x , this.y ,  50, -1)
                 //new Particle(this.scene, this.x , this.y,  50, -1)
             }
-       // }
-        
-        this.x += this.speed_x;
-        this.y += this.speed_y;
 
-        this.speed_x *= this.friction;
-        this.speed_y *= this.friction;
-
-        // To make player flash when they are hit, set player.spite.alpha = 0
-        if(this.alpha < 1){
-            this.alpha += (1 - this.alpha) * 0.16;
-        } else {
-            this.alpha = 1;
+            if (Phaser.Input.Keyboard.JustDown(this.SPACE)) {
+                this.jump();
+            }
         }
-      
-        // Tell the server we've moved 
-        //// this.socket.emit('move-player',{x:this.x,y:this.y,angle:this.rotation})
+    
     }
-        
-    getSpeeds () {
-        let dx = (this.scene.input.mousePointer.x + this.scene.cameras.main.worldView.x) - this.x;
-        let dy = (this.scene.input.mousePointer.y + this.scene.cameras.main.worldView.y) - this.y;
-        let angle = Math.atan2(dy, dx) - Math.PI/2;
-        let dir = (angle - this.rotation) / (Math.PI * 2);
-        dir -= Math.round(dir);
-        dir = dir * Math.PI * 2;
 
-        this.newSpeed = (Math.abs(dx) + Math.abs(dy)/2)/100
-        this.body.rotation += dir * 100
+    jump () {
+        this.jumpPoint = this.y;
+        this.jumping = true;
+        this.shadow = new Shadow(this.scene, this.x, this.y)
+        this.scene.thrust.add(this.shadow)
+        this.y--;
+        this.body.setAllowGravity(true)
+        this.body.setVelocityY(-400)
+        this.rotation = -0.3;
     }
+
+    land () {
+        console.log("Finish jump")
+        this.jumping = false;
+        this.body.setVelocityY(0);
+        this.shadow.destroy();
+        this.jumpPoint = -1;
+        this.body.setAllowGravity(false)
+    } 
 
     addEnergy(power) {
         this.power = this.power + power;
@@ -151,7 +131,7 @@ class Player extends Phaser.GameObjects.Sprite {
         let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "starshipped", score, 20, 0xfffd37).setOrigin(0.5);
         this.scene.tweens.add({
             targets: text,
-            duration: 2000,
+            duration: 1000,
             alpha: {from: 1, to: 0},
             y: {from: text.y - 10, to: text.y - 100}
         });
@@ -164,3 +144,20 @@ class Player extends Phaser.GameObjects.Sprite {
 }
 
 export default Player;
+
+class Shadow extends Phaser.GameObjects.Sprite {
+    constructor (scene, x, y, name = "player") {
+        super(scene, x, y, name);
+        this.scene = scene;
+        this.setTint(0x000000);
+        this.setAlpha(0.7)
+        scene.add.existing(this);
+
+        this.scene.tweens.add({
+            targets: this,
+            duration: 1000,
+            scale: {from: 1, to: 0.5},
+            yoyo: true
+        })
+    }
+}

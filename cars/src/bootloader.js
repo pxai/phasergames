@@ -35,6 +35,8 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("player", "assets/images/player.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("scenario64", "assets/images/scenario64.png", { frameWidth: 64, frameHeight: 64 });
         this.load.image("road", "assets/images/road.png");
+        this.load.image("obstacle", "assets/images/obstacle.png");
+        this.load.spritesheet("tree", "assets/images/tree.png", { frameWidth: 64, frameHeight: 64 });
 
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
 
