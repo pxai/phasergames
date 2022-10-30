@@ -43,7 +43,7 @@ export default class Transition extends Phaser.Scene {
         const notBigger = await this.notBigger(+this.registry.get("score"))
         if (notBigger) return;
         const collection = document.getElementsByClassName("user_name");
-        console.log("Username?", collection)
+
         this.userName = 'ANONYMOUS';
         try {
             this.userName = collection[0].innerHTML || 'ANONYMOUS';
@@ -58,7 +58,7 @@ export default class Transition extends Phaser.Scene {
         try {
             const scores = await readData();
             const makeWayScores = scores.filter(score => score.game === "Make Way!!!").sort((a, b) => b.score - a.score).splice(0, 10);
-            console.log("See: ", score, makeWayScores, makeWayScores.every(score => score.score > score))
+
             return makeWayScores.length >= 10 && makeWayScores.every(s => s.score > score)
         } catch (err) {
             console.log("Error checking date: ", err)
@@ -77,7 +77,7 @@ export default class Transition extends Phaser.Scene {
             const text2 = this.add.bitmapText(this.center_width + 200, 170 + (i * 60), "race", `${String(score.score).padStart(10, '0')}`, 60).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
             
             if (score.id === this.currentId) {
-                console.log("Current ID: ", this.currentId)
+
                 amongFirst10 = true;
                 this.tweens.add({
                     targets: [text0, text1, text2],
