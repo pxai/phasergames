@@ -24,7 +24,7 @@ export default class ObstacleGenerator {
                     this.scene.trees.add(new Obstacle(this.scene, this.scene.player.x + 600, Phaser.Math.Between(600, 824), "tree"))
                     break;
                 case 4:
-                    //if (Phaser.Math.Between(1, 11) > 10)
+                    if (Phaser.Math.Between(1, 5) > 4)
                         this.scene.boxes.add(new Box(this.scene, this.scene.player.x + 600, this.scene.player.y + Phaser.Math.Between(-100, 100)))
                     break;
                 default:
