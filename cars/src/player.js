@@ -130,7 +130,6 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     land () {
-        console.log("Finish jump")
         this.jumping = false;
         this.body.setVelocityY(0);
         this.shadow.destroy();
@@ -154,6 +153,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     destroy () {
+        this.scene.cameras.main.shake(300);
         this.death = true;
         this.scene.restartScene();
         super.destroy();

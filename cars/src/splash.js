@@ -1,3 +1,5 @@
+import {readData, saveData } from "./store";
+
 export default class Splash extends Phaser.Scene {
     constructor () {
         super({ key: "splash" });
@@ -6,7 +8,7 @@ export default class Splash extends Phaser.Scene {
     preload () {
     }
 
-    create () {
+    async create () {
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
@@ -18,13 +20,18 @@ export default class Splash extends Phaser.Scene {
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
+        await this.loadScore();
         //this.playMusic();
         //this.showPlayer();
     }
 
-    startGame () {
+    async startGame () {
         if (this.theme) this.theme.stop();
         this.scene.start("game", {})
+    }
+
+    async loadScore() {
+        await readData()
     }
 
     showLogo() {

@@ -14,14 +14,12 @@ export default class Scenario {
 
     road(x , y, tile = 0, height = 4, start = 0) {
         Array(height).fill(0).forEach((_, i)  => {
-            console.log("Road: ", y + (64 * i))
             this.scene.add.sprite(x * 64, y + (64 * i), "scenario64", tile)
         })
     }
 
     green(x, y, height = 4, start = 0) {
         Array(height).fill(0).forEach((_, i) => {
-            console.log("Green: ", y + (64 * i))
             this.scene.add.sprite(x * 64, y + (64 * i), "scenario64", 4)
         })
     }

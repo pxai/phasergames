@@ -209,7 +209,7 @@ export default class Game extends Phaser.Scene {
       const y = this.cameras.main.worldView.centerY;
 
       this.fadeBlack = this.add.rectangle(x - 100, y - 50, 10000, 11000,  0x000000).setOrigin(0.5)
-      this.failure = this.add.bitmapText(x + 200, y, "pico", "GAME OVER", 40).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0x6b302a, 0.9)
+      this.failure = this.add.bitmapText(x + 200, y, "race", "GAME OVER", 160).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0x6b302a, 0.9)
 
       this.tweens.add({
         targets: [this.failure, this.fadeBlack],
@@ -218,7 +218,7 @@ export default class Game extends Phaser.Scene {
       })
       this.time.delayedCall(3000, () => {
         this.sound.stopAll();
-        this.scene.start("game", {number: this.number});
+        this.scene.start("transition", {number: this.number});
       }, null, this);
     }
 

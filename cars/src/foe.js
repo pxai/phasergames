@@ -43,7 +43,6 @@ class Foe extends Phaser.GameObjects.Sprite {
 
 
     update (timestep, delta) {
-        console.log("Enemy, ", this.x, this.y)
     }
 
     showPoints (score, color = 0xff0000) {
