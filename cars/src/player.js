@@ -55,6 +55,7 @@ class Player extends Phaser.GameObjects.Sprite {
            // this.scene.playAudio("shot");   
             this.scene.bullets.add(new Shot(this.scene, this.x, this.y))
             this.bullets--;
+            this.scene.updateBullets();
        // }
     }
 
@@ -72,7 +73,7 @@ class Player extends Phaser.GameObjects.Sprite {
             if (this.y >= this.jumpPoint) this.land();
             if (this.body.velocity.y > 0) this.rotation = 0.3;
         } else {
-
+            this.scene.updateScore(1);
             if (this.cursor.left.isDown || this.A.isDown) {
                 this.body.setVelocityX(-100);
              } else if (this.cursor.right.isDown || this.D.isDown) {

@@ -28,7 +28,7 @@ export default class Bootloader extends Phaser.Scene {
         });*/
 
         //this.load.image("logo", "assets/images/logo.png");
-        // this.load.audio("beam", "assets/sounds/beam.mp3");
+        this.load.audio("explosion", "assets/sounds/explosion.mp3");
 
         this.load.audio("music", "assets/sounds/music.mp3");
         this.load.bitmapFont("pico", "assets/fonts/pico.png", "assets/fonts/pico.xml");
@@ -40,6 +40,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image("box", "assets/images/box.png");
         this.load.image("bullet", "assets/images/bullet.png");
         this.load.spritesheet("tree", "assets/images/tree.png", { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet("explosion", "assets/images/explosion.png", { frameWidth: 64, frameHeight: 64 });
 
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
 

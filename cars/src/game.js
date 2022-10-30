@@ -1,3 +1,4 @@
+import Explosion from "./explosion";
 import FoeGenerator from "./foe_generator";
 import ObstacleGenerator from "./obstacle_generator";
 import Player from "./player";
@@ -28,8 +29,19 @@ export default class Game extends Phaser.Scene {
       this.addFoes();
       this.addPlayer();
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, -300, -50);
-      //this.loadAudios(); 
+      this.loadAudios(); 
       //this.playMusic();
+      this.addScore();
+      this.addBullets();
+    }
+
+    addBullets() {
+      this.bulletText = this.add.bitmapText(75, 10, "pico", 0, 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.bulletLogo = this.add.sprite(50, 28, "bullet").setScale(0.5).setOrigin(0.5).setScrollFactor(0)
+    }
+
+    addScore() {
+      this.scoreText = this.add.bitmapText(this.center_width, 10, "pico", this.registry.get("score"), 40).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
     }
 
     addScenario () {
@@ -38,6 +50,7 @@ export default class Game extends Phaser.Scene {
       this.obstacles = this.add.group();
       this.bullets = this.add.group();
       this.boxes = this.add.group();
+      this.explosions = this.add.group();
     }
 
     addFoes () {
@@ -54,11 +67,11 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
-      this.physics.add.collider(this.player, this.trees, this.hitTree, ()=>{
+      this.physics.add.overlap(this.player, this.trees, this.hitTree, ()=>{
         return true;
       }, this);
 
-      this.physics.add.collider(this.player, this.obstacles, this.hitObstacle, ()=>{
+      this.physics.add.overlap(this.player, this.obstacles, this.hitObstacle, ()=>{
         return true;
       }, this);
 
@@ -73,31 +86,55 @@ export default class Game extends Phaser.Scene {
       this.physics.add.overlap(this.player, this.boxes, this.pickBox, ()=>{
         return true;
       }, this);
+
+      this.physics.add.overlap(this.foes, this.explosions, this.foeExplosion, ()=>{
+        return true;
+      }, this)
+
+      this.physics.add.overlap(this.obstacles, this.explosions, this.obstacleExplosion, ()=>{
+        return true;
+      }, this)
+    }
+
+    foeExplosion (foe, explosion) {
+      this.explosions.add(new Explosion(this, foe.x, foe.y))
+      foe.destroy();
+      explosion.destroy();
+    }
+
+    obstacleExplosion (foe, obstacle) {
+      obstacle.destroy();
+      explosion.destroy();
     }
 
     hitFoe (player, foe) {
       if (player.jumping) return;
       player.destroy();
+      this.explosions.add(new Explosion(this, foe.x, foe.y))
       foe.destroy();
     }
 
     hitTree (player, tree) {
       if (player.jumping) return;
+      this.explosions.add(new Explosion(this, player.x, player.y))
       player.destroy();
     }
 
     hitObstacle (player, obstacle) {
       if (player.jumping) return;
+      this.explosions.add(new Explosion(this, player.x, player.y))
       player.destroy();
       obstacle.destroy();
     }
 
     pickBox (player, box) {
       player.addBullets(Phaser.Math.Between(3, 5));
+      this.updateBullets();
       box.destroy();
     }
 
     bulletFoe (bullet, foe) {
+      this.explosions.add(new Explosion(this, bullet.x, bullet.y))
       bullet.destroy()
       foe.destroy();
     }
@@ -109,7 +146,7 @@ export default class Game extends Phaser.Scene {
 
       loadAudios () {
         this.audios = {
-          "beam": this.sound.add("beam"),
+          "explosion": this.sound.add("explosion"),
         };
       }
 
@@ -162,6 +199,16 @@ export default class Game extends Phaser.Scene {
     updateScore (points = 0) {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
-        this.scoreText.setText(Number(score).toLocaleString());
+        this.scoreText.setText(score);
     }
+
+    updateBullets (points = 1) {
+    this.bulletText.setText("x"+ this.player.bullets);
+    this.tweens.add({
+      targets: [this.bulletText, this.bulletLogo],
+      scale: { from: 0.5, to: 1},
+      duration: 100,
+      repeat: 5
+    })
+  }
 }
