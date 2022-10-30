@@ -31,7 +31,7 @@ export default class Game extends Phaser.Scene {
       this.addPlayer();
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, -300, -50);
       this.loadAudios(); 
-      //this.playMusic();
+      this.playMusic();
       this.addScore();
       this.addBullets();
     }

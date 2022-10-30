@@ -18,7 +18,9 @@
     "build": "webpack --config webpack.prod.js",
     "test": "npm run lint && npm run unit",
     "lint": "eslint src/**/*.js test/**/*.js --fix",
-    "unit": "mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js"
+    "unit": "mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js",
+    "publish": "npm run-script build && npm run-script itchio",
+    "itchio": "cd dist && rm -f assets/html/index.html && butler push . pello/make-way:html --userversion 0.0.4 && cd .. && butler status pello/make-way:html"
   },
   "dependencies": {
     "axios": "^1.1.3",

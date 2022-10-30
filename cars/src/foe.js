@@ -13,8 +13,8 @@ class Foe extends Phaser.GameObjects.Sprite {
         this.body.setOffset(6, 12)
         this.power = 0;
         this.body.setBounce(0.8)
-        this.setTint(0x00ff00);
-        this.body.setVelocityX(Phaser.Math.Between(100, 300))
+        this.setTint(Phaser.Math.RND.pick([0xf10000, 0x00ff00, 0x0000ff]));
+        this.body.setVelocityX(Phaser.Math.Between(100, 400))
         this.init();
     }
 

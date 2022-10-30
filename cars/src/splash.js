@@ -15,7 +15,7 @@ export default class Splash extends Phaser.Scene {
         this.center_height = this.height / 2;
 
 
-        this.cameras.main.setBackgroundColor(0x354e61);
+        this.cameras.main.setBackgroundColor(0x476982);
         this.showLogo();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 

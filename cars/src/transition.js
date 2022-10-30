@@ -39,7 +39,16 @@ export default class Transition extends Phaser.Scene {
     }
 
     async saveScore () {
-        this.currentId = await saveData(+this.registry.get("score"))
+        const collection = document.getElementsByClassName("user_name");
+        console.log("Username?", collection)
+        this.userName = 'ANONYMOUS';
+        try {
+            this.userName = collection[0].innerHTML || 'ANONYMOUS';
+        } catch (er) {
+
+        }
+
+        this.currentId = await saveData(+this.registry.get("score"), this.userName)
     }
 
     async loadScores () {
@@ -49,7 +58,7 @@ export default class Transition extends Phaser.Scene {
 
         makeWayScores.splice(0, 10).forEach( (score, i) => {
             const text0 = this.add.bitmapText(this.center_width - 350, 170 + (i * 60), "race", `${i+1}`, 60).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
-            const text1 = this.add.bitmapText(this.center_width - 150, 170 + (i * 60), "race", `${score.player.substring(0, 10)}`, 60).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
+            const text1 = this.add.bitmapText(this.center_width - 150, 170 + (i * 60), "race", `${score.player.substring(0, 10).padEnd(11, ' ')}`, 60).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
             const text2 = this.add.bitmapText(this.center_width + 200, 170 + (i * 60), "race", `${String(score.score).padStart(10, '0')}`, 60).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
             
             if (score.id === this.currentId) {
