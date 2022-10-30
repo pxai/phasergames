@@ -13,8 +13,8 @@ export default class Splash extends Phaser.Scene {
         this.center_height = this.height / 2;
 
 
-        this.cameras.main.setBackgroundColor(0x000000);
-        //this.showLogo();        ;
+        this.cameras.main.setBackgroundColor(0x354e61);
+        this.showLogo();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
@@ -24,22 +24,18 @@ export default class Splash extends Phaser.Scene {
 
     startGame () {
         if (this.theme) this.theme.stop();
-        this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
+        this.scene.start("game", {})
     }
 
     showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
+        this.gameLogo = this.add.image(-1000, this.center_height -200, "logo").setScale(1).setOrigin(0.5)
         this.tweens.add({
             targets: this.gameLogo,
             duration: 1000,
             x: {
-              from: this.center_width * 2,
+              from: -1000,
               to: this.center_width
             },
-            y: {
-                from: -200,
-                to: 130
-              },
           })
     }
 
@@ -63,12 +59,12 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: track beam", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "pixelFont", "B: shoot coins", 30).setOrigin(0.5);
-        this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Press SPACE to start", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 500, "race", "WASD/Arrows: move", 60).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.add.bitmapText(this.center_width, 550, "race", "SPACE: JUMP", 60).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.add.bitmapText(this.center_width, 600, "race", "Z: SHOOT", 60).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.add.sprite(this.center_width - 100, 670, "pello").setOrigin(0.5).setScale(0.3)
+        this.add.bitmapText(this.center_width + 40, 670, "race", "By PELLO", 45).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.space = this.add.bitmapText(this.center_width, 720, "race", "Press SPACE to start", 40).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
         this.tweens.add({
             targets: this.space,
             duration: 300,

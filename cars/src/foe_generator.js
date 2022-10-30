@@ -11,7 +11,9 @@ export default class FoeGenerator {
     }
 
     generate() {
-        this.scene.foes.add(new Foe(this.scene, this.scene.player.x + 600, this.scene.player.y + Phaser.Math.Between(-100, 100)))
-        this.init();
+        if (this.scene.player.accelerating) {
+            this.scene.foes.add(new Foe(this.scene, this.scene.player.x + 600, this.scene.player.y + Phaser.Math.Between(-100, 100)))
+        }
+         this.init();
     }
 }

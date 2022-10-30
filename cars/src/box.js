@@ -6,6 +6,12 @@ class Box extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
+        this.scene.tweens.add({
+            targets: this,
+            scale: {from: 1, to: 0.9},
+            repeat: -1,
+            duration: 300
+        })
     }
 
     showPoints (score, color = 0xff0000) {

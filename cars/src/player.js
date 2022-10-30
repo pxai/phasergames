@@ -18,6 +18,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.bullets = 0;
 
         //this.friction = .95;
+        this.accelerating = false;
         this.death = false;
         this.jumping = false
         this.jumpPoint = -1;
@@ -52,8 +53,10 @@ class Player extends Phaser.GameObjects.Sprite {
     shoot () {
         //if (this.power > 0) {
             // this.getSpeeds();
-           // this.scene.playAudio("shot");   
-            this.scene.bullets.add(new Shot(this.scene, this.x, this.y))
+           // this.scene.playAudio("shot");
+           const bullet = new Shot(this.scene, this.x, this.y);
+            this.scene.thrust.add(bullet)
+            this.scene.bullets.add(bullet)
             this.bullets--;
             this.scene.updateBullets();
        // }
@@ -72,14 +75,20 @@ class Player extends Phaser.GameObjects.Sprite {
             this.shadow.x = this.x; 
             if (this.y >= this.jumpPoint) this.land();
             if (this.body.velocity.y > 0) this.rotation = 0.3;
-        } else {
-            this.scene.updateScore(1);
+        } else {                
             if (this.cursor.left.isDown || this.A.isDown) {
                 this.body.setVelocityX(-100);
+                this.body.setDrag(300)
+                this.accelerating = false;
              } else if (this.cursor.right.isDown || this.D.isDown) {
-                 this.body.setVelocityX(600);
+                this.body.setDrag(100)
+                const velocity = this.y < 224 || this.y > 624 ? 200 : 600
+                 this.body.setVelocityX(velocity);
+                 this.scene.updateScore(1);
+                 this.accelerating = true;
              } else {
                  this.body.setAngularVelocity(0);
+                 this.accelerating = false;
              }
      
              if (this.cursor.up.isDown || this.W.isDown) {

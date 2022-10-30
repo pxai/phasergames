@@ -25,6 +25,7 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
+      this.cameras.main.setBackgroundColor(0x258f00);
       this.addScenario();
       this.addFoes();
       this.addPlayer();
@@ -41,7 +42,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addScore() {
-      this.scoreText = this.add.bitmapText(this.center_width, 10, "pico", this.registry.get("score"), 40).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
+      this.scoreText = this.add.bitmapText(this.center_width, 20, "pico", this.registry.get("score"), 40).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
     }
 
     addScenario () {
@@ -97,33 +98,44 @@ export default class Game extends Phaser.Scene {
     }
 
     foeExplosion (foe, explosion) {
-      this.explosions.add(new Explosion(this, foe.x, foe.y))
+      this.otherExplosion(foe)
       foe.destroy();
+      this.thrust.add(this.add.sprite(foe.x, foe.y, "mark"))
       explosion.destroy();
     }
 
     obstacleExplosion (foe, obstacle) {
       obstacle.destroy();
+      this.otherExplosion(obstacle)
+      this.thrust.add(this.add.sprite(obstacle.x, obstacle.y, "mark", 1))
       explosion.destroy();
     }
 
     hitFoe (player, foe) {
       if (player.jumping) return;
       player.destroy();
-      this.explosions.add(new Explosion(this, foe.x, foe.y))
+      this.otherExplosion(foe);
       foe.destroy();
+      this.thrust.add(this.add.sprite(foe.x, foe.y, "mark"))
+      this.playerExplosion();
+      this.thrust.add(this.add.sprite(player.x, player.y, "mark"))
+
     }
 
     hitTree (player, tree) {
       if (player.jumping) return;
-      this.explosions.add(new Explosion(this, player.x, player.y))
+      this.playerExplosion();
       player.destroy();
+      this.thrust.add(this.add.sprite(player.x, player.y, "mark"))
     }
 
     hitObstacle (player, obstacle) {
       if (player.jumping) return;
-      this.explosions.add(new Explosion(this, player.x, player.y))
+      this.playerExplosion();
       player.destroy();
+      this.thrust.add(this.add.sprite(player.x, player.y, "mark"))
+      this.otherExplosion(obstacle);
+      this.thrust.add(this.add.sprite(obstacle.x, obstacle.y, "mark", 1))
       obstacle.destroy();
     }
 
@@ -134,14 +146,34 @@ export default class Game extends Phaser.Scene {
     }
 
     bulletFoe (bullet, foe) {
-      this.explosions.add(new Explosion(this, bullet.x, bullet.y))
+      this.otherExplosion(foe);
       bullet.destroy()
       foe.destroy();
+      this.thrust.add(this.add.sprite(foe.x, foe.y, "mark"))
     }
 
     bulletObstacle (bullet, obstacle) {
       bullet.destroy()
       obstacle.destroy();
+      this.thrust.add(this.add.sprite(obstacle.x, obstacle.y, "mark", 1))
+    }
+
+    otherExplosion (other) {
+      Array(Phaser.Math.Between(2, 4)).fill(0).forEach((_, i) => {
+        const scale = Phaser.Math.Between(1, 5) / 10;
+        const offsetX = Phaser.Math.Between(-32, 32)
+        const offsetY = Phaser.Math.Between(-32, 32)
+        this.explosions.add(new Explosion(this, other.x + offsetX, other.y + offsetY, scale))
+      })
+    }
+
+    playerExplosion () {
+      Array(Phaser.Math.Between(3, 6)).fill(0).forEach((_, i) => {
+        const scale = Phaser.Math.Between(1, 10) / 10;
+        const offsetX = Phaser.Math.Between(-32, 32)
+        const offsetY = Phaser.Math.Between(-32, 32)
+        this.explosions.add(new Explosion(this, this.player.x + offsetX, this.player.y + offsetY, scale))
+      })
     }
 
       loadAudios () {
@@ -177,7 +209,7 @@ export default class Game extends Phaser.Scene {
       const y = this.cameras.main.worldView.centerY;
 
       this.fadeBlack = this.add.rectangle(x - 100, y - 50, 10000, 11000,  0x000000).setOrigin(0.5)
-      this.failure = this.add.bitmapText(x, y, "pico", "FAILURE", 40).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 2, 0x6b302a, 0.9)
+      this.failure = this.add.bitmapText(x + 200, y, "pico", "GAME OVER", 40).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0x6b302a, 0.9)
 
       this.tweens.add({
         targets: [this.failure, this.fadeBlack],

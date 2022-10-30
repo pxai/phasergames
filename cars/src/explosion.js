@@ -3,13 +3,14 @@ export default class Explosion extends Phaser.GameObjects.Sprite {
       super(scene, x, y, sprite)
       this.setOrigin(0.5)
       this.setScale(scale)
+      this.scale = scale;
       this.scene = scene;
       this.name = sprite;
 
       this.scene.add.existing(this);
       scene.physics.add.existing(this);
       this.body.setAllowGravity(false);
-      this.body.setCircle(44);
+      this.body.setCircle(32);
       this.init();
     }
 
@@ -32,7 +33,7 @@ export default class Explosion extends Phaser.GameObjects.Sprite {
         this.scene.tweens.add({
             targets: this,
             duration: 300,
-            scale: {from: 1, to: 4},
+            scale: "*=2",
         })   
     }
 
