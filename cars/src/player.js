@@ -53,7 +53,7 @@ class Player extends Phaser.GameObjects.Sprite {
     shoot () {
         //if (this.power > 0) {
             // this.getSpeeds();
-           // this.scene.playAudio("shot");
+           this.scene.playAudio("shot");
            const bullet = new Shot(this.scene, this.x, this.y);
             this.scene.thrust.add(bullet)
             this.scene.bullets.add(bullet)
@@ -79,11 +79,15 @@ class Player extends Phaser.GameObjects.Sprite {
             if (this.cursor.left.isDown || this.A.isDown) {
                 this.body.setVelocityX(-100);
                 this.body.setDrag(300)
+                this.scene.playBrake();
                 this.accelerating = false;
              } else if (this.cursor.right.isDown || this.D.isDown) {
                 this.body.setDrag(100)
                 const velocity = this.y < 224 || this.y > 624 ? 200 : 600
                  this.body.setVelocityX(velocity);
+                 if (velocity === 600) {
+                    this.scene.playEngine();
+                 }
                  this.scene.updateScore(1);
                  this.accelerating = true;
              } else {
@@ -94,9 +98,11 @@ class Player extends Phaser.GameObjects.Sprite {
              if (this.cursor.up.isDown || this.W.isDown) {
                  this.rotation = -0.2;
                  this.body.setVelocityY(-100);
+                 this.scene.playTurn();
              } else if (this.cursor.down.isDown || this.S.isDown) {
                  this.rotation = 0.2;
                  this.body.setVelocityY(100);
+                 this.scene.playTurn();
              } else {
                  this.rotation = 0;
              }
@@ -119,6 +125,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     jump () {
+        this.scene.playAudio("jump")
         this.jumpPoint = this.y;
         this.jumping = true;
         this.shadow = new Shadow(this.scene, this.x, this.y)
@@ -130,6 +137,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     land () {
+        this.scene.playAudio("land")
         this.jumping = false;
         this.body.setVelocityY(0);
         this.shadow.destroy();
@@ -153,6 +161,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     destroy () {
+        this.scene.engine.pause()
         this.scene.cameras.main.shake(300);
         this.death = true;
         this.scene.restartScene();

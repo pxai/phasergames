@@ -21,7 +21,8 @@ export default class Splash extends Phaser.Scene {
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
         await this.loadScore();
-        //this.playMusic();
+        this.sound.add("splash").play()
+        this.time.delayedCall(500, () => this.playMusic(), null, this);
         //this.showPlayer();
     }
 
@@ -50,7 +51,7 @@ export default class Splash extends Phaser.Scene {
 
     }
 
-    playMusic (theme="splash") {
+    playMusic (theme="idle") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({

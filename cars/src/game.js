@@ -154,6 +154,7 @@ export default class Game extends Phaser.Scene {
 
     bulletObstacle (bullet, obstacle) {
       bullet.destroy()
+      this.otherExplosion(obstacle);
       obstacle.destroy();
       this.thrust.add(this.add.sprite(obstacle.x, obstacle.y, "mark", 1))
     }
@@ -177,9 +178,40 @@ export default class Game extends Phaser.Scene {
     }
 
       loadAudios () {
+        this.engine = this.sound.add("engine")
+        this.brake = this.sound.add("brake");
+
+        this.turn = this.sound.add("turn");
         this.audios = {
           "explosion": this.sound.add("explosion"),
+          "shot": this.sound.add("shot"),
+          "box": this.sound.add("box"),
+          "idle": this.sound.add("idle"),
+          "brake": this.sound.add("brake"),
+          "jump": this.sound.add("jump"),
+          "land": this.sound.add("land"),
         };
+      }
+
+      playEngine(rate = 0.5, volume = 0.5) {
+        if (!this.engine.isPlaying) {
+          this.engine.play({
+            rate: Phaser.Math.Between(8, 12)/10,
+            volume: Phaser.Math.Between(5, 10)/10
+          });
+        }
+      }
+
+      playBrake() {
+        if (!this.brake.isPlaying) {
+          this.brake.play();
+        }
+      }
+
+      playTurn() {
+        if (!this.turn.isPlaying) {
+          this.turn.play();
+        }
       }
 
       playAudio(key) {
