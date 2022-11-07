@@ -36,7 +36,7 @@ export default class Game extends Phaser.Scene {
       this.addPlayer();
       this.addHelp();
       this.input.keyboard.on("keydown-ENTER", () => this.skipThis(), this);
-      this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 100);
+      this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 0);
       this.addScore();
       this.addShells();
       this.addMineName();
@@ -231,11 +231,13 @@ export default class Game extends Phaser.Scene {
     }
 
     playerHitByFoe (player, foe) {
+      this.cameras.main.shake(100);
       player.death();
       this.restartScene();
     } 
 
     foeHitByShot (shot, foe) {
+      this.lights.removeLight(shot.light);
       shot.destroy();
       foe.freeze();
       this.playAudio("ghostdead");
@@ -251,6 +253,7 @@ export default class Game extends Phaser.Scene {
 
     tntHitByShot (shot, tnt) {
       this.playAudio("explosion")
+      this.cameras.main.shake(500);
       Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => { this.smokeLayer.add(new RockSmoke(this, tnt.x, tnt.y))});
       this.blasts.add(new Explosion(this, tnt.x, tnt.y))
       shot.destroy();
@@ -260,7 +263,7 @@ export default class Game extends Phaser.Scene {
     shotHitPlatform (shot, tile) {
       if (!tile.collideDown) return;
       shot.destroy();
-      Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY))
+      Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY).setPipeline('Light2D'))
       this.platform.removeTileAt(tile.x, tile.y);
       Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => { this.smokeLayer.add(new RockSmoke(this, tile.pixelX, tile.pixelY))});
       const {x, y} = [
@@ -270,14 +273,14 @@ export default class Game extends Phaser.Scene {
         {x: -1, y: 0},
       ][this.player.lastDirection];
       Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => { this.smokeLayer.add(new ShotSmoke(this, tile.pixelX + (x * 64), tile.pixelY + (y * 64), x, y))});
-      Array(Phaser.Math.Between(3,6)).fill(0).forEach( i => this.smokeLayer.add(new Debris(this, tile.pixelX  + 32 + (x * Phaser.Math.Between(16, 32)), tile.pixelY + 32 + (y * Phaser.Math.Between(16, 32)))))
+      Array(Phaser.Math.Between(3,6)).fill(0).forEach( i => this.smokeLayer.add(new Debris(this, tile.pixelX  + 32 + (x * Phaser.Math.Between(16, 32)), tile.pixelY + 32 + (y * Phaser.Math.Between(16, 32))).setPipeline('Light2D')))
       this.playAudio("stone")
     }
 
     blastHitPlatform (blast, tile) {
       if (!tile.collideDown) return;
 
-      Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => this.smokeLayer.add(new Debris(this, tile.pixelX, tile.pixelY)))
+      Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => this.smokeLayer.add(new Debris(this, tile.pixelX, tile.pixelY)).setPipeline('Light2D'))
       this.platform.removeTileAt(tile.x, tile.y);
       Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => { this.smokeLayer.add(new RockSmoke(this, tile.pixelX, tile.pixelY))});
       const {x, y} = [
@@ -287,7 +290,7 @@ export default class Game extends Phaser.Scene {
         {x: -1, y: 0},
       ][this.player.lastDirection];
       Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => { this.smokeLayer.add(new ShotSmoke(this, tile.pixelX + (x * 64), tile.pixelY + (y * 64), x, y))});
-      Array(Phaser.Math.Between(3,6)).fill(0).forEach( i => this.smokeLayer.add(new Debris(this, tile.pixelX  + 32 + (x * Phaser.Math.Between(16, 32)), tile.pixelY + 32 + (y * Phaser.Math.Between(16, 32)))))
+      Array(Phaser.Math.Between(3,6)).fill(0).forEach( i => this.smokeLayer.add(new Debris(this, tile.pixelX  + 32 + (x * Phaser.Math.Between(16, 32)), tile.pixelY + 32 + (y * Phaser.Math.Between(16, 32))).setPipeline('Light2D')))
       this.playAudio("stone")
     }
 

@@ -365,6 +365,17 @@
                  "width":0,
                  "x":2112,
                  "y":1024
+                }, 
+                {
+                 "class":"",
+                 "height":0,
+                 "id":94,
+                 "name":"drone",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":64,
+                 "y":2240
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -475,7 +486,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":94,
+ "nextobjectid":95,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.9.2",

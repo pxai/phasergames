@@ -59,7 +59,7 @@ export default class Foe extends Phaser.GameObjects.Container  {
     launchMove() {
       if (!this.scene) return;
       this.delayedMove = this.scene.time.addEvent({
-          delay: 3000,                // ms
+          delay: 2000,                // ms
           callback: this.move.bind(this),
           startAt: 0,
           callbackScope: this,
@@ -94,7 +94,7 @@ export default class Foe extends Phaser.GameObjects.Container  {
               let ey = path[i+1].y * 64;
               tweens.push({
                   targets: this,
-                  duration: 500,
+                  duration: 400,
                   x: ex,
                   y: ey
               });

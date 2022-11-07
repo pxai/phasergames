@@ -34,7 +34,7 @@ export default class Outro extends Phaser.Scene {
         this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
     }
 
-    playMusic (theme="outro") {
+    playMusic (theme="splash") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({

@@ -49,7 +49,7 @@ export default class Game extends Phaser.Scene {
       this.addEffects();
       this.playMusic();
       //this.playOfficer();
-      //this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);
+    //  this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);
     }
 
     addOxygen () {
@@ -186,6 +186,7 @@ export default class Game extends Phaser.Scene {
       if (!player.dead) {
         this.playAudio("holeshout")
         hole.setAlpha(1)
+        player.setAlpha(0);
         this.cameras.main.shake(50);
         player.death();
         this.restartScene();
@@ -201,7 +202,7 @@ export default class Game extends Phaser.Scene {
           "ohmygod": this.sound.add("ohmygod"),
           "holeshout": this.sound.add("holeshout"),
           "oxygen": this.sound.add("oxygen"),
-
+          "shock": this.sound.add("shock"),
           "killed": this.sound.add("killed"),
         };
         this.tracker = this.sound.add("tracker");
@@ -238,7 +239,7 @@ export default class Game extends Phaser.Scene {
       }
 
       playMusic () {
-        const theme =  "mars_background";
+        const theme =  this.number < 6 ? "mars_background" : "cave";
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({

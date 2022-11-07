@@ -1,5 +1,6 @@
 import Utils from "./utils";
 import Hole from "./hole";
+import Braun from "./braun";
 
 export default class Object extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, type, description, extra = "") {
@@ -43,7 +44,6 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         this.officerAudio.play();
         this.officerAudio.on('complete', function () {
             this.scene.playRandomStatic();
-            console.log("Play random static")
             if (this.extra)
                 this.scene.sound.add(this.extra).play();
         }.bind(this))
@@ -91,6 +91,12 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         this.scene.holes.add(new Hole(this.scene, this.x + 64, this.y + 64))
     }
 
+    activateBraun () {
+        this.showExit(this.description)
+        this.scene.playAudio("shock")
+        new Braun(this.scene, this.x + 128, this.y + 64)
+    }
+
     touch () {
         switch (this.type) {
             case "note":
@@ -107,6 +113,9 @@ export default class Object extends Phaser.GameObjects.Rectangle {
                 break;
             case "oxygen":
                 this.useOxygen();
+                break;
+            case "braun":
+                this.activateBraun();
                 break;
             case "ending":
                 this.revealEnding();
