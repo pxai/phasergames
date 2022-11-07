@@ -1,0 +1,44 @@
+{ "height":14,
+ "layers":[
+        {
+         "compression":"zlib",
+         "data":"eJzjYWBgYAdiHgppapjBQyUzQDQnEPNBaQEg5obSpIozAzETEDMCMQsQswIx26j4oBXnAGJeKM0PxFxQmlRxaqXDwZYvAD7OBy0=",
+         "encoding":"base64",
+         "height":14,
+         "name":"scene0",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":18,
+         "x":0,
+         "y":0
+        }],
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "properties":
+    {
+
+    },
+ "renderorder":"right-down",
+ "tileheight":64,
+ "tilesets":[
+        {
+         "firstgid":1,
+         "image":"scenario64.png",
+         "imageheight":256,
+         "imagewidth":256,
+         "margin":0,
+         "name":"scenario64",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tilecount":16,
+         "tileheight":64,
+         "tilewidth":64
+        }],
+ "tilewidth":64,
+ "version":1,
+ "width":18
+}
