@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import Splash from "./splash";
 import Game from "./game";
 import GameOver from "./gameover";
+import Outro from "./outro";
 
 const config = {
     width: 800,
@@ -22,7 +23,8 @@ const config = {
     scene: [
         Splash,
         Game,
-        GameOver
+        GameOver,
+        Outro
     ]
 };
 

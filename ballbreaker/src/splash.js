@@ -100,7 +100,7 @@ export default class Splash extends Phaser.Scene {
                 this.playMusic("theme")
                 this.registry.set("startTime", Date.now())
                 this.registry.set("blocks", 0)
-                this.scene.start("game", {number: 0});
+                this.scene.start("outro", {number: 0});
             }
         })
     }
