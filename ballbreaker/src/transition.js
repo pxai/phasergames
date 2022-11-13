@@ -61,14 +61,7 @@ export default class Transition extends Phaser.Scene {
         this.lines.add(this.add.rectangle(150, 450, 10, 150, 0xffffff).setOrigin(0.5, 0))
 
         const character = this.add.sprite(150, 300, "brick0").setOrigin(0.5)
-        this.tweens.add({
-            targets: character,
-            scaleX: {from: 0.9, to: 1},
-            y: "-=5",
-            yoyo: true,
-            duration: 200,
-            repeat: -1
-        })
+
 
         if (this.number > 0) {
             const origin = positions[this.number -1 ]
@@ -77,7 +70,17 @@ export default class Transition extends Phaser.Scene {
                 targets: character,
                 x: {from: origin.x, to: destiny.x},
                 y: {from: origin.y, to: destiny.y},
-                duration: 1000
+                duration: 1000,
+                onComplete: () => {
+                    this.tweens.add({
+                        targets: character,
+                        scaleX: {from: 0.9, to: 1},
+                        y: "-=5",
+                        yoyo: true,
+                        duration: 200,
+                        repeat: -1
+                    })
+                }
             })
         }
     }
@@ -99,7 +102,7 @@ export default class Transition extends Phaser.Scene {
     loadNext () {
         this.theme.stop();
         this.game.sound.stopAll();
-        if (this.number < 6) {
+        if (this.number < 10) {
             this.scene.start("game", { name: this.name, number: this.number });
         } else {
             this.sound.stopAll();

@@ -67,11 +67,9 @@ export default class Outro extends Phaser.Scene {
         this.userNameText = this.add.bitmapText(this.center_width, this.center_height - 150, "daydream", this.userName.padEnd(9, '-'), 50).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
         this.prompt.add(this.userNameText)
         this.addLetters()
-        console.log("Prompt shown")
     }
 
     async saveScoreWithName () {
-        console.log("Saving: ", this.userName)
         this.prompt.destroy();
         try {
             this.userName = this.userName.trim() || 'ANONYMOUS';

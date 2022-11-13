@@ -20,10 +20,11 @@ export default class Splash extends Phaser.Scene {
         this.load.audio("theme", "assets/sounds/theme.mp3");
         this.load.audio("splash", "assets/sounds/splash.mp3");
         this.load.audio("gotcha", "assets/sounds/gotcha.mp3");
-
+        this.load.audio("start", "assets/sounds/start.mp3");
         this.load.audio("boing", "assets/sounds/boing.mp3");
         this.load.audio("marble", "assets/sounds/marble.mp3");
-
+        this.load.audio("win", "assets/sounds/win.mp3");
+        this.load.audio("break", "assets/sounds/break.mp3");
         this.load.image('brick', 'assets/maps/brick.png');
         this.load.image('brick0', 'assets/images/brick0.png');
         this.load.image('pello', 'assets/images/pello.png');
@@ -70,7 +71,7 @@ export default class Splash extends Phaser.Scene {
         const ballBreakerScores = scores.filter(score => score.game === "BallBreaker")
         
         ballBreakerScores.sort((a, b) => a.score - b.score);
-        console.log("Dale: ", scores, ballBreakerScores)
+
         let amongFirst10 = false;
         this.add.bitmapText(this.center_width, 550, "daydream", "SCOREBOARD", 40).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
         ballBreakerScores.splice(0, 3).forEach( (score, i) => {
@@ -106,7 +107,7 @@ export default class Splash extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 0.1,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,

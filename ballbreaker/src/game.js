@@ -43,7 +43,8 @@ export default class Game extends Phaser.Scene {
       this.finished = false;    
        this.physics.world.on('worldbounds', this.onWorldBounds.bind(this));
        this.ready = true;
-       this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this); // TODO REMOVE
+       //this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this); // TODO REMOVE
+       this.playAudio("start")
     }
 
     addSky() {
@@ -97,7 +98,6 @@ export default class Game extends Phaser.Scene {
         }, this);
 
         this.physics.add.collider(this.ball, this.physics.world.bounds.bottom, () => {
-          console.log('Overlap');
           this.death();
         }, null, this);
 
@@ -137,7 +137,7 @@ export default class Game extends Phaser.Scene {
     }
 
     hitFloor (ball, platform) {
-      this.playAudio("boing")
+      this.playRandom("break")
       this.hit(ball.x, ball.y)
       //if (platform.index === 1) {
         Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => new Debris(this, platform.pixelX, platform.pixelY, 0xb95e00))
@@ -147,11 +147,11 @@ export default class Game extends Phaser.Scene {
     } 
 
     hitLine (ball, line) {
-      this.playAudio("boing")
+      this.playRandom("boing")
       this.updateHits()
       this.hit(ball.x, ball.y)
       this.ready = true;
-      Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => new Debris(this, line.x, line.y, 0xb06f00))
+     // Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => new Debris(this, line.x, line.y, 0xb06f00))
       this.destroyRectangle();
     }
 
@@ -166,6 +166,15 @@ export default class Game extends Phaser.Scene {
         duration: 30,
         repeat: 10
       })
+    }
+
+
+    playRandom(key) {
+      this.audios[key].play({
+        rate: Phaser.Math.Between(9, 11)/10,
+        volume: Phaser.Math.Between(5, 10)/10,
+        delay: 0
+      });
     }
 
     onWorldBounds (body, part) {
@@ -203,6 +212,9 @@ export default class Game extends Phaser.Scene {
           "boing": this.sound.add("boing"),
           "gotcha": this.sound.add("gotcha"),
           "marble": this.sound.add("marble"),
+          "win": this.sound.add("win"),
+          "break": this.sound.add("break"),
+          "start": this.sound.add("start"),
         };
       }
 
@@ -293,7 +305,7 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene () {
-      if (this.number < 8) {
+      if (this.number < 9) {
         this.game.sound.stopAll();
         this.number++;
         this.scene.start("transition", {number: this.number});
@@ -301,7 +313,7 @@ export default class Game extends Phaser.Scene {
         this.game.sound.stopAll();
         this.finished = true;
         const totalTime = (Date.now() - +this.registry.get("startTime"))/1000;
-
+        this.playAudio("win")
         const minutes= parseInt(totalTime/60)
         const time = String(minutes).padStart(2, '0') + "m " + String(parseInt(totalTime) % 60).padStart(2, '0') + "s";
         this.text3 = this.add.bitmapText(this.center_width, this.center_height + 50, "daydream", "HITS: " + this.registry.get("hits"), 45).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
