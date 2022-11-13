@@ -33,7 +33,7 @@ export default class Splash extends Phaser.Scene {
         Array(8).fill(0).forEach((_,i) => {
             this.load.spritesheet(`cloud${i}`, `assets/images/cloud${i}.png`, { frameWidth: 64, frameHeight: 32 });
         });   
-        Array(2).fill(0).forEach((_,i) => {
+        Array(10).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`);
         });    
     }

@@ -87,7 +87,7 @@ export default class Transition extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -98,6 +98,7 @@ export default class Transition extends Phaser.Scene {
 
     loadNext () {
         this.theme.stop();
+        this.game.sound.stopAll();
         if (this.number < 6) {
             this.scene.start("game", { name: this.name, number: this.number });
         } else {

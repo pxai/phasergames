@@ -43,6 +43,7 @@ export default class Game extends Phaser.Scene {
       this.finished = false;    
        this.physics.world.on('worldbounds', this.onWorldBounds.bind(this));
        this.ready = true;
+       this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this); // TODO REMOVE
     }
 
     addSky() {
@@ -80,8 +81,9 @@ export default class Game extends Phaser.Scene {
     addBall () {
       const delay = 0; this.number === 1 ? 3000 : 0;
       const { x, y } = this.playerPosition;
+      const offset = Phaser.Math.Between(-64, 64)
       this.time.delayedCall(delay, () => {
-        this.ball = new Ball(this, x, y, 1);
+        this.ball = new Ball(this, x + offset, y, 1);
         this.physics.add.collider(this.ball, this.lines, this.hitLine, ()=>{
           return true;
         }, this);
@@ -291,7 +293,7 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene () {
-      if (this.number < 1) {
+      if (this.number < 8) {
         this.game.sound.stopAll();
         this.number++;
         this.scene.start("transition", {number: this.number});
