@@ -1,4 +1,6 @@
-import { Particle, Debris } from "./particle";
+import { Particle, Debris, Dust } from "./particle";
+import Ghost from "./ghost";
+import Bat from "./bat";
 import Sky from "./sky";
 
 export default class Game extends Phaser.Scene {
@@ -28,7 +30,7 @@ export default class Game extends Phaser.Scene {
      // this.rt = this.add.renderTexture(0, 0, 800, 600);
       this.lines = this.add.group();
       this.loadAudios(); 
-    
+      this.cloudLayer = this.add.layer();    
       this.pointer = this.input.activePointer;
       this.trailLayer = this.add.layer();
 
@@ -37,6 +39,7 @@ export default class Game extends Phaser.Scene {
       this.addBasket();
       this.addBall();
       this.showStage();
+      this.showHits();
       this.finished = false;    
        this.physics.world.on('worldbounds', this.onWorldBounds.bind(this));
        this.ready = true;
@@ -53,18 +56,25 @@ export default class Game extends Phaser.Scene {
 
     addMap () {
       this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 32, tileHeight: 32 });
-      //this.tileSetBg = this.tileMap.addTilesetImage("background");
-      //this.tileMap.createStaticLayer('background', this.tileSetBg)
-
       this.tileSet = this.tileMap.addTilesetImage("brick");
       this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet);
 
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
+      this.batGroup = this.add.group();
+      this.foesGroup = this.add.group();
 
       this.playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
       this.basketPosition = this.objectsLayer.objects.find( object => object.name === "basket")
       this.physics.world.bounds.setTo(0, 0, this.tileMap.widthInPixels, this.tileMap.heightInPixels);
       this.platform.setCollisionByExclusion([-1]);
+
+      this.objectsLayer.objects.forEach( object => {
+        if (object.name === "bat") {
+          let bat = new Bat(this, object.x, object.y, object.type);
+          this.batGroup.add(bat)
+          this.foesGroup.add(bat)
+        }
+      });
     }
 
     addBall () {
@@ -92,34 +102,75 @@ export default class Game extends Phaser.Scene {
         this.physics.add.collider(this.ball, this.platform, this.hitFloor, ()=>{
           return true;
         }, this);
+
+        this.physics.add.collider(this.batGroup, this.platform, this.turnFoe, ()=>{
+          return true;
+        }, this);
+
+        this.physics.add.collider(this.batGroup, this.lines, this.batHitLine, ()=>{
+          return true;
+        }, this);
+
+        this.physics.add.collider(this.ball, this.batGroup, this.hitBat, ()=>{
+          return true;
+        }, this);  
       })
+    }
+
+    hitBat(ball, bat) {
+      this.playAudio("boing")
+      this.hit(ball.x, ball.y)
+      bat.turn();
+    }
+
+    batHitLine(bat, line) {
+      bat.turn();
+      this.playAudio("boing");
+      Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => new Debris(this, line.x, line.y, 0xb06f00))
+      line.destroy();
+    }
+
+    turnFoe (foe, platform) {
+      foe.turn();
     }
 
     hitFloor (ball, platform) {
       this.playAudio("boing")
-      console.log("Hit: ", platform.index);
       this.hit(ball.x, ball.y)
-      if (platform.index === 1) {
+      //if (platform.index === 1) {
         Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => new Debris(this, platform.pixelX, platform.pixelY, 0xb95e00))
+        new Ghost(this, platform.pixelX, platform.pixelY)
         this.platform.removeTileAt(platform.x, platform.y);
-      }
+      //}
     } 
 
     hitLine (ball, line) {
       this.playAudio("boing")
+      this.updateHits()
       this.hit(ball.x, ball.y)
       this.ready = true;
       Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => new Debris(this, line.x, line.y, 0xb06f00))
-      line.destroy()
+      this.destroyRectangle();
     }
 
-    hitBasket (marble, basket) {
+    hitBasket (ball, basket) {
       this.playAudio("boing")
+      this.hit(ball.x, ball.y, 4)
+      this.cameras.main.shake(30);
+      this.tweens.add({
+        targets: [basket],
+        x: "-=5",
+        yoyo: true,
+        duration: 30,
+        repeat: 10
+      })
     }
 
     onWorldBounds (body, part) {
       const name = body.gameObject.constructor.name.toString();
-      if (name === "Ball" && body.onFloor()) { this.death() }
+      this.death()
+      //if (name === "Ball" && body.onFloor()) { this.death() }
+
 
       if (["Ball"].includes(name) ) {
         this.playAudio("boing")
@@ -127,20 +178,23 @@ export default class Game extends Phaser.Scene {
     }
 
     showStage() {
-      this.text1 = this.add.bitmapText(this.center_width, 50, "daydream", "STAGE " + this.number, 20).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 4, 0x222222, 0.9);
+      this.text1 = this.add.bitmapText(this.width - 128, 50, "daydream", "STAGE " + this.number, 20).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 4, 0x222222, 0.9);
 
       if (this.number === 0) {
-        this.text2 = this.add.bitmapText(this.center_width, this.center_height, "daydream", "CLICK TO ADD BLOCK", 25).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 4, 0x222222, 0.9);
-        this.time.delayedCall(3000, () => this.text2.destroy());
+        this.text2 = this.add.bitmapText(this.center_width, this.center_height - 128, "daydream", "MOVE BALL TO BASKET!", 25).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 4, 0x222222, 0.9);
+        this.text3 = this.add.bitmapText(this.center_width, this.center_height, "daydream", "CLICK TO ADD BLOCK", 25).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 4, 0x222222, 0.9);
+        this.text4 = this.add.bitmapText(this.center_width, this.center_height + 128, "daydream", "KEEP CLICK TO MOVE BLOCK", 25).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 4, 0x222222, 0.9);
+        this.time.delayedCall(5000, () => {
+          this.text2.destroy()
+          this.text3.destroy()
+          this.text4.destroy()
+        });
       }
     }
 
-   paint (pointer) {
-     let drawn;
-    if (pointer.isDown) {
-        this.lines.add(this.physics.add.rectangle(pointer.x, pointer.y, 2, 2, 0x00ff00).setAllowGravity(false));
+    showHits() {
+      this.textHits = this.add.bitmapText(128, 50, "daydream", "HITS: " + this.registry.get("hits"), 20).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 4, 0x222222, 0.9);
     }
-   }
 
       loadAudios () {
         this.audios = {
@@ -169,8 +223,8 @@ export default class Game extends Phaser.Scene {
       }
 
     update() {
-      if (this.pointer.isDown && this.ready) {
-        this.ready = false;
+      if (this.pointer.isDown) {
+        this.destroyRectangle();
         this.paintLine();
       }
 
@@ -185,36 +239,36 @@ export default class Game extends Phaser.Scene {
       }
     }
 
-    hit (x, y, color=0xffffff) {
-      Array(Phaser.Math.Between(4, 10)).fill(0).forEach((_,i) => {
+    hit (x, y, total = 10) {
+      Array(Phaser.Math.Between(4, total)).fill(0).forEach((_,i) => {
         x += Phaser.Math.Between(-10, 10);
         y += Phaser.Math.Between(-10, 10);
-        new Particle(this, x, y, color, Phaser.Math.Between(4, 10));
+        new Dust(this, x, y);
       })
     }
 
+    destroyRectangle () {
+      if (this.rectangle0) { 
+        this.rectangle0.destroy(); 
+       }
+    }
+
     paintLine() {
-      if (this.rectangle0) { this.rectangle0.destroy() }
+      this.destroyRectangle();
       this.rectangle0 = this.add.sprite(this.pointer.x-1, this.pointer.y, "brick0")
-      this.add.rectangle(this.pointer.x-1, this.pointer.y, 3, 3, 0xb95e00);
+      //this.add.rectangle(this.pointer.x-1, this.pointer.y, 3, 3, 0xb95e00);
       this.physics.add.existing(this.rectangle0);
       this.rectangle0.body.setCircle(15);
 
       this.rectangle0.body.setAllowGravity(false);
       this.rectangle0.body.immovable = true;
-      this.updateBlocks()
-      this.time.delayedCall(1500, () => {
-        if (!this.ready && this.rectangle0) {
-          Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => new Debris(this, this.rectangle0.x, this.rectangle0.y, 0xb06f00))
-          this.rectangle0.destroy(); 
-        }
-      }, null, this);
       this.lines.add(this.rectangle0);
-      this.time.delayedCall(1500, () => { this.ready = true;}, null, this)
     }
+
     pickRandomMessage () {
       return Phaser.Math.RND.pick(["F* YEAH!", "YUSS!", "YES!!", "COME ON!!"])
     }
+
     gotcha () {
       this.playAudio("gotcha")
       this.basket.anims.play("basket", true);
@@ -238,8 +292,9 @@ export default class Game extends Phaser.Scene {
 
     finishScene () {
       if (this.number < 1) {
+        this.game.sound.stopAll();
         this.number++;
-        this.scene.start("game", {number: this.number});
+        this.scene.start("transition", {number: this.number});
       } else {        
         this.game.sound.stopAll();
         this.finished = true;
@@ -247,26 +302,26 @@ export default class Game extends Phaser.Scene {
 
         const minutes= parseInt(totalTime/60)
         const time = String(minutes).padStart(2, '0') + "m " + String(parseInt(totalTime) % 60).padStart(2, '0') + "s";
-        this.text3 = this.add.bitmapText(this.center_width, this.center_height + 50, "daydream", "BLOCKS: " + this.registry.get("blocks"), 45).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
-        this.text3 = this.add.bitmapText(this.center_width, this.center_height + 100, "daydream", "TIME: " + time, 35).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 7, 0x222222, 0.9);
+        this.text3 = this.add.bitmapText(this.center_width, this.center_height + 50, "daydream", "HITS: " + this.registry.get("hits"), 45).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
         this.text4 = this.add.bitmapText(this.center_width, this.center_height - 50, "daydream", "CONGRATULATIONS!", 35).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 5, 0x222222, 0.9);
         this.time.delayedCall(4000, () => {
           this.text3.destroy()
           this.text4.destroy()
-          this.scene.start("splash");
+          this.scene.start("outro");
         });
       }
      }
 
-    updateBlocks () {
-      let blocks = +this.registry.get("blocks");
-      blocks++;
-      this.registry.set("blocks", blocks)
+    updateHits () {
+      let hits = +this.registry.get("hits");
+      hits++;
+      this.registry.set("hits", hits)
+      this.textHits.setText("HITS: " + this.registry.get("hits"))
     }
 
     death() {
       this.cameras.main.shake(100);
-      this.textBOO = this.add.bitmapText(this.center_width, this.center_height, "daydream", "FAIL", 80).setTint(0xb95e00).setOrigin(0.5)
+      this.textBOO = this.add.bitmapText(this.center_width, this.center_height, "daydream", "FAIL", 80).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
 
       this.ball.destroy()
       this.time.delayedCall(1000, () => {
