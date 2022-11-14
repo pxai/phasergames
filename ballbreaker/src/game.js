@@ -44,7 +44,7 @@ export default class Game extends Phaser.Scene {
        this.physics.world.on('worldbounds', this.onWorldBounds.bind(this));
        this.ready = true;
        //this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this); // TODO REMOVE
-       this.playAudio("start")
+       this.playAudio("start", 0.5)
     }
 
     addSky() {
@@ -218,8 +218,8 @@ export default class Game extends Phaser.Scene {
         };
       }
 
-      playAudio(key) {
-        this.audios[key].play();
+      playAudio(key, volume = 1) {
+        this.audios[key].play({volume});
       }
 
       playMusic (theme="theme") {

@@ -83,8 +83,9 @@ export default class Game extends Phaser.Scene {
     addBall () {
       const delay = 0; this.number === 1 ? 3000 : 0;
       const { x, y } = this.playerPosition;
+      const offset = Phaser.Math.Between(-64, 64)
       this.time.delayedCall(delay, () => {
-        this.ball = new Ball(this, x, y, 1);
+        this.ball = new Ball(this, x + offset, y, 1);
         this.physics.add.collider(this.ball, this.lines, this.hitLine, ()=>{
           return true;
         }, this);
