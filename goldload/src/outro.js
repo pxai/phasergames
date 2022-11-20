@@ -145,7 +145,7 @@ export default class Outro extends Phaser.Scene {
         this.keyboard = {};
         let stepY = 0;
         let stepX = 64;
-        let x = -32;
+        let x = 0;
         let y = 0;
        // this.add.rectangle(250, 740, 500, 200, 0x4d4d4d).setOrigin(0.5);
         alphabet.split("").forEach((letter, i) => {

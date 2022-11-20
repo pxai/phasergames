@@ -33,7 +33,7 @@ export default class Game extends Phaser.Scene {
       this.center_height = this.height / 2;
       this.trailLayer = this.add.layer();
       this.cameras.main.setBackgroundColor(0x000000);
-      console.log("Added scene number: ", this.number)
+
       this.addMap();
       this.showTexts();
       this.addPlayer();
@@ -59,7 +59,8 @@ export default class Game extends Phaser.Scene {
 
     addHealth () {
       this.emptyHealth = null;
-      this.healthBar = new HealthBar(this, this.center_width, 32, 20).setScrollFactor(0).setOrigin(0.5)
+      const seconds = 20 * (this.number + 1)
+      this.healthBar = new HealthBar(this, this.center_width, 32, seconds).setScrollFactor(0).setOrigin(0.5)
     }
 
     addLight() {
@@ -133,7 +134,7 @@ export default class Game extends Phaser.Scene {
 
     showTexts() {
       this.texts.forEach(text => {
-       let help = this.add.bitmapText(text.x, text.y, "pixelFont", text.type, 30).setOrigin(0).setTint(0x0eb7b7).setDropShadow(1, 2, 0xffffff, 0.7);
+       let help = this.add.bitmapText(text.x, text.y, "pixelFont", text.type, 30).setOrigin(0.5).setTint(0x0eb7b7).setDropShadow(1, 2, 0xffffff, 0.7);
        this.tweens.add({
          targets: help,
          duration: 10000,
@@ -272,7 +273,7 @@ export default class Game extends Phaser.Scene {
     }
 
     pickGold (player, gold) {
-      console.log("Gold pick: ", gold.pickable, gold)
+
       if (!gold.pickable) return
       gold.pick();
       gold.destroy();
@@ -293,7 +294,7 @@ export default class Game extends Phaser.Scene {
     }
 
     exitScene(player, platform) {
-      console.log("hit exit")
+
       this.finishScene()
     }
 
@@ -361,6 +362,7 @@ export default class Game extends Phaser.Scene {
     }
 
     gameOver () {
+      this.player.dead = true;
       const x = this.cameras.main.worldView.centerX;
       const y = this.cameras.main.worldView.centerY;
       this.add.bitmapText(x, y, "pixelFont", "YOU DIED!", 60).setOrigin(0.5).setTint(0x0eb7b7).setDropShadow(1, 2, 0xffffff, 0.7);
@@ -397,7 +399,7 @@ export default class Game extends Phaser.Scene {
       const gold = +this.registry.get("golds");
       const totalGolds = +this.registry.get("totalGolds");
       this.registry.set("totalGolds", gold + totalGolds)
-      if (this.number === 0) {
+      if (this.number === 3) {
         this.game.sound.stopAll();
         this.scene.start("outro", {next: "underwater", name: "STAGE", number: this.number + 1});
       } else {

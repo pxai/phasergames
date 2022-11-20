@@ -42,7 +42,6 @@ export default class Transition extends Phaser.Scene {
             this.add.bitmapText(x, y - 32, "pixelFont", "Stage " + (i+1), 10).setOrigin(0.5).setDropShadow(0, 3, 0x222222, 0.9);
             this.add.sprite(x, y, "water_volcano", index).setScale(1.2)
             if (i < 3) {
-                console.log("added: ", i)
                 this.lines.add(this.add.rectangle(x, y, 160, 10, 0x0eb7b7).setOrigin(0, 0.5))  
             }
           
@@ -77,6 +76,7 @@ export default class Transition extends Phaser.Scene {
     }
 
     loadNext () {
+        this.game.sound.stopAll();
         this.scene.start("game", { name: this.name, number: this.number });
     }
 }

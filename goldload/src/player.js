@@ -7,7 +7,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.scene = scene;
         this.name = name;
         this.setOrigin(0.5);
-        this.setScale(0.7)
+        this.setScale(1)
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.body.setAllowGravity(true);
@@ -22,7 +22,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.isHit = false;
         this.latestX = 0;
         this.latestY = 0;
-        
+        this.dead = false;
         this.init();
         this.setKeys()
     }
@@ -75,27 +75,26 @@ class Player extends Phaser.GameObjects.Sprite {
         this.moving = true;
         this.anims.play(this.name+"move", true);
         
-        this.setScale(0.5, 1)
+        this.setScale(0.9, 1)
         this.scene.playBubble();
         
         Array(Phaser.Math.Between(6, 10)).fill(0).forEach(i => {
             this.scene.trailLayer.add(new Bubble(this.scene, this.x + (Phaser.Math.Between(-10, 10)) , this.y + (Phaser.Math.Between(-10, 10)),  50, 1, 600, 0x0099dc))
         })
-        this.scene.physics.moveTo(this, position.x, position.y, this.defaultVelocity / distance);
+        const golds = +this.scene.registry.get("golds") || 1;
+        const velocity =  (golds > 20) ? 50 : this.defaultVelocity - (golds * 10)
+        this.scene.physics.moveTo(this, position.x, position.y, velocity);
     }
 
     dash() {
-        console.log("DASH: ", this.latestX, this.latestY, this.dx, this.dy, ((Math.abs(this.dy) + Math.abs(this.dx)) % 200))
-       // const point = new Phaser.Geom.Point(this.latestX, this.latestY);
+        // const point = new Phaser.Geom.Point(this.latestX, this.latestY);
         //const distance = 1 //Phaser.Math.Distance.BetweenPoints(this, point) / 100;
         this.anims.play(this.name+"move", true);
-        this.setScale(0.5, 1)
+        this.setScale(0.8, 1)
         this.moving = true;
-        console.log("Previous health: " + this.health, (Math.round((Math.abs(this.dy)/50 + Math.abs(this.dx)/50))));
-        this.health = this.health - 5 - (Math.round((Math.abs(this.dy)/50 + Math.abs(this.dx)/50)));
-        
+
         this.scene.playBubble();
-        console.log("Next health: " + this.health)
+
         this.scene.updateHealth(this.health)
         Array(Phaser.Math.Between(6, 10)).fill(0).forEach(i => {
             this.scene.trailLayer.add(new Bubble(this.scene, this.x + (Phaser.Math.Between(-10, 10)) , this.y + (Phaser.Math.Between(-10, 10)),  50, 1, 600, 0x0099dc))
@@ -121,6 +120,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.scene.updateGolds(-1)
         this.scene.golds.add(gold)
         gold.body.setVelocityY(200)
+        this.dash();
     }
   
       removeAttractor (pointer) {
@@ -134,13 +134,13 @@ class Player extends Phaser.GameObjects.Sprite {
             targets: this,
             duration: 400,
             yoyo: true,
-            scaleY: {from: 1, to: 0.9},
+            scaleY: {from: 0.9, to: 1},
             repeat: -1
         })
     }
 
     update () {
-        if (!this.scene || this.health < 0) return;
+        if (!this.scene || this.health < 0 || this.dead) return;
         if (this.y < 0 && !this.scene.sceneIsOver) this.scene.sceneOver();
         if (Phaser.Math.Between(0, 6) > 4 && this.moving)
             this.scene.trailLayer.add(new Bubble(this.scene, this.x + (Phaser.Math.Between(-4, 4)) , this.y + (Phaser.Math.Between(-4, 4)),  50, 1, 600, 0x0099dc))
@@ -225,7 +225,7 @@ class Player extends Phaser.GameObjects.Sprite {
     animationComplete(animation, frame) {
         if (animation.key === this.name + "move") {
             this.moving = false;
-            this.setScale(0.7)
+            this.setScale(1)
             this.anims.play(this.name, true);
         }
     }
@@ -233,7 +233,7 @@ class Player extends Phaser.GameObjects.Sprite {
     animationUpdate(animation, frame, avocado) {
         // super.animationUpdate(animation, frame, avocado)
         if(animation.key === this.name + "move" && frame.index === 1) {
-            this.setScale(0.7)
+            this.setScale(1)
         }
     }
 }

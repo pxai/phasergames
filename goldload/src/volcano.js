@@ -56,7 +56,6 @@ export default class Volcano extends Phaser.GameObjects.Sprite {
 
     playSound() {
         const distance = Phaser.Math.Distance.BetweenPoints(this.scene.player, this);
-        console.log("Distance player: ", distance)
         if (distance < 300) {
             this.scene.playAudio("volcano", 0.6)
         }
