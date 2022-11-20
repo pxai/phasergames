@@ -1,6 +1,6 @@
 class HealthBar extends Phaser.GameObjects.Rectangle {
-    constructor (scene, x, y) {
-        super(scene, scene.player.x, scene.player.y + 200, scene.player.health * 5.8, 20, 0x0eb7b7);
+    constructor (scene, x, y, seconds = 20) {
+        super(scene, x, y, seconds * 20, 20, 0x0eb7b7)
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false)
@@ -8,13 +8,21 @@ class HealthBar extends Phaser.GameObjects.Rectangle {
 
         this.scene.events.on("update", this.update, this);
         this.scene = scene;
+        this.seconds = seconds;
+        this.scene.time.delayedCall(1000, () => {
+            this.timerStart();
+        }, null, this)
      }
 
-     update () {
-         if (this.scene && this.scene.player) {
-            this.x = this.scene.player.x
-            this.y = this.scene.cameras.main.worldView.y + 700
-         }
+     timerStart () {
+        if (this.seconds > 0)
+            this.scene.time.delayedCall(1000, () => {
+                this.seconds--; 
+                this.width = this.seconds * 20;
+                this.timerStart();
+            }, null, this)
+        else
+            this.scene.timerFinished();
      }
   
   }

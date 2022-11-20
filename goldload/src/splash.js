@@ -13,18 +13,19 @@ export default class Splash extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.generateBubble()
+        this.bubbleLayer = this.add.layer();
+       //this.generateBubble()
 
         this.cameras.main.setBackgroundColor(0x000000);
         this.showLogo();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
-
+        this.input.on('pointerdown', (pointer) => this.startGame(), this);
         //this.showPlayer();
     }
     update() {
-        if (Phaser.Math.Between(0, 5) > 4)
+        if (Phaser.Math.Between(0, 11) > 10)
             this.generateBubble();
     }
 
@@ -35,18 +36,18 @@ export default class Splash extends Phaser.Scene {
     }
 
     showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(1.2).setOrigin(0.5)
+        this.gameLogo1 = this.add.bitmapText(this.center_width, this.center_height - 250, "pixelFont", "GET RICH", 100).setTint(0x0eb7b7).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.gameLogo2 = this.add.bitmapText(this.center_width, this.center_height - 150, "pixelFont", "or", 100).setTint(0x0eb7b7).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.gameLogo3 = this.add.bitmapText(this.center_width, this.center_height - 50, "pixelFont", "DIE TRYING", 100).setTint(0x0eb7b7).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+
         this.tweens.add({
-            targets: this.gameLogo,
+            targets: [this.gameLogo1, this.gameLogo2, this.gameLogo3],
             duration: 1000,
-            x: {
-              from: this.center_width,
-              to: this.center_width
-            },
-            y: {
-                from: -200,
-                to: 200
-              },
+            x: "+=10",
+            y: "-=10",
+            yoyo: true,
+            duration: 2000,
+            repeat: -1
           })
     }
 
@@ -69,16 +70,15 @@ export default class Splash extends Phaser.Scene {
     }
 
     generateBubble () {
-        new MovingBubble(this, Phaser.Math.Between(0, this.width), 800, 100, -1, 20000)
+        this.bubbleLayer.add(new MovingBubble(this, Phaser.Math.Between(0, this.width), 800, 100, -1, 20000))
     }
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "MOUSE TO MOVE", 30).setOrigin(0.5).setTint(0x0eb7b7).setDropShadow(1, 2, 0xffffff, 0.7);
-        this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: DASH", 30).setOrigin(0.5).setTint(0x0eb7b7).setDropShadow(1, 2, 0xffffff, 0.7);
-        this.add.bitmapText(this.center_width, 550, "pixelFont", "RIGHT CLICK: SHOOT", 30).setOrigin(0.5).setTint(0x0eb7b7).setDropShadow(1, 2, 0xffffff, 0.7);
+        this.add.bitmapText(this.center_width, 480, "pixelFont", "MOUSE TO MOVE", 30).setOrigin(0.5).setTint(0x0eb7b7).setDropShadow(1, 2, 0xffffff, 0.7);
+       this.add.bitmapText(this.center_width, 550, "pixelFont", "RIGHT CLICK: DROP GOLD", 30).setOrigin(0.5).setTint(0x0eb7b7).setDropShadow(1, 2, 0xffffff, 0.7);
         this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
         this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5).setTint(0x0eb7b7).setDropShadow(1, 2, 0xffffff, 0.7);
-        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Click here/Press SPACE to start", 30).setOrigin(0.5).setTint(0x0eb7b7).setDropShadow(1, 2, 0xffffff, 0.7);
+        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Click to start", 30).setOrigin(0.5).setTint(0x0eb7b7).setDropShadow(1, 2, 0xffffff, 0.7);
         this.tweens.add({
             targets: this.space,
             duration: 300,

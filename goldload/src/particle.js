@@ -240,6 +240,7 @@ export class Gold extends Phaser.GameObjects.Sprite {
         this.body.setAllowGravity(gravity);
         this.body.immovable = true;
         this.pickable = false;
+        this.light = this.scene.lights.addLight(this.x, this.y, 80).setColor(0xb85d08).setIntensity(1.0);
         this.init();
     }
 
@@ -258,6 +259,10 @@ export class Gold extends Phaser.GameObjects.Sprite {
     update() {
         if (this.active && Phaser.Math.Between(0,10) > 8)
             new Glitter(this.scene, Phaser.Math.Between(this.x-18, this.x+18), Phaser.Math.Between(this.y - 18, this.y + 18), 3,5)
+    }
+
+    pick () {
+        this.scene.lights.removeLight(this.light);
     }
 }
 

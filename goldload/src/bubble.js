@@ -29,7 +29,7 @@ export class Bubble extends Phaser.GameObjects.Sprite {
 }
 
 export class MovingBubble extends Bubble {
-    constructor (scene, x, y, velocity = 1, direction, duration = 600) {
+    constructor (scene, x, y, velocity = 1, direction, duration = 2000) {
         super(scene, x, y, velocity, direction, duration);
     }
 

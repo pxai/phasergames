@@ -141,6 +141,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
     update () {
         if (!this.scene || this.health < 0) return;
+        if (this.y < 0 && !this.scene.sceneIsOver) this.scene.sceneOver();
         if (Phaser.Math.Between(0, 6) > 4 && this.moving)
             this.scene.trailLayer.add(new Bubble(this.scene, this.x + (Phaser.Math.Between(-4, 4)) , this.y + (Phaser.Math.Between(-4, 4)),  50, 1, 600, 0x0099dc))
 
@@ -157,6 +158,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.getSpeeds();
         this.scene.playerLight.x = this.x;
         this.scene.playerLight.y = this.y;
+
     }
 
     getSpeeds () {
@@ -216,23 +218,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.isHit = true;
         this.scene.cameras.main.shake(100);
         this.scene.bubbleExplosion(this.x, this.y)
-        this.health--;
-        this.showPoints("-1", 0xcb0000);
-        this.scene.updateHealth(this.health)
-
-        if (this.health < 0) {
-            this.scene.gameOver();
-        } else {
-            this.scene.tweens.add({
-                targets: this,
-                duration: 200,
-                alpha: {from: 0, to: 1},
-                repeat: 5,
-                onComplete: () => {
-                    this.isHit = false
-                }
-            });
-        }
+        this.scene.gameOver();
     }
 
 

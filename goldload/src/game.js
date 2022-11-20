@@ -39,24 +39,27 @@ export default class Game extends Phaser.Scene {
       this.addPlayer();
       this.addLight();
       this.addScore();
-
       this.loadAudios(); 
+      this.sceneIsOver = false;
+      this.playMusic();
     }
 
     addScore() {
+      this.registry.set("golds", 0);
       this.scoreEmber = this.add.bitmapText(75, 20, "pixelFont", "x0", 15).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
-      this.scoreEmberLogo = this.add.sprite(50, 25, "ember").setOrigin(0.5).setScrollFactor(0)
-      const emberAnimation = this.anims.create({
-        key: "emberscore",
-        frames: this.anims.generateFrameNumbers("ember", ),
-        frameRate: 8,
-      });
-      this.scoreEmberLogo.play({ key: "emberscore", repeat: -1 });
+      this.scoreEmberLogo = this.add.sprite(50, 25, "gold0").setOrigin(0.5).setScrollFactor(0)
+      this.tweens.add({
+        targets: this.scoreEmberLogo,
+        duration: 300,
+        repeat: -1,
+        scale: {from: 0.95, to: 1},
+        yoyo: true
+    })
     }
 
     addHealth () {
       this.emptyHealth = null;
-      this.healthBar = new HealthBar(this, 0, 0).setOrigin(0.5)
+      this.healthBar = new HealthBar(this, this.center_width, 32, 20).setScrollFactor(0).setOrigin(0.5)
     }
 
     addLight() {
@@ -265,14 +268,15 @@ export default class Game extends Phaser.Scene {
     hitPlatform(player, platform) {
       if (!this.player.isHit && !this.player.body.blocked.down) {
         this.playAudio("bump", 0.6);
-        this.player.hit();
       }
     }
 
     pickGold (player, gold) {
       console.log("Gold pick: ", gold.pickable, gold)
       if (!gold.pickable) return
+      gold.pick();
       gold.destroy();
+
       this.updateGolds();
      // this.player.pickEmber();
       this.bubbleExplosion(player)
@@ -357,11 +361,16 @@ export default class Game extends Phaser.Scene {
     }
 
     gameOver () {
+      const x = this.cameras.main.worldView.centerX;
+      const y = this.cameras.main.worldView.centerY;
+      this.add.bitmapText(x, y, "pixelFont", "YOU DIED!", 60).setOrigin(0.5).setTint(0x0eb7b7).setDropShadow(1, 2, 0xffffff, 0.7);
       this.playAudio("death")
       //this.sky.stop();
       //this.theme.stop();
+      this.game.sound.stopAll();
+      this.time.delayedCall(2000, () => { 
         this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number});
- 
+      }, null, this)
     }
     skip () {
       if (this.number === 0) {
@@ -369,8 +378,26 @@ export default class Game extends Phaser.Scene {
       }
     }
 
+    timerFinished () {
+      if (!this.sceneIsOver)
+        this.gameOver()
+    }
+
+    sceneOver() {
+      this.sceneIsOver = true;
+      this.player.body.enabled = false;
+      this.playAudio("win");
+      const x = this.cameras.main.worldView.centerX;
+      const y = this.cameras.main.worldView.centerY;
+      this.add.bitmapText(x, y, "pixelFont", "STAGE CLEAR!!", 60).setOrigin(0.5).setTint(0x0eb7b7).setDropShadow(1, 2, 0xffffff, 0.7);
+      this.time.delayedCall(2000, () => { this.finishScene()}, null, this)
+    }
+
     finishScene () {
-      if (this.number === 1) {
+      const gold = +this.registry.get("golds");
+      const totalGolds = +this.registry.get("totalGolds");
+      this.registry.set("totalGolds", gold + totalGolds)
+      if (this.number === 0) {
         this.game.sound.stopAll();
         this.scene.start("outro", {next: "underwater", name: "STAGE", number: this.number + 1});
       } else {
