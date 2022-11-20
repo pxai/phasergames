@@ -10,9 +10,9 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
-        this.body.setSize(50, 50)
+        this.body.setSize(45, 45)
         //this.body.setDrag(300);
-        this.velocity = 150;
+        this.velocity = 200;
         this.dead = false;
         this.init();
         this.shells = 0;
@@ -105,6 +105,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
         if (this.W.isDown || this.cursor.up.isDown) {
             this.body.setVelocityY(-this.velocity);
+            this.body.setVelocityX(0);
             this.lastDirection = 0;
             this.anims.play("walkup", true);
         } else if (this.D.isDown || this.cursor.right.isDown) {
@@ -113,16 +114,18 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.flipX = (this.body.velocity.x < 0);
             this.anims.play("walkside", true);
             this.body.setVelocityX(this.velocity);
+            this.body.setVelocityY(0);
             this.lastDirection = 1;
         } else if (this.A.isDown || this.cursor.left.isDown) {
             this.right = false;
             this.flipX = (this.body.velocity.x < 0);
             this.anims.play("walkside", true);
             this.body.setVelocityX(-this.velocity);  
+            this.body.setVelocityY(0);
             this.lastDirection = 3;
         } else if (this.S.isDown || this.cursor.down.isDown)  {
             this.body.setVelocityY(this.velocity);
-
+            this.body.setVelocityX(0);
             this.anims.play("walkdown", true);
             this.lastDirection = 2;
         } else {
@@ -152,6 +155,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
             {x: -1, y: 0},
         ][this.lastDirection];
         this.anims.play("shoot" + this.lastDirection, true);
+
+        this.scene.cameras.main.shake(20);
         Array(Phaser.Math.Between(6, 10)).fill(0).forEach( i => { this.scene.smokeLayer.add(new ShotSmoke(this.scene,  this.x + (x * 64), this.y + (y * 64), x, y))});
         this.scene.shots.add(new Shot(this.scene, this.x + (x * 64), this.y + (y * 64), x, y))
         this.shells--;

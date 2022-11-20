@@ -22,6 +22,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.rate = 0.2;
         this.previousRate = 0.2;
         this.oxygen = oxygen;
+        this.locked = false;
     }
 
     init () {
@@ -35,38 +36,43 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D); 
-        
+
     }
 
     update(time, delta) {
         if (this.dead) return;
+        if (this.locked) return;
         this.stepDelta += delta;
         this.moveDelta += delta;
 
         if ((Phaser.Input.Keyboard.JustDown(this.W) || Phaser.Input.Keyboard.JustDown(this.cursor.up)) && this.canMoveUp()) {
             this.moveDelta = 0;
             const {x, y} = this;
-            this.scene.tweens.add({ targets: this, y: "-=64", duration: 200})
+            this.locked = true;
+            this.scene.tweens.add({ targets: this, y: "-=64", duration: 200, onComplete: () => { this.locked= false; }})
             //this.y -= 64;
             this.step(x, y);
         } else if ((Phaser.Input.Keyboard.JustDown(this.D) || Phaser.Input.Keyboard.JustDown(this.cursor.right)) && this.canMoveRight()) {
             this.moveDelta = 0;
             const {x, y} = this;
-            this.scene.tweens.add({ targets: this, x: "+=64", duration: 200})
+            this.locked = true;
+            this.scene.tweens.add({ targets: this, x: "+=64", duration: 200, onComplete: () => { this.locked= false; }})
             //this.x += 64;
 
             this.step(x, y);
         } else if ((Phaser.Input.Keyboard.JustDown(this.A) || Phaser.Input.Keyboard.JustDown(this.cursor.left)) && this.canMoveLeft()) {
             this.moveDelta = 0;
             const {x, y} = this;
-            this.scene.tweens.add({ targets: this, x: "-=64", duration: 200})
+            this.locked = true;
+            this.scene.tweens.add({ targets: this, x: "-=64", duration: 200, onComplete: () => { this.locked= false; }})
             //this.x -= 64;
 
             this.step(x, y);
         } else if ((Phaser.Input.Keyboard.JustDown(this.S) || Phaser.Input.Keyboard.JustDown(this.cursor.down)) && this.canMoveDown())  {            
             this.moveDelta = 0;
             const {x, y} = this;
-            this.scene.tweens.add({ targets: this, y: "+=64", duration: 200})
+            this.locked = true;
+            this.scene.tweens.add({ targets: this, y: "+=64", duration: 200, onComplete: () => { this.locked= false; }})
             //this.y += 64;
             this.step(x, y);
         }
@@ -109,7 +115,6 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
     adaptBreath() {
         if (this.stepDelta > 2000) {
-            console.log("Steps: ", this.stepDelta, this.steps, this.rate)
             if (this.steps > 2) {
                 this.previousRate = this.rate;
                 this.rate = this.steps < 11 ? this.steps / 10: 1
@@ -134,7 +139,6 @@ export default class Player extends Phaser.GameObjects.Sprite {
         } else {
             this.oxygen -= waste;
         }
-        console.log("waste: ", waste, " Oxygen: ", this.oxygen)
         this.scene.updateOxygen()
     }
 

@@ -38,8 +38,6 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
           this.flipX = this.direction < 0;
           this.on('animationcomplete', this.animationComplete, this);
 
-          console.log("Created drone")
-
           this.scene.time.delayedCall(Phaser.Math.Between(3000, 5000), () => {
             this.scene.playAudio("kill");
             this.launchMove()
@@ -75,7 +73,7 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
 
   moveIt (path) {
       if (path === null) {
-          console.log("Path was not found.");
+        console.log("hello sneaky pete")
       } else {
           let tweens = [];
           this.i = 0;

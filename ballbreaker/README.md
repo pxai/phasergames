@@ -10,4 +10,9 @@ Music: ETC
 
 back: 0x006fb1
 
-Splash: https://opengameart.org/content/insert-coin
+Splash: 
+
+https://github.com/sporadic-labs/tile-extruder#readme
+Music
+https://opengameart.org/content/insert-coin
+https://opengameart.org/content/8-bit-chiptune-lone-fighter

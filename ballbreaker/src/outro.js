@@ -1,4 +1,6 @@
-//import {readData, saveData } from "./store";
+import {readData, saveData } from "./store";
+import Sky from "./sky";
+import Key from "./key";
 
 export default class Outro extends Phaser.Scene {
     constructor () {
@@ -21,13 +23,17 @@ export default class Outro extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
         this.cameras.main.setBackgroundColor(0x006fb1)
+        this.cloudLayer = this.add.layer();    
         await this.saveScore();
-        await this.loadScores();
-        this.add.bitmapText(this.center_width,70, "daydream", "SCOREBOARD", 120).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        //
+        this.add.bitmapText(this.center_width,70, "daydream", "SCOREBOARD", 60).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.restartText = this.add.bitmapText(this.center_width, 760, "daydream", "Click HERE to Restart", 20).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.restartText.setInteractive();
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
-        this.space = this.add.bitmapText(this.center_width, 780, "draydream", "Press SPACE to start", 40).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.restartText.on('pointerdown', (pointer) => this.loadNext(), this);
+        this.addSky();
         this.tweens.add({
-            targets: this.space,
+            targets: this.restartText,
             duration: 300,
             alpha: {from: 0, to: 1},
             repeat: -1,
@@ -35,31 +41,53 @@ export default class Outro extends Phaser.Scene {
         });
     }
 
+    addSky() {
+        this.sky = new Sky(this);
+    }
+
     update () {
     }
 
     async saveScore () {
         this.currentId = 0;
-        const notBigger = await this.notBigger(+this.registry.get("score"))
-        if (notBigger) return;
-        const collection = document.getElementsByClassName("user_name");
+        const hits = +this.registry.get("hits");
+        if (hits === 0) return;
+        const notBigger = await this.notBigger(hits)
+        if (notBigger) {
+            await this.loadScores();
+            return;
+        }
 
-        this.userName = 'ANONYMOUS';
+        this.showPrompt();
+    }
+
+    showPrompt () {
+        this.prompt = this.add.layer();
+        this.userName = "";
+        this.userNameText = this.add.bitmapText(this.center_width, this.center_height - 150, "daydream", this.userName.padEnd(9, '-'), 50).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.prompt.add(this.userNameText)
+        this.addLetters()
+    }
+
+    async saveScoreWithName () {
+        this.prompt.destroy();
         try {
-            this.userName = collection[0].innerHTML || 'ANONYMOUS';
+            this.userName = this.userName.trim() || 'ANONYMOUS';
         } catch (er) {
 
         }
 
-        this.currentId = await saveData(+this.registry.get("score"), this.userName)
+        this.currentId = await saveData(+this.registry.get("hits"), this.userName)
+        await this.loadScores();
     }
 
     async notBigger (score) {
         try {
             const scores = await readData();
-            const makeWayScores = scores.filter(score => score.game === "BallBreaker").sort((a, b) => b.score - a.score).splice(0, 10);
+            const ballBreakerScores = scores.filter(score => score.game === "BallBreaker")
+            ballBreakerScores.sort((a, b) => a.score - b.score).splice(0, 10);
 
-            return makeWayScores.length >= 10 && makeWayScores.every(s => s.score > score)
+            return ballBreakerScores.length >= 10 && ballBreakerScores.every(s => s.score < score)
         } catch (err) {
             console.log("Error checking date: ", err)
         }
@@ -68,13 +96,15 @@ export default class Outro extends Phaser.Scene {
 
     async loadScores () {
         const scores = await readData();
-        const makeWayScores = scores.filter(score => score.game === "BallBreaker").sort((a, b) => b.score - a.score);
+        const ballBreakerScores = scores.filter(score => score.game === "BallBreaker")
+        ballBreakerScores.sort((a, b) => a.score - b.score);
+
         let amongFirst10 = false;
 
-        makeWayScores.splice(0, 10).forEach( (score, i) => {
-            const text0 = this.add.bitmapText(this.center_width - 350, 170 + (i * 60), "race", `${i+1}`, 60).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
-            const text1 = this.add.bitmapText(this.center_width - 150, 170 + (i * 60), "race", `${score.player.substring(0, 10).padEnd(11, ' ')}`, 60).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
-            const text2 = this.add.bitmapText(this.center_width + 200, 170 + (i * 60), "race", `${String(score.score).padStart(10, '0')}`, 60).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
+        ballBreakerScores.splice(0, 10).forEach( (score, i) => {
+            const text0 = this.add.bitmapText(this.center_width - 350, 170 + (i * 60), "daydream", `${i+1}`, 30).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
+            const text1 = this.add.bitmapText(this.center_width - 150, 170 + (i * 60), "daydream", `${score.player.substring(0, 10).padEnd(11, ' ')}`, 30).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
+            const text2 = this.add.bitmapText(this.center_width + 200, 170 + (i * 60), "daydream", `${String(score.score).padStart(10, '0')}`, 30).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
             
             if (score.id === this.currentId) {
 
@@ -91,7 +121,50 @@ export default class Outro extends Phaser.Scene {
     }
 
     loadNext () {
-        this.registry.set("score", 0);
-        this.scene.start("game");
+        this.game.sound.stopAll();
+        this.registry.set("hits", 0);
+        this.scene.start("splash");
     }
+
+    clickedLetter(letter) {
+        console.log(letter, this.userName)
+        if (this.userName.length < 9) {
+            this.userName += letter;
+            this.userNameText.setText(this.userName.padEnd(9, '-'));
+        }
+    }
+
+    deleteName () {
+        this.userName = "";
+        this.userNameText.setText(this.userName.padEnd(9, '-'));
+    }
+
+    addLetters () {
+        const alphabet = "qwertyuiop-asdfghjklñ-zxcvbnm";
+        this.keyboard = {};
+        let stepY = 0;
+        let stepX = 64;
+        let x = -32;
+        let y = 0;
+       // this.add.rectangle(250, 740, 500, 200, 0x4d4d4d).setOrigin(0.5);
+        alphabet.split("").forEach((letter, i) => {
+          const isDash = letter === "-";
+          x = stepX ;
+          stepY += isDash ? 64 : 0 
+          stepX = isDash ? 64 : stepX + 64;
+          y = 440 + stepY;
+  
+          if (isDash) return;
+  
+          const key = new Key(this, x, y, letter, this.clickedLetter.bind(this))
+          this.prompt.add(key)
+          this.keyboard[letter] = key;
+        })
+  
+        this.keyboard["ok"] = new Key(this, x + 96, y, "ok", this.saveScoreWithName.bind(this));
+        this.prompt.add(this.keyboard["ok"])
+        this.keyboard["--"] = new Key(this, x + 192, y, "--", this.deleteName.bind(this));
+        this.prompt.add(this.keyboard["--"])
+        this.helpText = this.add.bitmapText(this.center_width, 630, "daydream", "", 30).setTint(0x4d4d4d).setOrigin(0.5)
+      }
 }

@@ -114,7 +114,7 @@ export default class Transition extends Phaser.Scene {
             repeat: -1
           });
         this.wave.anims.play("wave", true)
-        this.recording = this.sound.add(`diary${this.number - 1}`)
+        this.recording = this.sound.add(`diary${this.number}`)
         this.recording.on('complete', function () {
             //log("Dale fin")
             this.wave.destroy();
@@ -149,7 +149,6 @@ export default class Transition extends Phaser.Scene {
 
     loadNext () {
         this.sound.add("blip").play();
-        console.log('Start scene: ', this.number);
         
         this.sound.stopAll();
         this.scene.start("game", {  number: this.number });
