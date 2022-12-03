@@ -277,7 +277,7 @@ export default class Game extends Phaser.Scene {
       if (!gold.pickable) return
       gold.pick();
       gold.destroy();
-
+      player.showPoints("+1")
       this.updateGolds();
      // this.player.pickEmber();
       this.bubbleExplosion(player)
@@ -361,16 +361,32 @@ export default class Game extends Phaser.Scene {
 
     }
 
+    hurryUp () {
+      const x = this.cameras.main.worldView.centerX;
+      const y = this.cameras.main.worldView.centerY;
+      const hurryText = this.add.bitmapText(x, y, "pixelFont", "Hurry UP", 40).setOrigin(0.5).setTint(0x0eb7b7).setDropShadow(1, 2, 0xffffff, 0.7);
+      this.tweens.add({
+        targets: hurryText,
+        duration: 100,
+        alpha: {from: 0, to: 1},
+        repeat: 10,
+        yoyo: true,
+        onComplete: () => {
+          hurryText.destroy();
+        }
+        
+    });
+    }
+
     gameOver () {
-      this.player.dead = true;
       const x = this.cameras.main.worldView.centerX;
       const y = this.cameras.main.worldView.centerY;
       this.add.bitmapText(x, y, "pixelFont", "YOU DIED!", 60).setOrigin(0.5).setTint(0x0eb7b7).setDropShadow(1, 2, 0xffffff, 0.7);
       this.playAudio("death")
       //this.sky.stop();
       //this.theme.stop();
-      this.game.sound.stopAll();
       this.time.delayedCall(2000, () => { 
+        this.game.sound.stopAll();
         this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number});
       }, null, this)
     }
@@ -381,13 +397,21 @@ export default class Game extends Phaser.Scene {
     }
 
     timerFinished () {
-      if (!this.sceneIsOver)
+      if (!this.sceneIsOver) {
+        this.playAudio("explosion")
+        this.player.hit()
+        new Explosion(this, this.player.x, this.player.y, 0.5)
         this.gameOver()
+      }
     }
 
     sceneOver() {
-      this.sceneIsOver = true;
+
+      this.player.dead = true;
+      this.player.body.stop();
       this.player.body.enabled = false;
+      this.sceneIsOver = true;
+
       this.playAudio("win");
       const x = this.cameras.main.worldView.centerX;
       const y = this.cameras.main.worldView.centerY;

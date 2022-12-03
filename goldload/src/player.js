@@ -95,7 +95,6 @@ class Player extends Phaser.GameObjects.Sprite {
 
         this.scene.playBubble();
 
-        this.scene.updateHealth(this.health)
         Array(Phaser.Math.Between(6, 10)).fill(0).forEach(i => {
             this.scene.trailLayer.add(new Bubble(this.scene, this.x + (Phaser.Math.Between(-10, 10)) , this.y + (Phaser.Math.Between(-10, 10)),  50, 1, 600, 0x0099dc))
         })
@@ -115,6 +114,7 @@ class Player extends Phaser.GameObjects.Sprite {
         const point = new Phaser.Geom.Point(position.x, position.y);
         this.scene.playBubble();
         this.scene.playAudio("fireball", 0.6)
+        this.showPoints("-1")
         const gold = new Gold(this.scene, this.x, this.y + 32, true) ;
         this.health -= 10;
         this.scene.updateGolds(-1)
@@ -216,8 +216,13 @@ class Player extends Phaser.GameObjects.Sprite {
 
     hit (score = 0) {
         this.isHit = true;
+        this.dead = true;
+        this.body.stop();
+        this.body.enabled = false;
         this.scene.cameras.main.shake(100);
         this.scene.bubbleExplosion(this.x, this.y)
+
+        this.setAlpha(0)
         this.scene.gameOver();
     }
 
