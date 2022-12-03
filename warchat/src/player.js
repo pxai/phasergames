@@ -1,20 +1,31 @@
 
 import { JumpSmoke, RockSmoke, Particle } from "./particle";
 
-class Player extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, side, health = 10, tnt = 1, velocity = 200, remote = false) {
-        super(scene, x, y, "raistlin")
-        this.setOrigin(0.5)
+class Player extends Phaser.GameObjects.Container {
+    constructor (scene, x, y, side, name, health = 10, tnt = 1, velocity = 200, remote = false) {
+        super(scene, x, y)
+
         this.scene = scene;
         this.side = side;
+        this.name = name;
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.cursor = this.scene.input.keyboard.createCursorKeys();
         this.down = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+
+        this.sprite = this.scene.add.sprite(0, 0 , "raistlin");
+        this.sprite.setOrigin(0)
+        this.add(this.sprite)
+
+        this.nameText = this.scene.add.bitmapText(16, 40, "arcade", this.name, 10).setOrigin(0.5).setTint(0xffffff).setDropShadow(1, 1, 0x75b947, 0.7)
+        this.add(this.nameText);
+
         this.right = true;
+        this.sprite.flipX = side === "right";
         this.body.setAllowGravity(false);
         this.body.setSize(20, 30)
         this.init();
+        
         this.jumping = false;
         this.flashing = false;
         this.falling = false;
@@ -39,7 +50,6 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     init () {
-        this.scene.chat.say("Hello I'm the player")
         this.scene.anims.create({
             key: "startidle",
             frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 1, end: 2 }),
@@ -85,11 +95,11 @@ class Player extends Phaser.GameObjects.Sprite {
             frameRate: 5,
         });
 
-        this.anims.play("startidle", true);
+        this.sprite.anims.play("startidle", true);
 
-        this.on('animationcomplete', this.animationComplete, this);
+        this.sprite.on('animationcomplete', this.animationComplete, this);
 
-        this.on('animationupdate', this.animationUpdate, this);
+        this.sprite.on('animationupdate', this.animationUpdate, this);
     }    
 
     update () {
@@ -171,11 +181,11 @@ class Player extends Phaser.GameObjects.Sprite {
 
     animationComplete (animation, frame) {
         if (animation.key === "playerground") {
-            this.anims.play("playeridle", true)
+            this.sprite.anims.play("playeridle", true)
         }
 
         if (animation.key === "playerspell") {
-            this.anims.play("playeridle", true)
+            this.sprite.anims.play("playeridle", true)
             this.casting = false;
         }
     }

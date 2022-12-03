@@ -1,5 +1,6 @@
 import Player from './player';
 import Chat from './chat';
+import Fireball from './fireball';
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -53,11 +54,13 @@ export default class Game extends Phaser.Scene {
   
       this.platform.setCollisionByExclusion([-1]);
 
+      this.allPlayers = {};
       this.playersLeft = this.add.group();
       this.playersRight = this.add.group();
       this.foesGroup = this.add.group();
       this.skeletons = this.add.group();
       this.fireballs = this.add.group();
+      this.trailLayer = this.add.layer();
       this.arrows = this.add.group();
       this.texts = [];
 
@@ -99,23 +102,42 @@ export default class Game extends Phaser.Scene {
       const y = Phaser.Math.Between(64, this.height - 196);
       let player = null;
       let side = '';
-      if (this.playersLeft.length >= this.playersRight.length) {
+      if (this.playersLeft.getLength() >= this.playersRight.getLength()) {
         side = "right"
         const x = Phaser.Math.Between(this.width - 64, this.width - 196);
-        player = new Player(this, x, y, side)
+        player = new Player(this, x, y, side, name)
         this.playersRight.add(player)
       } else {
         side = "left"
         const x = Phaser.Math.Between(64, 196);
-        player = new Player(this, x, y, side)
+        player = new Player(this, x, y, side, name)
         this.playersLeft.add(player)
       }
+      this.allPlayers[name] = player;
       this.chat.say(`Player ${name} joins ${side} army!`)
       return player;
     }
 
     fireballHitPlayer (fireball, player) {
       console.log("Hit by fireball", fireball, player)
+    }
+
+    attack (playerName, x, y) {
+      if (this.isValidNumber(x) && this.isValidNumber(y)) {
+        const player = this.allPlayers[playerName]
+        console.log("Attack: ", playerName, player)
+        player.sprite.anims.play("playerspell", true);
+        const point = new Phaser.Geom.Point(+x, +y);
+        const fireball = new Fireball(this, player.x, player.y) ;
+        this.fireballs.add(fireball)
+        const distance = Phaser.Math.Distance.BetweenPoints(player, point) / 100;
+        // new Rune(this, x, y);
+        this.physics.moveTo(fireball, point.x, point.y, 300);
+      }
+    }
+
+    isValidNumber (number) {
+      return !isNaN(number) && number >= 0 && number < this.width;
     }
 
       loadAudios () {
