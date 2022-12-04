@@ -20,7 +20,7 @@
     "lint": "eslint src/**/*.js test/**/*.js --fix",
     "unit": "mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js",
     "publish": "npm run-script build && npm run-script itchio",
-    "itchio": "cd dist && rm -f assets/html/index.html && butler push . pello/ballbreaker:html --userversion 0.0.4 && cd .. && butler status pello/ballbreaker:html"
+    "itchio": "cd dist && rm -f assets/html/index.html && butler push . pello/needforsplit:html --userversion 0.0.4 && cd .. && butler status pello/needforsplit:html"
   },
   "dependencies": {
     "axios": "^1.1.3",

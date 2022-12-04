@@ -1,7 +1,6 @@
 import { Particle, Debris, Dust } from "./particle";
 import Coin from "./coin";
 import Player from "./player";
-import Sky from "./sky";
 import Exit from "./exit";
 
 export default class Game extends Phaser.Scene {
@@ -35,7 +34,6 @@ export default class Game extends Phaser.Scene {
       this.pointer = this.input.activePointer;
       this.trailLayer = this.add.layer();
 
-      this.addSky();
       this.addMap();
 
       this.addPlayer();
@@ -81,8 +79,9 @@ export default class Game extends Phaser.Scene {
     }
 
     addPlayer () {
+        const velocities = [200, 250, 300, 350]
         const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
-        this.player = new Player(this, playerPosition.x, playerPosition.y, 0);
+        this.player = new Player(this, playerPosition.x, playerPosition.y, 0, velocities[this.number]);
         this.players = this.add.group();
         this.players.add(this.player.partA)
         this.players.add(this.player.partB)
@@ -238,7 +237,7 @@ export default class Game extends Phaser.Scene {
       this.player.destroy();
       const x = this.cameras.main.worldView.centerX;
       const y = this.cameras.main.worldView.centerY;
-      this.textYAY = this.add.bitmapText(x, y, "demon", this.pickRandomMessage(), 80).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+      this.textYAY = this.add.bitmapText(x, y, "demon", this.pickRandomMessage(), 80).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
       this.time.delayedCall(2000, () => { this.finishScene();}, null, this);
     }
 
@@ -257,8 +256,8 @@ export default class Game extends Phaser.Scene {
 
         const x = this.cameras.main.worldView.centerX;
         const y = this.cameras.main.worldView.centerY;
-        this.text3 = this.add.bitmapText(x, y + 50, "demon", "Coins: " + this.registry.get("coins"), 45).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9).setScrollFactor(0);;
-        this.text4 = this.add.bitmapText(x, y - 50, "demon", "CONGRATULATIONS!", 35).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 5, 0x222222, 0.9).setScrollFactor(0);;
+        this.text3 = this.add.bitmapText(x, y + 50, "demon", "Coins: " + this.registry.get("coins"), 45).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9).setScrollFactor(0);;
+        this.text4 = this.add.bitmapText(x, y - 50, "demon", "CONGRATULATIONS!", 35).setOrigin(0.5).setDropShadow(0, 5, 0x222222, 0.9).setScrollFactor(0);;
         this.time.delayedCall(4000, () => {
           this.text3.destroy()
           this.text4.destroy()
@@ -277,7 +276,7 @@ export default class Game extends Phaser.Scene {
     death() {
       this.player.destroy()
       this.cameras.main.shake(100);
-      this.textBOO = this.add.bitmapText(this.center_width, this.center_height, "demon", "FAIL", 80).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+      this.textBOO = this.add.bitmapText(this.center_width, this.center_height, "demon", "FAIL", 80).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
 
       this.time.delayedCall(1000, () => {
         this.textBOO.destroy();

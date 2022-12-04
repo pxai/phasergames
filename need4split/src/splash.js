@@ -46,26 +46,14 @@ export default class Splash extends Phaser.Scene {
         if (!scores) return
         const ballBreakerScores = scores.filter(score => score.game === "Need4Split")
         
-        ballBreakerScores.sort((a, b) => a.score - b.score);
+        ballBreakerScores.sort((a, b) => b.score - a.score);
 
         let amongFirst10 = false;
-        this.add.bitmapText(this.center_width, 550, "demon", "SCOREBOARD", 40).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
-        ballBreakerScores.splice(0, 3).forEach( (score, i) => {
-            const text0 = this.add.bitmapText(this.center_width - 350, 620 + (i * 60), "demon", `${i+1}`, 30).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
-            const text1 = this.add.bitmapText(this.center_width - 150, 620 + (i * 60), "demon", `${score.player.substring(0, 10).padEnd(11, ' ')}`, 30).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
-            const text2 = this.add.bitmapText(this.center_width + 200, 620 + (i * 60), "demon", `${String(score.score).padStart(10, '0')}`, 30).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
-            
-            if (score.id === this.currentId) {
-
-                amongFirst10 = true;
-                this.tweens.add({
-                    targets: [text0, text1, text2],
-                    duration: 300,
-                    alpha: {from: 0, to: 1},
-                    repeat: -1,
-                    yoyo: true
-                })
-            }
+        this.scoreboard = this.add.bitmapText(this.center_width, 550, "demon", "SCOREBOARD", 40).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
+        ballBreakerScores.splice(0, 10).forEach( (score, i) => {
+            this.time.delayedCall(1000 + (1000 * i), () => {
+                this.scoreboard.setText(`${i+1} ${score.player.substring(0, 10).padEnd(11, ' ')} ${String(score.score).padStart(10, '0')}`)
+            })
         })
     }
 

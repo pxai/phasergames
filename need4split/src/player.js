@@ -1,5 +1,5 @@
 class Player {
-    constructor (scene, x, y, gravity = false) {
+    constructor (scene, x, y, gravity = false, velocity = 200) {
       this.scene = scene;
       this.partA = this.scene.add.sprite(x, y, "player")
 
@@ -8,6 +8,7 @@ class Player {
       this.partA.body.collideWorldBounds = true;
       this.partA.body.setSize(24, 24)
       this.partA.body.setAllowGravity(gravity);
+      this.partA.setScale(0.8)
 
       this.partB = this.scene.add.sprite(x, y, "player")
       this.scene.add.existing(this.partB);
@@ -15,6 +16,7 @@ class Player {
       this.partB.body.collideWorldBounds = true;
       this.partB.body.setSize(24, 24)
       this.partB.body.setAllowGravity(gravity);
+      this.partB.setScale(0.8)
 
       //this.init();
       this.distance = 0;
@@ -22,9 +24,9 @@ class Player {
       this.health = 10;
       this.addControls();
       this.scene.events.on("update", this.update, this);
-      this.velocity = 4;
-      this.partA.body.setVelocityX(200);
-      this.partB.body.setVelocityX(200);
+      this.velocity = velocity;
+      this.partA.body.setVelocityX(velocity);
+      this.partB.body.setVelocityX(velocity);
       this.partA.body.setDragY(1000)
       this.partB.body.setDragY(1000)
       this.splits = 0;
@@ -96,11 +98,11 @@ class Player {
         }
     }
     if (this.partA.body) {
-      this.partA.body.setVelocityX(200);
+      this.partA.body.setVelocityX(this.velocity);
     }
 
     if (this.partB.body)
-      this.partB.body.setVelocityX(200);
+      this.partB.body.setVelocityX(this.velocity);
   }
 
   destroy() {
