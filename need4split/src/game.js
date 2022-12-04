@@ -27,7 +27,7 @@ export default class Game extends Phaser.Scene {
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
 
-      this.cameras.main.setBackgroundColor(0x006fb1);
+      this.cameras.main.setBackgroundColor(0x4eadf5);
 
       this.lines = this.add.group();
       this.loadAudios(); 
@@ -44,7 +44,7 @@ export default class Game extends Phaser.Scene {
       this.finished = false;    
        this.ready = true;
        this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this); // TODO REMOVE
-       this.playAudio("start", 0.5)
+       //this.playAudio("start", 0.5)
        this.pickedCoins = 0;
     }
 
@@ -87,9 +87,6 @@ export default class Game extends Phaser.Scene {
         this.players.add(this.player.partA)
         this.players.add(this.player.partB)
 
-        this.physics.add.collider(this.players, this.exits, this.hitExit, ()=>{
-          return true;
-        }, this);
 
         this.physics.add.collider(this.players, this.physics.world.bounds.bottom, () => {
           this.death();
@@ -127,6 +124,7 @@ export default class Game extends Phaser.Scene {
     } 
 
     pickCoin (player, coin) {
+      this.playAudio("coin")
       console.log("player picked coin", player)
       this.showPoints(player.x, player.y, "+1", 0xffffff)
       coin.destroy();
@@ -158,17 +156,6 @@ export default class Game extends Phaser.Scene {
 
     showStage() {
       this.text1 = this.add.bitmapText(this.width - 128, 50, "demon", "STAGE " + this.number, 20).setOrigin(0.5).setDropShadow(0, 4, 0x222222, 0.9).setScrollFactor(0);
-
-      if (this.number === 0) {
-        this.text2 = this.add.bitmapText(this.center_width, this.center_height - 128, "demon", "MOVE BALL TO BASKET!", 25).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 4, 0x222222, 0.9).setScrollFactor(0);
-        this.text3 = this.add.bitmapText(this.center_width, this.center_height, "demon", "CLICK TO ADD BLOCK", 25).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 4, 0x222222, 0.9).setScrollFactor(0);
-        this.text4 = this.add.bitmapText(this.center_width, this.center_height + 128, "demon", "KEEP CLICK TO MOVE BLOCK", 25).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 4, 0x222222, 0.9).setScrollFactor(0);
-        this.time.delayedCall(5000, () => {
-          this.text2.destroy()
-          this.text3.destroy()
-          this.text4.destroy()
-        });
-      }
     }
 
     addScore() {
@@ -186,10 +173,11 @@ export default class Game extends Phaser.Scene {
         this.audios = {
           "boing": this.sound.add("boing"),
           "gotcha": this.sound.add("gotcha"),
-          "marble": this.sound.add("marble"),
+          "explosion": this.sound.add("explosion"),
           "win": this.sound.add("win"),
           "break": this.sound.add("break"),
           "start": this.sound.add("start"),
+          "coin": this.sound.add("coin"),
         };
       }
 
@@ -214,8 +202,8 @@ export default class Game extends Phaser.Scene {
     update() {
       if (this.player && Phaser.Math.Between(1, 5) > 4) {
 
-        //this.trailLayer.add(new Particle(this, this.player.partA.x, this.player.partA.y, 0xb95e00));
-        //this.trailLayer.add(new Particle(this, this.player.partB.x, this.player.partB.y, 0xb95e00));
+        this.trailLayer.add(new Particle(this, this.player.partA.x, this.player.partA.y, 0xb95e00));
+        this.trailLayer.add(new Particle(this, this.player.partB.x, this.player.partB.y, 0xb95e00));
       }
 
       if (this.finished) {
@@ -225,6 +213,8 @@ export default class Game extends Phaser.Scene {
     }
 
     hit (x, y, total = 10) {
+      this.playAudio("break")
+      this.playAudio("explosion")
       this.death();
       Array(Phaser.Math.Between(4, total)).fill(0).forEach((_,i) => {
         x += Phaser.Math.Between(-10, 10);
@@ -246,7 +236,6 @@ export default class Game extends Phaser.Scene {
     hitExit () {
       this.playAudio("gotcha")
       this.player.destroy();
-      this.playAudio("marble")
       const x = this.cameras.main.worldView.centerX;
       const y = this.cameras.main.worldView.centerY;
       this.textYAY = this.add.bitmapText(x, y, "demon", this.pickRandomMessage(), 80).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
@@ -256,7 +245,7 @@ export default class Game extends Phaser.Scene {
     finishScene () {
       const coins = +this.registry.get("coins") + this.pickedCoins;
       this.registry.set("coins", coins);
-      if (this.number < 9) {
+      if (this.number < 3) {
         this.game.sound.stopAll();
         this.number++;
         this.scene.start("transition", {number: this.number});
@@ -265,10 +254,10 @@ export default class Game extends Phaser.Scene {
         this.finished = true;
 
         this.playAudio("win")
-        const minutes= parseInt(totalTime/60)
+
         const x = this.cameras.main.worldView.centerX;
         const y = this.cameras.main.worldView.centerY;
-        this.text3 = this.add.bitmapText(x, y + 50, "demon", "Coins: " + this.registry.get("hits"), 45).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9).setScrollFactor(0);;
+        this.text3 = this.add.bitmapText(x, y + 50, "demon", "Coins: " + this.registry.get("coins"), 45).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9).setScrollFactor(0);;
         this.text4 = this.add.bitmapText(x, y - 50, "demon", "CONGRATULATIONS!", 35).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 5, 0x222222, 0.9).setScrollFactor(0);;
         this.time.delayedCall(4000, () => {
           this.text3.destroy()

@@ -70,11 +70,15 @@ class Player {
       this.partB.body.setVelocityY(200)
       //this.partA.body.y += this.velocity;
       //this.partB.body.y += this.velocity;
+    } else {
+
     }
 
 
 
     if ((Phaser.Input.Keyboard.JustDown(this.D) || Phaser.Input.Keyboard.JustDown(this.cursor.right))) {
+        if (this.partA.y < 80) return;
+        if (this.partB.y > 720) return;
         this.splits++;
         console.log("Distance appart!!: ", this.splits)
         this.distance += 42;
@@ -91,8 +95,10 @@ class Player {
           this.partB.body.y = this.partA.body.y;
         }
     }
-    if (this.partA.body)
+    if (this.partA.body) {
       this.partA.body.setVelocityX(200);
+    }
+
     if (this.partB.body)
       this.partB.body.setVelocityX(200);
   }

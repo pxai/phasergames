@@ -22,7 +22,7 @@ export default class Outro extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.cameras.main.setBackgroundColor(0x006fb1)
+        this.cameras.main.setBackgroundColor(0x4eadf5)
         this.cloudLayer = this.add.layer();    
         await this.saveScore();
         //
@@ -50,9 +50,9 @@ export default class Outro extends Phaser.Scene {
 
     async saveScore () {
         this.currentId = 0;
-        const hits = +this.registry.get("hits");
-        if (hits === 0) return;
-        const notBigger = await this.notBigger(hits)
+        const coins = +this.registry.get("coins");
+        if (coins === 0) return;
+        const notBigger = await this.notBigger(coins)
         if (notBigger) {
             await this.loadScores();
             return;
@@ -77,7 +77,7 @@ export default class Outro extends Phaser.Scene {
 
         }
 
-        this.currentId = await saveData(+this.registry.get("hits"), this.userName)
+        this.currentId = await saveData(+this.registry.get("coins"), this.userName)
         await this.loadScores();
     }
 
@@ -85,7 +85,7 @@ export default class Outro extends Phaser.Scene {
         try {
             const scores = await readData();
             const ballBreakerScores = scores.filter(score => score.game === "Need4Split")
-            ballBreakerScores.sort((a, b) => a.score - b.score).splice(0, 10);
+            ballBreakerScores.sort((a, b) => b.score - a.score).splice(0, 10);
 
             return ballBreakerScores.length >= 10 && ballBreakerScores.every(s => s.score < score)
         } catch (err) {
@@ -97,7 +97,7 @@ export default class Outro extends Phaser.Scene {
     async loadScores () {
         const scores = await readData();
         const ballBreakerScores = scores.filter(score => score.game === "Need4Split")
-        ballBreakerScores.sort((a, b) => a.score - b.score);
+        ballBreakerScores.sort((a, b) => b.score - a.score);
 
         let amongFirst10 = false;
 
@@ -122,7 +122,7 @@ export default class Outro extends Phaser.Scene {
 
     loadNext () {
         this.game.sound.stopAll();
-        this.registry.set("hits", 0);
+        this.registry.set("coins", 0);
         this.scene.start("splash");
     }
 
@@ -143,7 +143,7 @@ export default class Outro extends Phaser.Scene {
         const alphabet = "qwertyuiop-asdfghjklñ-zxcvbnm";
         this.keyboard = {};
         let stepY = 0;
-        let stepX = 64;
+        let stepX = 264;
         let x = -32;
         let y = 0;
        // this.add.rectangle(250, 740, 500, 200, 0x4d4d4d).setOrigin(0.5);
@@ -151,8 +151,8 @@ export default class Outro extends Phaser.Scene {
           const isDash = letter === "-";
           x = stepX ;
           stepY += isDash ? 64 : 0 
-          stepX = isDash ? 64 : stepX + 64;
-          y = 440 + stepY;
+          stepX = isDash ? 264 : stepX + 64;
+          y = 240 + stepY;
   
           if (isDash) return;
   
