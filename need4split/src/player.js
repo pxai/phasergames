@@ -82,13 +82,13 @@ class Player {
         if (this.partA.y < 80) return;
         if (this.partB.y > 720) return;
         this.splits++;
-        console.log("Distance appart!!: ", this.splits)
+
         this.distance += 42;
         this.partA.body.y -= 42;
         this.partB.body.y += 42;
     }  else if (this.splits > 0 && (Phaser.Input.Keyboard.JustDown(this.A)|| Phaser.Input.Keyboard.JustDown(this.cursor.left)))  {
         if (this.splits > 0) this.splits--;
-        console.log("Come back: ", this.splits)
+
         this.distance -= 42;
         this.partA.body.y += 42;
         this.partB.body.y -= 42;

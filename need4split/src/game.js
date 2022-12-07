@@ -41,7 +41,7 @@ export default class Game extends Phaser.Scene {
       this.addScore();
       this.finished = false;    
        this.ready = true;
-       this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this); // TODO REMOVE
+     //  this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this); // TODO REMOVE
        //this.playAudio("start", 0.5)
        this.pickedCoins = 0;
     }
@@ -54,7 +54,8 @@ export default class Game extends Phaser.Scene {
     addMap () {
       this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 32, tileHeight: 32 });
       this.tileSet = this.tileMap.addTilesetImage("tileset");
-      this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet);
+      this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet);      
+    
 
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
       this.batGroup = this.add.group();
@@ -104,17 +105,17 @@ export default class Game extends Phaser.Scene {
           return true;
         }, this);  
 
-        this.cameras.main.startFollow(this.player.partA);        
-        this.cameras.main.startFollow(this.player.partB);
+        this.cameras.main.startFollow(this.player.partA, false, 1, 0);        
+        //this.cameras.main.startFollow(this.player.partB);
+        this.cameras.main.setFollowOffset( 0, -100);
         this.player.dead = false;
     }
 
     hitPlatform (player, platform) {
-      console.log("Player hit platform: ", platform)
+
     }
 
     hitFloor (ball, platform) {
-      console.log(platform.index, [0, 1, 2, 3].includes(platform.index))
       if ([3, 4, 5, 6].includes(platform.index)) {
         this.playRandom("break")
         this.hit(ball.x, ball.y)
@@ -124,7 +125,7 @@ export default class Game extends Phaser.Scene {
 
     pickCoin (player, coin) {
       this.playAudio("coin")
-      console.log("player picked coin", player)
+
       this.showPoints(player.x, player.y, "+1", 0xffffff)
       coin.destroy();
       this.updateCoins();

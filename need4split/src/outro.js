@@ -127,7 +127,6 @@ export default class Outro extends Phaser.Scene {
     }
 
     clickedLetter(letter) {
-        console.log(letter, this.userName)
         if (this.userName.length < 9) {
             this.userName += letter;
             this.userNameText.setText(this.userName.padEnd(9, '-'));
