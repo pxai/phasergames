@@ -15,7 +15,7 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         this.activated = false;
         if (this.type === "bobby") {
             this.bobbySprite = this.scene.add.sprite(x + 64, y + 64, "player", 3)
-            console.log("Added bobby!", x, y)
+           // console.log("Added bobby!", x, y)
         }
 
     }
@@ -37,9 +37,8 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         const objectText = this.scene.add.bitmapText(this.x - 128, this.y - 64, "dark", note, 25 )
         this.scene.tweens.add({
             targets: objectText,
-            alpha: {from: 0.8, to: 1},
-            duration: 100,
-            repeat: 5
+            alpha: {from: 1, to: 0},
+            duration: 2000,
         })
     }
 
@@ -49,28 +48,12 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         this.bobbySprite.setAlpha(0)
     }
 
-    useRadio() {
-        this.officerAudio = this.scene.sound.add(this.description)
-        this.officerAudio.play();
-        this.officerAudio.on('complete', function () {
-            this.scene.playRandomStatic();
-            if (this.extra)
-                this.scene.sound.add(this.extra).play();
-        }.bind(this))
-    }
-
     exitScene () {
         this.showExit(this.description)
         this.showNote(this.extra)
         this.scene.finishScene();
     }
 
-    useOxygen () {
-        this.showNote("Oxygen supplies!")
-        this.scene.player.oxygen = 100;
-        this.scene.updateOxygen();
-        this.scene.playAudio("oxygen")
-    }
 
     revealEnding (scene = "transition") {
         const shouts = ["manscream","ohmygod", "childscream"]
@@ -112,7 +95,7 @@ export default class Object extends Phaser.GameObjects.Rectangle {
     activateBraun () {
         this.showExit(this.description)
         this.scene.playAudio("shock")
-        new Braun(this.scene, this.x + 128, this.y + 64).setPipeline('Light2D');
+        new Braun(this.scene, this.x + 128, this.y + 64).setOrigin(0.5).setPipeline('Light2D').setRotation(Phaser.Math.Between(1, 10));
     }
 
     touch () {
@@ -120,17 +103,11 @@ export default class Object extends Phaser.GameObjects.Rectangle {
             case "note":
                 this.showNote(this.description);
                 break;
-            case "radio":
-                this.useRadio();
-                break;
             case "exit":
                 this.exitScene();
                 break;
             case "hole":
                 this.activateHole();
-                break;
-            case "oxygen":
-                this.useOxygen();
                 break;
             case "braun":
                 this.activateBraun();

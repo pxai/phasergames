@@ -42,7 +42,7 @@ export default class Game extends Phaser.Scene {
       this.addPlayer();
       this.addName();
 
-      this.input.keyboard.on("keydown-ENTER", () => this.skipThis(), this);
+      //this.input.keyboard.on("keydown-ENTER", () => this.skipThis(), this);
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 0);
       this.loadAudios(); 
       this.playMusic();
@@ -107,12 +107,21 @@ export default class Game extends Phaser.Scene {
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("object")) {
           const [name, type, description, extra] = object.name.split(":")
-          if (type !== "bobby")
+          if (type !== "bobby" && type !== "braun") {
             this.objects.add(new Object(this, object.x, object.y, type, description, extra));
+          }
+
+          if (type === "braun" && Phaser.Math.Between(0, 100) > 50) {
+            this.objects.add(new Object(this, object.x, object.y, type, description, extra));
+          }
+
+          if (type === "ending" && Phaser.Math.Between(0, 100) > 67) {
+            this.objects.add(new Object(this, object.x, object.y, type, description, extra));
+          }
+
           if (type === "bobby" && bobbies === bobby) {
             this.bobby = new Object(this, object.x, object.y, type, description, extra)
             this.objects.add(this.bobby);
-            console.log("Added bobby: ", this.bobby.x, this.bobby.y)
           }
           if (type === "bobby")
             bobbies++;
@@ -157,7 +166,6 @@ export default class Game extends Phaser.Scene {
 
     touchObject (player, object) {
         if (object.type === "hole") this.playTracker() 
-        console.log(this.foundBobby, !object.activated)
         if (this.foundBobby && object.type == "tent" && !object.activated) {
           object.activated = true;
           object.touch();
@@ -209,17 +217,17 @@ export default class Game extends Phaser.Scene {
       }
     
     playBobby () {
-      if (!this.foundBobby) return
-      const volume = 100.0 / Phaser.Math.Distance.Between(this.player.x, this.player.y, this.bobby.x, this.bobby.y);
-      console.log("play with distance: ", volume) 
-      const  index = Phaser.Math.Between(0, 2);
-      const audios = ["mom", "daddy", "where"];
-      const text = ["Mom?", "Daddy?", "Where are you?"];
-      this.audios[audios[index]].play({volume});  
-      this.time.delayedCall(Phaser.Math.Between(6000, 10000), () => { this.playBobby()}, null, this)
+      if (this.foundBobby) return
+      const distance =  Phaser.Math.Distance.Between(this.player.x, this.player.y, this.bobby.x, this.bobby.y);
+      const volume = 200.0 / distance;
 
-      this.bobbyTalk.setText(text[index]);
-      this.bobbyTalk.setFontSize(volume * 500)
+      const audios = ["daddy", "mom", "where"];
+      const text = ['"Daddy?"', '"Mom?"', '"Where are you?"'];
+      this.audios[audios[this.number]].play({volume});  
+      this.time.delayedCall(Phaser.Math.Between(3000, 6000), () => { this.playBobby()}, null, this)
+
+      this.bobbyTalk.setText(text[this.number]);
+      this.bobbyTalk.setFontSize((60.0/distance) * 500)
       this.tweens.add({
         targets: this.bobbyTalk,
         alpha: {from: 1, to: 0},
@@ -231,15 +239,6 @@ export default class Game extends Phaser.Scene {
       const volume = Phaser.Math.Between(0.8, 1);
       const rate = Phaser.Math.Between(0.8, 1);
       this.audios[key].play({volume, rate});
-    }
-
-    playRandomStatic () {
-      const file = this.number < 6 ? "static" + Phaser.Math.Between(0,3) : "creepy_static"
-      this.sound.add(file).play({
-        rate: Phaser.Math.Between(9, 11)/10,
-        delay: 0,
-        volume: Phaser.Math.Between(5, 10)/10
-      });
     }
 
     playTracker () {
@@ -272,15 +271,17 @@ export default class Game extends Phaser.Scene {
           loop: true,
           delay: 0
         })
-       /* this.sound.add("creepy").play({
-          mute: false,
-          volume: 1,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-        })*/
+        if (this.number < 2) {
+          this.sound.add("creepy").play({
+            mute: false,
+            volume: 0.5,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+          })
+        }
       }
 
     update() {

@@ -32,7 +32,6 @@ export default class Transition extends Phaser.Scene {
         this.text1 = this.add.bitmapText(this.center_width, 20, "dark", messages[this.number], 30).setOrigin(0.5).setAlpha(0)
 
         this.playBackground();
-            this.playCreepy();
         this.tweens.add({
             targets: [this.text1],
             duration: 2000,
@@ -108,20 +107,6 @@ export default class Transition extends Phaser.Scene {
           delay: 0
         })
     }
-
-
-      playCreepy() {
-        this.creepy = this.sound.add("creepy")
-        this.creepy.play({
-            mute: false,
-            volume: 1,
-            rate: 1,
-            detune: 0,
-            seek: 0,
-            loop: true,
-            delay: 0
-          })
-      }
 
     update () {
     }

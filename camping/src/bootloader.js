@@ -70,12 +70,11 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image('background', 'assets/maps/forest.png');
         this.load.image('rain', 'assets/images/rain.png');
         this.load.image('snow', 'assets/images/snow.png');
-        Array(7).fill(0).forEach((_,i) => {
-            this.load.tilemapTiledJSON(`scene${i}`,`assets/maps/scene${i}.json`)
-        });
+
+        this.load.tilemapTiledJSON(`scene0`,`assets/maps/scene0.json`)
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
 
-        this.registry.set("bobby", Phaser.Math.Between(0,7));
+        this.registry.set("bobby", Phaser.Math.Between(0,9));
     }
 
     create () {
