@@ -76,9 +76,8 @@ export default class Object extends Phaser.GameObjects.Rectangle {
           monster.anims.play("monster", true)
         ohmy.on('complete', function () {
             //log("Dale fin")
-            this.scene.breathing.pause();
             this.scene.playAudio("holeshout")
-            this.scene.finishScene(false);
+            this.scene.finishScene("outro",false);
         }.bind(this))
     }
 
@@ -93,7 +92,7 @@ export default class Object extends Phaser.GameObjects.Rectangle {
     activateBraun () {
         this.showExit(this.description)
         this.scene.playAudio("shock")
-        new Braun(this.scene, this.x + 128, this.y + 64)
+        new Braun(this.scene, this.x + 128, this.y + 64).setPipeline('Light2D');
     }
 
     touch () {

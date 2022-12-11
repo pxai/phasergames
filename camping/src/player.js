@@ -76,8 +76,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
             //this.y += 64;
             this.step(x, y);
         }
-
-        this.adaptBreath()
+        this.scene.playerLight.x = this.x + (this.right ? 1 : -1) * 50;
+        this.scene.playerLight.y = this.y;
        /* this.scene.playerLight.x = this.x;
         this.scene.playerLight.y = this.y;*/
     }
@@ -112,36 +112,6 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
         this.scene.smokeLayer.add(new JumpSmoke(this.scene, this.x + (20 * -x) , this.y + 32 + (20 * -y))) */
     }
-
-    adaptBreath() {
-        if (this.stepDelta > 2000) {
-            if (this.steps > 2) {
-                this.previousRate = this.rate;
-                this.rate = this.steps < 11 ? this.steps / 10: 1
-                this.scene.breath(this.rate)
-                this.updateOxygen(this.steps + Math.round(this.steps/2));
-            } else if (this.rate !== this.previousRate) {
-                this.previousRate = this.rate;
-                this.rate = this.rate > 0.2 ? this.rate - 0.1 : 0.2;
-                this.scene.breath(this.rate)
-                this.scene.updateOxygen(this.steps)
-            } else {
-                this.scene.updateOxygen(this.steps)
-            }
-            this.steps = this.stepDelta = 0;
-        }
-    }
-
-    updateOxygen (waste) {
-        if (waste >= this.oxygen) {
-            this.oxygen = 0;
-            this.death();
-        } else {
-            this.oxygen -= waste;
-        }
-        this.scene.updateOxygen()
-    }
-
 
     death () {
         console.log("Player dead")

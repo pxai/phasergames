@@ -36,9 +36,9 @@ export default class Game extends Phaser.Scene {
       this.setLightning();
       this.addWeather();
 
-      this.addLight();
       this.createMap();
       this.smokeLayer = this.add.layer();
+      this.addLight();
       this.addPlayer();
       this.addOxygen();
       //this.addHelp();
@@ -92,18 +92,18 @@ export default class Game extends Phaser.Scene {
     }
 
     addLight() {
-        this.lights.disable();
-        this.lights.setAmbientColor(0xae2012); // 0x707070
-        this.playerLight = this.lights.addLight(0, 100, 100).setColor(0xffffff).setIntensity(3.0);
+      this.lights.enable();
+      this.lights.setAmbientColor(0x0d0d0d);
+      this.playerLight = this.lights.addLight(0, 200, 200).setColor(0xffffff).setIntensity(3.0);
     }
 
     createMap() {
       this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 64, tileHeight: 64 });
       this.tileSetBg = this.tileMap.addTilesetImage("forest");
-      this.tileMap.createStaticLayer('background', this.tileSetBg)//.setPipeline('Light2D');
+      this.tileMap.createStaticLayer('background', this.tileSetBg).setPipeline('Light2D');
   
       this.tileSet = this.tileMap.addTilesetImage("forest");
-      this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet)//.setPipeline('Light2D');;
+      this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet).setPipeline('Light2D');;
       this.border = this.tileMap.createLayer('border', this.tileSet)//.setPipeline('Light2D');;
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
       this.border.setCollisionByExclusion([-1]);
@@ -260,7 +260,7 @@ export default class Game extends Phaser.Scene {
           loop: true,
           delay: 0
         })
-        this.sound.add("creepy").play({
+       /* this.sound.add("creepy").play({
           mute: false,
           volume: 1,
           rate: 1,
@@ -268,24 +268,8 @@ export default class Game extends Phaser.Scene {
           seek: 0,
           loop: true,
           delay: 0
-        })
-        this.breathing = this.sound.add("breath")
-        this.breath(0.2)
+        })*/
       }
-
-    breath(rate = 0.2, volume = 0.4) {
-      const duration = Phaser.Math.Between(500, 1000)
-      this.tweens.add({
-        targets:  this.breathing,
-        volume: 0,
-        duration,
-        onComplete: () => {
-          this.breathing.play({rate, volume})
-        }
-      });
-      //this.breathing.stop();
-
-    }
 
     update() {
 
@@ -317,7 +301,7 @@ export default class Game extends Phaser.Scene {
       this.scene.start("transition", { number: this.number + 1});
     }
 
-    finishScene (mute = true) {
+    finishScene (scene = "transition", mute = true) {
       const x = this.cameras.main.worldView.centerX;
       const y = this.cameras.main.worldView.centerY;
 
@@ -335,39 +319,11 @@ export default class Game extends Phaser.Scene {
       //this.theme.stop();
       this.time.delayedCall(3000, () => {
         if (this.mute) this.sound.stopAll();
-        this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
+        this.scene.start(scene, {next: "underwater", name: "STAGE", number: this.number + 1});
       }, null, this);
-    }
-
-    updateScore (points = 1) {
-        const score = +this.registry.get("score") + points;
-        this.registry.set("score", score);
-        this.scoreText.setText("x" + score);
-    }
-
-    showPoints (x, y, msg, color = 0xff0000) {
-      let text = this.add.bitmapText(x + 20, y - 80, "dark", msg, 20).setDropShadow(2, 3, color, 0.7).setOrigin(0.5);
-      this.tweens.add({
-          targets: text,
-          duration: 1000,
-          alpha: {from: 1, to: 0},
-          x: {from: text.x + Phaser.Math.Between(-10, 10), to: text.x + Phaser.Math.Between(-40, 40)},
-          y: {from: text.y - 10, to: text.y - 60},
-          onComplete: () => {
-              text.destroy()
-          }
-      });
-    }
-
-    isAllGoldTaken () {
-      return this.golds.getChildren().map(gold => gold.active).every(gold => !gold);
     }
 
     updatePosition (x, y , z = 0) {
       this.positionText.setText(`Lt: ${x*10} Lg: ${y*10}`);
-    }
-
-    updateOxygen () {
-      this.oxygenBar.width = this.player.oxygen * 1.8;
     }
 }

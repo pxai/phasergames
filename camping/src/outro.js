@@ -14,8 +14,8 @@ export default class Outro extends Phaser.Scene {
         this.introLayer = this.add.layer();
         this.splashLayer = this.add.layer();
 
-        this.add.tileSprite(0, 0, 800, 600, "landscape").setOrigin(0);
-        this.title = this.add.bitmapText(this.center_width, this.center_height + 100, "dark", "MARSTRANDED", 60).setTint(0xffffff).setAlpha(0).setDropShadow(0, 4, 0xcccccc, 0.9).setOrigin(0.5)
+        this.add.tileSprite(0, 0, 800, 800, "landscape").setOrigin(0);
+        this.title = this.add.bitmapText(this.center_width, this.center_height + 100, "dark", "CAMP NIGHT", 60).setTint(0xffffff).setAlpha(0).setDropShadow(0, 4, 0xcccccc, 0.9).setOrigin(0.5)
         this.tweens.add({
             targets: this.title,
             alpha: {from: 0, to: 1},
