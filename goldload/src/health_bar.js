@@ -5,7 +5,7 @@ class HealthBar extends Phaser.GameObjects.Rectangle {
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false)
         this.body.setImmovable(true)
-
+        this.initSeconds = seconds;
         this.scene.events.on("update", this.update, this);
         this.scene = scene;
         this.seconds = seconds;
@@ -21,6 +21,9 @@ class HealthBar extends Phaser.GameObjects.Rectangle {
                 this.seconds--; 
                 this.width = 5 * this.seconds
                 this.timerStart();
+                if (this.seconds === this.initSeconds / 2) {
+                    this.scene.hurryUp();
+                }
             }, null, this)
         else
             this.scene.timerFinished();

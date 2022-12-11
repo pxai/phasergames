@@ -21,7 +21,10 @@
     "unit": "mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js",
     "publish": "npm run-script build && npm run-script itchio",
     "itchio": "cd dist && rm -f assets/html/index.html && butler push . pello/get-rich-or-die-trying:html --userversion 0.0.4 && cd .. && butler status pello/get-rich-or-die-trying:html"
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4e24f1a178f1ffd113e8da7bdb83dd18022dffa3
   },
   "dependencies": {
     "axios": "^1.1.3",

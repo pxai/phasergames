@@ -232,7 +232,7 @@ export class Rock extends Phaser.GameObjects.Sprite {
 }
 
 export class Gold extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, gravity = false ) {
+    constructor (scene, x, y,  = false ) {
         super(scene, x, y, "gold" + Phaser.Math.Between(0, 3));
        // this.setStrokeStyle(4, 0x000000);
         scene.add.existing(this)
