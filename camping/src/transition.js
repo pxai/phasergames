@@ -41,7 +41,7 @@ export default class Transition extends Phaser.Scene {
                 this.playIntro();
             }
         })
-
+        this.add.sprite(this.center_width, 766, "camp").setOrigin(0.5)
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
     }

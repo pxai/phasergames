@@ -46,8 +46,9 @@ export default class Game extends Phaser.Scene {
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 0);
       this.loadAudios(); 
       this.playMusic();
+      this.foundBobby = false;
     //  this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);
-
+      this.time.delayedCall(2000, () => { this.playBobby()}, null,this);
     }
 
     setLightning () {
@@ -59,7 +60,8 @@ export default class Game extends Phaser.Scene {
     }
 
     addWeather () {
-      new Weather(this, "rain");
+      const weather = ["rain", "rain", "snow"];
+      new Weather(this, weather[this.number]);
     }
 
     addOxygen () {
@@ -70,6 +72,7 @@ export default class Game extends Phaser.Scene {
     addName() {
       const names = ["DAD", "MOM", "JOBETH"];
       this.positionText = this.add.bitmapText(this.center_width, 20, "dark", names[this.number], 45).setTint(0xffffff).setOrigin(0.5).setScrollFactor(0).setDropShadow(0, 2, 0xcccccc, 0.9)
+      this.bobbyTalk = this.add.bitmapText(this.center_width, 100, "dark", "", 65).setTint(0xffffff).setOrigin(0.5).setScrollFactor(0).setDropShadow(0, 2, 0xcccccc, 0.9)
     }
 
     addDay() {
@@ -96,7 +99,7 @@ export default class Game extends Phaser.Scene {
       this.platform.setCollisionByExclusion([-1]);
 
       this.holes = this.add.group();
-      this.foes = this.add.group();
+      this.tent = this.add.group();
       this.objects = this.add.group();
       this.createGrid();
       let bobbies = 0;
@@ -104,13 +107,15 @@ export default class Game extends Phaser.Scene {
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("object")) {
           const [name, type, description, extra] = object.name.split(":")
-          if (type !== "bobby" || (type === "bobby" && bobbies === bobby))
+          if (type !== "bobby")
             this.objects.add(new Object(this, object.x, object.y, type, description, extra));
-          bobbies++;
-        }
-
-        if (object.name.startsWith("drone")) {
-          this.foes.add(new Drone(this, object.x, object.y, this.grid));
+          if (type === "bobby" && bobbies === bobby) {
+            this.bobby = new Object(this, object.x, object.y, type, description, extra)
+            this.objects.add(this.bobby);
+            console.log("Added bobby: ", this.bobby.x, this.bobby.y)
+          }
+          if (type === "bobby")
+            bobbies++;
         }
       });
 
@@ -142,10 +147,6 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
-      this.physics.add.overlap(this.player, this.foes, this.playerHitByFoe, ()=>{
-        return true;
-      }, this);
-
       this.physics.add.overlap(this.player, this.holes, this.playerHitHole, ()=>{
         return true;
       }, this);
@@ -155,19 +156,24 @@ export default class Game extends Phaser.Scene {
     }
 
     touchObject (player, object) {
-        if (object.type === "hole") this.playTracker()
-        if (!object.activated) {
+        if (object.type === "hole") this.playTracker() 
+        console.log(this.foundBobby, !object.activated)
+        if (this.foundBobby && object.type == "tent" && !object.activated) {
+          object.activated = true;
+          object.touch();
+        }
+
+        if (!object.activated && object.type !== "tent") {
           object.activated = true;
           object.touch();
         }
     }
 
-    playerHitByFoe (player, foe) {
-      this.cameras.main.shake(100);
-      this.playAudio("killed")
-      player.death();
-      this.restartScene();
-    } 
+    bobbyIsFound() {
+      this.foundBobby = true;
+      this.bobby.destroy(); 
+      this.bobbySprite = this.add.sprite(this.player.x + 64, this.player.y + 32, "player", 4).setOrigin(0.5);
+    }
 
     playerHitHole(player, hole) {
       if (!player.dead) {
@@ -176,7 +182,6 @@ export default class Game extends Phaser.Scene {
         player.setAlpha(0);
         this.cameras.main.shake(50);
         player.death();
-        this.restartScene();
       }
     }
 
@@ -187,6 +192,8 @@ export default class Game extends Phaser.Scene {
           "kill": this.sound.add("kill"),
           "blip": this.sound.add("blip"),
           "ohmygod": this.sound.add("ohmygod"),
+          "manscream": this.sound.add("manscream"),
+          "childscream": this.sound.add("childscream"),
           "holeshout": this.sound.add("holeshout"),
           "daddy": this.sound.add("daddy"),
           "mom": this.sound.add("mom"),
@@ -202,7 +209,22 @@ export default class Game extends Phaser.Scene {
       }
     
     playBobby () {
-      this.audios[Phaser.Math.RND.pick(["mom", "daddy", "where"])].play();  
+      if (!this.foundBobby) return
+      const volume = 100.0 / Phaser.Math.Distance.Between(this.player.x, this.player.y, this.bobby.x, this.bobby.y);
+      console.log("play with distance: ", volume) 
+      const  index = Phaser.Math.Between(0, 2);
+      const audios = ["mom", "daddy", "where"];
+      const text = ["Mom?", "Daddy?", "Where are you?"];
+      this.audios[audios[index]].play({volume});  
+      this.time.delayedCall(Phaser.Math.Between(6000, 10000), () => { this.playBobby()}, null, this)
+
+      this.bobbyTalk.setText(text[index]);
+      this.bobbyTalk.setFontSize(volume * 500)
+      this.tweens.add({
+        targets: this.bobbyTalk,
+        alpha: {from: 1, to: 0},
+        duration: 3000
+      })
     }
 
     playAudioRandomly(key) {
@@ -262,25 +284,10 @@ export default class Game extends Phaser.Scene {
       }
 
     update() {
-
-    }
-
-    restartScene () {
-      const x = this.cameras.main.worldView.centerX;
-      const y = this.cameras.main.worldView.centerY;
-
-      this.fadeBlack = this.add.rectangle(x - 100, y - 50, 10000, 11000,  0x000000).setOrigin(0.5)
-      this.failure = this.add.bitmapText(x, y, "dark", "FAILURE", 40).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0xcccccc, 0.9)
-
-      this.tweens.add({
-        targets: [this.failure, this.fadeBlack],
-        alpha: {from: 0, to: 1},
-        duration: 2000
-      })
-      this.time.delayedCall(3000, () => {
-        this.sound.stopAll();
-        this.scene.start("transition", {number: this.number});
-      }, null, this);
+      if (this.foundBobby) {
+        this.bobbySprite.x = this.player.x + 64;
+        this.bobbySprite.y = this.player.y + 32;
+      }
     }
 
     skipThis () {

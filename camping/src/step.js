@@ -6,7 +6,7 @@ export default class Step extends Phaser.GameObjects.Sprite {
         scene.tweens.add({
             targets: [this],
             duration: 2000,
-            alpha: {from: 1, to: 0.1}
+            alpha: {from: 1, to: 0}
         })
     }
 }

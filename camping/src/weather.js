@@ -32,9 +32,9 @@ class Weather  {
         const particles = this.scene.add.particles('snow');
 
         particles.createEmitter({
-            x: { min: -100, max: 2000},
+            x: { min: -100, max: 22000},
             y: 0,
-            lifespan: 10000,
+            lifespan: 20000,
             speedY: { min: 30, max: 100 },
             scale: { start: 0.8, end: 0.4 },
             rotation: { min: 0, max: 90},

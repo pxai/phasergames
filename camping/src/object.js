@@ -14,7 +14,7 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         this.body.setAllowGravity(false);
         this.activated = false;
         if (this.type === "bobby") {
-            this.scene.add.sprite(x, y, "player", 3)
+            this.bobbySprite = this.scene.add.sprite(x + 64, y + 64, "player", 3)
             console.log("Added bobby!", x, y)
         }
 
@@ -43,6 +43,12 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         })
     }
 
+    foundBobby() {
+        this.showExit("Go back to the tent!")
+        this.scene.bobbyIsFound();
+        this.bobbySprite.setAlpha(0)
+    }
+
     useRadio() {
         this.officerAudio = this.scene.sound.add(this.description)
         this.officerAudio.play();
@@ -66,13 +72,22 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         this.scene.playAudio("oxygen")
     }
 
-    revealEnding () {
-        const ohmy = this.scene.sound.add("ohmygod")
+    revealEnding (scene = "transition") {
+        const shouts = ["manscream","ohmygod", "childscream"]
+        const ohmy = this.scene.sound.add(shouts[this.scene.number])
         ohmy.play();
         this.scene.cameras.main.shake(3000)
+
         //this.showExit(this.description)
         this.scene.sound.add("monster").play({volume: 1.5, rate: 0.8})
         const monster = this.scene.add.sprite(this.x + 128, this.y + 128, "monster").setOrigin(0.5)
+        const fade = this.scene.add.rectangle(this.scene.player.x, this.scene.player.y, 1800, 1800, 0x000000).setOrigin(0.5).setAlpha(0)
+        this.scene.tweens.add({
+            targets: fade,
+            alpha: {from: 0, to: 1},
+            duration: 1000,
+            ease: 'Sine',
+        })
         this.scene.anims.create({
             key: "monster",
             frames: this.scene.anims.generateFrameNumbers("monster", { start: 0, end: 5 }),
@@ -82,7 +97,7 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         ohmy.on('complete', function () {
             //log("Dale fin")
             this.scene.playAudio("holeshout")
-            this.scene.finishScene("transition",false);
+            this.scene.finishScene(scene, false);
         }.bind(this))
     }
 
@@ -124,7 +139,11 @@ export default class Object extends Phaser.GameObjects.Rectangle {
                 this.revealEnding();
                 break;
             case "bobby":
-                this.revealEnding();
+                this.foundBobby();
+                break;
+            case "tent":
+                if (this.scene.foundBobby)
+                    this.revealEnding("outro");
                 break;
             default:
                 break;

@@ -1,5 +1,6 @@
 import { ShotSmoke } from "./particle";
 import Lightning from "./lightning";
+import Weather from "./weather";
 
 export default class Splash extends Phaser.Scene {
     constructor () {
@@ -25,6 +26,7 @@ export default class Splash extends Phaser.Scene {
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
         this.playMusic();
+        this.addWeather();
         //this.showPlayer();
     }
 
@@ -37,6 +39,9 @@ export default class Splash extends Phaser.Scene {
         this.lightning.dewIt();
       }
 
+      addWeather () {
+        new Weather(this, "rain");
+      }
     showTitle () {
         this.step = this.sound.add("step")
        // this.background = this.add.rectangle(0,0, 800, 800, 0xffffff).setOrigin(0)
