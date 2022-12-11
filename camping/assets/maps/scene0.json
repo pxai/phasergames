@@ -48,21 +48,6 @@
                 }, 
                 {
                  "height":0,
-                 "id":69,
-                 "name":"object:oxygen",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1216,
-                 "y":512
-                }, 
-                {
-                 "height":0,
                  "id":71,
                  "name":"object:braun:HE IS DEAD!!",
                  "properties":
@@ -90,6 +75,126 @@
                  "width":0,
                  "x":502,
                  "y":766
+                }, 
+                {
+                 "height":0,
+                 "id":73,
+                 "name":"object:bobby",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1208,
+                 "y":72
+                }, 
+                {
+                 "height":0,
+                 "id":74,
+                 "name":"object:bobby",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":2408,
+                 "y":32
+                }, 
+                {
+                 "height":0,
+                 "id":75,
+                 "name":"object:bobby",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":2496,
+                 "y":648
+                }, 
+                {
+                 "height":0,
+                 "id":76,
+                 "name":"object:bobby",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":2432,
+                 "y":1120
+                }, 
+                {
+                 "height":0,
+                 "id":77,
+                 "name":"object:bobby",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1304,
+                 "y":1152
+                }, 
+                {
+                 "height":0,
+                 "id":78,
+                 "name":"object:bobby",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":248,
+                 "y":1168
+                }, 
+                {
+                 "height":0,
+                 "id":80,
+                 "name":"object:bobby",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":61.3333333333333,
+                 "y":513.333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":81,
+                 "name":"object:bobby",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":506.666666666667,
+                 "y":64
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -120,7 +225,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":73,
+ "nextobjectid":82,
  "orientation":"orthogonal",
  "properties":
     {

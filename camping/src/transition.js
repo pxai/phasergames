@@ -23,38 +23,24 @@ export default class Transition extends Phaser.Scene {
         this.center_height = this.height / 2; 
         this.add.tileSprite(0, 0, 800, 800, "landscape").setOrigin(0);
 
-        if (this.number === 7) {
+        if (this.number === 3) {
             this.scene.start("outro", { number: this.number });
         } else {
             this.sound.stopAll();
         }
 
         this.text1 = this.add.bitmapText(this.center_width, 20, "dark", messages[this.number], 30).setOrigin(0.5).setAlpha(0)
-        this.text2 = this.add.bitmapText(this.center_width, 70, "dark", "AUDIO RECORD OF CAPTAIN BRAUN", 20).setOrigin(0.5).setAlpha(0)
 
-        if (this.number > 0) {
-            //this.play = this.add.sprite(this.center_width, 170, "record").setOrigin(0.5).setAlpha(0)
-            this.tweens.add({
-                targets: [this.text1, this.text2, this.play],
-                duration: 1000,
-                alpha: {from: 0, to: 1},
-                onComplete: () => {
-                    this.playDiary();
-                }
-            })
-        } else {
-            this.playBackground();
-            this.text2 = this.add.bitmapText(this.center_width, 70, "dark", "THE CRASH", 20).setOrigin(0.5).setAlpha(0)
+        this.playBackground();
             this.playCreepy();
-            this.tweens.add({
-                targets: [this.text1],
-                duration: 2000,
-                alpha: {from: 0, to: 1},
-                onComplete: () => {
-                    this.playIntro();
-                }
-            })
-        }
+        this.tweens.add({
+            targets: [this.text1],
+            duration: 2000,
+            alpha: {from: 0, to: 1},
+            onComplete: () => {
+                this.playIntro();
+            }
+        })
 
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);

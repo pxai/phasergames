@@ -40,13 +40,12 @@ export default class Game extends Phaser.Scene {
       this.smokeLayer = this.add.layer();
       this.addLight();
       this.addPlayer();
-      this.addOxygen();
-      //this.addHelp();
+      this.addName();
+
       this.input.keyboard.on("keydown-ENTER", () => this.skipThis(), this);
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 0);
       this.loadAudios(); 
       this.playMusic();
-      //this.playOfficer();
     //  this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);
 
     }
@@ -68,22 +67,9 @@ export default class Game extends Phaser.Scene {
       this.oxygenBar = this.add.rectangle(this.center_width, 40, this.player.oxygen * 1.8, 20, 0x6b140b).setOrigin(0.5).setScrollFactor(0)
     }
 
-    addPosition() {
-      this.positionText = this.add.bitmapText(this.center_width, 20, "dark", "x x", 15).setTint(0xffffff).setOrigin(0.5).setScrollFactor(0).setDropShadow(0, 2, 0xcccccc, 0.9)
-      this.updatePosition(this.player.x/64, this.player.y/64)
-    }
-
-    addHelp () {
-      if (this.number > 3) return;
-      const help = [
-        "Collect all the gold to clear the stage",
-        "Pick shells to shoot ghosts, but they will respawn!",
-        "Shoot at the walls if necessary",
-        "Shoot at barrels and catch ghosts with the blast"
-      ];
-      this.helpText = this.add.bitmapText(this.center_width, this.center_height - 200, "dark", help[this.number], 20).setDropShadow(0, 2, 0xcccccc, 0.9).setOrigin(0.5).setScrollFactor(0)
-      this.add.bitmapText(this.center_width, this.center_height + 340, "dark", "ENTER TO SKIP", 20).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
-
+    addName() {
+      const names = ["DAD", "MOM", "JOBETH"];
+      this.positionText = this.add.bitmapText(this.center_width, 20, "dark", names[this.number], 45).setTint(0xffffff).setOrigin(0.5).setScrollFactor(0).setDropShadow(0, 2, 0xcccccc, 0.9)
     }
 
     addDay() {
@@ -98,12 +84,12 @@ export default class Game extends Phaser.Scene {
     }
 
     createMap() {
-      this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 64, tileHeight: 64 });
+      this.tileMap = this.make.tilemap({ key: "scene0" , tileWidth: 64, tileHeight: 64 });
       this.tileSetBg = this.tileMap.addTilesetImage("forest");
       this.tileMap.createStaticLayer('background', this.tileSetBg).setPipeline('Light2D');
   
       this.tileSet = this.tileMap.addTilesetImage("forest");
-      this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet).setPipeline('Light2D');;
+      this.platform = this.tileMap.createLayer('scene0', this.tileSet).setPipeline('Light2D');;
       this.border = this.tileMap.createLayer('border', this.tileSet)//.setPipeline('Light2D');;
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
       this.border.setCollisionByExclusion([-1]);
@@ -113,11 +99,14 @@ export default class Game extends Phaser.Scene {
       this.foes = this.add.group();
       this.objects = this.add.group();
       this.createGrid();
-
+      let bobbies = 0;
+      const bobby = +this.registry.get("bobby")
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("object")) {
-          const [name, type, description, extra] = object.name.split(":") 
-          this.objects.add(new Object(this, object.x, object.y, type, description, extra));
+          const [name, type, description, extra] = object.name.split(":")
+          if (type !== "bobby" || (type === "bobby" && bobbies === bobby))
+            this.objects.add(new Object(this, object.x, object.y, type, description, extra));
+          bobbies++;
         }
 
         if (object.name.startsWith("drone")) {
@@ -143,7 +132,7 @@ export default class Game extends Phaser.Scene {
     addPlayer () {
       this.trailLayer = this.add.layer();
       const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
-      this.player = new Player(this, playerPosition.x, playerPosition.y);
+      this.player = new Player(this, playerPosition.x, playerPosition.y, this.number);
 
       this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
         return true;
@@ -199,7 +188,9 @@ export default class Game extends Phaser.Scene {
           "blip": this.sound.add("blip"),
           "ohmygod": this.sound.add("ohmygod"),
           "holeshout": this.sound.add("holeshout"),
-          "oxygen": this.sound.add("oxygen"),
+          "daddy": this.sound.add("daddy"),
+          "mom": this.sound.add("mom"),
+          "where": this.sound.add("where"),
           "shock": this.sound.add("shock"),
           "killed": this.sound.add("killed"),          
           "thunder0": this.sound.add("thunder0"),
@@ -210,6 +201,9 @@ export default class Game extends Phaser.Scene {
         this.tracker = this.sound.add("tracker");
       }
     
+    playBobby () {
+      this.audios[Phaser.Math.RND.pick(["mom", "daddy", "where"])].play();  
+    }
 
     playAudioRandomly(key) {
       const volume = Phaser.Math.Between(0.8, 1);
@@ -241,10 +235,6 @@ export default class Game extends Phaser.Scene {
           delay: 0,
           volume
         });
-      }
-
-      playOfficer () {
-        this.sound.add(`officer${this.number}`).play();
       }
 
       playMusic () {

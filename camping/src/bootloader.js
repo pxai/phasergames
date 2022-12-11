@@ -40,7 +40,9 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("shock", "assets/sounds/shock.mp3");
 
         //this.load.audio("splash", "assets/sounds/splash.mp3"); 
-        this.load.audio("cave", "assets/sounds/cave.mp3");
+        this.load.audio("daddy", "assets/sounds/daddy.mp3");
+        this.load.audio("mom", "assets/sounds/mom.mp3");
+        this.load.audio("where", "assets/sounds/where.mp3");
         this.load.audio("type", "assets/sounds/type.mp3");
 
 
@@ -70,7 +72,7 @@ export default class Bootloader extends Phaser.Scene {
         });
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
 
-        this.registry.set("score", 0);
+        this.registry.set("bobby", Phaser.Math.Between(0,7));
     }
 
     create () {

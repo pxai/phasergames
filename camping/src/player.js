@@ -2,8 +2,8 @@ import { JumpSmoke, ShotSmoke } from "./particle";
 import Step from "./step";
 
 export default class Player extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, oxygen = 100) {
-        super(scene, x, y, "player")
+    constructor (scene, x, y, number = 0) {
+        super(scene, x, y, "player", number)
         this.scene = scene;
         this.setOrigin(0)
         this.setScale(1)
@@ -21,7 +21,6 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.moveDelta = 0;
         this.rate = 0.2;
         this.previousRate = 0.2;
-        this.oxygen = oxygen;
         this.locked = false;
     }
 

@@ -13,6 +13,11 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
         this.activated = false;
+        if (this.type === "bobby") {
+            this.scene.add.sprite(x, y, "player", 3)
+            console.log("Added bobby!", x, y)
+        }
+
     }
 
     showNote (note) {
@@ -64,8 +69,8 @@ export default class Object extends Phaser.GameObjects.Rectangle {
     revealEnding () {
         const ohmy = this.scene.sound.add("ohmygod")
         ohmy.play();
-        this.scene.cameras.main.shake(10000)
-        this.showExit(this.description)
+        this.scene.cameras.main.shake(3000)
+        //this.showExit(this.description)
         this.scene.sound.add("monster").play({volume: 1.5, rate: 0.8})
         const monster = this.scene.add.sprite(this.x + 128, this.y + 128, "monster").setOrigin(0.5)
         this.scene.anims.create({
@@ -77,7 +82,7 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         ohmy.on('complete', function () {
             //log("Dale fin")
             this.scene.playAudio("holeshout")
-            this.scene.finishScene("outro",false);
+            this.scene.finishScene("transition",false);
         }.bind(this))
     }
 
@@ -116,6 +121,9 @@ export default class Object extends Phaser.GameObjects.Rectangle {
                 this.activateBraun();
                 break;
             case "ending":
+                this.revealEnding();
+                break;
+            case "bobby":
                 this.revealEnding();
                 break;
             default:
