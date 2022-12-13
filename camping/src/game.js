@@ -99,6 +99,7 @@ export default class Game extends Phaser.Scene {
       this.platform.setCollisionByExclusion([-1]);
 
       this.holes = this.add.group();
+      this.monsters = this.add.group();
       this.tent = this.add.group();
       this.objects = this.add.group();
       this.createGrid();
@@ -156,7 +157,7 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
-      this.physics.add.overlap(this.player, this.holes, this.playerHitHole, ()=>{
+      this.physics.add.overlap(this.player, this.monsters, this.playerHitMonster, ()=>{
         return true;
       }, this);
     }
@@ -165,7 +166,7 @@ export default class Game extends Phaser.Scene {
     }
 
     touchObject (player, object) {
-        if (object.type === "hole") this.playTracker() 
+        if (object.type === "ending") this.playTracker() 
         if (this.foundBobby && object.type == "tent" && !object.activated) {
           object.activated = true;
           object.touch();
@@ -183,13 +184,10 @@ export default class Game extends Phaser.Scene {
       this.bobbySprite = this.add.sprite(this.player.x + 64, this.player.y + 32, "player", 4).setOrigin(0.5);
     }
 
-    playerHitHole(player, hole) {
+    playerHitMonster(player, monster) {
       if (!player.dead) {
-        this.playAudio("holeshout")
-        hole.setAlpha(1)
-        player.setAlpha(0);
-        this.cameras.main.shake(50);
-        player.death();
+        this.player.dead = true;
+        this.revealEnding();
       }
     }
 
@@ -242,7 +240,7 @@ export default class Game extends Phaser.Scene {
     }
 
     playTracker () {
-      if (!this.tracker.isPlaying) this.tracker.play();
+      if (!this.tracker.isPlaying) this.tracker.play({volume: 1});
     }
 
       playAudio(key) {
@@ -298,6 +296,35 @@ export default class Game extends Phaser.Scene {
       this.theme.stop();
       this.scene.start("transition", { number: this.number + 1});
     }
+
+    revealEnding (scene = "transition") {
+      const shouts = ["manscream","ohmygod", "childscream"]
+      const ohmy = this.sound.add(shouts[this.number])
+      ohmy.play();
+      this.cameras.main.shake(3000)
+
+      //this.showExit(this.description)
+      this.sound.add("monster").play({volume: 1.5, rate: 0.8})
+      const monster = this.add.sprite(this.player.x + 64, this.player.y + 64, "monster").setOrigin(0.5)
+      const fade = this.add.rectangle(this.player.x, this.player.y, 1800, 1800, 0x000000).setOrigin(0.5).setAlpha(0)
+      this.tweens.add({
+          targets: fade,
+          alpha: {from: 0, to: 1},
+          duration: 1500,
+          ease: 'Sine',
+      })
+      this.anims.create({
+          key: "monster",
+          frames: this.anims.generateFrameNumbers("monster", { start: 0, end: 5 }),
+          frameRate: 3
+        });
+        monster.anims.play("monster", true)
+      ohmy.on('complete', function () {
+          //log("Dale fin")
+          this.playAudio("holeshout")
+          this.finishScene(scene, false);
+      }.bind(this))
+  }
 
     finishScene (scene = "transition", mute = true) {
       const x = this.cameras.main.worldView.centerX;

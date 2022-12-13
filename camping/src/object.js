@@ -1,5 +1,6 @@
 import Hole from "./hole";
 import Braun from "./braun";
+import Monster from "./monster";
 
 export default class Object extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, type, description, extra = "") {
@@ -55,41 +56,16 @@ export default class Object extends Phaser.GameObjects.Rectangle {
     }
 
 
-    revealEnding (scene = "transition") {
-        const shouts = ["manscream","ohmygod", "childscream"]
-        const ohmy = this.scene.sound.add(shouts[this.scene.number])
-        ohmy.play();
-        this.scene.cameras.main.shake(3000)
-
-        //this.showExit(this.description)
-        this.scene.sound.add("monster").play({volume: 1.5, rate: 0.8})
-        const monster = this.scene.add.sprite(this.x + 128, this.y + 128, "monster").setOrigin(0.5)
-        const fade = this.scene.add.rectangle(this.scene.player.x, this.scene.player.y, 1800, 1800, 0x000000).setOrigin(0.5).setAlpha(0)
-        this.scene.tweens.add({
-            targets: fade,
-            alpha: {from: 0, to: 1},
-            duration: 1000,
-            ease: 'Sine',
-        })
-        this.scene.anims.create({
-            key: "monster",
-            frames: this.scene.anims.generateFrameNumbers("monster", { start: 0, end: 5 }),
-            frameRate: 3
-          });
-          monster.anims.play("monster", true)
-        ohmy.on('complete', function () {
-            //log("Dale fin")
-            this.scene.playAudio("holeshout")
-            this.scene.finishScene(scene, false);
-        }.bind(this))
-    }
-
     update () {
 
     }
 
     activateHole () {
         this.scene.holes.add(new Hole(this.scene, this.x + 64, this.y + 64))
+    }
+
+    activateMonster () {
+        this.scene.monsters.add(new Monster(this.scene, this.x + 64, this.y + 64))
     }
 
     activateBraun () {
@@ -113,14 +89,14 @@ export default class Object extends Phaser.GameObjects.Rectangle {
                 this.activateBraun();
                 break;
             case "ending":
-                this.revealEnding();
+                this.activateMonster();
                 break;
             case "bobby":
                 this.foundBobby();
                 break;
             case "tent":
                 if (this.scene.foundBobby)
-                    this.revealEnding("outro");
+                    this.scene.revealEnding("outro");
                 break;
             default:
                 break;
