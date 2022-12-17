@@ -1,6 +1,6 @@
 class Bulb extends Phaser.GameObjects.Sprite {
-  constructor (scene, x, y, name = "heart", color = "0xffffff") {
-      super(scene, x, y, name);
+  constructor (scene, x, y, name = "bulb", color = "0xffffff") {
+      super(scene, x, y, name, 0);
       this.scene = scene;
      // this.color = color;
       this.setOrigin(0)
@@ -16,7 +16,7 @@ class Bulb extends Phaser.GameObjects.Sprite {
       this.body.moves = false;
       const potAnimation = this.scene.anims.create({
         key: this.name,
-        frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 1 }, ),
+        frames: this.scene.anims.generateFrameNumbers(this.name, { start: 1, end: 2 }, ),
         frameRate: 5
       });
     //this.play({ key: this.name, repeat: -1 });

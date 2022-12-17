@@ -1,7 +1,7 @@
 import EasyStar from "easystarjs";
 
 class Energy extends Phaser.GameObjects.Sprite {
-  constructor (scene, x, y, grid, name = "heart", color = "0xffffff") {
+  constructor (scene, x, y, grid, name = "energy", color = "0xffffff") {
       super(scene, x, y, name);
       this.scene = scene;
       this.color = color;
@@ -18,7 +18,7 @@ class Energy extends Phaser.GameObjects.Sprite {
       this.body.moves = false;
       const potAnimation = this.scene.anims.create({
         key: this.name,
-        frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 1 }, ),
+        frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 2 }, ),
         frameRate: 5
       });
     this.play({ key: this.name, repeat: -1 });
@@ -41,7 +41,7 @@ class Energy extends Phaser.GameObjects.Sprite {
     this.scene.tweens.add({
       targets: this,
       duration: 500,
-      y: this.y - 20,
+      scaleX: {from: 0.9, to: 1},
       repeat: -1,
       yoyo: true
     })  
