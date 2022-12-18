@@ -24,6 +24,7 @@
     "browserify-zlib": "^0.2.0",
     "easystarjs": "^0.4.4",
     "phaser": "^3.52.0",
+    "firebase": "^9.13.0",
     "phaser-matter-collision-plugin": "1.0.0",
     "tone": "^14.7.77"
   },

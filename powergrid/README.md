@@ -13,8 +13,8 @@ Frog Beat
 https://www.youtube.com/watch?v=dEqp23rv-BQ&ab_channel=xddcmusic
 
 Colors:
-primary: 0x3c97a6 water
+primary: fffd00 yellow
 shadow: 0x048684
-secondary: 0xa6f316  green
+secondary: #b95e00  orange
  toad: 0x75b947
  water: 0x00ffaf

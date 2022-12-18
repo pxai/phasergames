@@ -56,7 +56,7 @@ export default class Outro extends Phaser.Scene {
     }
 
     showCount () {
-        this.winText = this.add.bitmapText(this.center_width, -100, "mario", "TOTAL MOVES: " + this.registry.get("moves"), 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x75b947, 0.7);
+        this.winText = this.add.bitmapText(this.center_width, -100, "mario", "TOTAL MOVES: " + this.registry.get("moves"), 30).setOrigin(0.5).setTint(0xfffd00).setDropShadow(2, 3, 0x75b947, 0.7);
         this.tweens.add({
           targets: this.winText,
           duration: 500,

@@ -27,7 +27,6 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      this.cameras.main.setBackgroundColor(0x000000)
       this.input.mouse.disableContextMenu();
       this.addPointer();
 
@@ -46,14 +45,14 @@ export default class Game extends Phaser.Scene {
     }
 
     addMoves() {
-      this.movesText = this.add.bitmapText(this.center_width, 32, "mario", "0", 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(3, 4, 0x75b947, 0.7);
+      this.movesText = this.add.bitmapText(this.center_width, 32, "mario", "0", 30).setOrigin(0.5).setTint(0xb95e00).setDropShadow(3, 4, 0xfffd00, 0.7);
       this.totalMoves = 0;
     }
 
     addMap() {
       this.tileMap = this.make.tilemap({ key: `scene${this.number}` , tileWidth: 32, tileHeight: 32 });
       this.tileSetBg = this.tileMap.addTilesetImage("tileset_fg");
-      this.tileMap.createStaticLayer('background', this.tileSetBg)
+     // this.tileMap.createStaticLayer('background', this.tileSetBg)
   
       this.tileSet = this.tileMap.addTilesetImage("tileset_fg");
       this.platform = this.tileMap.createLayer(`scene${this.number}`, this.tileSet);
@@ -71,7 +70,8 @@ export default class Game extends Phaser.Scene {
       console.log("Initial blocks: ", this.initialBlocks.length)
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("switch")){
-          this.switches.add(new Switch(this, object.x, object.y, object.name))
+          const [name, off] = object.name.split("_");
+          this.switches.add(new Switch(this, object.x, object.y, name, off))
         }
   
         if (object.name.startsWith("bulb")){
@@ -164,9 +164,9 @@ export default class Game extends Phaser.Scene {
 
     showTexts() {
       if (this.number > 0) return;
-      const texts = ["Select cubes", "Pull/push them with WASD/Arrows", "MOVE the red to exit"]
+      const texts = ["Click on green swtiches and","Connect energy with bulbs"]
       texts.forEach((text, i) => {
-       let help = this.add.bitmapText(this.center_width, 425 + (35 * i), "mario", text, 15).setOrigin(0.5).setTint(0xffe066).setDropShadow(1, 2, 0xbf2522, 0.7);
+       let help = this.add.bitmapText(this.center_width, 525 + (35 * i), "mario", text, 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 1, 0xfffd00, 0.7);
      })
    }
 
@@ -221,7 +221,7 @@ export default class Game extends Phaser.Scene {
       const totalMoves = +this.registry.get("moves") + this.totalMoves;
       this.registry.set("moves", totalMoves)
 
-      this.winText = this.add.bitmapText(this.center_width, -100, "mario", "STAGE CLEARED!", 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x75b947, 0.7);
+      this.winText = this.add.bitmapText(this.center_width, -100, "mario", "LIGHTS UP!!!", 30).setOrigin(0.5).setTint(0xb95e00).setDropShadow(2, 3, 0xfffd00, 0.7);
       this.tweens.add({
         targets: this.winText,
         duration: 500,
