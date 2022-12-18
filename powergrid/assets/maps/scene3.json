@@ -35,10 +35,10 @@
         {
          "data":[8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
             8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+            8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+            8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+            8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0, 8, 8, 8, 8, 8,
             8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
             8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
             8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
@@ -75,30 +75,30 @@
                  "rotation":0,
                  "visible":true,
                  "width":0,
-                 "x":96,
-                 "y":256
+                 "x":288,
+                 "y":416
                 }, 
                 {
                  "class":"",
                  "height":0,
                  "id":11,
-                 "name":"switch3",
+                 "name":"switch5",
                  "rotation":0,
                  "visible":true,
                  "width":0,
-                 "x":256,
-                 "y":256
+                 "x":288,
+                 "y":352
                 }, 
                 {
                  "class":"",
                  "height":0,
                  "id":18,
-                 "name":"switch5_on",
+                 "name":"switch5",
                  "rotation":0,
                  "visible":true,
                  "width":0,
                  "x":192,
-                 "y":256
+                 "y":224
                 }, 
                 {
                  "class":"",
@@ -108,8 +108,8 @@
                  "rotation":0,
                  "visible":true,
                  "width":0,
-                 "x":480,
-                 "y":224
+                 "x":192,
+                 "y":160
                 }, 
                 {
                  "class":"",
@@ -119,8 +119,8 @@
                  "rotation":0,
                  "visible":true,
                  "width":0,
-                 "x":480,
-                 "y":288
+                 "x":288,
+                 "y":224
                 }, 
                 {
                  "class":"",
@@ -130,14 +130,47 @@
                  "rotation":0,
                  "visible":true,
                  "width":0,
-                 "x":256,
-                 "y":288
+                 "x":416,
+                 "y":160
                 }, 
                 {
                  "class":"",
                  "height":0,
                  "id":30,
                  "name":"switch7_on",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":288,
+                 "y":160
+                }, 
+                {
+                 "class":"",
+                 "height":0,
+                 "id":31,
+                 "name":"bulb",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":288,
+                 "y":64
+                }, 
+                {
+                 "class":"",
+                 "height":0,
+                 "id":32,
+                 "name":"switch5",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":416,
+                 "y":224
+                }, 
+                {
+                 "class":"",
+                 "height":0,
+                 "id":33,
+                 "name":"switch5",
                  "rotation":0,
                  "visible":true,
                  "width":0,
@@ -151,7 +184,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":31,
+ "nextobjectid":34,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.9.2",

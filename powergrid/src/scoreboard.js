@@ -22,7 +22,7 @@ export default class Scoreboard extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
         this.cloudLayer = this.add.layer();    
-        console.log("This scoreboard: ", this.number)
+
         if (this.number > 0)
             await this.saveScore();
         else
@@ -47,7 +47,7 @@ export default class Scoreboard extends Phaser.Scene {
 
     async saveScore () {
         this.playMusic();
-        console.log("Should save score")
+
         this.currentId = 0;
         const hits = +this.registry.get("moves");
         if (hits === 0) return;
@@ -94,17 +94,15 @@ export default class Scoreboard extends Phaser.Scene {
     }
 
     async loadScores () {
-        console.log("Ready to read")
         const scores = await readData();
         const PowerGridScores = scores.filter(score => score.game === "PowerGrid")
         PowerGridScores.sort((a, b) => a.score - b.score);
 
         let amongFirst10 = false;
-        console.log("Scores: ", PowerGridScores.length)
         PowerGridScores.splice(0, 10).forEach( (score, i) => {
-            const text0 = this.add.bitmapText(this.center_width - 350, 170 + (i * 60), "mario", `${i+1}`, 30).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7);
-            const text1 = this.add.bitmapText(this.center_width - 150, 170 + (i * 60), "mario", `${score.player.substring(0, 10).padEnd(11, ' ')}`, 30).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7)
-            const text2 = this.add.bitmapText(this.center_width + 200, 170 + (i * 60), "mario", `${String(score.score).padStart(10, '0')}`, 30).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7)
+            const text0 = this.add.bitmapText(this.center_width - 250, 170 + (i * 30), "mario", `${i+1}`, 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7);
+            const text1 = this.add.bitmapText(this.center_width - 50, 170 + (i * 30), "mario", `${score.player.substring(0, 10).padEnd(11, ' ')}`, 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7)
+            const text2 = this.add.bitmapText(this.center_width + 200, 170 + (i * 30), "mario", `${String(score.score).padStart(4, '0')}`, 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7)
             
             if (score.id === this.currentId) {
 
@@ -146,7 +144,6 @@ export default class Scoreboard extends Phaser.Scene {
     }
 
     clickedLetter(letter) {
-        console.log(letter, this.userName)
         if (this.userName.length < 9) {
             this.userName += letter;
             this.userNameText.setText(this.userName.padEnd(9, '-'));

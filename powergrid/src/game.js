@@ -30,6 +30,7 @@ export default class Game extends Phaser.Scene {
       this.input.mouse.disableContextMenu();
       this.addPointer();
       this.addLight();
+      this.add.tileSprite(0, 0, 608, 608, "background").setOrigin(0);
       this.addMap();
       //this.setListeners();  
       this.addMoves();
@@ -54,7 +55,7 @@ export default class Game extends Phaser.Scene {
     addMap() {
       this.tileMap = this.make.tilemap({ key: `scene${this.number}` , tileWidth: 32, tileHeight: 32 });
       this.tileSetBg = this.tileMap.addTilesetImage("tileset_fg");
-     // this.tileMap.createStaticLayer('background', this.tileSetBg)
+      //this.tileMap.createStaticLayer('background', this.tileSetBg)
   
       this.tileSet = this.tileMap.addTilesetImage("tileset_fg");
       this.platform = this.tileMap.createLayer(`scene${this.number}`, this.tileSet)//.setPipeline('Light2D');
@@ -65,6 +66,8 @@ export default class Game extends Phaser.Scene {
       this.blocks = this.add.group();
       this.switches = this.add.group();
       this.bulbs = this.add.group();
+      this.switchLayer = this.add.layer();
+      this.energyLayer = this.add.layer();
       this.energy = null;
       this.texts = [];
       this.initialBlocks = this.savePositions();
@@ -73,15 +76,20 @@ export default class Game extends Phaser.Scene {
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("switch")){
           const [name, off] = object.name.split("_");
-          this.switches.add(new Switch(this, object.x, object.y, name, off))
+          let switchy = new Switch(this, object.x, object.y, name, off)
+          this.switches.add(switchy)
+          this.switchLayer.add(switchy)
         }
   
         if (object.name.startsWith("bulb")){
-          this.bulbs.add(new Bulb(this, object.x, object.y))
+          let bulb = new Bulb(this, object.x, object.y);
+          this.bulbs.add(bulb)
+          this.energyLayer.add(bulb)
         }
 
         if (object.name.startsWith("energy")){
           this.energy = new Energy(this, object.x, object.y, this.grid)
+          this.energyLayer.add(this.energy)
         }
       })
 
@@ -106,8 +114,8 @@ export default class Game extends Phaser.Scene {
 
     rearrange() {
       //this.tileMap.putTileAt(this.initialBlocks, 0, 0);
+      this.disableBulbs();
       this.initialBlocks.forEach(tile => {
-
         this.platform.putTileAt(8, tile.x, tile.y)
       })
 
@@ -117,7 +125,7 @@ export default class Game extends Phaser.Scene {
 
         //console.log("see: ", x, y, width, height)
 
-        const tiles = this.tileMap.getTilesWithin( x/32, y/32, width / 32, height/ 32, {
+        const tiles = this.tileMap.getTilesWithin( Math.floor(x/32), Math.floor(y/32), Math.floor(width / 32), Math.floor(height/ 32), {
           isNotEmpty: true,
           isColliding: true,
           hasInterestingFace: false
@@ -137,6 +145,12 @@ export default class Game extends Phaser.Scene {
       })
     }
 
+    disableBulbs () {
+      this.bulbs.children.entries.forEach(bulb => {
+        bulb.deactivate();
+      })
+    }
+
     checkAll () {
       if (this.bulbs.children.entries.every(bulb => bulb.activated)) {
         this.finishScene();
@@ -148,11 +162,9 @@ export default class Game extends Phaser.Scene {
       for (let i = 0; i < 19; i++)
         for (let j = 0; j < 19; j++) {
           const tile = this.platform.getTileAt(i, j)
-          console.log("Anything to save? ", i, j, tile)
           if (tile) positions.push({x: i, y: j})
         }
       
-      console.log(positions.length, positions)
       return positions;
     }
 

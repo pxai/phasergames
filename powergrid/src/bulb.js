@@ -36,7 +36,6 @@ class Bulb extends Phaser.GameObjects.Sprite {
 
   activate () {
     this.tint = 0xffffff
-    console.log("Bulb activated!!")
     this.activated = true;
     this.play({ key: this.name, repeat: -1 });
     this.scene.checkAll();
@@ -47,7 +46,6 @@ class Bulb extends Phaser.GameObjects.Sprite {
 
   deactivate () {
     this.clearTint()
-    console.log("Bulb deactivated!!")
     this.stop({key: this.name})
     this.activated = false;
   }

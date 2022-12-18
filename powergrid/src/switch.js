@@ -9,7 +9,6 @@ export default class Switch extends Phaser.GameObjects.Sprite {
         this.scene.physics.add.existing(this);
         this.body.immovable = true;
         this.setOrigin(0.5)
-        this.setAlpha(0.6)
         this.scene.events.on("update", this.update, this);
         if (turn) this.rotation += Math.PI / 2;
         this.setListeners();

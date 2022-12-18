@@ -62,10 +62,8 @@ class Energy extends Phaser.GameObjects.Sprite {
 
     checkPath (path, bulb) {
       if (!path) {
-        console.log("There is NO path for ", bulb)
         bulb.deactivate();
       } else {
-        console.log("There is a PATH for ", bulb)
         bulb.activate();
       }
     }

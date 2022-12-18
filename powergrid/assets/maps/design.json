@@ -34,7 +34,7 @@
         }, 
         {
          "data":[8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-            8, 8, 8, 8, 8, 8, 0, 8, 8, 8, 0, 8, 8, 8, 8, 8, 8, 8, 8,
+            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
             8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
             8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
             8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
@@ -54,7 +54,7 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":19,
          "id":2,
-         "name":"scene2",
+         "name":"scene0",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -75,8 +75,8 @@
                  "rotation":0,
                  "visible":true,
                  "width":0,
-                 "x":320,
-                 "y":576
+                 "x":288,
+                 "y":416
                 }, 
                 {
                  "class":"",
@@ -86,29 +86,7 @@
                  "rotation":0,
                  "visible":true,
                  "width":0,
-                 "x":224,
-                 "y":256
-                }, 
-                {
-                 "class":"",
-                 "height":0,
-                 "id":12,
-                 "name":"bulb",
-                 "rotation":0,
-                 "visible":true,
-                 "width":0,
-                 "x":192,
-                 "y":32
-                }, 
-                {
-                 "class":"",
-                 "height":0,
-                 "id":17,
-                 "name":"switch5",
-                 "rotation":0,
-                 "visible":true,
-                 "width":0,
-                 "x":256,
+                 "x":288,
                  "y":352
                 }, 
                 {
@@ -119,52 +97,8 @@
                  "rotation":0,
                  "visible":true,
                  "width":0,
-                 "x":320,
-                 "y":96
-                }, 
-                {
-                 "class":"",
-                 "height":0,
-                 "id":21,
-                 "name":"switch3",
-                 "rotation":0,
-                 "visible":true,
-                 "width":0,
-                 "x":192,
-                 "y":192
-                }, 
-                {
-                 "class":"",
-                 "height":0,
-                 "id":22,
-                 "name":"switch5",
-                 "rotation":0,
-                 "visible":true,
-                 "width":0,
-                 "x":192,
-                 "y":128
-                }, 
-                {
-                 "class":"",
-                 "height":0,
-                 "id":23,
-                 "name":"switch5",
-                 "rotation":0,
-                 "visible":true,
-                 "width":0,
                  "x":288,
-                 "y":448
-                }, 
-                {
-                 "class":"",
-                 "height":0,
-                 "id":24,
-                 "name":"switch5",
-                 "rotation":0,
-                 "visible":true,
-                 "width":0,
-                 "x":320,
-                 "y":512
+                 "y":160
                 }, 
                 {
                  "class":"",
@@ -174,41 +108,19 @@
                  "rotation":0,
                  "visible":true,
                  "width":0,
-                 "x":320,
-                 "y":32
+                 "x":288,
+                 "y":96
                 }, 
                 {
                  "class":"",
                  "height":0,
                  "id":27,
-                 "name":"switch7",
+                 "name":"switch5",
                  "rotation":0,
                  "visible":true,
                  "width":0,
-                 "x":320,
-                 "y":160
-                }, 
-                {
-                 "class":"",
-                 "height":0,
-                 "id":29,
-                 "name":"switch3",
-                 "rotation":0,
-                 "visible":true,
-                 "width":0,
-                 "x":320,
+                 "x":288,
                  "y":256
-                }, 
-                {
-                 "class":"",
-                 "height":0,
-                 "id":30,
-                 "name":"switch3",
-                 "rotation":0,
-                 "visible":true,
-                 "width":0,
-                 "x":352,
-                 "y":352
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -217,7 +129,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":31,
+ "nextobjectid":29,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.9.2",
