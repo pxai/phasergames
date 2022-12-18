@@ -34,7 +34,10 @@ export default class Bootloader extends Phaser.Scene {
         this.load.bitmapFont("mario", "assets/fonts/mario.png", "assets/fonts/mario.xml");
         this.load.audio("music", "assets/sounds/music.mp3");
         this.load.audio("splash", "assets/sounds/splash.mp3");
+        this.load.audio("transition", "assets/sounds/transition.mp3");
 
+        this.load.audio("switch", "assets/sounds/switch.mp3");
+        this.load.audio("prewin", "assets/sounds/prewin.mp3");
         this.load.audio("win", "assets/sounds/win.mp3");
         this.load.audio("hover", "assets/sounds/hover.mp3");
         this.load.audio("select", "assets/sounds/select.mp3");
@@ -44,6 +47,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image('background', 'assets/images/background.png');
         this.load.image('tileset_fg', 'assets/maps/tileset_fg.png');
         this.load.image('bolt', 'assets/images/bolt.png');
+        this.load.image('boltsm', 'assets/images/boltsm.png');
         this.load.image('block_green', 'assets/images/block_green.png');
         this.load.image('block_blue', 'assets/images/block_blue.png');
         this.load.image('block_yellow', 'assets/images/block_yellow.png');
@@ -57,7 +61,7 @@ export default class Bootloader extends Phaser.Scene {
         });
 
 
-        Array(9).fill(0).forEach((_,i) => {
+        Array(10).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`);
         });
 

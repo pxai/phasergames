@@ -1,10 +1,9 @@
 import {readData, saveData } from "./store";
-import Sky from "./sky";
 import Key from "./key";
 
-export default class Outro extends Phaser.Scene {
+export default class Scoreboard extends Phaser.Scene {
     constructor () {
-        super({ key: "outro" });
+        super({ key: "scoreboard" });
     }
 
     init (data) {
@@ -22,16 +21,18 @@ export default class Outro extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.cameras.main.setBackgroundColor(0x006fb1)
         this.cloudLayer = this.add.layer();    
-        await this.saveScore();
+        console.log("This scoreboard: ", this.number)
+        if (this.number > 0)
+            await this.saveScore();
+        else
+            await this.loadScores();
         //
-        this.add.bitmapText(this.center_width,70, "mario", "SCOREBOARD", 60).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
-        this.restartText = this.add.bitmapText(this.center_width, 760, "mario", "Click HERE to Restart", 20).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.add.bitmapText(this.center_width,70, "mario", "SCOREBOARD", 60).setOrigin(0.5).setTint(0xb95e00).setDropShadow(3, 4, 0xfffd00, 0.7);;
+        this.restartText = this.add.bitmapText(this.center_width, 550, "mario", "Continue", 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7);
         this.restartText.setInteractive();
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
         this.restartText.on('pointerdown', (pointer) => this.loadNext(), this);
-        this.addSky();
         this.tweens.add({
             targets: this.restartText,
             duration: 300,
@@ -41,14 +42,12 @@ export default class Outro extends Phaser.Scene {
         });
     }
 
-    addSky() {
-        this.sky = new Sky(this);
-    }
-
     update () {
     }
 
     async saveScore () {
+        this.playMusic();
+        console.log("Should save score")
         this.currentId = 0;
         const hits = +this.registry.get("moves");
         if (hits === 0) return;
@@ -64,7 +63,7 @@ export default class Outro extends Phaser.Scene {
     showPrompt () {
         this.prompt = this.add.layer();
         this.userName = "";
-        this.userNameText = this.add.bitmapText(this.center_width, this.center_height - 150, "mario", this.userName.padEnd(9, '-'), 50).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.userNameText = this.add.bitmapText(this.center_width - 250, this.center_height - 150, "mario", this.userName.padEnd(9, '-'), 50).setTint(0xb95e00).setDropShadow(3, 4, 0xfffd00, 0.7);
         this.prompt.add(this.userNameText)
         this.addLetters()
     }
@@ -95,16 +94,17 @@ export default class Outro extends Phaser.Scene {
     }
 
     async loadScores () {
+        console.log("Ready to read")
         const scores = await readData();
         const PowerGridScores = scores.filter(score => score.game === "PowerGrid")
         PowerGridScores.sort((a, b) => a.score - b.score);
 
         let amongFirst10 = false;
-
+        console.log("Scores: ", PowerGridScores.length)
         PowerGridScores.splice(0, 10).forEach( (score, i) => {
-            const text0 = this.add.bitmapText(this.center_width - 350, 170 + (i * 60), "mario", `${i+1}`, 30).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
-            const text1 = this.add.bitmapText(this.center_width - 150, 170 + (i * 60), "mario", `${score.player.substring(0, 10).padEnd(11, ' ')}`, 30).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
-            const text2 = this.add.bitmapText(this.center_width + 200, 170 + (i * 60), "mario", `${String(score.score).padStart(10, '0')}`, 30).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
+            const text0 = this.add.bitmapText(this.center_width - 350, 170 + (i * 60), "mario", `${i+1}`, 30).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7);
+            const text1 = this.add.bitmapText(this.center_width - 150, 170 + (i * 60), "mario", `${score.player.substring(0, 10).padEnd(11, ' ')}`, 30).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7)
+            const text2 = this.add.bitmapText(this.center_width + 200, 170 + (i * 60), "mario", `${String(score.score).padStart(10, '0')}`, 30).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7)
             
             if (score.id === this.currentId) {
 
@@ -120,10 +120,29 @@ export default class Outro extends Phaser.Scene {
         })
     }
 
+    playMusic (theme="transition") {
+        this.theme = this.sound.add(theme);
+        this.theme.stop();
+        this.theme.play({
+          mute: false,
+          volume: 0.5,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+        })
+      }
+
+
     loadNext () {
         this.game.sound.stopAll();
         this.registry.set("moves", 0);
-        this.scene.start("splash");
+
+        if (this.number > 0)
+            this.scene.start("splash");
+        else
+            this.scene.start("transition", {name: "STAGE", number: 0})
     }
 
     clickedLetter(letter) {
@@ -143,16 +162,16 @@ export default class Outro extends Phaser.Scene {
         const alphabet = "qwertyuiop-asdfghjklñ-zxcvbnm";
         this.keyboard = {};
         let stepY = 0;
-        let stepX = 64;
+        let stepX = 48;
         let x = -32;
         let y = 0;
        // this.add.rectangle(250, 740, 500, 200, 0x4d4d4d).setOrigin(0.5);
         alphabet.split("").forEach((letter, i) => {
           const isDash = letter === "-";
           x = stepX ;
-          stepY += isDash ? 64 : 0 
-          stepX = isDash ? 64 : stepX + 64;
-          y = 440 + stepY;
+          stepY += isDash ? 48 : 0 
+          stepX = isDash ? 48 : stepX + 48;
+          y = 280 + stepY;
   
           if (isDash) return;
   
@@ -165,6 +184,6 @@ export default class Outro extends Phaser.Scene {
         this.prompt.add(this.keyboard["ok"])
         this.keyboard["--"] = new Key(this, x + 192, y, "--", this.deleteName.bind(this));
         this.prompt.add(this.keyboard["--"])
-        this.helpText = this.add.bitmapText(this.center_width, 630, "mario", "", 30).setTint(0x4d4d4d).setOrigin(0.5)
+        this.helpText = this.add.bitmapText(this.center_width, 500, "mario", "To enter your name just \nClick on letters and press OK", 15).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7)
       }
 }

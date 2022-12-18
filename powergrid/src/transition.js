@@ -29,11 +29,12 @@ export default class Transition extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        
+        this.addLight();
         //this.cameras.main.setBackgroundColor(0x3c97a6);
         //this.addStartButton();
 
-        if (this.number === 2) {
+        this.playMusic();
+        if (this.number === 10) {
             this.scene.start("outro", { name: this.name, number: this.number });
         }
 
@@ -47,11 +48,32 @@ export default class Transition extends Phaser.Scene {
         
     }
 
+    playMusic (theme="transition") {
+        this.theme = this.sound.add(theme);
+        this.theme.stop();
+        this.theme.play({
+          mute: false,
+          volume: 0.5,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+        })
+      }
+
+    addLight() {
+        this.lights.enable();
+        this.lights.setAmbientColor(0xd0d0d0);
+    }
+
     addStageBulbs() {
-        Array(5).fill(0).forEach((_, i) => {
+        Array(10).fill(0).forEach((_, i) => {
             const shouldTween = i === this.number;
             const bulbIndex = i < this.number ? 1 : 0; 
-            const bulb = this.add.sprite(20 + (i*50), this.center_height, "bulb", bulbIndex);
+            const bulb = this.add.sprite(60 + (i*50), this.center_height, "bulb", bulbIndex);
+            if (i < this.number)
+                this.lights.addPointLight(60 + (i*50), this.center_height, 0xfffd00, 40, .3)
             if (shouldTween) {
                 this.tweens.add({
                     targets: [bulb],
@@ -88,6 +110,7 @@ export default class Transition extends Phaser.Scene {
     }
 
     loadNext () {
+        this.game.sound.stopAll();
         this.scene.start("game", { name: this.name, number: this.number, limitedTime: 10 + (this.number * 3) });
     }
 }

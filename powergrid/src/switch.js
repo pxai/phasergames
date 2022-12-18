@@ -18,7 +18,7 @@ export default class Switch extends Phaser.GameObjects.Sprite {
   setListeners () {
     this.setInteractive();
     this.on("pointerdown", (pointer) => {
-      this.scene.playAudio("select")
+      this.scene.playAudio("switch")
       
       this.setTint(0x306070);
       this.rotation += Math.PI / 2;

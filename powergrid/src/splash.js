@@ -27,8 +27,8 @@ export default class Splash extends Phaser.Scene {
 
     startGame () {
         if (this.theme) this.theme.stop();
-        this.playGameMusic();
-        this.scene.start("transition", {name: "STAGE", number: 0})
+        this.scene.start("scoreboard", {name: "STAGE", number: 0})
+        //this.scene.start("transition", {name: "STAGE", number: 0})
     }
 
     showTitle() {
@@ -88,20 +88,6 @@ export default class Splash extends Phaser.Scene {
       })
       }
 
-      playGameMusic (theme="music") {
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
-        this.theme.play({
-          mute: false,
-          volume: 0.2,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-        })
-      }
-
       showPlayer () {
         this.frog = this.add.sprite(this.center_width, 350, "block_blue").setOrigin(0.5).setScale(1.5);
     }
@@ -110,7 +96,7 @@ export default class Splash extends Phaser.Scene {
         this.startButton = this.add.bitmapText(this.center_width, 540, "mario", "start", 30).setOrigin(0.5).setTint(0xfffd00).setDropShadow(2, 3, 0x693600, 0.7);
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {
-            this.sound.add("move").play();
+            this.sound.add("prewin").play();
             this.startGame();
         });
     

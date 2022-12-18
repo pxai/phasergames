@@ -3,6 +3,10 @@ export default class Outro extends Phaser.Scene {
         super({ key: "outro" });
     }
 
+    init (data) {
+        this.number = data.number;
+    }
+
     preload () {
     }
 
@@ -12,7 +16,6 @@ export default class Outro extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
         this.introLayer = this.add.layer();        
-        this.cameras.main.setBackgroundColor(0x3c97a6);
         this.splashLayer = this.add.layer();
         this.text = [ 
             "Finally",
@@ -81,7 +84,7 @@ export default class Outro extends Phaser.Scene {
     }
 
     addStartButton () {
-        this.startButton = this.add.bitmapText(this.center_width, 500, "mario", "Click to start", 30).setOrigin(0.5).setTint(0x9A5000).setDropShadow(2, 3, 0x693600, 0.7);
+        this.startButton = this.add.bitmapText(this.center_width, 500, "mario", "CONTINUE", 30).setOrigin(0.5).setTint(0x9A5000).setDropShadow(1, 2, 0x693600, 0.7);
         this.startButton.setInteractive();
         this.startButton.on('pointerdown', () => {
             this.startSplash();
@@ -106,6 +109,6 @@ export default class Outro extends Phaser.Scene {
 
     startSplash () {
         this.sound.stopAll();
-        this.scene.start("splash");
+        this.scene.start("scoreboard", {name: "STAGE", number: this.number});
     }
 }

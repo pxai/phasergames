@@ -1,3 +1,5 @@
+import Lit from "./lit";
+
 class Bulb extends Phaser.GameObjects.Sprite {
   constructor (scene, x, y, name = "bulb", color = "0xffffff") {
       super(scene, x, y, name, 0);
@@ -38,6 +40,9 @@ class Bulb extends Phaser.GameObjects.Sprite {
     this.activated = true;
     this.play({ key: this.name, repeat: -1 });
     this.scene.checkAll();
+    //new Lit(this.scene, this.x, this.y)
+    this.scene.lights.addPointLight(this.x + 16, this.y + 16, 0xfffd00, 40, .3)
+   // this.bulbLight = this.scene.lights.addLight(this.x, this.y, 200).setColor(0xffffff).setIntensity(3.0);
   }
 
   deactivate () {

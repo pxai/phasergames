@@ -29,7 +29,7 @@ export default class Game extends Phaser.Scene {
       this.center_height = this.height / 2;
       this.input.mouse.disableContextMenu();
       this.addPointer();
-
+      this.addLight();
       this.addMap();
       //this.setListeners();  
       this.addMoves();
@@ -38,6 +38,8 @@ export default class Game extends Phaser.Scene {
       this.loadAudios(); 
       this.showTexts();
       this.solved = false;
+      this.playAudio("prewin");
+      this.playMusic();
     }
 
     addRetry () {
@@ -55,7 +57,7 @@ export default class Game extends Phaser.Scene {
      // this.tileMap.createStaticLayer('background', this.tileSetBg)
   
       this.tileSet = this.tileMap.addTilesetImage("tileset_fg");
-      this.platform = this.tileMap.createLayer(`scene${this.number}`, this.tileSet);
+      this.platform = this.tileMap.createLayer(`scene${this.number}`, this.tileSet)//.setPipeline('Light2D');
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
       this.platform.setCollisionByExclusion([-1]);
       this.physics.world.setBounds(0, 0, this.width, this.height);
@@ -67,7 +69,7 @@ export default class Game extends Phaser.Scene {
       this.texts = [];
       this.initialBlocks = this.savePositions();
       this.updateGrid();
-      console.log("Initial blocks: ", this.initialBlocks.length)
+
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("switch")){
           const [name, off] = object.name.split("_");
@@ -85,6 +87,11 @@ export default class Game extends Phaser.Scene {
 
     }
 
+    addLight() {
+      this.lights.enable();
+      this.lights.setAmbientColor(0xd0d0d0);
+    }
+
     updateGrid () {
       this.grid = [];
 
@@ -100,7 +107,7 @@ export default class Game extends Phaser.Scene {
     rearrange() {
       //this.tileMap.putTileAt(this.initialBlocks, 0, 0);
       this.initialBlocks.forEach(tile => {
-        //console.log("Readding: ", 0, tile.x, tile.y)
+
         this.platform.putTileAt(8, tile.x, tile.y)
       })
 
@@ -122,19 +129,6 @@ export default class Game extends Phaser.Scene {
       this.updateGrid();
       this.energy.updateGrid(this.grid)
       this.checkEnergy(this.grid);
-      //console.log("Initial blocks: ", this.initialBlocks.length)
-     // this.initialBlocks.forEach(tile => this.platform.putTileAt(0, tile.x, tile.y))
-
-      /*for (let i = 0; i < 19; i++)
-        for (let j = 0; j < 19; j++) {
-          const tile = this.platform.getTileAt(i, j)
-          let result = [];
-          const intersect = Phaser.Geom.Intersects.RectangleToRectangle(tile, switchSpace, result)
-          if (intersect) {
-            this.platform.removeTileAt(tile.x, tile.y);
-            console.log("Intersect! ", tile, intersect, result)
-          }
-        }*/
     }
 
     checkEnergy () {
@@ -191,7 +185,23 @@ export default class Game extends Phaser.Scene {
           "select": this.sound.add("select"),
           "move": this.sound.add("move"),
           "win": this.sound.add("win"),
+          "prewin": this.sound.add("prewin"),
+          "switch": this.sound.add("switch"),
         };
+      }
+
+      playMusic (theme="music") {
+        this.theme = this.sound.add(theme);
+        this.theme.stop();
+        this.theme.play({
+          mute: false,
+          volume: 0.5,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+        })
       }
 
       playAudio(key) {
@@ -215,26 +225,34 @@ export default class Game extends Phaser.Scene {
 
     finishScene () {
       if (this.solved) return;
-    
+      this.playAudio("prewin")
       this.playAudio("win")
       this.solved = true;
       const totalMoves = +this.registry.get("moves") + this.totalMoves;
       this.registry.set("moves", totalMoves)
 
-      this.winText = this.add.bitmapText(this.center_width, -100, "mario", "LIGHTS UP!!!", 30).setOrigin(0.5).setTint(0xb95e00).setDropShadow(2, 3, 0xfffd00, 0.7);
-      this.tweens.add({
-        targets: this.winText,
+      this.winText1 = this.add.bitmapText(-100, this.center_height, "mario", "STAGE", 30).setOrigin(0.5).setTint(0xb95e00).setDropShadow(2, 3, 0xfffd00, 0.7);
+      this.winText2 = this.add.bitmapText(this.width + 100, this.center_height, "mario", "LIT UP", 30).setOrigin(0.5).setTint(0xb95e00).setDropShadow(2, 3, 0xfffd00, 0.7);
+      this.boltsm = this.add.sprite(this.center_width, this.center_height, "boltsm")
+      this.tweens.add({ 
+        targets: this.winText1,
         duration: 500,
-        y: {from: this.winText.y, to: this.center_height}
+        x: {from: this.winText1.x, to: this.center_height - 100}
       })
       this.tweens.add({
-        targets: [this.winText, this.movesText],
+        targets: this.winText2,
+        duration: 500,
+        x: {from: this.winText2.x, to: this.center_height + 105}
+      })
+      this.tweens.add({
+        targets: [this.winText1, this.winText2,  this.movesText, this.boltsm],
         duration: 100,
         scale: {from: 1, to: 1.1},
         repeat: -1,
         yoyo: true
       })
       this.time.delayedCall(2000, () => {
+        this.game.sound.stopAll();
         this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
       }, null, this)
     }
