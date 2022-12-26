@@ -170,7 +170,7 @@ export default class Game extends Phaser.Scene {
 
     showTexts() {
       if (this.number > 0) return;
-      const texts = ["Click on green swtiches and","Connect energy with bulbs"]
+      const texts = ["Click on blue swtiches and","Connect energy with bulbs"]
       texts.forEach((text, i) => {
        let help = this.add.bitmapText(this.center_width, 525 + (35 * i), "mario", text, 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 1, 0xfffd00, 0.7);
      })

@@ -1,9 +1,9 @@
 {
-  "name": "cell",
-  "productName": "Cell",
+  "name": "generic",
+  "productName": "Generic",
   "main": "index.html",
   "window": {
-    "title": "Cell - by Pello",
+    "title": "Generic - by Pello",
     "width": 800,
     "height": 600,
     "fullscreen": false,
@@ -20,15 +20,10 @@
     "lint": "eslint src/**/*.js test/**/*.js --fix",
     "unit": "mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js",
     "publish": "npm run-script build && npm run-script itchio",
-    "itchio": "cd dist && rm -f assets/html/index.html && butler push . pello/power-grid:html --userversion 0.0.4 && cd .. && butler status pello/power-grid:html"
+    "itchio": "cd dist && rm -f assets/html/index.html && butler push . pello/rise-up:html --userversion 0.0.4 && cd .. && butler status pello/rise-up:html"
   },
   "dependencies": {
-    "browserify-zlib": "^0.2.0",
-    "easystarjs": "^0.4.4",
-    "phaser": "^3.52.0",
-    "firebase": "^9.13.0",
-    "phaser-matter-collision-plugin": "1.0.0",
-    "tone": "^14.7.77"
+    "phaser": "^3.52.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
