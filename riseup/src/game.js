@@ -190,8 +190,8 @@ export default class Game extends Phaser.Scene {
           player.landSmoke();
           this.playAudio("land");
           platform.activate();
+          player.currentBlock = platform;
         }
-        player.currentBlock = platform;
       }
     }
 

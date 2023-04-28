@@ -17,7 +17,7 @@ class Brick extends Phaser.GameObjects.Sprite {
      activate () {
         this.activated = true;
 
-        switch(Phaser.Math.Between(0,6)) {
+        switch(Phaser.Math.Between(0,7)) {
             case 0: this.goLeft(); break;
             case 1: this.goRigth(); break;
             case 2: this.goUp(); break;
