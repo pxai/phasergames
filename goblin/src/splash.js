@@ -27,8 +27,8 @@ export default class Splash extends Phaser.Scene {
     }
 
     showTitle () {
-        let text1 = this.add.bitmapText(this.center_width, 1000, "mario", "RISE", 140).setTint(0xca6702).setOrigin(0.5).setDropShadow(4, 6, 0xf09937, 0.9)
-        let text2 = this.add.bitmapText(this.center_width, 1200, "mario", "UP", 140).setTint(0xca6702).setOrigin(0.5).setDropShadow(4, 6, 0xf09937, 0.9)
+        let text1 = this.add.bitmapText(this.center_width, 1000, "celtic", "Goblin", 140).setTint(0xca6702).setOrigin(0.5).setDropShadow(4, 6, 0xf09937, 0.9)
+        let text2 = this.add.bitmapText(this.center_width, 1200, "celtic", "Bakery", 140).setTint(0xca6702).setOrigin(0.5).setDropShadow(4, 6, 0xf09937, 0.9)
         this.tweens.add({
             targets: [text1, text2],
             duration: 2000,
@@ -69,11 +69,10 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 500, "mario", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "mario", "SPACE: jump", 30).setOrigin(0.5);
-        this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "mario", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "mario", "Press SPACE to start", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 500, "celtic", "WASD/Arrows: move", 30).setOrigin(0.5);
+        this.add.sprite(this.center_width - 120, 590, "pello").setOrigin(0.5).setScale(0.3)
+        this.add.bitmapText(this.center_width + 20, 590, "celtic", "By PELLO", 25).setOrigin(0.5);
+        this.space = this.add.bitmapText(this.center_width, 670, "celtic", "Press SPACE to start", 30).setOrigin(0.5);
         this.tweens.add({
             targets: this.space,
             duration: 300,

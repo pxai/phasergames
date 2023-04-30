@@ -28,8 +28,8 @@ export default class Scoreboard extends Phaser.Scene {
         else
             await this.loadScores();
         //
-        this.add.bitmapText(this.center_width,70, "mario", "SCOREBOARD", 60).setOrigin(0.5).setTint(0xb95e00).setDropShadow(3, 4, 0xfffd00, 0.7);;
-        this.restartText = this.add.bitmapText(this.center_width, 750, "mario", "SPACE to Continue", 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7);
+        this.add.bitmapText(this.center_width,70, "celtic", "SCOREBOARD", 60).setOrigin(0.5).setTint(0xb95e00).setDropShadow(3, 4, 0xfffd00, 0.7);;
+        this.restartText = this.add.bitmapText(this.center_width, 750, "celtic", "SPACE to Continue", 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7);
         this.restartText.setInteractive();
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
         this.restartText.on('pointerdown', (pointer) => this.loadNext(), this);
@@ -63,7 +63,7 @@ export default class Scoreboard extends Phaser.Scene {
     showPrompt () {
         this.prompt = this.add.layer();
         this.userName = "";
-        this.userNameText = this.add.bitmapText(this.center_width - 250, this.center_height - 150, "mario", this.userName.padEnd(9, '-'), 50).setTint(0xb95e00).setDropShadow(3, 4, 0xfffd00, 0.7);
+        this.userNameText = this.add.bitmapText(this.center_width - 250, this.center_height - 150, "celtic", this.userName.padEnd(9, '-'), 50).setTint(0xb95e00).setDropShadow(3, 4, 0xfffd00, 0.7);
         this.prompt.add(this.userNameText)
         this.addLetters()
     }
@@ -83,7 +83,7 @@ export default class Scoreboard extends Phaser.Scene {
     async notBigger (score) {
         try {
             const scores = await readData();
-            const PowerGridScores = scores.filter(score => score.game === "mario")
+            const PowerGridScores = scores.filter(score => score.game === "celtic")
             PowerGridScores.sort((a, b) => a.score - b.score).splice(0, 10);
 
             return PowerGridScores.length >= 10 && PowerGridScores.every(s => s.score < score)
@@ -95,14 +95,14 @@ export default class Scoreboard extends Phaser.Scene {
 
     async loadScores () {
         const scores = await readData();
-        const PowerGridScores = scores.filter(score => score.game === "mario")
+        const PowerGridScores = scores.filter(score => score.game === "celtic")
         PowerGridScores.sort((a, b) => a.score - b.score);
 
         let amongFirst10 = false;
         PowerGridScores.splice(0, 10).forEach( (score, i) => {
-            const text0 = this.add.bitmapText(this.center_width - 250, 170 + (i * 30), "mario", `${i+1}`, 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7);
-            const text1 = this.add.bitmapText(this.center_width - 50, 170 + (i * 30), "mario", `${score.player.substring(0, 10).padEnd(11, ' ')}`, 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7)
-            const text2 = this.add.bitmapText(this.center_width + 200, 170 + (i * 30), "mario", `${String(score.score).padStart(4, '0')}`, 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7)
+            const text0 = this.add.bitmapText(this.center_width - 250, 170 + (i * 30), "celtic", `${i+1}`, 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7);
+            const text1 = this.add.bitmapText(this.center_width - 50, 170 + (i * 30), "celtic", `${score.player.substring(0, 10).padEnd(11, ' ')}`, 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7)
+            const text2 = this.add.bitmapText(this.center_width + 200, 170 + (i * 30), "celtic", `${String(score.score).padStart(4, '0')}`, 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7)
             
             if (score.id === this.currentId) {
 
@@ -178,6 +178,6 @@ export default class Scoreboard extends Phaser.Scene {
         this.prompt.add(this.keyboard["ok"])
         this.keyboard["--"] = new Key(this, x + 192, y, "--", this.deleteName.bind(this));
         this.prompt.add(this.keyboard["--"])
-        this.helpText = this.add.bitmapText(this.center_width, 650, "mario", "To enter your name just \nClick on letters and press OK", 15).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7)
+        this.helpText = this.add.bitmapText(this.center_width, 650, "celtic", "To enter your name just \nClick on letters and press OK", 15).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7)
       }
 }

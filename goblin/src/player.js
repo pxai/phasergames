@@ -12,17 +12,16 @@ class Player extends Phaser.GameObjects.Sprite {
       this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
       this.down = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
       this.right = true;
-      this.body.setGravityY(100)
+      this.body.setGravityY(200)
       this.body.setSize(48, 60)
       this.init();
       this.jumping = false;
-      this.building = false;
       this.falling = false;
       this.walkVelocity = 200;
       this.jumpVelocity = -500;
       this.invincible = false;
-      this.currentBlock = null;
       this.health = health;
+      this.converyorSpeed = -100;
 
       this.dead = false;
 
@@ -77,7 +76,7 @@ class Player extends Phaser.GameObjects.Sprite {
     update () {
         if (this.dead) return;
         if (this.jumping ) {
-            this.currentBlock = null;
+            this.anims.play("playerjump", true);
             if (this.body.velocity.y >= 0) {
                 this.body.setGravityY(700)
                 this.falling = true;
@@ -86,35 +85,31 @@ class Player extends Phaser.GameObjects.Sprite {
 
         if ((Phaser.Input.Keyboard.JustDown(this.cursor.up) || Phaser.Input.Keyboard.JustDown(this.W) || Phaser.Input.Keyboard.JustDown(this.SPACE)) && this.body.blocked.down) {
             // new Dust(this.scene, this.x, this.y)
-            this.building = false;
             this.body.setVelocityY(this.jumpVelocity);
             this.body.setGravityY(300)
             this.anims.play("playerjump", true);
             this.scene.playAudio("jump")
+            console.log("Jumping!")
             this.jumping = true;
             this.jumpSmoke();
-            this.currentBlock = null;
         } 
         
-        if (this.cursor.right.isDown || this.D.isDown) {
-            this.building = false;
-            if (this.body.blocked.down || !this.jumping) { this.anims.play("playerwalk", true); }
+       else if (this.cursor.right.isDown || this.D.isDown) {
+            if (this.body.blocked.down && !this.jumping) { this.anims.play("playerwalk", true); }
             this.right = true;
             this.flipX = (this.body.velocity.x < 0);
             this.body.setVelocityX(this.walkVelocity);
 
         } else if (this.cursor.left.isDown || this.A.isDown) {
-            this.building = false;
-            if (this.body.blocked.down || !this.jumping) { this.anims.play("playerwalk", true); }
+            if (this.body.blocked.down && !this.jumping) { this.anims.play("playerwalk", true); }
             this.right = false;
             this.flipX = true;
             this.body.setVelocityX(-this.walkVelocity);  
-        } else if (this.currentBlock) {
-            this.x = this.currentBlock.x;
-            this.y = this.currentBlock.y;
-            console.log("Current block")
-        } else {
-            this.body.setVelocityX(0)
+        } else if (this.body.blocked.down){
+
+            console.log("Am I on the ground? ", this.body.blocked.down)
+            this.jumping = false;
+            this.body.setVelocityX(this.converyorSpeed)
             this.anims.play("playeridle", true);
         }
     }
@@ -138,7 +133,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
     animationComplete (animation, frame) {
         if (animation.key === "playerground") {
-            this.anims.play("playeridle", true)
+            //this.anims.play("playeridle", true)
         }
     }
 

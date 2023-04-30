@@ -7,7 +7,7 @@ import Game from "./game";
 import Scoreboard from "./scoreboard";
 
 const config = {
-    width: 1000,
+    width: 800,
     height: 800,
     scale: {
         mode: Phaser.Scale.FIT,
@@ -19,7 +19,7 @@ const config = {
         default: "arcade",
         arcade: {
             gravity: { y: 300 },
-            debug: false
+            debug: true
         }
     },
     scene: [

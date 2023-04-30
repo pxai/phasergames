@@ -1,11 +1,11 @@
 import Player from "./player";
 import { Debris } from "./particle";
 import Platform from "./platform";
-import Turn from "./turn";
+import Kitchen from "./kitchen";
 import Bat from "./bat";
 import Spike from "./spike";
 import Exit from "./exit";
-import Brick from "./brick";
+import Conveyor from "./conveyor";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -17,7 +17,7 @@ export default class Game extends Phaser.Scene {
 
     init (data) {
       this.name = data.name;
-      this.number = data.number;
+      this.number = data.number || 0;
   }
 
     preload () {
@@ -32,11 +32,9 @@ export default class Game extends Phaser.Scene {
       // this.add.tileSprite(0, 1000, 1024 * 10, 512, "landscape").setOrigin(0.5);
       this.createMap();
 
-      this.cameras.main.setBounds(0, 0, 20920 * 2, 20080 * 2);
-      this.physics.world.setBounds(0, 0, 20920 * 2, 20080 * 2);
       this.addPlayer();
-
-      this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 0);
+      this.addConveyor();
+      this.addKitchen();
       this.physics.world.enable([ this.player ]);
       this.loadAudios(); 
       this.addTimer();
@@ -44,9 +42,8 @@ export default class Game extends Phaser.Scene {
 
     addTimer() {
       this.registry.set("time", 0);
-      this.exitText = this.add.bitmapText(100, 32, "mario", Math.round(this.player.y) + " m.", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
 
-      this.timerText = this.add.bitmapText(this.center_width, 32, "mario", "0", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.timerText = this.add.bitmapText(this.center_width, 32, "celtic", "0", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
       this.totalTime = 0;
       this.timer = this.time.addEvent({ delay: 1000, callback: this.addSecond, callbackScope: this, loop: true });
     }
@@ -59,7 +56,7 @@ export default class Game extends Phaser.Scene {
     createMap() {
       this.tileMap = this.make.tilemap({ key: "scene0" , tileWidth: 64, tileHeight: 64 });
       this.tileSetBg = this.tileMap.addTilesetImage("background");
-      this.tileMap.createStaticLayer('background', this.tileSetBg)
+      this.tileMap.createLayer('background', this.tileSetBg)
   
       this.tileSet = this.tileMap.addTilesetImage("softbricks");
       this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet);
@@ -68,8 +65,6 @@ export default class Game extends Phaser.Scene {
       this.platform.setCollisionByExclusion([-1]);
 
       this.platformGroup = this.add.group();
-      this.bricks = this.add.group();
-      this.exitGroup = this.add.group();
       this.spikes = this.add.group();
       this.batGroup = this.add.group();
 
@@ -85,30 +80,14 @@ export default class Game extends Phaser.Scene {
         }
 
         if (object.name === "text") {
-          this.add.bitmapText(object.x, object.y, "mario", object.text.text, 30).setDropShadow(2, 4, 0x222222, 0.9).setOrigin(0)
+          this.add.bitmapText(object.x, object.y, "celtic", object.text.text, 30).setDropShadow(2, 4, 0x222222, 0.9).setOrigin(0)
         }
 
-        if (object.name === "brick") {
-          this.bricks.add(new Brick(this, object.x, object.y))
-        }
-
-        if (object.name === "exit") {
-          this.exitGroup.add(new Exit(this, object.x, object.y).setOrigin(0.5))
+        if (object.name.startsWith("spike")) {
+          const [name, rotation] = object.name.split(":")
+          this.spikes.add(new Spike(this, object.x, object.y, name, rotation).setOrigin(0.5))
         }
       });
-      this.time.delayedCall(3000, () =>{
-        this.objectsLayer.objects.forEach( object => {
-          if (object.name === "spike") {
-            this.spikes.add(new Spike(this, object.x, object.y))
-          }
-        })
-      }, null, this)
-    }
-
-    regenerate(x, y) {
-      this.time.delayedCall(Phaser.Math.Between(1000, 3000), () => {
-        this.bricks.add(new Brick(this, x, y))
-      }, null, this)
     }
 
     turnFoe (foe, platform) {
@@ -122,7 +101,8 @@ export default class Game extends Phaser.Scene {
 
     addPlayer() {
       this.elements = this.add.group();
-
+      this.muffins = this.add.group();
+      this.muffinTops = this.add.group();
       const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
       this.player = new Player(this, playerPosition.x, playerPosition.y, 0);
 
@@ -130,7 +110,7 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
-      this.physics.add.collider(this.batGroup, this.platform, this.turnFoe, ()=>{
+      this.physics.add.collider(this.muffins, this.platform, this.muffinHitFloor, ()=>{
         return true;
       }, this);
 
@@ -138,7 +118,7 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
   
-      this.physics.add.collider(this.player, this.bricks, this.hitFloor, ()=>{
+      this.physics.add.collider(this.player, this.muffinTops, this.hitMuffinTop, ()=>{
         return true;
       }, this);
 
@@ -153,9 +133,38 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
+      this.physics.add.overlap(this.muffins, this.spikes, this.muffinHitSpike, ()=>{
+        return true;
+      }, this);
+
       this.physics.add.overlap(this.player, this.batGroup, this.hitPlayer, ()=>{
         return true;
       }, this);
+    }
+
+    muffinHitSpike (muffin, spike) {
+      muffin.destroy();
+    }
+  
+    hitMuffinTop (player, muffinTop) {
+      console.log("Player hit muffinTop!", muffinTop);
+      muffinTop.setCompleted();
+
+    }
+
+    addConveyor() {
+      this.conveyor = new Conveyor(this, 0, 800 - 100);
+      this.physics.add.collider(this.player, this.conveyor, this.hiFloor, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.collider(this.muffins, this.conveyor, this.muffinHitFloor, ()=>{
+        return true;
+      }, this);
+    }
+
+    addKitchen () {
+      this.kitchen = new Kitchen(this);
     }
 
     turnFoe (foe, platform) {
@@ -182,16 +191,15 @@ export default class Game extends Phaser.Scene {
       } 
     }
 
-
+    muffinHitFloor (muffin, platform) {
+      this.playAudio("land");
+      muffin.body.setVelocityX(muffin.converyorSpeed);
+    }
 
     hitFloor(player, platform) {
-      if (this.player.jumping && this.player.falling && platform.name === "question" && this.player.body.velocity.y === 0) {
-        if (!platform.activated) { 
+      if (this.player.jumping && this.player.body.velocity.y === 0) {
           player.landSmoke();
           this.playAudio("land");
-          platform.activate();
-          player.currentBlock = platform;
-        }
       }
     }
 
@@ -243,11 +251,6 @@ export default class Game extends Phaser.Scene {
     }
 
     updateTimer () {
-      this.updateExit()
       this.timerText.setText(this.totalTime);
-    }
-
-    updateExit () {
-      this.exitText.setText(Math.round(this.player.y) + " m.");
     }
 }
