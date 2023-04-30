@@ -139,12 +139,6 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
-      this.physics.add.overlap(this.player, this.exitGroup, () => { 
-        this.playAudio("stage");
-        this.time.delayedCall(500, () => this.finishScene(), null, this);
-      }, ()=>{
-        return true;
-      }, this);
 
       this.physics.add.collider(this.player, this.spikes, this.hitPlayer, ()=>{
         return true;
@@ -261,16 +255,11 @@ export default class Game extends Phaser.Scene {
       if (this.number === 3 && this.player.y > 1500) this.restartScene();
     }
 
-    finishScene () {
-      this.registry.set("time", this.totalTime)
-      if (this.theme) this.theme.stop();
-      this.scene.start("outro", { name: "STAGE", number: this.number + 1});
-    }
-
     restartScene () {
       this.time.delayedCall(1000, () => {
+        this.registry.set("time", this.totalTime)
           if (this.theme) this.theme.stop();
-          this.scene.start("transition", { name: "STAGE", number: this.number});
+          this.scene.start("scoreboard", { name: "STAGE", number: this.number});
         },
         null,
         this

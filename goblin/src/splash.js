@@ -23,7 +23,7 @@ export default class Splash extends Phaser.Scene {
         this.playMusic();
         //this.showPlayer();
         this.showTitle();
-        this.playAudioRandomly("stone")
+        this.playAudioRandomly("muffin")
     }
 
     showTitle () {
@@ -44,7 +44,7 @@ export default class Splash extends Phaser.Scene {
 
     startGame () {
         if (this.theme) this.theme.stop();
-        this.playMusic("music0")
+        this.playMusic("stage")
         this.scene.start("scoreboard", {name: "STAGE", number: 0})
         //this.scene.start("transition", {next: "game", name: "STAGE", number: 0, time: 30})
     }

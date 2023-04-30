@@ -54,7 +54,7 @@ export default class Muffin extends Phaser.GameObjects.Sprite {
             x: {from: this.x, to: this.scene.timerText.x},
             y: {from: this.y, to: this.scene.timerText.y},
             onComplete: () => {
-                this.scene.addPoints();
+                if (this.scene) this.scene.addPoints();
                 this.destroy();
             }
         })

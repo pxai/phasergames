@@ -9,7 +9,7 @@ export default class Key extends Phaser.GameObjects.Container {
         this.scene.add.existing(this);
         this.square = new Phaser.GameObjects.Rectangle(this.scene, 64, 32, 58, 58, 0x666666).setOrigin(0.5).setAlpha(0)
         this.add(this.square);
-        this.letterText = new Phaser.GameObjects.BitmapText(this.scene, 64, 32, "mario", this.letter.toUpperCase(), 30).setOrigin(0.5)
+        this.letterText = new Phaser.GameObjects.BitmapText(this.scene, 64, 32, "celtic", this.letter.toUpperCase(), 30).setOrigin(0.5)
         this.add(this.letterText);
             this.setListeners();
     }

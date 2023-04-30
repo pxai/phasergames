@@ -10,7 +10,7 @@ export default class Bootloader extends Phaser.Scene {
             "progress",
             function (value) {
                 this.progressBar.clear();
-                this.progressBar.fillStyle(0xf09937, 1);
+                this.progressBar.fillStyle(0x1c6c00, 1);
                 this.progressBar.fillRect(
                     this.cameras.main.width / 4,
                     this.cameras.main.height / 2 - 16,
@@ -21,12 +21,8 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("game");
+            this.scene.start("splash");
         },this);
-
-        Array(1).fill(0).forEach((_,i) => {
-            this.load.audio(`music${i}`,`assets/sounds/music${i}.mp3`)
-        });
 
         this.load.image("pello", "assets/images/pello.png");
         this.load.image("spike", "assets/images/spike.png");
@@ -69,6 +65,7 @@ export default class Bootloader extends Phaser.Scene {
 
         this.load.bitmapFont("celtic", "assets/fonts/celtic.png", "assets/fonts/celtic.xml");
         this.registry.set("time", 0);
+        this.registry.set("currentMinScore", 0);
     }
 
     create () {
@@ -76,7 +73,7 @@ export default class Bootloader extends Phaser.Scene {
 
     createBars () {
         this.loadBar = this.add.graphics();
-        this.loadBar.fillStyle(0xca6702, 1);
+        this.loadBar.fillStyle(0xa80000, 1);
         this.loadBar.fillRect(
             this.cameras.main.width / 4 - 2,
             this.cameras.main.height / 2 - 18,
