@@ -5,7 +5,7 @@ class Spike extends Phaser.GameObjects.Sprite {
         super(scene, x, y - 32, name);
         this.scene = scene;
         this.name = name;
-        this.setScale(0.5)
+
         this.setOrigin(0, 0)
         this.rotation = +rotation;
         this.scene.add.existing(this);
@@ -13,6 +13,9 @@ class Spike extends Phaser.GameObjects.Sprite {
         if (still) {
           this.body.immovable = true;
           this.body.moves = false;
+        } else {
+          this.setScale(0.8)
+          this.body.setSize(16, 64)
         }
      }
    }

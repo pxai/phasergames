@@ -92,9 +92,12 @@ class Player extends Phaser.GameObjects.Sprite {
             console.log("Jumping!")
             this.jumping = true;
             this.jumpSmoke();
-        } 
-        
-       else if (this.cursor.right.isDown || this.D.isDown) {
+        } else if ((Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.S)) && this.jumping) {
+            // new Dust(this.scene, this.x, this.y)
+            this.body.setVelocityY(-this.jumpVelocity);
+            this.body.setVelocityX(0);
+            this.body.setGravityY(300)
+        } else if (this.cursor.right.isDown || this.D.isDown) {
             if (this.body.blocked.down && !this.jumping) { this.anims.play("playerwalk", true); }
             this.right = true;
             this.flipX = (this.body.velocity.x < 0);
@@ -131,7 +134,6 @@ class Player extends Phaser.GameObjects.Sprite {
         this.body.setVelocityY(this.jumpVelocity + 100);
         this.body.setGravityY(300)
         this.anims.play("playerjump", true);
-        this.scene.playAudio("jump")
         console.log("Jumping!")
         this.jumping = true;
         this.jumpSmoke();

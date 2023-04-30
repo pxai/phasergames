@@ -167,6 +167,7 @@ export default class Game extends Phaser.Scene {
       new Explosion(this, muffin.x, muffin.y, 10)
       if (muffin.muffinTop)  muffin.muffinTop.destroy();
       muffin.destroy();
+      this.playAudio("destroy")
       this.updatePoints(-25);
       this.cameras.main.shake(30);
     }
@@ -177,6 +178,7 @@ export default class Game extends Phaser.Scene {
   
     hitMuffinTop (player, muffinTop) {
       player.createMuffin();
+      this.playAudio("muffin");
       new Explosion(this, muffinTop.x, muffinTop.y, 10)
       console.log("Player hit muffinTop!", muffinTop);
       muffinTop.setCompleted();
@@ -215,7 +217,6 @@ export default class Game extends Phaser.Scene {
     }
 
     muffinHitFloor (muffin, platform) {
-      this.playAudio("land");
       muffin.body.setVelocityX(muffin.converyorSpeed);
       if (!muffin.body.blocked.down)
         new Explosion(this, muffin.x, muffin.y, 6)
@@ -235,11 +236,12 @@ export default class Game extends Phaser.Scene {
         "jump": this.sound.add("jump"),
         "kill": this.sound.add("kill"),
         "land": this.sound.add("land"),
+        "coin": this.sound.add("coin"),
         "lunchbox": this.sound.add("lunchbox"),
         "prize": this.sound.add("prize"),
-        "stone_fail": this.sound.add("stone_fail"),
-        "stone": this.sound.add("stone"),
-        "foedeath": this.sound.add("foedeath"),
+        "created": this.sound.add("created"),
+        "muffin": this.sound.add("muffin"),
+        "destroy": this.sound.add("destroy"),
         "stage": this.sound.add("stage"),
       };
     }
@@ -282,6 +284,7 @@ export default class Game extends Phaser.Scene {
         scale: {from: 1.2, to: 1},
         repeat: 5
       })
+      this.playAudio("coin");
       this.updatePoints();
     }
 

@@ -34,6 +34,7 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
 
 
     update () {
+      if (this.x < -32) this.destroy();
     }
 
     turn () {

@@ -22,6 +22,7 @@ export default class Kitchen {
 
         const muffin = new Muffin(this.scene, this.scene.width - 100, this.scene.height - 300);
         console.log("Muffin go!", muffin)
+        //this.scene.playAudio("created");
         this.scene.muffins.add(muffin);
     }
 
