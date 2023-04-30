@@ -18,7 +18,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.jumping = false;
       this.falling = false;
       this.walkVelocity = 200;
-      this.jumpVelocity = -500;
+      this.jumpVelocity = -350;
       this.invincible = false;
       this.health = health;
       this.converyorSpeed = -100;
@@ -127,8 +127,14 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
 
-    turn () {
-        this.right = !this.right;
+    createMuffin () {
+        this.body.setVelocityY(this.jumpVelocity + 100);
+        this.body.setGravityY(300)
+        this.anims.play("playerjump", true);
+        this.scene.playAudio("jump")
+        console.log("Jumping!")
+        this.jumping = true;
+        this.jumpSmoke();
     }
 
     animationComplete (animation, frame) {

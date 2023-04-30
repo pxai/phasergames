@@ -2,10 +2,12 @@ import Player from "./player";
 import { Debris } from "./particle";
 import Platform from "./platform";
 import Kitchen from "./kitchen";
+import SpikeGenerator from "./spike_generator";
 import Bat from "./bat";
 import Spike from "./spike";
 import Exit from "./exit";
 import Conveyor from "./conveyor";
+import { Explosion } from "./dust";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -34,6 +36,7 @@ export default class Game extends Phaser.Scene {
 
       this.addPlayer();
       this.addConveyor();
+      this.addSpikeGenerator();
       this.addKitchen();
       this.physics.world.enable([ this.player ]);
       this.loadAudios(); 
@@ -43,13 +46,19 @@ export default class Game extends Phaser.Scene {
     addTimer() {
       this.registry.set("time", 0);
 
-      this.timerText = this.add.bitmapText(this.center_width, 32, "celtic", "0", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.timerText = this.add.bitmapText(this.center_width, 64, "celtic", "0", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5)
       this.totalTime = 0;
       this.timer = this.time.addEvent({ delay: 1000, callback: this.addSecond, callbackScope: this, loop: true });
     }
 
     addSecond () {
       this.totalTime++;
+      this.updateTimer()
+    }
+
+    updatePoints (points = 50) {
+      this.totalTime += +points;
+      console.log(this.totalTime, points)
       this.updateTimer()
     }
 
@@ -94,7 +103,6 @@ export default class Game extends Phaser.Scene {
       foe.turn();
     }
 
-
     hitFloor() {
 
     }
@@ -114,10 +122,19 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
+
+      this.physics.add.collider(this.spikes, this.platform, this.spikeHitPlatform, ()=>{
+        return true;
+      }, this);
+
       this.physics.add.collider(this.player, this.platformGroup, this.hitFloor, ()=>{
         return true;
       }, this);
   
+      this.physics.add.collider(this.player, this.muffins, this.hitMuffin, ()=>{
+        return true;
+      }, this);
+        
       this.physics.add.collider(this.player, this.muffinTops, this.hitMuffinTop, ()=>{
         return true;
       }, this);
@@ -142,14 +159,27 @@ export default class Game extends Phaser.Scene {
       }, this);
     }
 
+    spikeHitPlatform (spike, platform) {
+
+    }
+
     muffinHitSpike (muffin, spike) {
+      new Explosion(this, muffin.x, muffin.y, 10)
+      if (muffin.muffinTop)  muffin.muffinTop.destroy();
       muffin.destroy();
+      this.updatePoints(-25);
+      this.cameras.main.shake(30);
+    }
+
+    hitMuffin (player, muffin) {
+      console.log("Player hit muffinTop!", muffin);
     }
   
     hitMuffinTop (player, muffinTop) {
+      player.createMuffin();
+      new Explosion(this, muffinTop.x, muffinTop.y, 10)
       console.log("Player hit muffinTop!", muffinTop);
       muffinTop.setCompleted();
-
     }
 
     addConveyor() {
@@ -157,10 +187,16 @@ export default class Game extends Phaser.Scene {
       this.physics.add.collider(this.player, this.conveyor, this.hiFloor, ()=>{
         return true;
       }, this);
+      
+      this.conveyor2 = new Conveyor(this, 0, 800 - 48, "conveyor", -1);
 
       this.physics.add.collider(this.muffins, this.conveyor, this.muffinHitFloor, ()=>{
         return true;
       }, this);
+    }
+
+    addSpikeGenerator () {
+      this.spikeGenerator = new SpikeGenerator(this)
     }
 
     addKitchen () {
@@ -178,22 +214,11 @@ export default class Game extends Phaser.Scene {
       }
     }
 
-    blowPlatform (blow, platform) {
-      const tile = this.getTile(platform)
-      if (this.isBreakable(tile)) {
-        this.playAudioRandomly("stone_fail");
-        this.playAudioRandomly("stone");
-        if (this.player.mjolnir) this.cameras.main.shake(30);
-        blow.destroy();
-        Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY))
-        this.platform.removeTileAt(tile.x, tile.y);
-
-      } 
-    }
-
     muffinHitFloor (muffin, platform) {
       this.playAudio("land");
       muffin.body.setVelocityX(muffin.converyorSpeed);
+      if (!muffin.body.blocked.down)
+        new Explosion(this, muffin.x, muffin.y, 6)
     }
 
     hitFloor(player, platform) {
@@ -203,31 +228,31 @@ export default class Game extends Phaser.Scene {
       }
     }
 
-      loadAudios () {
-        this.audios = {
-          "build": this.sound.add("build"),
-          "death": this.sound.add("death"),
-          "jump": this.sound.add("jump"),
-          "kill": this.sound.add("kill"),
-          "land": this.sound.add("land"),
-          "lunchbox": this.sound.add("lunchbox"),
-          "prize": this.sound.add("prize"),
-          "stone_fail": this.sound.add("stone_fail"),
-          "stone": this.sound.add("stone"),
-          "foedeath": this.sound.add("foedeath"),
-          "stage": this.sound.add("stage"),
-        };
-      }
+    loadAudios () {
+      this.audios = {
+        "build": this.sound.add("build"),
+        "death": this.sound.add("death"),
+        "jump": this.sound.add("jump"),
+        "kill": this.sound.add("kill"),
+        "land": this.sound.add("land"),
+        "lunchbox": this.sound.add("lunchbox"),
+        "prize": this.sound.add("prize"),
+        "stone_fail": this.sound.add("stone_fail"),
+        "stone": this.sound.add("stone"),
+        "foedeath": this.sound.add("foedeath"),
+        "stage": this.sound.add("stage"),
+      };
+    }
 
-      playAudio(key) {
-        this.audios[key].play();
-      }
+    playAudio(key) {
+      this.audios[key].play();
+    }
 
-      playAudioRandomly(key) {
-        const volume = Phaser.Math.Between(0.8, 1);
-        const rate = Phaser.Math.Between(0.8, 1);
-        this.audios[key].play({volume, rate});
-      }
+    playAudioRandomly(key) {
+      const volume = Phaser.Math.Between(0.8, 1);
+      const rate = Phaser.Math.Between(0.8, 1);
+      this.audios[key].play({volume, rate});
+    }
 
     update() {
       this.player.update();
@@ -250,7 +275,17 @@ export default class Game extends Phaser.Scene {
       );
     }
 
+    addPoints() {
+      this.tweens.add({
+        targets: this.timerText,
+        duration: 100,
+        scale: {from: 1.2, to: 1},
+        repeat: 5
+      })
+      this.updatePoints();
+    }
+
     updateTimer () {
-      this.timerText.setText(this.totalTime);
+      this.timerText.setText(this.totalTime + "$");
     }
 }
