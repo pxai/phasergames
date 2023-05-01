@@ -7,7 +7,7 @@ export default class Key extends Phaser.GameObjects.Container {
         this.callback = callback;
         this.letter = letter === "ñ" ? "n" : letter;
         this.scene.add.existing(this);
-        this.square = new Phaser.GameObjects.Rectangle(this.scene, 64, 32, 58, 58, 0x666666).setOrigin(0.5).setAlpha(0)
+        this.square = new Phaser.GameObjects.Rectangle(this.scene, 64, 0, 58, 58, 0x666666).setOrigin(0.5).setAlpha(0)
         this.add(this.square);
         this.letterText = new Phaser.GameObjects.BitmapText(this.scene, 64, 32, "celtic", this.letter.toUpperCase(), 30).setOrigin(0.5)
         this.add(this.letterText);
@@ -22,7 +22,7 @@ export default class Key extends Phaser.GameObjects.Container {
         this.letterText.setInteractive();
         this.backupColor = this.square.fillColor;
         this.letterText.on('pointerdown', () => {
-            //this.scene.playAudio("key");
+            this.scene.playAudio("key");
             this.callback(this.letter)
             this.letterText.setTint(0xca6702)
             this.square.setAlpha(1)

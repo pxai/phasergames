@@ -29,12 +29,13 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image("exit", "assets/images/exit.png");
         this.load.image("question", "assets/images/question.png");
         this.load.image("conveyor", "assets/images/conveyor.png");
+        this.load.image("gear", "assets/images/gear.png");
         this.load.image("muffin", "assets/images/muffin.png");
         this.load.image("muffintop", "assets/images/muffintop.png");
 
         this.load.spritesheet("dust", "assets/images/dust.png", { frameWidth: 32, frameHeight: 32 });
         
-        this.load.audio("build", "assets/sounds/build.mp3");
+        this.load.audio("key", "assets/sounds/key.mp3");
         this.load.audio("death", "assets/sounds/death.mp3");
         this.load.audio("jump", "assets/sounds/jump.mp3");
         this.load.audio("coin", "assets/sounds/coin.mp3");
@@ -73,7 +74,7 @@ export default class Bootloader extends Phaser.Scene {
 
     createBars () {
         this.loadBar = this.add.graphics();
-        this.loadBar.fillStyle(0xa80000, 1);
+        this.loadBar.fillStyle(0xf09937, 1);
         this.loadBar.fillRect(
             this.cameras.main.width / 4 - 2,
             this.cameras.main.height / 2 - 18,

@@ -109,12 +109,13 @@ class Player extends Phaser.GameObjects.Sprite {
             this.flipX = true;
             this.body.setVelocityX(-this.walkVelocity);  
         } else if (this.body.blocked.down){
-
             console.log("Am I on the ground? ", this.body.blocked.down)
             this.jumping = false;
             this.body.setVelocityX(this.converyorSpeed)
             this.anims.play("playeridle", true);
         }
+
+        if (this.x < 0) this.scene.restartScene();
     }
 
     landSmoke () {

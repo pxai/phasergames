@@ -27,18 +27,18 @@ export default class Splash extends Phaser.Scene {
     }
 
     showTitle () {
-        let text1 = this.add.bitmapText(this.center_width, 1000, "celtic", "Goblin", 140).setTint(0xca6702).setOrigin(0.5).setDropShadow(4, 6, 0xf09937, 0.9)
-        let text2 = this.add.bitmapText(this.center_width, 1200, "celtic", "Bakery", 140).setTint(0xca6702).setOrigin(0.5).setDropShadow(4, 6, 0xf09937, 0.9)
+        let text1 = this.add.bitmapText(this.center_width, 200, "celtic", "Goblin", 120).setTint(0x1c6c00).setOrigin(0.5).setDropShadow(4, 6, 0xf09937, 0.9)
+        let text2 = this.add.bitmapText(this.center_width, 350, "celtic", "Bakery", 120).setTint(0x1c6c00).setOrigin(0.5).setDropShadow(4, 6, 0xf09937, 0.9)
         this.tweens.add({
             targets: [text1, text2],
-            duration: 2000,
-            y: "-=900",
-            ease: 'Linear'
+            duration: 50,
+            alpha: { from: 0.7, to: 1},
+            repeat: 10
         })
     }
     playAudioRandomly(key) {
         const volume = Phaser.Math.Between(0.8, 1);
-        const rate = 1; // Phaser.Math.Between(0.9, 1);
+        const rate = 1; 
         this.sound.add(key).play({volume, rate});
       }
 
@@ -46,7 +46,6 @@ export default class Splash extends Phaser.Scene {
         if (this.theme) this.theme.stop();
         this.playMusic("stage")
         this.scene.start("scoreboard", {name: "STAGE", number: 0})
-        //this.scene.start("transition", {next: "game", name: "STAGE", number: 0, time: 30})
     }
 
     showPlayer () {

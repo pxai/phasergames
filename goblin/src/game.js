@@ -7,6 +7,7 @@ import Bat from "./bat";
 import Spike from "./spike";
 import Exit from "./exit";
 import Conveyor from "./conveyor";
+import Gear from "./gear";
 import { Explosion } from "./dust";
 
 export default class Game extends Phaser.Scene {
@@ -30,7 +31,7 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      this.cameras.main.setBackgroundColor(0x000000)
+      this.cameras.main.setBackgroundColor(0x464646)
       // this.add.tileSprite(0, 1000, 1024 * 10, 512, "landscape").setOrigin(0.5);
       this.createMap();
 
@@ -41,6 +42,12 @@ export default class Game extends Phaser.Scene {
       this.physics.world.enable([ this.player ]);
       this.loadAudios(); 
       this.addTimer();
+      this.addTitle();
+    }
+
+    addTitle () {
+      let text1 = this.add.bitmapText(this.center_width, 300, "celtic", "Goblin", 70).setTint(0x1c6c00).setOrigin(0.5).setDropShadow(4, 6, 0xf09937, 0.7)
+      let text2 = this.add.bitmapText(this.center_width, 400, "celtic", "Bakery", 70).setTint(0x1c6c00).setOrigin(0.5).setDropShadow(4, 6, 0xf09937, 0.7)
     }
 
     addTimer() {
@@ -189,6 +196,8 @@ export default class Game extends Phaser.Scene {
       this.physics.add.collider(this.muffins, this.conveyor, this.muffinHitFloor, ()=>{
         return true;
       }, this);
+
+      Array(12).fill(0).forEach((a, i) => new Gear(this, 32 + (i * 64),800 - 68));
     }
 
     addSpikeGenerator () {
@@ -225,7 +234,7 @@ export default class Game extends Phaser.Scene {
 
     loadAudios () {
       this.audios = {
-        "build": this.sound.add("build"),
+        "key": this.sound.add("key"),
         "death": this.sound.add("death"),
         "jump": this.sound.add("jump"),
         "kill": this.sound.add("kill"),

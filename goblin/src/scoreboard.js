@@ -22,15 +22,16 @@ export default class Scoreboard extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
         this.cloudLayer = this.add.layer();    
-
+        this.loadAudios();
         if (+this.registry.get("time") > 0)
             await this.saveScore();
         else
             await this.loadScores();
         //
-        this.add.bitmapText(this.center_width,70, "celtic", "SCOREBOARD", 60).setOrigin(0.5).setTint(0x1c6c00).setDropShadow(3, 4, 0xfffd00, 0.7);;
-        this.restartText = this.add.bitmapText(this.center_width, 750, "celtic", "SPACE to Continue", 20).setOrigin(0.5).setTint(0x1c6c00).setDropShadow(1, 2, 0xfffd00, 0.7);
+        this.add.bitmapText(this.center_width, 90, "celtic", "SCOREBOARD", 60).setOrigin(0.5).setTint(0x1c6c00).setDropShadow(3, 4, 0xf09937, 0.7);;
+        this.restartText = this.add.bitmapText(this.center_width, 750, "celtic", "ENTER/SPACE to Continue", 20).setOrigin(0.5).setTint(0x1c6c00).setDropShadow(1, 2, 0xf09937, 0.7);
         this.restartText.setInteractive();
+        this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
         this.restartText.on('pointerdown', (pointer) => this.loadNext(), this);
         this.tweens.add({
@@ -63,7 +64,7 @@ export default class Scoreboard extends Phaser.Scene {
     showPrompt () {
         this.prompt = this.add.layer();
         this.userName = "";
-        this.userNameText = this.add.bitmapText(this.center_width - 250, this.center_height - 150, "celtic", this.userName.padEnd(9, '-'), 50).setTint(0x1c6c00).setDropShadow(3, 4, 0xfffd00, 0.7);
+        this.userNameText = this.add.bitmapText(this.center_width - 250, this.center_height - 150, "celtic", this.userName.padEnd(9, '-'), 50).setTint(0x1c6c00).setDropShadow(3, 4, 0xf09937, 0.7);
         this.prompt.add(this.userNameText)
         this.addLetters()
     }
@@ -132,6 +133,15 @@ export default class Scoreboard extends Phaser.Scene {
         })
       }
 
+      loadAudios () {
+        this.audios = {
+          "key": this.sound.add("key"),
+        };
+      }
+  
+      playAudio(key) {
+        this.audios[key].play();
+      }
 
     loadNext () {
         if (+this.registry.get("time") > 0)
@@ -178,6 +188,6 @@ export default class Scoreboard extends Phaser.Scene {
         this.prompt.add(this.keyboard["ok"])
         this.keyboard["--"] = new Key(this, x + 192, y, "--", this.deleteName.bind(this));
         this.prompt.add(this.keyboard["--"])
-        this.helpText = this.add.bitmapText(this.center_width, 650, "celtic", "To enter your name just \nClick on letters and press OK", 15).setOrigin(0.5).setTint(0x1c6c00).setDropShadow(1, 2, 0xfffd00, 0.7)
+        this.helpText = this.add.bitmapText(this.center_width, 650, "celtic", "To enter your name just \nClick on letters and press OK", 25).setOrigin(0.5).setTint(0x1c6c00).setDropShadow(1, 2, 0xfffd00, 0.7)
       }
 }
