@@ -20,7 +20,7 @@
     "lint": "eslint src/**/*.js test/**/*.js --fix",
     "unit": "mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js",
     "publish": "npm run-script build && npm run-script itchio",
-    "itchio": "cd dist && rm -f assets/html/index.html && butler push . pello/rise-up:html --userversion 0.0.4 && cd .. && butler status pello/rise-up:html"
+    "itchio": "cd dist && rm -f assets/html/index.html && butler push . pello/goblin-bakery:html --userversion 0.0.1 && cd .. && butler status pello/goblin-bakery:html"
   },
   "dependencies": {
     "firebase": "^9.21.0",
