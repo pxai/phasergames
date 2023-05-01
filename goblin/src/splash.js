@@ -68,10 +68,10 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 500, "celtic", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.sprite(this.center_width - 120, 590, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 20, 590, "celtic", "By PELLO", 25).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "celtic", "Press SPACE to start", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 500, "celtic", "WASD/Arrows: move", 30).setOrigin(0.5).setTint(0xf09937);
+        this.add.sprite(this.center_width - 110, 570, "pello").setOrigin(0.5).setScale(0.3)
+        this.add.bitmapText(this.center_width + 20, 590, "celtic", "By PELLO", 25).setOrigin(0.5).setTint(0xf09937);
+        this.space = this.add.bitmapText(this.center_width, 670, "celtic", "Press SPACE to start", 30).setOrigin(0.5).setTint(0xf09937);
         this.tweens.add({
             targets: this.space,
             duration: 300,

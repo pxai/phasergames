@@ -19,11 +19,11 @@ export default class Transition extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
 
-        this.add.sprite(this.center_width, this.center_height - 170, "walt");
+        this.add.sprite(this.center_width, this.center_height - 170, "walt", 5);
         this.add.bitmapText(this.center_width, this.center_height - 20, "celtic", messages[this.number], 40).setOrigin(0.5).setTint(0x1c6c00).setDropShadow(3, 4, 0xfffd00, 0.2);
         this.add.bitmapText(this.center_width, this.center_height + 20, "celtic", "Ready?", 30).setOrigin(0.5).setTint(0x1c6c00).setDropShadow(3, 4, 0xfffd00, 0.2);
-        this.add.bitmapText(this.center_width, this.center_height + 70, "celtic", "Jump on cakes", 30).setOrigin(0.5).setTint(0x1c6c00).setDropShadow(3, 4, 0xfffd00, 0.2);
-        this.add.bitmapText(this.center_width, this.center_height + 120, "celtic", "to produce muffins!", 30).setOrigin(0.5).setTint(0x1c6c00).setDropShadow(3, 4, 0xfffd00, 0.2);
+        this.add.bitmapText(this.center_width, this.center_height + 70, "celtic", "Jump on cakes", 30).setOrigin(0.5).setTint(0xf09937).setDropShadow(3, 4, 0xfffd00, 0.2);
+        this.add.bitmapText(this.center_width, this.center_height + 120, "celtic", "to produce muffins!", 30).setOrigin(0.5).setTint(0xf09937).setDropShadow(3, 4, 0xfffd00, 0.2);
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
         this.time.delayedCall(3000, () => { this.loadNext() }, null, this)
