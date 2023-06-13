@@ -65,7 +65,6 @@ export default class Game extends Phaser.Scene {
 
     updatePoints (points = 50) {
       this.totalTime += +points;
-      console.log(this.totalTime, points)
       this.updateTimer()
     }
 
@@ -174,14 +173,14 @@ export default class Game extends Phaser.Scene {
     }
 
     hitMuffin (player, muffin) {
-      console.log("Player hit muffinTop!", muffin);
+
     }
   
     hitMuffinTop (player, muffinTop) {
       player.createMuffin();
       this.playAudio("muffin");
       new Explosion(this, muffinTop.x, muffinTop.y, 10)
-      console.log("Player hit muffinTop!", muffinTop);
+
       muffinTop.setCompleted();
     }
 

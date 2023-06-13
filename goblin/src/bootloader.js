@@ -1,7 +1,6 @@
 export default class Bootloader extends Phaser.Scene {
     constructor () {
         super({ key: "bootloader" });
-        console.log("let start this shit")
     }
 
     preload () {

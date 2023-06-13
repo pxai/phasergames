@@ -34,7 +34,6 @@ export default class SpikeGenerator {
         const startX = (direction === "left") ?  -64 : this.scene.width + 32;
         const bat = new Bat(this.scene, startX, Phaser.Math.Between(this.scene.height - 100, this.scene.height - 250), "spike", direction);
 
-        console.log("Bat go!", bat.x, bat.y)
         this.scene.batGroup.add(bat);
     }
 
