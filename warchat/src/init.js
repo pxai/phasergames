@@ -25,7 +25,7 @@ const config = {
         Splash,
         Transition,
         Game,
-        Outro,
+        Outro
     ]
 };
 

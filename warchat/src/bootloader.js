@@ -20,17 +20,16 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("game", {next: "game", name: "STAGE", number: 0, time: 30});
-        },this);
+            this.scene.start("game", { next: "game", name: "STAGE", number: 0, time: 30 });
+        }, this);
 
-       /* Array(7).fill(0).forEach((_,i) => {
+        /* Array(7).fill(0).forEach((_,i) => {
             this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
-        });*/
+        }); */
 
         this.load.image("fireball", "assets/images/fireball.png");
         this.load.image("pello", "assets/images/pello.png");
         // this.load.audio("beam", "assets/sounds/beam.mp3");
-
 
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
 
@@ -41,9 +40,9 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("skeleton", "assets/images/foe.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("arrow", "assets/images/arrow.png", { frameWidth: 32, frameHeight: 32 });
 
-        this.load.image('map', 'assets/maps/map.png');
+        this.load.image("map", "assets/maps/map.png");
 
-        Array(10).fill(0).forEach((_,i) => {
+        Array(10).fill(0).forEach((_, i) => {
             this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`);
         });
 
@@ -53,7 +52,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     create () {
-      }
+    }
 
     createBars () {
         this.loadBar = this.add.graphics();
