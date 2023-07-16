@@ -20,7 +20,7 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("game", { next: "game", name: "STAGE", number: 0, time: 30 });
+            this.scene.start("splash", { next: "game", name: "STAGE", number: 0, time: 30 });
         }, this);
 
         /* Array(7).fill(0).forEach((_,i) => {
@@ -29,10 +29,12 @@ export default class Bootloader extends Phaser.Scene {
 
         this.load.image("fireball", "assets/images/fireball.png");
         this.load.image("pello", "assets/images/pello.png");
-        // this.load.audio("beam", "assets/sounds/beam.mp3");
+
+        this.load.audio("step", "assets/sounds/step.mp3");
+        this.load.audio("fireball", "assets/sounds/fireball.mp3");
 
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
-
+        this.load.bitmapFont("castle", "assets/fonts/castle.png", "assets/fonts/castle.xml");
         this.load.bitmapFont("runeFont", "assets/fonts/runes.png", "assets/fonts/runes.xml");
         this.load.bitmapFont("mainFont", "assets/fonts/celtic.png", "assets/fonts/celtic.xml");
         this.load.bitmapFont("arcade", "assets/fonts/arcade.png", "assets/fonts/arcade.xml");

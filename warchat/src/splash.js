@@ -14,7 +14,7 @@ export default class Splash extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
 
-        this.cameras.main.setBackgroundColor(0x000000);
+        this.cameras.main.setBackgroundColor(0x00b140);
         this.showLogo(); ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
@@ -28,13 +28,14 @@ export default class Splash extends Phaser.Scene {
     }
 
     showLogo () {
-        this.gameLogo = this.add.bitmapText(this.center_width, 450, "mainFont", "WarChat", 120).setOrigin(0.5);
+        //this.gameLogo = this.add.bitmapText(this.center_width, 450, "mainFont", "WarChat", 120).setOrigin(0.5);
+        this.gameLogo = this.add.bitmapText(this.center_width, 240, "mainFont", "WarChat", 120).setOrigin(0.5).setTint(0xFFD700).setDropShadow(2, 3, 0xbf2522, 0.7);;
         this.tweens.add({
             targets: this.gameLogo,
             duration: 1000,
             y: {
                 from: -200,
-                to: 330
+                to: 260
             }
         });
     }
@@ -54,11 +55,11 @@ export default class Splash extends Phaser.Scene {
     }
 
     showInstructions () {
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "Welcome to Warchat!", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 500, "pixelFont", "!help", 30).setOrigin(0.5);
-        this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3);
-        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Press SPACE to start", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 450, "mainFont", "Welcome to Warchat!", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
+        this.add.bitmapText(this.center_width, 500, "mainFont", "!help", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
+        this.add.sprite(this.center_width - 70, 560, "pello").setOrigin(0.5).setScale(0.3);
+        this.add.bitmapText(this.center_width + 40, 570, "mainFont", "By Pello", 15).setOrigin(0.5).setDropShadow(1, 2, 0xbf2522, 0.7);
+        this.space = this.add.bitmapText(this.center_width, 670, "mainFont", "Press SPACE to start", 30).setTint(0xFFD700).setOrigin(0.5);
         this.tweens.add({
             targets: this.space,
             duration: 300,

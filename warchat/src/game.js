@@ -25,6 +25,7 @@ export default class Game extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.cameras.main.setBackgroundColor(0x00b140);
         this.addChat();
+        this.loadAudios();
     }
 
     addChat () {
@@ -33,7 +34,7 @@ export default class Game extends Phaser.Scene {
 
     loadGame () {
         this.addMap();
-        // this.loadAudios();
+
         // this.playMusic();
     }
 
@@ -134,13 +135,13 @@ export default class Game extends Phaser.Scene {
 
     move (playerName, x, y) {
         const player = this.allPlayers[playerName];
-        if (this.isValidRange(x, player.range) && this.isValidRange(y, player.range)) {
+        if (this.isValidRange(Math.abs(x), player.range) && this.isValidRange( Math.abs(y),player.range)) {
             const player = this.allPlayers[playerName];
-            console.log("Move: ", playerName, player);
             player.sprite.anims.play("playerwalk", true);
-            const point = new Phaser.Geom.Point(player.x + x, player.y + y);
-            const distance = Phaser.Math.Distance.BetweenPoints(player, point) / 100;
-            this.physics.moveTo(player, point.x, point.y, 100);
+            const point = new Phaser.Geom.Point(player.x + (+x), player.y + (+y));
+            const velocity = (Math.abs(x) + Math.abs(y)) * 5;
+            console.log("Move: ", playerName, velocity, player.x, player.y, point.x, point.y);
+            this.physics.moveTo(player, point.x, point.y, velocity);
         }
     }
 
@@ -151,7 +152,6 @@ export default class Game extends Phaser.Scene {
             player.sprite.anims.play("playerspell", true);
             const point = new Phaser.Geom.Point(player.x + x, player.y + y);
             const distance = Phaser.Math.Distance.BetweenPoints(player, point) / 100;
-            this.physics.moveTo(player, point.x, point.y, 100);
         }
     }
 
@@ -160,7 +160,8 @@ export default class Game extends Phaser.Scene {
       const playerInfo = this.allPlayers[playerToGetInfo];
       if (player && playerInfo) {
           const info = playerInfo.getInfo();
-          return Object.keys(info).map(key => `${key} ${info[key]}`).join("\n");
+          console.log("INFO : ", info);
+          return Object.keys(info).map(key => `${key} ${info[key]}`).join(", ");
       }
     }
 
@@ -169,18 +170,27 @@ export default class Game extends Phaser.Scene {
     }
 
     isValidRange (number, range) {
-        return this.isValidNumber(number) && number > 0 && number <= range;
+        return this.isValidNumber(number) && number >= 0 && number <= range;
     }
 
     loadAudios () {
         this.audios = {
-            beam: this.sound.add("beam")
+            fireball: this.sound.add("fireball"),
+            step: this.sound.add("step")
         };
     }
 
     playAudio (key) {
         this.audios[key].play();
     }
+
+    playRandom(key) {
+        this.audios[key].play({
+          rate: Phaser.Math.Between(1, 1.5),
+          detune: Phaser.Math.Between(-1000, 1000),
+          delay: 0
+        });
+      }
 
     playMusic (theme = "game") {
         this.theme = this.sound.add(theme);

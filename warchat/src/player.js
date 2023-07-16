@@ -22,6 +22,7 @@ class Player extends Phaser.GameObjects.Container {
         this.sprite.flipX = side === "right";
         this.body.setAllowGravity(false);
         this.body.setSize(20, 30);
+        this.body.setDrag(30)
         this.init();
 
         this.flashing = false;
@@ -32,6 +33,7 @@ class Player extends Phaser.GameObjects.Container {
 
         this.range = 10;
         this.mana = 10;
+        this.level = 1;
         this.health = health;
 
         this.dead = false;
@@ -164,7 +166,7 @@ class Player extends Phaser.GameObjects.Container {
 
     getInfo () {
         return {
-            name: this.name,
+            level: this.level,
             health: this.health,
             mana: this.mana,
             range: this.range,

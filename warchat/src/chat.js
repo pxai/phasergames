@@ -15,7 +15,7 @@ export default class Chat {
             options: { debug: true },
             identity: {
                 username: "devdiaries",
-                password: "oauth:bhtp65u3qmwj803txw3gv650cz91v1"
+                password: "oauth:d436lbvjbql0nf8zhe154xn0k60qxq" //bhtp65u3qmwj803txw3gv650cz91v1"
             },
             channels: ["devdiaries"]
         });
