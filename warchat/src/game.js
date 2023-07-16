@@ -1,6 +1,7 @@
 import Player from "./player";
 import Chat from "./chat";
 import Fireball from "./fireball";
+import Shield from "./shield";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -61,6 +62,7 @@ export default class Game extends Phaser.Scene {
         this.skeletons = this.add.group();
         this.fireballs = this.add.group();
         this.trailLayer = this.add.layer();
+        this.shields = this.add.group();
         this.arrows = this.add.group();
         this.texts = [];
 
@@ -86,13 +88,22 @@ export default class Game extends Phaser.Scene {
             return true;
         }, this);
 
-        this.physics.add.collider(this.fireballs, this.playersLeft, this.fireballHitPlayer, () => {
+        this.physics.add.overlap(this.fireballs, this.shields, this.fireballHitShield, () => {
             return true;
         }, this);
 
-        this.physics.add.collider(this.fireballs, this.playersRight, this.fireballHitPlayer, () => {
+        this.physics.add.overlap(this.fireballs, this.playersLeft, this.fireballHitPlayer, () => {
             return true;
         }, this);
+
+        this.physics.add.overlap(this.fireballs, this.playersRight, this.fireballHitPlayer, () => {
+            return true;
+        }, this);
+    }
+
+    fireballHitShield (fireball, shield) {
+        fireball.destroy();
+        shield.destroy();
     }
 
     chooseSide (name) {
@@ -150,8 +161,7 @@ export default class Game extends Phaser.Scene {
         if (this.isValidRange(size, player.mana)) {
             console.log("Shield: ", playerName, player);
             player.sprite.anims.play("playerspell", true);
-            const point = new Phaser.Geom.Point(player.x + x, player.y + y);
-            const distance = Phaser.Math.Distance.BetweenPoints(player, point) / 100;
+            new Shield(this, player.x, player.y);
         }
     }
 
