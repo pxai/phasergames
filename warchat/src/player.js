@@ -1,8 +1,9 @@
 
 import { JumpSmoke, RockSmoke, Particle } from "./particle";
+import HealthBar from "./health_bar";
 
 class Player extends Phaser.GameObjects.Container {
-    constructor (scene, x, y, side, name, health = 10, tnt = 1, velocity = 200, remote = false) {
+    constructor (scene, x, y, side, name, health = 100, tnt = 1, velocity = 200, remote = false) {
         super(scene, x, y);
 
         this.scene = scene;
@@ -25,6 +26,7 @@ class Player extends Phaser.GameObjects.Container {
         this.body.setDrag(30)
         this.init();
 
+
         this.flashing = false;
         this.falling = false;
         this.casting = false;
@@ -35,9 +37,10 @@ class Player extends Phaser.GameObjects.Container {
         this.mana = 10;
         this.level = 1;
         this.health = health;
+        this.healthBar = new HealthBar(this, -20, 46, 10);
 
         this.dead = false;
-
+        this.jumpSmoke()
         this.scene.events.on("update", this.update, this);
     }
 
@@ -107,10 +110,10 @@ class Player extends Phaser.GameObjects.Container {
     }
 
     jumpSmoke (offsetY = 10, varX) {
-        Array(Phaser.Math.Between(3, 6)).fill(0).forEach(i => {
+        Array(Phaser.Math.Between(6, 12)).fill(0).forEach(i => {
             const offset = varX || Phaser.Math.Between(-1, 1) > 0 ? 1 : -1;
-            varX = varX || Phaser.Math.Between(0, 20);
-            new JumpSmoke(this.scene, this.x + (offset * varX), this.y + offsetY);
+            varX = varX || Phaser.Math.Between(0, 64);
+            new JumpSmoke(this.scene, this.x + (offset * varX), this.y + (offset * varX));
         });
     }
 
@@ -142,6 +145,23 @@ class Player extends Phaser.GameObjects.Container {
             new JumpSmoke(this.scene, this.x, this.y + Phaser.Math.Between(10, 15));
         }
     }
+
+    hit (points) {
+        this.health -= points;
+        if (this.health <= 0) {
+            this.die();
+        }
+
+        this.healthBar.decrease(points)
+        this.scene.tweens.add({
+          targets: this.healthBar.bar,
+          duration: 1000,
+          alpha: {
+            from: 1,
+            to: 0
+          },
+        });
+      }
 
     die (shake = 100) {
         this.scene.playAudio("death");

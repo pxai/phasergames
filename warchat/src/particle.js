@@ -140,7 +140,7 @@ export class Glitter extends Phaser.GameObjects.Rectangle {
 }
 
 export class JumpSmoke extends Phaser.GameObjects.Rectangle {
-    constructor (scene, x, y, width, height, color = 0xFFEAAB, gravity = false) {
+    constructor (scene, x, y, width, height, color = 0xffffff, gravity = false) {
         width = width || Phaser.Math.Between(10, 25);
         height = height || Phaser.Math.Between(10, 25);
         super(scene, x, y, width, height, color);

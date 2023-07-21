@@ -5,7 +5,7 @@ export default class Explosion extends Phaser.GameObjects.Sprite {
       this.setScale(scale)
       this.scale = scale;
       this.scene = scene;
-      this.name = "explosion"";
+      this.name = "explosion";
 
       this.scene.add.existing(this);
       scene.physics.add.existing(this);
