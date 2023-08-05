@@ -6,9 +6,9 @@ export default class Fireball extends Phaser.GameObjects.Sprite {
         this.name = "fireball";
         scene.add.existing(this);
         scene.physics.add.existing(this);
-
-        this.body.setBounce(1);
-        this.body.setAllowGravity(false);
+        this.activate = false;
+        //this.body.setBounce(1);
+        this.body.setAllowGravity(true);
         this.init();
     }
 
@@ -20,7 +20,7 @@ export default class Fireball extends Phaser.GameObjects.Sprite {
             scale: { from: 0.9, to: 1 },
             repeat: -1
         });
-        this.scene.time.delayedCall(5000, () => { this.destroy(); }, null, this);
+        this.scene.time.delayedCall(600, () => { this.activate = true; }, null, this);
     }
 
     update () {

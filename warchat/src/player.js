@@ -3,7 +3,7 @@ import { JumpSmoke, RockSmoke, Particle } from "./particle";
 import HealthBar from "./health_bar";
 
 class Player extends Phaser.GameObjects.Container {
-    constructor (scene, x, y, side, name, health = 100, tnt = 1, velocity = 200, remote = false) {
+    constructor (scene, x, y, side, name, health = 10, tnt = 1, velocity = 200, remote = false) {
         super(scene, x, y);
 
         this.scene = scene;
@@ -21,7 +21,7 @@ class Player extends Phaser.GameObjects.Container {
 
         this.right = true;
         this.sprite.flipX = side === "right";
-        this.body.setAllowGravity(false);
+        this.body.setAllowGravity(true);
         this.body.setSize(20, 30);
         this.body.setDrag(30)
         this.init();
@@ -38,6 +38,7 @@ class Player extends Phaser.GameObjects.Container {
         this.level = 1;
         this.health = health;
         this.healthBar = new HealthBar(this, -20, 46, 10);
+        this.add(this.healthBar.bar);
 
         this.dead = false;
         this.jumpSmoke()
@@ -103,6 +104,9 @@ class Player extends Phaser.GameObjects.Container {
         // this.landSmoke();
 
         if (!this.casting) this.anims?.play("playeridle", true);
+        if (this.y > this.scene.height) {
+            this.die()
+        }
     }
 
     landSmoke () {
@@ -167,9 +171,10 @@ class Player extends Phaser.GameObjects.Container {
         this.scene.playAudio("death");
         this.scene.cameras.main.shake(shake);
         this.dead = true;
-        this.anims.play("playerdead", true);
+        this.sprite.anims.play("playerdead", true);
 
         this.body.moves = false;
+        this.scene.checkGameOver();
     }
 
     flashPlayer () {

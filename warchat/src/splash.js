@@ -59,7 +59,7 @@ export default class Splash extends Phaser.Scene {
         this.add.bitmapText(this.center_width, 500, "mainFont", "!help", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
         this.add.sprite(this.center_width - 70, 560, "pello").setOrigin(0.5).setScale(0.3);
         this.add.bitmapText(this.center_width + 40, 570, "mainFont", "By Pello", 15).setOrigin(0.5).setDropShadow(1, 2, 0xbf2522, 0.7);
-        this.space = this.add.bitmapText(this.center_width, 670, "mainFont", "Press SPACE to start", 30).setTint(0xFFD700).setOrigin(0.5);
+        this.space = this.add.bitmapText(this.center_width, 670, "mainFont", "Press SPACE or CLICK HERE to start", 30).setTint(0xFFD700).setOrigin(0.5);
         this.tweens.add({
             targets: this.space,
             duration: 300,
@@ -67,6 +67,11 @@ export default class Splash extends Phaser.Scene {
             repeat: -1,
             yoyo: true
         });
+
+        this.space.setInteractive();
+        this.space.on('pointerdown', () => {
+            this.scene.start("transition", { next: "game", name: "STAGE", number: 0, time: 30 });
+         })
     }
 }
 

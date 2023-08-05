@@ -42,7 +42,7 @@ export default class Chat {
             if (user.mod) {
                 // User is a mod.
             }
-            let [command, x, y, size, shield, userInfo] = ["", "", "", "", "", ""];
+            let [command, x, y, speed, angle, size, shield, userInfo] = ["", "", "", "", "", "", "", ""];
             console.log(`Chat> ${message}`);
             const messageParts = message.toLowerCase().split(" ");
             console.log("Received chat: ", channel, user, messageParts);
@@ -52,6 +52,13 @@ export default class Chat {
                 // if(self) return;
                 this.client.action(channel, `${username} just said hello`);
                 break;
+
+            case "!h":
+            case "!help":
+                // if(self) return;
+                console.log("Help requested")
+                this.client.say(channel, `Commands: !join,\r\n !fb speed angle,\r\n !in player: gives info about player, \r\n!h :this help`);
+                break;
             case "!join":
                 // if(self) return;
                 this.client.action(channel, `${username} joins the battle!!!`);
@@ -59,10 +66,10 @@ export default class Chat {
                 break;
             case "!fb":
                 // if(self) return;
-                [command, x, y] = messageParts;
+                [command, speed, angle] = messageParts;
 
-                this.client.action(channel, `${username} attacks ${x} ${y}`);
-                this.scene.attack(username, x, y);
+                this.client.action(channel, `${username} attacks ${speed} ${angle}`);
+                this.scene.attack(username, speed, angle);
 
                 break;
 

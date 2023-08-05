@@ -5,7 +5,7 @@ export default class HealthBar {
         this.bar = new Phaser.GameObjects.Graphics(player.scene);
         this.player = player;
         this.x = x;
-        this.y = y;
+        this.y = y - 32;
         this.value = value * 10;
         this.p = 76 / 100;
 
@@ -28,8 +28,8 @@ export default class HealthBar {
     }
 
     draw () {
-        this.bar.x = this.player.x;
-        this.bar.y = this.player.y;
+        this.bar.x = this.x;
+        this.bar.y = this.y;
         this.bar.clear();
         let color = 0x3e6875;
         if (this.value > 30 && this.value < 60) {

@@ -2,6 +2,8 @@ import Player from "./player";
 import Chat from "./chat";
 import Fireball from "./fireball";
 import Shield from "./shield";
+import MapGenerator from "./map_generator";
+import Explosion from "./explosion";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -25,8 +27,11 @@ export default class Game extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
         this.cameras.main.setBackgroundColor(0x00b140);
+        this.physics.world.setBoundsCollision(true, true, false, true);
         this.addChat();
         this.loadAudios();
+
+        this.cursor = this.input.keyboard.createCursorKeys();
     }
 
     addChat () {
@@ -41,7 +46,7 @@ export default class Game extends Phaser.Scene {
 
     addMap () {
         this.waterTime = 0;
-        this.tileMap = this.make.tilemap({ key: `scene${this.number}`, tileWidth: 25, tileHeight: 25 });
+        this.tileMap = this.make.tilemap({ key: `scene${this.number}`, tileWidth: 32, tileHeight: 32 });
 
         this.tileSetBg = this.tileMap.addTilesetImage("map");
         this.backgroundLayer = this.tileMap.createLayer("background", this.tileSetBg);
@@ -71,6 +76,8 @@ export default class Game extends Phaser.Scene {
                 this.texts.push(object);
             }
         });
+
+        //new MapGenerator(this)
     }
 
     addPlayer (name) {
@@ -80,15 +87,28 @@ export default class Game extends Phaser.Scene {
             return true;
         }, this);
 
+
+        this.physics.add.collider(player, this.bricks, this.hitFloor, () => {
+            return true;
+        }, this);
+
         this.physics.add.collider(player, this.arrows, this.arrowHitPlayer, () => {
             return true;
         }, this);
 
-        this.physics.add.collider(this.fireballs, this.platform, this.fireballHitPlatform, () => {
+        this.physics.add.overlap(player, this.fireballs, this.fireballHitsPlayer, () => {
+            return true;
+        }, this);
+
+        this.physics.add.collider(player, this.explosions, this.explosionHitsPlayer, () => {
             return true;
         }, this);
 
         this.physics.add.overlap(this.fireballs, this.shields, this.fireballHitShield, () => {
+            return true;
+        }, this);
+
+        this.physics.add.overlap(this.fireballs, this.platform, this.fireballHitPlatform, () => {
             return true;
         }, this);
 
@@ -101,50 +121,92 @@ export default class Game extends Phaser.Scene {
         }, this);
     }
 
+    fireballHitsPlayer(player, fireball) {
+        console.log("Fireball hits pllayer: ", player, fireball)
+        player.hit(2);
+        fireball.destroy();
+        new Explosion(this, fireball.x, fireball.y)
+        this.playAudio("boom")
+    }
+
+    explosionHitsPlayer(player, explosions) {
+        player.hit(1);
+    }
+
+    hitFloor (player, platform) {
+    }
+
+    brickHitPlatform (brick, platform) {
+    }
+
     fireballHitShield (fireball, shield) {
         fireball.destroy();
         shield.destroy();
     }
 
     chooseSide (name) {
-        const y = Phaser.Math.Between(64, this.height - 196);
+        const y = Phaser.Math.Between(64, 128);
         let player = null;
         let side = "";
-        if (this.playersLeft.getLength() >= this.playersRight.getLength()) {
-            side = "right";
-            const x = Phaser.Math.Between(this.width - 64, this.width - 196);
-            player = new Player(this, x, y, side, name);
-            this.playersRight.add(player);
-        } else {
-            side = "left";
-            const x = Phaser.Math.Between(64, 196);
-            player = new Player(this, x, y, side, name);
-            this.playersLeft.add(player);
-        }
+
+        const x = parseInt(Phaser.Math.Between(0, this.width - 128));
+
+        player = new Player(this, x, y, side, name);
         this.allPlayers[name] = player;
-        this.chat.say(`Player ${name} joins ${side} army!`);
+        this.chat.say(`Player ${name} joins game!`);
         return player;
     }
 
+    getTile(platform) {
+        const {x, y} = platform;
+        return this.platform.getTileAt(x, y);
+      }
+
     fireballHitPlayer (fireball, player) {
-        console.log("Hit by fireball", fireball, player);
+        console.log("Destroyed firebal??")
     }
 
-    attack (playerName, x, y) {
-        if (this.isValidNumber(x) && this.isValidNumber(y)) {
-            const player = this.allPlayers[playerName];
-            console.log("Attack: ", playerName, player);
+    fireballHitPlatform (fireball, platform) {
+        //if (!fireball.activate) return
+        const tile = this.getTile(platform)
+        if (tile && tile.x) {
+            this.platform.removeTileAt(tile.x, tile.y);
+            fireball.destroy();
+            new Explosion(this, fireball.x, fireball.y)
+            this.playAudio("boom")
+        }
+
+        //platform.destroy();
+    }
+
+    attack (playerName, speed, angle) {
+        const player = this.allPlayers[playerName];
+        if (player.dead) return;
+
+        if (this.isValidNumber(speed) && this.isValidNumber(angle)) {
+            console.log("Attack: ", playerName, player, speed, angle);
             player.sprite.anims.play("playerspell", true);
-            const point = new Phaser.Geom.Point(+x, +y);
-            const fireball = new Fireball(this, player.x, player.y);
+            const fireball = new Fireball(this, player.x + 16, player.y - 16);
             this.fireballs.add(fireball);
-            const distance = Phaser.Math.Distance.BetweenPoints(player, point) / 100;
-            // new Rune(this, x, y);
-            this.physics.moveTo(fireball, point.x, point.y, 300);
+            const finalAngle = Phaser.Math.DegToRad(+angle);
+            const velocity = this.physics.velocityFromRotation(finalAngle, +speed);
+            fireball.body.setVelocity(velocity.x, velocity.y);
+            this.playAudio("fireball")
+        } else {
+            this.chat.say(`Player ${playerName} invalid attack values. Use speed: 0-400, angle: 0-360!`);
         }
     }
 
+    isValidSpeed(number) {
+        return this.isValidNumber(number) && +number >= 0 && +number <= 400;
+    }
+
+    isValidAngle(number) {
+        return this.isValidNumber(number) && +number >= 0 && +number <= 360;
+    }
+
     move (playerName, x, y) {
+        return;
         const player = this.allPlayers[playerName];
         if (this.isValidRange(Math.abs(x), player.range) && this.isValidRange( Math.abs(y),player.range)) {
             const player = this.allPlayers[playerName];
@@ -170,7 +232,6 @@ export default class Game extends Phaser.Scene {
       const playerInfo = this.allPlayers[playerToGetInfo];
       if (player && playerInfo) {
           const info = playerInfo.getInfo();
-          console.log("INFO : ", info);
           return Object.keys(info).map(key => `${key} ${info[key]}`).join(", ");
       }
     }
@@ -186,7 +247,11 @@ export default class Game extends Phaser.Scene {
     loadAudios () {
         this.audios = {
             fireball: this.sound.add("fireball"),
-            step: this.sound.add("step")
+            step: this.sound.add("step"),
+            death: this.sound.add("death"),
+            boom: this.sound.add("boom"),
+            fireball: this.sound.add("fireball"),
+            win: this.sound.add("win")
         };
     }
 
@@ -217,13 +282,35 @@ export default class Game extends Phaser.Scene {
     }
 
     update () {
-
+        if (Phaser.Input.Keyboard.JustDown(this.cursor.up)) {
+            this.attack("devdiaries", Phaser.Math.Between(0, 400), Phaser.Math.Between(0, 360));
+        }
     }
 
-    finishScene () {
-        this.sky.stop();
-        this.theme.stop();
-        this.scene.start("transition", { next: "underwater", name: "STAGE", number: this.number + 1 });
+    checkGameOver () {
+        console.log(this.allPlayers, Object.values(this.allPlayers));
+        const remaining = Object.values(this.allPlayers).map(player => player.dead).length;
+
+        if (remaining == 1) {
+            const last = Object.values(this.allPlayers).find(player => !player.dead) ;
+            this.winner = last ? last.name : "No Winn" ;
+            this.gameOver = true;
+        } else if (remaining <= 1)
+            this.winner = "No Winn"
+            this.gameOver = true;
+            this.showResult();
+    }
+
+    showResult () {
+        this.add.bitmapText(this.center_width, this.center_height - 50, "mainFont", "Game Over:", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
+        this.add.bitmapText(this.center_width, this.center_height + 50, "mainFont", "Winner: ", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
+       // this.scene.start("transition", { next: "underwater", name: "STAGE", number: this.number + 1 });
+
+       this.restart = this.add.bitmapText(this.center_width, this.center_height + 150, "mainFont", "CLICK TO RESTART", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
+       this.restart.setInteractive();
+       this.restart.on('pointerdown', () => {
+            this.scene.start("splash")
+        })
     }
 
     updateScore (points = 0) {
