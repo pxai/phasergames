@@ -5,8 +5,13 @@ import Splash from "./splash";
 import Transition from "./transition";
 import Game from "./game";
 
+const urlParams = new URLSearchParams(window.location.search);
+
+const width = +urlParams.get('width') || 1200;
+console.log("Final Width: ", width);
+
 const config = {
-    width: 1200,
+    width,
     height: 800,
     scale: {
         autoCenter: Phaser.Scale.CENTER_BOTH

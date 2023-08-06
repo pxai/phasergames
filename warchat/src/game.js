@@ -172,7 +172,7 @@ export default class Game extends Phaser.Scene {
         if (tile && tile.x) {
             this.platform.removeTileAt(tile.x, tile.y);
             fireball.destroy();
-            new Explosion(this, fireball.x, fireball.y)
+            new Explosion(this, fireball.x, fireball.y, fireball.shooter)
             this.playAudio("boom")
         }
 
@@ -186,7 +186,7 @@ export default class Game extends Phaser.Scene {
         if (this.isValidNumber(speed) && this.isValidNumber(angle)) {
             console.log("Attack: ", playerName, player, speed, angle);
             player.sprite.anims.play("playerspell", true);
-            const fireball = new Fireball(this, player.x + 16, player.y - 16);
+            const fireball = new Fireball(this, player.x + 16, player.y - 16, player.name);
             this.fireballs.add(fireball);
             const finalAngle = Phaser.Math.DegToRad(+angle);
             const velocity = this.physics.velocityFromRotation(finalAngle, +speed);

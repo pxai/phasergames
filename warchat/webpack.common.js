@@ -22,11 +22,11 @@ module.exports = {
   },
   plugins: [
     new htmlWebpackPlugin({
-      template: "assets/html/index.html",
-      filename: "index.html"
+      template: "assets/html/game.html",
+      filename: "game.html"
     }),
     new CleanWebpackPlugin({options: "dist/*.*"}),
-    new CopyWebpackPlugin({ patterns: [{ from: './assets', to: './assets' }, { from: './assets/html/main.js', to: './' }] }),
+    new CopyWebpackPlugin({ patterns: [{ from: './assets', to: './assets' }, { from: './assets/html/main.js', to: './' }, { from: './assets/html/index.html', to: './index.html' }] }),
   ],
   stats: {
     colors: true

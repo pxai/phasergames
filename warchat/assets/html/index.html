@@ -1,15 +1,29 @@
+
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>WarChat</title>
-        <meta name="keywords" content="title, game, phaser, platform, Pello">
-        <meta name="description" content="Warchat game built with phaser">
-        <meta name="author" content="Pello Altadill">
-        <style>
-            body { background-color: #ddd; } 
-        </style>
-    </head>
-    <body>
-    </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>WarChat</title>
+</head>
+<body>
+  <header>
+    <h1>WarChat</h1>
+  </header>
+
+        <form action="game.html">
+            <div><label for="channel">Channel</label></div>
+            <div><input type="text" name="channel" id="channel" value="devdiaries"></div>
+            <div><label for="background">Background Color</label></div>
+            <div><input type="color" name="background" id="background", value = '#00b140'></div>
+            <div><label for="width">Width</label></div>
+            <div><input type="number" name="width" id="width" value="1200"></div>
+            <div><label for="height">Height</label></div>
+            <div><input type="number" name="Height" id="height" value="800"></div>
+            <div><input type="submit", value = 'PLAY'></div>
+        </form>
+            <footer>
+              <a href="https://warchat.netlify.app">Warchat</a>
+            </footer>
+</body>
 </html>

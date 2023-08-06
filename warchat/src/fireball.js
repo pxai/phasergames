@@ -1,9 +1,10 @@
 import { Particle } from "./particle";
 
 export default class Fireball extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, color = 0xffffff, size = 15) {
+    constructor (scene, x, y, shooter = "", color = 0xffffff, size = 15) {
         super(scene, x, y, "fireball");
         this.name = "fireball";
+        this.shooter = shooter;
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.activate = false;

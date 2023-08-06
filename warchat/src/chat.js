@@ -11,13 +11,17 @@ export default class Chat {
     }
 
     init () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const channel = urlParams.get('channel') || "devdiaries";
+        console.log("Chat channel: ", channel);
+
         this.client = new tmi.Client({
             options: { debug: true },
             identity: {
                 username: "devdiaries",
                 password: "oauth:d436lbvjbql0nf8zhe154xn0k60qxq" //bhtp65u3qmwj803txw3gv650cz91v1"
             },
-            channels: ["devdiaries"]
+            channels: [channel]
         });
 
         this.client.connect().then(ok => {

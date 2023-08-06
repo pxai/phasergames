@@ -1,11 +1,12 @@
 export default class Explosion extends Phaser.GameObjects.Sprite {
-    constructor (scene, x, y, scale = 1, sprite="shield") {
+    constructor (scene, x, y, shooter= "", scale = 1, sprite="shield") {
       super(scene, x, y, sprite)
       this.setOrigin(0.5)
       this.setScale(scale)
       this.scale = scale;
       this.scene = scene;
       this.name = sprite;
+      this.shooter = shooter;
 
       this.scene.add.existing(this);
       scene.physics.add.existing(this);
