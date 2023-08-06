@@ -15,10 +15,14 @@ export default class Game extends Phaser.Scene {
 
     init (data) {
         this.name = data.name;
-        this.number = data.number;
+        this.number = Phaser.Math.RND.pick([0, 1, 2, 3])
     }
 
     preload () {
+        const urlParams = new URLSearchParams(window.location.search);
+        let param = urlParams.get('background') || "#00b140";
+        param = parseInt(param.substring(1), 16)
+        this.backgroundColor = '0x' + param.toString(16)
     }
 
     create () {
@@ -26,7 +30,7 @@ export default class Game extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.cameras.main.setBackgroundColor(0x00b140);
+        this.cameras.main.setBackgroundColor(+this.backgroundColor);
         this.physics.world.setBoundsCollision(true, true, false, true);
         this.addChat();
         this.loadAudios();
@@ -186,6 +190,7 @@ export default class Game extends Phaser.Scene {
             const finalAngle = Phaser.Math.DegToRad(+angle);
             const velocity = this.physics.velocityFromRotation(finalAngle, +speed);
             fireball.body.setVelocity(velocity.x, velocity.y);
+            player.changeDirection(+angle);
             this.playAudio("fireball")
         } else {
             this.chat.say(`Player ${playerName} invalid attack values. Use speed: 0-400, angle: 0-360!`);

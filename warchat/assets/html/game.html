@@ -7,9 +7,14 @@
         <meta name="description" content="Warchat game built with phaser">
         <meta name="author" content="Pello Altadill">
         <style>
-            body { background-color: #ddd; } 
+            body { background-color: #ddd; }
         </style>
     </head>
     <body>
     </body>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const background = urlParams.get('background') || '#00b140';
+        document.body.style.backgroundColor = background;
+    </script>
 </html>

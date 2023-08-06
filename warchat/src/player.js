@@ -190,6 +190,11 @@ class Player extends Phaser.GameObjects.Container {
         });
     }
 
+    changeDirection (angle) {
+        console.log(angle)
+        this.sprite.flipX = (angle >= 90 && angle <= 270);
+    }
+
     getInfo () {
         return {
             level: this.level,
