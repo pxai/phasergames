@@ -25,7 +25,7 @@ class Player extends Phaser.GameObjects.Container {
         this.body.setSize(20, 30);
         this.body.setDrag(30)
         this.init();
-
+        this.kills = [];
 
         this.flashing = false;
         this.falling = false;
@@ -150,9 +150,10 @@ class Player extends Phaser.GameObjects.Container {
         }
     }
 
-    hit (points) {
+    hit (points, shooter) {
         this.health -= points;
         if (this.health <= 0) {
+            this.scene.addKill(this.name, shooter)
             this.die();
         }
 
@@ -165,7 +166,7 @@ class Player extends Phaser.GameObjects.Container {
             to: 0
           },
         });
-      }
+    }
 
     die (shake = 100) {
         this.scene.playAudio("death");

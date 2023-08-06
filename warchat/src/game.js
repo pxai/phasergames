@@ -123,7 +123,7 @@ export default class Game extends Phaser.Scene {
 
     fireballHitsPlayer(player, fireball) {
         console.log("Fireball hits pllayer: ", player, fireball)
-        player.hit(2);
+        player.hit(2, fireball.shooter);
         fireball.destroy();
         new Explosion(this, fireball.x, fireball.y)
         this.playAudio("boom")
@@ -162,10 +162,6 @@ export default class Game extends Phaser.Scene {
         return this.platform.getTileAt(x, y);
       }
 
-    fireballHitPlayer (fireball, player) {
-        console.log("Destroyed firebal??")
-    }
-
     fireballHitPlatform (fireball, platform) {
         //if (!fireball.activate) return
         const tile = this.getTile(platform)
@@ -184,7 +180,6 @@ export default class Game extends Phaser.Scene {
         if (player.dead) return;
 
         if (this.isValidNumber(speed) && this.isValidNumber(angle)) {
-            console.log("Attack: ", playerName, player, speed, angle);
             player.sprite.anims.play("playerspell", true);
             const fireball = new Fireball(this, player.x + 16, player.y - 16, player.name);
             this.fireballs.add(fireball);
@@ -302,15 +297,30 @@ export default class Game extends Phaser.Scene {
     }
 
     showResult () {
-        this.add.bitmapText(this.center_width, this.center_height - 50, "mainFont", "Game Over:", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
-        this.add.bitmapText(this.center_width, this.center_height + 50, "mainFont", "Winner: ", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
-       // this.scene.start("transition", { next: "underwater", name: "STAGE", number: this.number + 1 });
+        const scoreBoard = this.createScoreBoard()
 
-       this.restart = this.add.bitmapText(this.center_width, this.center_height + 150, "mainFont", "CLICK TO RESTART", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
+        this.add.bitmapText(this.center_width, 80, "mainFont", "Game Over:", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
+        scoreBoard.slice(0, 5).forEach((player, i) => {
+            const winnerText = `${i+1}.  ${player.name}, kills: ${player.kills.length}`;
+            this.add.bitmapText(this.center_width, 170 + (i * 50), "mainFont", winnerText, 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
+        })
+
+       console.log("ScoreBoard: ", scoreBoard[0].name)
+
+       this.restart = this.add.bitmapText(this.center_width, this.height - 100, "mainFont", "CLICK TO RESTART", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
        this.restart.setInteractive();
        this.restart.on('pointerdown', () => {
             this.scene.start("splash")
         })
+    }
+
+    addKill(killedPlayerName, killerPlayerName) {
+        const player = this.allPlayers[killerPlayerName];
+        player.kills.push(killedPlayerName)
+    }
+
+    createScoreBoard () {
+        return [...Object.values(this.allPlayers)].sort((player1, player2) => player2.kills.length - player1.kills.length);
     }
 
     updateScore (points = 0) {
