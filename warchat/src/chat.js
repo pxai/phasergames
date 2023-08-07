@@ -13,14 +13,15 @@ export default class Chat {
     init () {
         const urlParams = new URLSearchParams(window.location.search);
         const channel = urlParams.get('channel') || "devdiaries";
+        this.feedback = urlParams.get('feedback') == "1";
         console.log("Chat channel: ", channel);
 
         this.client = new tmi.Client({
-            options: { debug: true },
-            identity: {
-                username: "devdiaries",
-                password: "oauth:d436lbvjbql0nf8zhe154xn0k60qxq" //bhtp65u3qmwj803txw3gv650cz91v1"
-            },
+            options: { debug: false },
+            // identity: {
+            //     username: "devdiaries",
+            //     password: NOPE
+            // },
             channels: [channel]
         });
 
@@ -61,7 +62,7 @@ export default class Chat {
             case "!help":
                 // if(self) return;
                 console.log("Help requested")
-                this.client.say(channel, `Commands: !join,\r\n !fb speed angle,\r\n !in player: gives info about player, \r\n!h :this help`);
+                this.client.say(channel, `Commands: !join,\r\n !fb speed angle: shoots fireball speed (0-100) angle (0-360),\r\n !in player: gives info about player, \r\n!h :this help`);
                 break;
             case "!join":
                 // if(self) return;

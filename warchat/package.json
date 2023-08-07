@@ -23,6 +23,7 @@
     "itchio": "cd dist && rm -f assets/html/index.html && butler push . pello/warchat:html --userversion 0.0.1 && cd .. && butler status pello/warchat:html"
   },
   "dependencies": {
+    "dotenv": "^16.3.1",
     "phaser": "^3.52.0",
     "tmi.js": "^1.8.5"
   },

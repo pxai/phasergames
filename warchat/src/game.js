@@ -188,17 +188,17 @@ export default class Game extends Phaser.Scene {
             const fireball = new Fireball(this, player.x + 16, player.y - 16, player.name);
             this.fireballs.add(fireball);
             const finalAngle = Phaser.Math.DegToRad(+angle);
-            const velocity = this.physics.velocityFromRotation(finalAngle, +speed);
+            const velocity = this.physics.velocityFromRotation(finalAngle, (+speed*10));
             fireball.body.setVelocity(velocity.x, velocity.y);
             player.changeDirection(+angle);
             this.playAudio("fireball")
         } else {
-            this.chat.say(`Player ${playerName} invalid attack values. Use speed: 0-400, angle: 0-360!`);
+            this.chat.say(`Player ${playerName} invalid attack values. Use speed: 0-100, angle: 0-360!`);
         }
     }
 
     isValidSpeed(number) {
-        return this.isValidNumber(number) && +number >= 0 && +number <= 400;
+        return this.isValidNumber(number) && +number >= 0 && +number <= 100;
     }
 
     isValidAngle(number) {
@@ -283,7 +283,7 @@ export default class Game extends Phaser.Scene {
 
     update () {
         if (Phaser.Input.Keyboard.JustDown(this.cursor.up)) {
-            this.attack("devdiaries", Phaser.Math.Between(0, 400), Phaser.Math.Between(0, 360));
+            this.attack("devdiaries", Phaser.Math.Between(0, 100), Phaser.Math.Between(0, 360));
         }
     }
 
