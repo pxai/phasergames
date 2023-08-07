@@ -14,7 +14,9 @@ export default class Chat {
         const urlParams = new URLSearchParams(window.location.search);
         const channel = urlParams.get('channel') || "devdiaries";
         this.feedback = urlParams.get('feedback') == "1";
-        console.log("Chat channel: ", channel);
+        this.maxPlayers = this.isValidNumberWithMax(urlParams.get('maxplayers')) ? +urlParams.get('maxplayers') : 500;
+
+        console.log("Chat channel: ", channel, "feedback: ", this.feedback, "maxPlayers: ", this.maxPlayers);
 
         this.client = new tmi.Client({
             options: { debug: false },
@@ -54,28 +56,31 @@ export default class Chat {
             const username = user["display-name"];
             switch (messageParts[0]) {
             case "!hello":
-                // if(self) return;
-                this.client.action(channel, `${username} just said hello`);
+                this.sendAction(channel, `${username} just said hello`);
                 break;
 
             case "!h":
             case "!help":
-                // if(self) return;
                 console.log("Help requested")
-                this.client.say(channel, `Commands: !join,\r\n !fb speed angle: shoots fireball speed (0-100) angle (0-360),\r\n !in player: gives info about player, \r\n!h :this help`);
+                this.say(channel, `Commands: !join,\r\n !fb speed angle: shoots fireball speed (0-100) angle (0-360),\r\n !in player: gives info about player, \r\n!h :this help`);
                 break;
             case "!j":
             case "!join":
-                // if(self) return;
-                this.client.action(channel, `${username} joins the battle!!!`);
-                this.scene.addPlayer(user["display-name"]);
+                console.log(this.scene.allPlayers.length, this.maxPlayers)
+                if (Object.values(this.scene.allPlayers).length < this.maxPlayers) {
+                    this.sendAction(channel, `${username} joins the battle!!!`);
+                    this.scene.addPlayer(user["display-name"]);
+                } else {
+                    this.sendAction(channel, `${username} tries to join the battle, but it's full`);
+                }
+
                 break;
             case "!f":
             case "!fb":
                 // if(self) return;
                 [command, speed, angle] = messageParts;
 
-                this.client.action(channel, `${username} attacks ${speed} ${angle}`);
+                this.sendAction(channel, `${username} attacks ${speed} ${angle}`);
                 this.scene.attack(username, speed, angle);
 
                 break;
@@ -83,23 +88,23 @@ export default class Chat {
             case "!mv":
                 [command, x, y] = messageParts;
 
-                this.client.action(channel, `${username} moves to ${x} ${y}`);
+                this.sendAction(channel, `${username} moves to ${x} ${y}`);
                 this.scene.move(username, x, y);
 
                 break;
             case "!sh":
                 [command, shield] = messageParts;
 
-                this.client.action(channel, `${username} launches shield of ${shield}`);
+                this.sendAction(channel, `${username} launches shield of ${shield}`);
                 this.scene.shield(username, shield);
 
                 break;
             case "!in":
                 [command, userInfo] = messageParts;
 
-                this.client.action(channel, `${username} requests info for ${userInfo}`);
+                this.sendAction(channel, `${username} requests info for ${userInfo}`);
                 const info = this.scene.info(username, userInfo);
-                this.client.action(channel, `${userInfo} has ${info}`);
+                this.sendAction(channel, `${userInfo} has ${info}`);
                 break;
             default:
                 break;
@@ -107,7 +112,22 @@ export default class Chat {
         });
     }
 
+    sendAction (channel, msg) {
+        console.log("Sending action: ", this.feedback, channel, msg);
+        if (!this.feedback) return;
+        this.client.action(channel, msg);
+    }
+
     say (msg) {
+        if (!this.feedback) return;
         this.client.say(this.channel, msg);
+    }
+
+    isValidNumberWithMax(number, limit = 100) {
+        return this.isValidNumber(number) && +number > 0 && +number <= limit;
+    }
+
+    isValidNumber (number) {
+        return !isNaN(number) && number >= 0;
     }
 }

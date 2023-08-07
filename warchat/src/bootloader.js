@@ -29,6 +29,7 @@ export default class Bootloader extends Phaser.Scene {
 
         this.load.image("fireball", "assets/images/fireball.png");
         this.load.image("pello", "assets/images/pello.png");
+        this.load.image("help", "assets/images/help.png");
         this.load.spritesheet("shield", "assets/images/shield.png", { frameWidth: 64, frameHeight: 64 });
 
 
@@ -45,6 +46,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.bitmapFont("mainFont", "assets/fonts/celtic.png", "assets/fonts/celtic.xml");
         this.load.bitmapFont("arcade", "assets/fonts/arcade.png", "assets/fonts/arcade.xml");
         this.load.spritesheet("raistlin", "assets/images/raistlin.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("foe", "assets/images/foe.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("skeleton", "assets/images/foe.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("arrow", "assets/images/arrow.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("bricks", "assets/images/bricks.png", { frameWidth: 32, frameHeight: 32 });

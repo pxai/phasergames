@@ -8,7 +8,7 @@ export default class HealthBar {
         this.y = y - 32;
         this.value = value * 10;
         this.p = 76 / 100;
-
+        this.bar.alpha = 0;
         this.draw();
         //this.bar.setAlpha(0)
         player.scene.add.existing(this.bar);

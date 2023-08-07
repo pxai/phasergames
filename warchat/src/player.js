@@ -12,7 +12,7 @@ class Player extends Phaser.GameObjects.Container {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
 
-        this.sprite = this.scene.add.sprite(0, 0, "raistlin");
+        this.sprite = this.scene.add.sprite(0, 0, "foe");
         this.sprite.setOrigin(0);
         this.sprite.setTint(Math.random() * 0xffffff);
         this.add(this.sprite);
@@ -49,46 +49,28 @@ class Player extends Phaser.GameObjects.Container {
     init () {
         this.scene.anims.create({
             key: "startidle",
-            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 1, end: 2 }),
+            frames: this.scene.anims.generateFrameNumbers("foe", { start: 1, end: 2 }),
             frameRate: 3,
             repeat: -1
         });
 
         this.scene.anims.create({
             key: "playeridle",
-            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 1, end: 2 }),
+            frames: this.scene.anims.generateFrameNumbers("foe", { start: 1, end: 2 }),
             frameRate: 3,
             repeat: -1
         });
 
         this.scene.anims.create({
-            key: "playerwalk",
-            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 3, end: 4 }),
-            frameRate: 10
-        });
-
-        this.scene.anims.create({
-            key: "playerjump",
-            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 5, end: 5 }),
-            frameRate: 1
-        });
-
-        this.scene.anims.create({
-            key: "playerfall",
-            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 6, end: 6 }),
-            frameRate: 1
-        });
-
-        this.scene.anims.create({
             key: "playerspell",
-            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 7, end: 8 }),
+            frames: this.scene.anims.generateFrameNumbers("foe", { start: 3, end: 4 }),
             frameRate: 10,
             repeat: 2
         });
 
         this.scene.anims.create({
             key: "playerdead",
-            frames: this.scene.anims.generateFrameNumbers("raistlin", { start: 9, end: 14 }),
+            frames: this.scene.anims.generateFrameNumbers("foe", { start: 5, end: 12 }),
             frameRate: 5
         });
 

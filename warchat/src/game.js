@@ -34,7 +34,6 @@ export default class Game extends Phaser.Scene {
         this.physics.world.setBoundsCollision(true, true, false, true);
         this.addChat();
         this.loadAudios();
-
         this.cursor = this.input.keyboard.createCursorKeys();
     }
 
@@ -44,8 +43,15 @@ export default class Game extends Phaser.Scene {
 
     loadGame () {
         this.addMap();
+        this.addHelp();
 
         // this.playMusic();
+    }
+
+    addHelp () {
+        this.add.bitmapText(35, 50, "mainFont", "!join", 10).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xbf2522, 0.7);
+        this.add.bitmapText(35, 65, "mainFont", "!f speed angle", 10).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xbf2522, 0.7);
+        // this.add.sprite(35, 80, "help").setScale(1).setOrigin(0).setTint(0xFFD700)
     }
 
     addMap () {
@@ -135,7 +141,7 @@ export default class Game extends Phaser.Scene {
 
     explosionHitsPlayer(player, explosion) {
         player.body.setVelocityX(Phaser.Math.Between(-100, 100));
-        player.body.setVelocityY(Phaser.Math.Between(-100, 100));
+        player.body.setVelocityY(Phaser.Math.Between(-100, -1));
     }
 
     hitFloor (player, platform) {
@@ -150,7 +156,7 @@ export default class Game extends Phaser.Scene {
     }
 
     chooseSide (name) {
-        const y = Phaser.Math.Between(64, 128);
+        const y = Phaser.Math.Between(128, 192);
         let player = null;
         let side = "";
 
