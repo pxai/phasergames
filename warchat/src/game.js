@@ -73,6 +73,7 @@ export default class Game extends Phaser.Scene {
         this.trailLayer = this.add.layer();
         this.shields = this.add.group();
         this.arrows = this.add.group();
+        this.explosions = this.add.group();
         this.texts = [];
 
         this.objectsLayer.objects.forEach(object => {
@@ -126,15 +127,15 @@ export default class Game extends Phaser.Scene {
     }
 
     fireballHitsPlayer(player, fireball) {
-        console.log("Fireball hits pllayer: ", player, fireball)
         player.hit(2, fireball.shooter);
         fireball.destroy();
-        new Explosion(this, fireball.x, fireball.y)
+        this.explosions.add(new Explosion(this, fireball.x, fireball.y))
         this.playAudio("boom")
     }
 
-    explosionHitsPlayer(player, explosions) {
-        player.hit(1);
+    explosionHitsPlayer(player, explosion) {
+        player.body.setVelocityX(Phaser.Math.Between(-100, 100));
+        player.body.setVelocityY(Phaser.Math.Between(-100, 100));
     }
 
     hitFloor (player, platform) {
@@ -172,7 +173,7 @@ export default class Game extends Phaser.Scene {
         if (tile && tile.x) {
             this.platform.removeTileAt(tile.x, tile.y);
             fireball.destroy();
-            new Explosion(this, fireball.x, fireball.y, fireball.shooter)
+            this.explosions.add(new Explosion(this, fireball.x, fireball.y, fireball.shooter))
             this.playAudio("boom")
         }
 
@@ -181,6 +182,7 @@ export default class Game extends Phaser.Scene {
 
     attack (playerName, speed, angle) {
         const player = this.allPlayers[playerName];
+        if (player instanceof Player === false) return;
         if (player.dead) return;
 
         if (this.isValidNumber(speed) && this.isValidNumber(angle)) {
@@ -321,6 +323,7 @@ export default class Game extends Phaser.Scene {
 
     addKill(killedPlayerName, killerPlayerName) {
         const player = this.allPlayers[killerPlayerName];
+        if (player instanceof Player === false) return;
         player.kills.push(killedPlayerName)
     }
 

@@ -64,11 +64,13 @@ export default class Chat {
                 console.log("Help requested")
                 this.client.say(channel, `Commands: !join,\r\n !fb speed angle: shoots fireball speed (0-100) angle (0-360),\r\n !in player: gives info about player, \r\n!h :this help`);
                 break;
+            case "!j":
             case "!join":
                 // if(self) return;
                 this.client.action(channel, `${username} joins the battle!!!`);
                 this.scene.addPlayer(user["display-name"]);
                 break;
+            case "!f":
             case "!fb":
                 // if(self) return;
                 [command, speed, angle] = messageParts;

@@ -25,7 +25,6 @@ export default class Explosion extends Phaser.GameObjects.Sprite {
 
         this.anims.play(this.name, true);
 
-
         this.kaboom();
         this.on('animationcomplete', this.animationComplete, this);
     }

@@ -14,6 +14,7 @@ class Player extends Phaser.GameObjects.Container {
 
         this.sprite = this.scene.add.sprite(0, 0, "raistlin");
         this.sprite.setOrigin(0);
+        this.sprite.setTint(Math.random() * 0xffffff);
         this.add(this.sprite);
 
         this.nameText = this.scene.add.bitmapText(16, 40, "arcade", this.name, 10).setOrigin(0.5).setTint(0xffffff).setDropShadow(1, 1, 0x75b947, 0.7);
