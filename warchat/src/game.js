@@ -133,7 +133,7 @@ export default class Game extends Phaser.Scene {
     }
 
     fireballHitsPlayer(player, fireball) {
-        player.hit(2, fireball.shooter);
+        player.hit(4, fireball.shooter);
         fireball.destroy();
         this.explosions.add(new Explosion(this, fireball.x, fireball.y))
         this.playAudio("boom")
@@ -160,7 +160,7 @@ export default class Game extends Phaser.Scene {
         let player = null;
         let side = "";
 
-        const x = parseInt(Phaser.Math.Between(0, this.width - 128));
+        const x = parseInt(Phaser.Math.Between(64, this.width - 128));
 
         player = new Player(this, x, y, side, name);
         this.allPlayers[name] = player;
@@ -297,7 +297,7 @@ export default class Game extends Phaser.Scene {
 
     checkGameOver () {
         console.log(this.allPlayers, Object.values(this.allPlayers));
-        const remaining = Object.values(this.allPlayers).map(player => player.dead).length;
+        const remaining = Object.values(this.allPlayers).map(player => !player.dead).length;
 
         if (remaining == 1) {
             const last = Object.values(this.allPlayers).find(player => !player.dead) ;
