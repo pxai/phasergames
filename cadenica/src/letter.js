@@ -12,19 +12,13 @@ export default class Letter extends Phaser.GameObjects.Container {
         this.sticky = false;
 
         this.scene.add.existing(this);
-        this.scene.physics.add.existing(this);
-        this.body.setAllowGravity(false);
-        this.body.setBounce(1);
-        this.body.setSize(46, 46)
-        this.body.setOffset(-2, -2)
-        this.body.setVelocityY(Phaser.Math.Between(-100, 100));
-        this.body.setVelocityX(Phaser.Math.Between(-100, 100));
-        this.body.collideWorldBounds = true;
+
+
+
         this.add(new SingleLetter(this.scene, 0, 0, this.letter))
         this.letterLength = 1;
         this.change = 0;
 
-        this.addSideColliders()
 
         this.left = null;
         this.right = null;
@@ -32,72 +26,12 @@ export default class Letter extends Phaser.GameObjects.Container {
 
         this.setInteractive();
 
-        if (!demo)
-            this.setDrag();
     }
 
     get length () {
         return this.getWord().word.length;
     }
 
-    setDrag() {
-        this.scene.input.setDraggable(this);
-
-        this.on('pointerover', function () {
-            this.velocityX = this.body.velocity.x;
-            this.velocityY = this.body.velocity.y;
-        });
-
-        this.on('pointerout', function () {
-
-        });
-
-        this.on('pointerdown', function (pointer) {
-            if (pointer.rightButtonDown() && this.letterLength === 1 && this.change < 3) {
-                const letter = this.getByName("SingleLetter");
-                letter.setLetter(this.randomLetter())
-                this.scene.tweens.add({
-                    targets: this,
-                    duration: 30,
-                    x: "+=5",
-                    y: "+=5",
-                    repeat: 3
-                });
-                new StarBurst(this.scene, this.x, this.y + 50, "0xffffff", false)
-                this.scene.playAudio("change");
-                this.change++;
-            } else if (pointer.rightButtonDown() && this.letterLength === 1 && this.change >= 3) {
-                const letter = this.getByName("SingleLetter");
-                this.scene.playAudio("disable");
-                letter.list[0].fillColor = 0xdddddd;
-            } else if (pointer.rightButtonDown() && this.letterLength > 1) {
-                this.scene.checkWord(this);
-            } else {
-                this.scene.playAudio("bump");
-            }
-        });
-
-        this.scene.input.on('dragstart', function (pointer, gameObject) {
-            gameObject.changeSticky(true);
-            gameObject.changeLetterColor();
-        });
-
-        this.scene.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-            gameObject.changeSticky(true);
-            gameObject.x = dragX;
-            gameObject.y = dragY;
-            gameObject.body.setVelocityX(0);
-            gameObject.body.setVelocityY(0);
-            new Particle(this.scene, gameObject.x, gameObject.y);
-        });
-
-        this.scene.input.on('dragend', function (pointer, gameObject) {
-            gameObject.changeSticky(false);
-            gameObject.changeLetterColor(0xffffff);
-            gameObject.body.setVelocityX(gameObject.velocityX);
-            gameObject.body.setVelocityY(gameObject.velocityY);
-        });
-    }
     selectIt() {
 
     }
@@ -105,21 +39,13 @@ export default class Letter extends Phaser.GameObjects.Container {
     addLetters(letters) {
         letters.forEach((letter, i) => {
             this.add(new SingleLetter(this.scene, 48 * this.letterLength, 0, letter))
-            this.leftCollider.x += 48;
             this.letterLength++;
         })
 
         this.changeLetterColor(0xccddccf);
-        this.removeInteractive();
-        this.setSize(48 * this.letterLength, 48)
-        this.body.setSize(48 * this.letterLength , 46)
-        this.body.setOffset(24 * (this.letterLength - 1),0)
 
-        this.setInteractive();
-        this.input.hitArea.setTo(24 * (this.letterLength-1), 0, 48 * this.letterLength, 48);
-        this.leftCollider.x = -24;
-        this.rightCollider.x = (48 * this.letterLength) - 24;
-        this.setDrag();
+        this.setSize(48 * this.letterLength, 48)
+
 
         new StarBurst(this.scene, this.x, this.y - 50, "0xffffff", false, true)
         this.scene.tweens.add({
@@ -131,19 +57,6 @@ export default class Letter extends Phaser.GameObjects.Container {
         });
     }
 
-    addSideColliders() {
-        this.leftCollider = new Phaser.GameObjects.Rectangle(this.scene, -24, 0, 4, 42, 0x00ff00).setOrigin(0.5)
-        this.scene.physics.add.existing(this.leftCollider);
-        this.leftCollider.body.setAllowGravity(false);
-        this.add(this.leftCollider)
-        this.scene.leftColliders.add(this.leftCollider);
-
-        this.rightCollider = new Phaser.GameObjects.Rectangle(this.scene, 24, 0, 4, 42, 0xff0000).setOrigin(0.5)
-        this.scene.physics.add.existing(this.rightCollider);
-        this.rightCollider.body.setAllowGravity(false);
-        this.add(this.rightCollider)
-        this.scene.rightColliders.add(this.rightCollider);
-    }
 
     setColor (color) {
         this.square.setFillStyle(color);

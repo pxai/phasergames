@@ -1,6 +1,7 @@
 import Player from "./player";
 import Chat from "./chat";
 import Word from "./word";
+import Letter from "./letter";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -48,10 +49,6 @@ export default class Game extends Phaser.Scene {
         this.addUI();
     }
 
-    loadGame() {
-        //this.generateNextOperation ()
-    }
-
     addChat () {
         this.chat = new Chat(this);
     }
@@ -65,19 +62,33 @@ export default class Game extends Phaser.Scene {
     }
 
     writeCurrentWordText () {
-        if (this.currentWordText) {
-            this.currentWordText.setText(this.currentWord);
-        } else {
-            this.currentWordText = this.add.bitmapText(64, 48, "mainFont", this.currentWord, 60).setOrigin(0).setTint(0x000000)
+        console.log(" so: ", new Date())
+        if (this.letter) {
+            this.letter.destroy();
         }
+        this.letter = new Letter(this, 32, 48, { letter: this.currentWord.slice(0,1), points: 1})
+
+        this.currentWord.substring(1).split("").forEach((letter, i) => {
+            this.letter.addLetters([{ letter, points: 1}])
+        });
     }
 
     writeProposedText (text) {
-        if (this.proposedText) {
-            this.proposedText.setText(text);
-        } else {
-            this.proposedText = this.add.bitmapText(this.center_width, this.center_height, "mainFont", text, 30).setOrigin(0.5).setTint(0x000000)
+        if (text === "" && this.proposedText) {
+            this.proposedText.destroy();
+            return;
         }
+
+        if (this.proposedText) {
+            this.proposedText.destroy();
+        }
+
+        this.proposedText = new Letter(this, this.center_width - 64, this.center_height, { letter: text.slice(0,1), points: 1})
+
+        text.substring(1).split("").forEach((letter, i) => {
+            this.proposedText.addLetters([{ letter, points: 1}])
+        });
+        this.proposedText.setScale(0.5)
     }
 
     addScore () {
