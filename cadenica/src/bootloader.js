@@ -1,3 +1,5 @@
+import Dictionary from "./dictionary";
+
 export default class Bootloader extends Phaser.Scene {
     constructor () {
         super({ key: "bootloader" });
@@ -19,8 +21,9 @@ export default class Bootloader extends Phaser.Scene {
             },
             this
         );
+        const dictionary = new Dictionary("en");
         this.load.on("complete", () => {
-            this.scene.start("game", { next: "game", name: "STAGE", number: 0, time: 30 });
+            this.scene.start("game", { dictionary });
         }, this);
 
         Array(15).fill(0).forEach((_,i) => {

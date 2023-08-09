@@ -1,5 +1,6 @@
 import Player from "./player";
 import Chat from "./chat";
+import Word from "./word";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -7,14 +8,14 @@ export default class Game extends Phaser.Scene {
         this.player = null;
         this.score = 0;
         this.scoreText = null;
-        this.nextOperator = "";
         this.lastMessage = null;
-        this.number = "";
+        this.currentWord = "";
         this.counter = 0;
         this.failed = false;
     }
 
-    init () {
+    init (data) {
+        this.dictionary = data.dictionary;
     }
 
     preload () {
@@ -28,7 +29,9 @@ export default class Game extends Phaser.Scene {
         this.foregroundColor = '0x' + paramfg.toString(16)
 
         this.spamTimeWait = 2;
-        this.result = Phaser.Math.Between(1, 9);
+        this.currentWord = this.dictionary.randomWord();
+        this.previousWord = "";
+        this.chained = false;
     }
 
     create () {
@@ -38,6 +41,7 @@ export default class Game extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.cameras.main.setBackgroundColor(+this.foregroundColor);
         this.allPlayers = {};
+        this.word = new Word(this.dictionary);
 
         this.addChat();
         this.loadAudios();
@@ -45,7 +49,7 @@ export default class Game extends Phaser.Scene {
     }
 
     loadGame() {
-        this.generateNextOperation ()
+        //this.generateNextOperation ()
     }
 
     addChat () {
@@ -53,35 +57,11 @@ export default class Game extends Phaser.Scene {
     }
 
     addUI () {
-        this.circle = this.add.circle(this.center_width, this.center_height - 50, 100, 0xf22c2e);
-        this.numberText = this.add.bitmapText(this.center_width, this.center_height - 50, "mainFont", this.number, 120).setOrigin(0.5).setTint(0x000000)
-        this.operatorText = this.add.bitmapText(this.center_width, this.center_height + 80, "mainFont", `${this.nextOperator}${this.number}`, 50).setOrigin(0.5).setTint(0x000000)
-        this.addClouds();
+
+        this.currentWordText = this.add.bitmapText(64, 48, "mainFont", this.currentWord, 60).setOrigin(0).setTint(0x000000)
+        this.proposedText = this.add.bitmapText(this.center_width, this.center_height, "mainFont", "(chain a word)", 30).setOrigin(0.5).setTint(0x000000)
         this.addScore();
         this.byText = this.add.bitmapText(this.center_width, this.height -10, "mainFont", "by Pello", 10).setOrigin(0.5).setTint(0x000000);
-    }
-
-    addClouds () {
-        this.cloudLeft = this.add.image(this.center_width - 100, this.center_height - 120 + Phaser.Math.Between(-15, 15), "cloud" + Phaser.Math.Between(1, 14)).setScale(Phaser.Math.Between(5, 9) * 0.1);
-        this.cloudRight = this.add.image(this.center_width + 100, this.center_height + 30 + Phaser.Math.Between(-15, 15), "cloud" + Phaser.Math.Between(1, 14)).setScale(Phaser.Math.Between(4, 6) * 0.1);
-        this.tweens.add({
-            targets: [this.cloudLeft],
-            x: {from: -156, to: this.width + 156},
-            duration: 30000,
-            onComplete: () => {
-                this.cloudLeft.destroy();
-            }
-        })
-
-        this.tweens.add({
-            targets: this.cloudRight,
-            x: {from: this.width + 156, to: -156},
-            duration: 30000,
-            onComplete: () => {
-                this.cloudLeft.destroy();
-                this.addClouds()
-            }
-        })
     }
 
     addScore () {
@@ -92,8 +72,8 @@ export default class Game extends Phaser.Scene {
             this.add.bitmapText(this.center_width, 100 + (i * 50), "mainFont", winnerText, 30).setOrigin(0.5).setTint(this.foregroundColor).setDropShadow(1, 2, 0xbf2522, 0.7);
         })
 
-        this.scoreText1 = this.add.bitmapText(this.center_width, this.center_height + 130, "mainFont", "", 20).setOrigin(0.5).setTint(0x000000);
-        this.scoreText2 = this.add.bitmapText(this.center_width, this.center_height + 160, "mainFont", "", 25).setOrigin(0.5).setTint(0x000000);
+        this.scoreText1 = this.add.bitmapText(this.center_width, this.center_height + 40, "mainFont", "", 20).setOrigin(0.5).setTint(0x000000);
+        this.scoreText2 = this.add.bitmapText(this.center_width, this.center_height + 60, "mainFont", "", 25).setOrigin(0.5).setTint(0x000000);
     }
 
 
@@ -105,26 +85,33 @@ export default class Game extends Phaser.Scene {
         return player;
     }
 
-    guess (playerName, number) {
+    guess (playerName, playerWord) {
+        console.log("Game> try guess: ", playerName, playerWord)
         if (this.failed) return;
-        console.log("Game> guess: ", playerName, number)
+        console.log("Game> try: ", playerName, playerWord)
 
         const player = this.addPlayer(playerName);
+        console.log("Game> try guess: ", playerName, playerWord, this.failed, player.dead, player.hasSpammed())
         if (player.dead) return;
         if (player.hasSpammed()) return;
         player.lastMessage = new Date();
+        console.log("Game> try guess: isValid ", !this.word.isValid(playerWord) , " is previous: ",  this.previousWord, playerWord === this.previousWord)
+        if (playerWord === this.previousWord) return;
 
-        console.log("Game> guess go on: ", playerName, number)
-
-        if (this.result === parseInt(number)) {
-            const score = this.calculateScore();
+        const overlap = this.word.overlap(this.currentWord, playerWord);
+        console.log("Game> IN DICTIONARY! guess go on: ", playerName, playerWord, " overlap: ", overlap, "  this.chained: ", this.chained)
+        if (this.word.isValid(playerWord) && overlap > 1 && !this.chained) {
+            this.chained = true;
+            const score = this.calculateScore(overlap, playerWord);
             player.score += score;
-            this.showScore(playerName, score);
-            this.generateNextOperation();
-            console.log("Player", playerName, "guess", number);
-        } else if (this.number === parseInt(number)) {
-            console.log("Player, ", playerName, " is too slow");
-        } else {
+            this.showScore(playerName, playerWord, score);
+            console.log("Player", playerName, "guess", playerWord);
+            this.time.delayedCall(3000, () => { this.generateNextOperation(playerWord) }, null, this);
+        } else if (this.word.isValid(playerWord) &&  overlap > 1 && this.chained) {
+            console.log("Player guessed after", playerName, "guess", playerWord);
+            const score = this.calculateScore(overlap, playerWord);
+            player.score += score;
+         } else {
             this.cameras.main.shake(100, 0.01);
             this.playAudio("fail");
             this.failed = true;
@@ -138,10 +125,9 @@ export default class Game extends Phaser.Scene {
         console.log
     }
 
-    calculateScore () {
-       const operatorPoints = {'+': 1, '-': 2, '*': 4, '/': 5};
-        console.log("Game> calculateScore: ", this.counter,this.nextOperator, operatorPoints[this.nextOperator])
-       return this.counter + operatorPoints[this.nextOperator];
+    calculateScore (overlap, playerWord) {
+        console.log("Game> calculateScore: ", overlap, playerWord, playerWord.length)
+       return this.counter + overlap + playerWord.length;
     }
 
     isValidNumber (number) {
@@ -218,7 +204,7 @@ export default class Game extends Phaser.Scene {
                 }
             })
             this.resetScore();
-            this.generateNextOperation();
+            this.generateNextOperation(this.dictionary.randomWord());
         }, null, this)
     }
 
@@ -227,45 +213,34 @@ export default class Game extends Phaser.Scene {
     }
 
     resetScore () {
-        this.number = 0;
+        this.currentWord = this.dictionary.randomWord()
         this.counter = 0;
+        this.chained = false;
         this.failed = false;
     }
 
-    generateNextOperation () {
+    generateNextOperation (playerWord) {
         this.counter++;
-        this.number = this.result;
-        this.nextOperand = Phaser.Math.Between(1, 9);
-        this.nextOperator = this.selectOperator();
-        this.result = parseInt(eval(this.number + this.nextOperator + this.nextOperand));
-        console.log("Current: ", this.number, " operator: ", this.nextOperator," nextNumber: ", this.nextOperand,",Result: ", this.result);
-        this.showNextOperation(this.nextOperator, this.nextOperand);
+        if (this.previousWord !== "") this.previousWord = this.currentWord;
+        this.currentWord = playerWord;
+        console.log("Current: ", this.currentWord);
+        this.showNextWord(this.currentWord);
         this.playAudio("drip");
+        this.chained = false;
     }
 
-    selectOperator () {
-        if (this.number % this.nextOperand === 0 && this.nextOperand !== 1) {
-            console.log("Choice 1", this.number, this.nextOperand, this.result)
-            return Phaser.Math.RND.pick(['+', '-', '+', '-', '/']);
-        } else if (this.number + this.nextOperand >= 100) {
-            return Phaser.Math.RND.pick(['-']);
-        } else if (this.number - this.nextOperand <= -100) {
-            return Phaser.Math.RND.pick(['+']);
-        } else if (Math.abs(this.number * this.nextOperand) < 100) {
-            return Phaser.Math.RND.pick(['+', '-', '+', '-', '*']);
-        } else {
-            return Phaser.Math.RND.pick(['+', '-', '+', '-']);
-        }
-    }
-
-    showScore (playerName, score) {
+    showScore (playerName, playerWord, score) {
         this.scoreText1.setText(`Great!`).setAlpha(1);
         this.scoreText2.setText(`${playerName} +${score}`).setAlpha(1);
+        this.proposedText.setText(playerWord)
         this.tweens.add({
             targets: [this.scoreText1],
             alpha: {from: 1, to: 0},
             ease: 'Linear',
-            duration: 3000
+            duration: 3000,
+            onComplete: () => {
+                this.proposedText.setText("")
+            }
         })
     }
 
@@ -284,8 +259,8 @@ export default class Game extends Phaser.Scene {
         })
     }
 
-    showNextOperation (operator, nextNumber) {
-        this.numberText.setText(this.number)
-        this.operatorText.setText(`${operator}${nextNumber}`)
+    showNextWord () {
+        this.currentWordText.setText(this.currentWord)
+        this.proposedText.setText(``)
     }
 }

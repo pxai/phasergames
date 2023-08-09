@@ -29,7 +29,7 @@ export default class Chat {
 
         this.client.connect().then(ok => {
             console.log("Connected!, loading game");
-            this.scene.loadGame();
+            //this.scene.loadGame();
         }).catch(console.error);
 
         this.client.on("join", (channel, username, self) => {
@@ -55,8 +55,8 @@ export default class Chat {
             console.log("Received chat: ", channel, user, messageParts);
             const username = user["display-name"];
 
-            if (this.isValidNumber(message)) {
-                this.scene.guess(username, +message);
+            if (this.isValidWord(message)) {
+                this.scene.guess(username, message.slice(1));
             }
         });
     }
@@ -78,5 +78,9 @@ export default class Chat {
 
     isValidNumber (number) {
         return !isNaN(number);
+    }
+
+    isValidWord (word) {
+        return word.trim().startsWith("!") && word.trim().length > 2;
     }
 }

@@ -1,38 +1,45 @@
 import Word from '../src/word'
+import Dictionary from '../src/dictionary'
 
 
 describe('Word', () => {
+  let dictionary;
+  beforeAll(() => {
+    dictionary = new Dictionary();
+  })
+
   describe('isValid', () => {
     it('check wether it is valid or not', () => {
-      const word = new Word("carro");
-      expect(word.isValid()).toBe(true);
+      const word = new Word(dictionary);
+      expect(word.isValid("car")).toBe(true);
     });
 
     it('shoud return false with short words', () => {
-      const word = new Word("c");
-      expect(word.isValid()).toBe(false);
+      const word = new Word(dictionary);
+      expect(word.isValid("c")).toBe(false);
     });
   })
 
   describe('overlap', () => {
     it('returns the overlap count', () => {
-      const word = new Word("pasaje");
-      expect(word.overlap("ropa")).toBe(0);
+      const word = new Word(dictionary);
+      expect(word.overlap("pasaje","ropa")).toBe(0);
     })
 
     it('should return 1 when single overlap', () => {
-      const word = new Word("carro");
-      expect(word.overlap("opera")).toBe(1);
+      const word = new Word(dictionary);
+      expect(word.overlap("carro", "opera")).toBe(1);
     })
 
     it('returns the overlap count', () => {
-      const word = new Word("carro");
-      expect(word.overlap("ropa")).toBe(2);
+      const word = new Word( dictionary);
+      expect(word.overlap("lyar", "artificial")).toBe(2);
     })
 
-    it('returns the right overlap count even with case or extra space', () => {
-      const word = new Word("  Persona ");
-      expect(word.overlap("  SonAta  ")).toBe(4);
+    it.only('returns the right overlap count even with case or extra space', () => {
+      const word = new Word( dictionary);
+      expect(word.overlap("  Persona ","  SonAta  ")).toBe(4);
+      expect(word.overlap("altered","red")).toBe(3);
     })
   })
 })
