@@ -57,11 +57,27 @@ export default class Game extends Phaser.Scene {
     }
 
     addUI () {
+        this.writeCurrentWordText();
+        this.writeProposedText("(chain a word)")
 
-        this.currentWordText = this.add.bitmapText(64, 48, "mainFont", this.currentWord, 60).setOrigin(0).setTint(0x000000)
-        this.proposedText = this.add.bitmapText(this.center_width, this.center_height, "mainFont", "(chain a word)", 30).setOrigin(0.5).setTint(0x000000)
         this.addScore();
         this.byText = this.add.bitmapText(this.center_width, this.height -10, "mainFont", "by Pello", 10).setOrigin(0.5).setTint(0x000000);
+    }
+
+    writeCurrentWordText () {
+        if (this.currentWordText) {
+            this.currentWordText.setText(this.currentWord);
+        } else {
+            this.currentWordText = this.add.bitmapText(64, 48, "mainFont", this.currentWord, 60).setOrigin(0).setTint(0x000000)
+        }
+    }
+
+    writeProposedText (text) {
+        if (this.proposedText) {
+            this.proposedText.setText(text);
+        } else {
+            this.proposedText = this.add.bitmapText(this.center_width, this.center_height, "mainFont", text, 30).setOrigin(0.5).setTint(0x000000)
+        }
     }
 
     addScore () {
@@ -232,14 +248,15 @@ export default class Game extends Phaser.Scene {
     showScore (playerName, playerWord, score) {
         this.scoreText1.setText(`Great!`).setAlpha(1);
         this.scoreText2.setText(`${playerName} +${score}`).setAlpha(1);
-        this.proposedText.setText(playerWord)
+
+        this.writeProposedText(playerWord)
         this.tweens.add({
             targets: [this.scoreText1],
             alpha: {from: 1, to: 0},
             ease: 'Linear',
             duration: 3000,
             onComplete: () => {
-                this.proposedText.setText("")
+                this.writeProposedText("")
             }
         })
     }
@@ -260,7 +277,7 @@ export default class Game extends Phaser.Scene {
     }
 
     showNextWord () {
-        this.currentWordText.setText(this.currentWord)
-        this.proposedText.setText(``)
+        this.writeCurrentWordText()
+        this.writeProposedText("")
     }
 }
