@@ -3,9 +3,9 @@ class Player {
         this.scene = scene;
         this.name = name;
         this.score = 0;
-        this.partialScore = 0;
         this.lastMessage = null;
         this.dead = false;
+        this.penalties = 0;
     }
 
     update () {
@@ -20,10 +20,15 @@ class Player {
         return (timeDifferenceInMilliseconds / 1000) < this.scene.spamTimeWait;
     }
 
+    setPenalty () {
+        this.penalties++;
+        this.score = 0;
+        this.dead = true;
+        this.scene.time.delayedCall(10000 * this.penalties, () => { this.dead = false; }, null, this);
+    }
 
     die () {
         this.dead = true;
-        this.scene.checkGameOver();
     }
 }
 

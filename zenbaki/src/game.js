@@ -7,7 +7,11 @@ export default class Game extends Phaser.Scene {
         this.player = null;
         this.score = 0;
         this.scoreText = null;
+        this.nextOperator = "";
         this.lastMessage = null;
+        this.number = "";
+        this.counter = 0;
+        this.failed = false;
     }
 
     init () {
@@ -49,20 +53,47 @@ export default class Game extends Phaser.Scene {
     }
 
     addUI () {
-        this.circle = this.add.circle(this.center_width, this.center_height, 100, 0xf22c2e);
-        this.numberText = this.add.bitmapText(this.center_width, this.center_height, "mainFont", this.number, 70).setOrigin(0.5).setTint(0x000000)
-        this.operatorText = this.add.bitmapText(this.center_width, this.center_height + 80, "mainFont", `${this.nextOperator}${this.number}`, 30).setOrigin(0.5).setTint(0x000000)
-
+        this.circle = this.add.circle(this.center_width, this.center_height - 50, 100, 0xf22c2e);
+        this.numberText = this.add.bitmapText(this.center_width, this.center_height - 50, "mainFont", this.number, 120).setOrigin(0.5).setTint(0x000000)
+        this.operatorText = this.add.bitmapText(this.center_width, this.center_height + 80, "mainFont", `${this.nextOperator}${this.number}`, 50).setOrigin(0.5).setTint(0x000000)
+        this.addClouds();
         this.addScore();
+        this.byText = this.add.bitmapText(this.center_width, this.height -10, "mainFont", "by Pello", 10).setOrigin(0.5).setTint(0x000000);
+    }
+
+    addClouds () {
+        this.cloudLeft = this.add.image(this.center_width - 100, this.center_height - 120 + Phaser.Math.Between(-15, 15), "cloud" + Phaser.Math.Between(1, 14)).setScale(Phaser.Math.Between(5, 9) * 0.1);
+        this.cloudRight = this.add.image(this.center_width + 100, this.center_height + 30 + Phaser.Math.Between(-15, 15), "cloud" + Phaser.Math.Between(1, 14)).setScale(Phaser.Math.Between(4, 6) * 0.1);
+        this.tweens.add({
+            targets: [this.cloudLeft],
+            x: {from: -156, to: this.width + 156},
+            duration: 30000,
+            onComplete: () => {
+                this.cloudLeft.destroy();
+            }
+        })
+
+        this.tweens.add({
+            targets: this.cloudRight,
+            x: {from: this.width + 156, to: -156},
+            duration: 30000,
+            onComplete: () => {
+                this.cloudLeft.destroy();
+                this.addClouds()
+            }
+        })
     }
 
     addScore () {
         const scoreBoard = this.createScoreBoard()
-        this.add.bitmapText(this.center_width, 25, "mainFont", "Scoreboard", 30).setOrigin(0.5).setTint(0x000000);
+        this.add.bitmapText(this.center_width, 25, "mainFont", "zenbaki", 25).setOrigin(0.5).setTint(0x000000);
         scoreBoard.slice(0, 3).forEach((player, i) => {
             const winnerText = `${i+1}.  ${player.name}: ${player.score}`;
-            this.add.bitmapText(this.center_width, 100 + (i * 50), "mainFont", winnerText, 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
+            this.add.bitmapText(this.center_width, 100 + (i * 50), "mainFont", winnerText, 30).setOrigin(0.5).setTint(this.foregroundColor).setDropShadow(1, 2, 0xbf2522, 0.7);
         })
+
+        this.scoreText1 = this.add.bitmapText(this.center_width, this.center_height + 130, "mainFont", "", 20).setOrigin(0.5).setTint(0x000000);
+        this.scoreText2 = this.add.bitmapText(this.center_width, this.center_height + 160, "mainFont", "", 25).setOrigin(0.5).setTint(0x000000);
     }
 
 
@@ -75,28 +106,40 @@ export default class Game extends Phaser.Scene {
     }
 
     guess (playerName, number) {
+        if (this.failed) return;
         console.log("Game> guess: ", playerName, number)
 
         const player = this.addPlayer(playerName);
-        console.log("Game> guess 2: ", playerName, number)
         if (player.dead) return;
-        console.log("Game> guess 3: ", playerName, number)
         if (player.hasSpammed()) return;
-        console.log("Game> guess 4: ", playerName, number)
         player.lastMessage = new Date();
-
 
         console.log("Game> guess go on: ", playerName, number)
 
         if (this.result === parseInt(number)) {
-            player.partialScore += this.counter * 10;
+            const score = this.calculateScore();
+            player.score += score;
+            this.showScore(playerName, score);
             this.generateNextOperation();
             console.log("Player", playerName, "guess", number);
+        } else if (this.number === parseInt(number)) {
+            console.log("Player, ", playerName, " is too slow");
         } else {
-            // resetAllPlayersPartialScore();
-            this.resetScore();
-            this.chat.say(`Player ${playerName} invalid attack values. Use speed: 0-100, angle: 0-360!`);
+            this.failed = true;
+            player.setPenalty()
+            this.showShame(playerName);
+            this.chat.say(`Player ${playerName} failed! Shame on you!`);
         }
+    }
+
+    showScores () {
+        console.log
+    }
+
+    calculateScore () {
+       const operatorPoints = {'+': 1, '-': 2, '*': 4, '/': 5};
+        console.log("Game> calculateScore: ", this.counter,this.nextOperator, operatorPoints[this.nextOperator])
+       return this.counter + operatorPoints[this.nextOperator];
     }
 
     isValidNumber (number) {
@@ -139,62 +182,99 @@ export default class Game extends Phaser.Scene {
 
     }
 
-    checkGameOver () {
-        console.log(this.allPlayers, Object.values(this.allPlayers));
-        const remaining = Object.values(this.allPlayers).map(player => player.dead).length;
-
-        if (remaining == 1) {
-            const last = Object.values(this.allPlayers).find(player => !player.dead) ;
-            this.winner = last ? last.name : "No Winn" ;
-            this.gameOver = true;
-        } else if (remaining <= 1) {
-            this.winner = "No Winn"
-            this.gameOver = true;
-            this.showResult();
-        }
-    }
-
     showResult () {
         const scoreBoard = this.createScoreBoard()
-
-        this.add.bitmapText(this.center_width, 80, "mainFont", "Game Over:", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
+        this.scoreRectangle = this.add.rectangle(0, 0, this.width, this.height, this.foregroundColor, 0.9).setOrigin(0, 0);
+        this.scores = this.add.group();
+        this.sensei = this.add.image(this.center_width, this.height - 60, "sensei", ).setOrigin(0.5).setScale(0.4)
+        this.scores.add(this.sensei);
+        this.scores.add(this.add.bitmapText(this.center_width, 60, "mainFont", "Senseis:", 30).setOrigin(0.5).setTint(0x000000));
         scoreBoard.slice(0, 5).forEach((player, i) => {
-            const winnerText = `${i+1}.  ${player.name}, kills: ${player.kills.length}`;
-            this.add.bitmapText(this.center_width, 170 + (i * 50), "mainFont", winnerText, 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
+             const winnerText = `${i+1}.  ${player.name}, ${player.score}`;
+             this.scores.add(this.add.bitmapText(this.center_width, 100 + (i * 20), "mainFont", winnerText, 15).setOrigin(0.5).setTint(0x000000));
         })
 
-       console.log("ScoreBoard: ", scoreBoard[0].name)
 
-       this.restart = this.add.bitmapText(this.center_width, this.height - 100, "mainFont", "CLICK TO RESTART", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
-       this.restart.setInteractive();
-       this.restart.on('pointerdown', () => {
-            this.scene.start("splash")
-        })
+       console.log("ScoreBoard: ", scoreBoard)
+
+        this.time.delayedCall(5000, () => {
+            this.tweens.add({
+                targets: [this.scoreRectangle, this.scores, this.sensei],
+                duration: 1000,
+                alpha: {from: 1, to: 0},
+                onComplete: () => {
+                    this.scoreRectangle.destroy();
+                    this.scores.getChildren().forEach(function(child) {
+                        child.destroy();
+                    }, this);
+
+                    this.scores.clear(true, true);
+                }
+            })
+            this.resetScore();
+            this.generateNextOperation();
+        }, null, this)
     }
 
     createScoreBoard () {
-        return [...Object.values(this.allPlayers)].sort((player1, player2) => player2.partialScore - player1.partialScore);
-    }
-
-    updateScore (points = 0) {
-        const score = +this.registry.get("score") + points;
-        this.registry.set("score", score);
-        this.scoreText.setText(Number(score).toLocaleString());
+        return [...Object.values(this.allPlayers)].sort((player1, player2) => player2.score - player1.score);
     }
 
     resetScore () {
         this.number = 0;
         this.counter = 0;
+        this.failed = false;
     }
 
     generateNextOperation () {
         this.counter++;
-        this.nextOperator = Phaser.Math.RND.pick(['+', '-', '*', '+', '-', '*', '/']);
-        this.nextNumber = Phaser.Math.Between(1, 10);
         this.number = this.result;
-        this.result = parseInt(eval(this.number + this.nextOperator + this.nextNumber));
-        console.log("Current: ", this.number, " operator: ", this.nextOperator," nextNumber: ", this.nextNumber,",Result: ", this.result);
-        this.showNextOperation(this.nextOperator, this.nextNumber);
+        this.nextOperand = Phaser.Math.Between(1, 9);
+        this.nextOperator = this.selectOperator();
+        this.result = parseInt(eval(this.number + this.nextOperator + this.nextOperand));
+        console.log("Current: ", this.number, " operator: ", this.nextOperator," nextNumber: ", this.nextOperand,",Result: ", this.result);
+        this.showNextOperation(this.nextOperator, this.nextOperand);
+    }
+
+    selectOperator () {
+        if (this.number % this.nextOperand === 0 && this.nextOperand !== 1) {
+            console.log("Choice 1", this.number, this.nextOperand, this.result)
+            return Phaser.Math.RND.pick(['+', '-', '+', '-', '/']);
+        } else if (this.number + this.nextOperand >= 100) {
+            return Phaser.Math.RND.pick(['-']);
+        } else if (this.number - this.nextOperand >= -100) {
+            return Phaser.Math.RND.pick(['+']);
+        } else if (Math.abs(this.number * this.nextOperand) < 100) {
+            return Phaser.Math.RND.pick(['+', '-', '+', '-', '*']);
+        } else {
+            return Phaser.Math.RND.pick(['+', '-', '+', '-']);
+        }
+    }
+
+    showScore (playerName, score) {
+        this.scoreText1.setText(`Great!`).setAlpha(1);
+        this.scoreText2.setText(`${playerName} +${score}`).setAlpha(1);
+        this.tweens.add({
+            targets: [this.scoreText1],
+            alpha: {from: 1, to: 0},
+            ease: 'Linear',
+            duration: 3000
+        })
+    }
+
+    showShame (playerName) {
+        const rants = ["You're a disgrace", "Shame on you", "You dishonor us all", "You're a disappointment", "You're a failure", "You dishonor this dojo"]
+        this.scoreText1.setText(Phaser.Math.RND.pick(rants)).setAlpha(1);
+        this.scoreText2.setText(`${playerName}`).setAlpha(1);
+        this.tweens.add({
+            targets: [this.scoreText1, this.scoreText2],
+            alpha: {from: 1, to: 0},
+            ease: 'Linear',
+            duration: 3000,
+            onComplete: () => {
+                this.showResult();
+            }
+        })
     }
 
     showNextOperation (operator, nextNumber) {
