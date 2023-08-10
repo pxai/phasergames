@@ -1,0 +1,123 @@
+/* Apply a flex container to the <body> to center its children */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensure the container takes at least the full viewport height */
+    margin: 0;
+    background-color: #F1F1E6;
+    font-family: 'baloo',Verdana, Geneva, Tahoma, sans-serif;
+}
+
+@font-face {
+    font-family: 'baloo';
+    src: url('../fonts/baloo-regular-webfont.woff2') format('woff2'),
+        url('../fonts/baloo-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+.title {
+    font-size: 3em;
+}
+
+.title, h2 {
+    color: #005ba5;
+    font-family: 'baloo', Verdana, Geneva, Tahoma, sans-serif;
+    text-align: center;
+}
+
+/* Create a two-column layout using flex */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Style the left column for the logo */
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 200px;
+    height: 200px;
+}
+
+/* Center the form in the right column */
+.form-container {
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 0 1.2em 1em 1.2em;
+}
+
+/* Add some spacing between form elements */
+.form-container > * {
+    margin-bottom: 10px;
+}
+label {
+
+    color: #588DDD;
+}
+/* Style form elements */
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+}
+
+input[type="submit"] {
+    background-color: #005ba5
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color:#588DDD;
+}
+
+a {
+    color:#005ba5
+}
+
+.list-row {
+    display: none;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+
+}
+
+.list {
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #005ba5
+}
+
+.list-item {
+    margin: 5px 0;
+    color: #588DDD;
+}
+
+footer {
+    clear: both;
+    text-align: center;
+}
