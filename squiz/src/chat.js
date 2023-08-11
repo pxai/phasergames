@@ -29,7 +29,6 @@ export default class Chat {
 
         this.client.connect().then(ok => {
             console.log("Connected!, loading game");
-            this.scene.loadGame();
         }).catch(console.error);
 
         this.client.on("join", (channel, username, self) => {

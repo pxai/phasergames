@@ -1,5 +1,8 @@
 import Player from "./player";
 import Chat from "./chat";
+import Quiz from "./questions";
+
+const MAX_ANSWERS = 4;
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -29,9 +32,12 @@ export default class Game extends Phaser.Scene {
 
         this.spamTimeWait = 2;
         this.result = Phaser.Math.Between(1, 9);
+        this.cursor = this.input.keyboard.createCursorKeys();
+        this.timeToAnswer = 3000;
+        this.infiniteLoop = true;
     }
 
-    create () {
+    async create () {
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
@@ -41,11 +47,16 @@ export default class Game extends Phaser.Scene {
 
         this.addChat();
         this.loadAudios();
+        await this.loadQuestions()
         this.addUI();
+
+
+        this.showNextQuestion();
     }
 
-    loadGame() {
-        this.generateNextOperation ()
+    async loadQuestions () {
+        this.quiz = new Quiz();
+        await this.quiz.init();
     }
 
     addChat () {
@@ -53,35 +64,30 @@ export default class Game extends Phaser.Scene {
     }
 
     addUI () {
-        this.circle = this.add.circle(this.center_width, this.center_height - 50, 100, 0xf22c2e);
-        this.numberText = this.add.bitmapText(this.center_width, this.center_height - 50, "mainFont", this.number, 120).setOrigin(0.5).setTint(0x000000)
-        this.operatorText = this.add.bitmapText(this.center_width, this.center_height + 80, "mainFont", `${this.nextOperator}${this.number}`, 50).setOrigin(0.5).setTint(0x000000)
-        this.addClouds();
+        this.questionText = this.add.bitmapText(this.center_width, this.center_height - 50, "mainFont", "question", 30).setOrigin(0.5).setTint(0x000000)
+        this.answers = Array(4).fill('').map((answer, i) => {
+            return this.add.bitmapText(200 * i, 80 , "mainFont", `Question ${i}`, 15).setOrigin(0).setTint(0x000000)
+        });
         this.addScore();
         this.byText = this.add.bitmapText(this.center_width, this.height -10, "mainFont", "by Pello", 10).setOrigin(0.5).setTint(0x000000);
     }
 
-    addClouds () {
-        this.cloudLeft = this.add.image(this.center_width - 100, this.center_height - 120 + Phaser.Math.Between(-15, 15), "cloud" + Phaser.Math.Between(1, 14)).setScale(Phaser.Math.Between(5, 9) * 0.1);
-        this.cloudRight = this.add.image(this.center_width + 100, this.center_height + 30 + Phaser.Math.Between(-15, 15), "cloud" + Phaser.Math.Between(1, 14)).setScale(Phaser.Math.Between(4, 6) * 0.1);
-        this.tweens.add({
-            targets: [this.cloudLeft],
-            x: {from: -156, to: this.width + 156},
-            duration: 30000,
-            onComplete: () => {
-                this.cloudLeft.destroy();
-            }
-        })
+    showNextQuestion() {
+        const question = this.quiz.nextQuestion();
+        console.log("This is next!! ", question, this.quiz.currentIndex)
+        if (!question) {
+            this.showResult();
+            return;
+        }
+        this.questionText.setText(question.question);
+        this.answers.forEach((answer , i)=> answer.setText(`${i+1}. ${question.answers[i]}`).setTint(0x000000))
+        this.showTimestamp = new Date();
+        this.time.delayedCall(this.timeToAnswer, () =>{ this.showCorrect()}, null, this )
+    }
 
-        this.tweens.add({
-            targets: this.cloudRight,
-            x: {from: this.width + 156, to: -156},
-            duration: 30000,
-            onComplete: () => {
-                this.cloudLeft.destroy();
-                this.addClouds()
-            }
-        })
+    showCorrect() {
+        this.answers[this.quiz.currentQuestion.correctIndex - 1].setTint(0x00ff00)
+        this.time.delayedCall(this.timeToAnswer, () =>{ this.showNextQuestion()}, null, this )
     }
 
     addScore () {
@@ -106,46 +112,25 @@ export default class Game extends Phaser.Scene {
     }
 
     guess (playerName, number) {
-        if (this.failed) return;
         console.log("Game> guess: ", playerName, number)
 
         const player = this.addPlayer(playerName);
-        if (player.dead) return;
-        if (player.hasSpammed()) return;
         player.lastMessage = new Date();
 
         console.log("Game> guess go on: ", playerName, number)
 
-        if (this.result === parseInt(number)) {
-            const score = this.calculateScore();
-            player.score += score;
-            this.showScore(playerName, score);
-            this.generateNextOperation();
+        if (this.isValidNumber(number) && player.notAnswered(this.quiz.currentIndex)) {
+            player.answerQuestion(this.quiz.currentIndex, new Date() - this.showTimestamp, number === this.quiz.currentQuestion.correctIndex)
             console.log("Player", playerName, "guess", number);
-        } else if (this.number === parseInt(number)) {
-            console.log("Player, ", playerName, " is too slow");
-        } else {
-            this.cameras.main.shake(100, 0.01);
-            this.playAudio("fail");
-            this.failed = true;
-            player.setPenalty()
-            this.showShame(playerName);
-            this.chat.say(`Player ${playerName} failed! Shame on you!`);
-        }
+        }  
     }
 
     showScores () {
         console.log
     }
 
-    calculateScore () {
-       const operatorPoints = {'+': 1, '-': 2, '*': 4, '/': 5};
-        console.log("Game> calculateScore: ", this.counter,this.nextOperator, operatorPoints[this.nextOperator])
-       return this.counter + operatorPoints[this.nextOperator];
-    }
-
     isValidNumber (number) {
-        return !isNaN(number) && number >= 0 && number < this.width;
+        return !isNaN(number) && number >= 1 && number <= MAX_ANSWERS;
     }
 
     loadAudios () {
@@ -185,7 +170,9 @@ export default class Game extends Phaser.Scene {
     }
 
     update () {
-
+        if (Phaser.Input.Keyboard.JustDown(this.cursor.left)) {
+            this.guess("devdiaries", Phaser.Math.Between(1,4));
+        }
     }
 
     showResult () {
@@ -203,7 +190,7 @@ export default class Game extends Phaser.Scene {
 
        console.log("ScoreBoard: ", scoreBoard)
 
-        this.time.delayedCall(5000, () => {
+        this.time.delayedCall(5000, async() => {
             this.tweens.add({
                 targets: [this.scoreRectangle, this.scores, this.sensei],
                 duration: 1000,
@@ -218,45 +205,26 @@ export default class Game extends Phaser.Scene {
                 }
             })
             this.resetScore();
-            this.generateNextOperation();
+            if (this.infiniteLoop) {
+                await this.loadQuestions();
+                this.showNextQuestion()
+            }
+
         }, null, this)
     }
 
     createScoreBoard () {
-        return [...Object.values(this.allPlayers)].sort((player1, player2) => player2.score - player1.score);
+        return [...Object.values(this.allPlayers)].sort((player1, player2) => player2.points - player1.points).sort((player1, player2) => player1.time - player2.time);
     }
 
     resetScore () {
         this.number = 0;
         this.counter = 0;
         this.failed = false;
+        this.quiz.currentIndex = 0;
     }
 
-    generateNextOperation () {
-        this.counter++;
-        this.number = this.result;
-        this.nextOperand = Phaser.Math.Between(1, 9);
-        this.nextOperator = this.selectOperator();
-        this.result = parseInt(eval(this.number + this.nextOperator + this.nextOperand));
-        console.log("Current: ", this.number, " operator: ", this.nextOperator," nextNumber: ", this.nextOperand,",Result: ", this.result);
-        this.showNextOperation(this.nextOperator, this.nextOperand);
-        this.playAudio("drip");
-    }
 
-    selectOperator () {
-        if (this.number % this.nextOperand === 0 && this.nextOperand !== 1) {
-            console.log("Choice 1", this.number, this.nextOperand, this.result)
-            return Phaser.Math.RND.pick(['+', '-', '+', '-', '/']);
-        } else if (this.number + this.nextOperand >= 100) {
-            return Phaser.Math.RND.pick(['-']);
-        } else if (this.number - this.nextOperand <= -100) {
-            return Phaser.Math.RND.pick(['+']);
-        } else if (Math.abs(this.number * this.nextOperand) < 100) {
-            return Phaser.Math.RND.pick(['+', '-', '+', '-', '*']);
-        } else {
-            return Phaser.Math.RND.pick(['+', '-', '+', '-']);
-        }
-    }
 
     showScore (playerName, score) {
         this.scoreText1.setText(`Great!`).setAlpha(1);
@@ -267,25 +235,5 @@ export default class Game extends Phaser.Scene {
             ease: 'Linear',
             duration: 3000
         })
-    }
-
-    showShame (playerName) {
-        const rants = ["You're a disgrace", "Shame on you", "You dishonor us all", "You're a disappointment", "You're a failure", "You dishonor this dojo"]
-        this.scoreText1.setText(Phaser.Math.RND.pick(rants)).setAlpha(1);
-        this.scoreText2.setText(`${playerName}`).setAlpha(1);
-        this.tweens.add({
-            targets: [this.scoreText1, this.scoreText2],
-            alpha: {from: 1, to: 0},
-            ease: 'Linear',
-            duration: 3000,
-            onComplete: () => {
-                this.showResult();
-            }
-        })
-    }
-
-    showNextOperation (operator, nextNumber) {
-        this.numberText.setText(this.number)
-        this.operatorText.setText(`${operator}${nextNumber}`)
     }
 }
