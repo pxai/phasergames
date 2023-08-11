@@ -5,58 +5,39 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="assets/css/styles.css">
-  <link href="https://fonts.cdnfonts.com/css/varsity-2" rel="stylesheet">
-  <title>WarChat</title>
+  <title>Chat Gasol</title>
 </head>
 <body>
 
   <div class="container">
     <div class="logo">
-        <img src="assets/images/logo.png" alt="Logo" width="350">
+      <img src="assets/images/chat_gasol.png" alt="Chat Gasol Logo" width="350">
+    </div>
+    <div class="title">
+      Chat Gasol
     </div>
     <div class="form-container">
         <header>
-          <h1>Enter options</h1>
+          <h2>Options</h2>
         </header>
         <form action="game.html">
             <div><label for="channel">Channel</label></div>
             <div><input type="text" name="channel" id="channel" value="devdiaries"></div>
             <div><label for="background">Background Color</label></div>
             <div><input type="color" name="background" id="background", value = '#00b140'></div>
-            <div><label for="maxplayers">Max Players</label></div>
-            <div><input type="number" name="maxplayers" id="maxplayers" value="500"></div>
-            <div><label for="width">Width</label></div>
-            <div><input type="number" name="width" id="width" value="1200" disabled></div>
-            <div><label for="height">Height</label></div>
-            <div><input type="number" name="Height" id="height" value="800" disabled></div>
+            <br />
             <div><input type="submit", value = 'PLAY'></div>
         </form>
         <footer>
-          <a href="javascript:toggleList()" id="">Show Game Commands</a>
+          <b>! <em>speed</em> <em>angle</em></b>: shoot balls with speed (0-100) and angle (0-360)
+
         </footer>
     </div>
-  </div>
-    <div class="list-row" id="listBlock">
-      <div class="list">
-          <h2>Commands</h2>
-          <ul>
-              <li class="list-item"><b>!join:</b> join the battle</li>
-              <li class="list-item"><b>!fb</b> <em>speed</em> <em>angle</em>: shoot fireball with speed (0-100) and angle (0-360) </li>
-              <li class="list-item"><b>!in</b> <em>playername</em>: show info about player</li>
-              <li class="list-item"><b>!h:</b> show help</li>
-              <!-- Add more list items here -->
-          </ul>
-      </div>
+    <div>
+      <a href="https://pello.itch.io">By Pello</a>
     </div>
 
-      <script>
-        const listBlock = document.getElementById('listBlock');
-
-        function toggleList() {
-            listBlock.style.display = listBlock.style.display === 'none'|| listBlock.style.display !== 'flex' ? 'flex' : 'none';
-        }
-
-    </script>
+  </div>
 
 </body>
 </html>

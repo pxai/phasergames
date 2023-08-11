@@ -5,41 +5,70 @@ body {
     align-items: center;
     min-height: 100vh; /* Ensure the container takes at least the full viewport height */
     margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: black;
+    background-color: rgb(250, 193, 132);
+    font-family: 'Ostrich Sans', Verdana, Geneva, Tahoma, sans-serif;
 }
 
-h1, h2 {
-    color: rgb(239, 143, 151);
-    font-family: Verdana, Geneva, Tahoma, sans-serif, sans-serif;
+@font-face {
+    font-family: 'Ostrich Sans';
+    src: url('../fonts/OstrichSans-Heavy.woff2') format('woff2'),
+        url('../fonts/OstrichSans-Heavy.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+.title {
+    font-size: 5em;
+    color: rgb(119, 207, 242);
+    text-align: center;
+    text-shadow: 2px 2px rgb(83, 157, 219);
+}
+
+ h2 {
+    font-size: 4em;
+    font-family: 'Ostrich Sans', Verdana, Geneva, Tahoma, sans-serif;
+    color: rgb(246, 136, 21);
     text-align: center;
 }
 
 /* Create a two-column layout using flex */
 .container {
     display: flex;
+    flex-direction: column;
     align-items: center;
     max-width: 800px;
     width: 100%;
-    padding: 20px;
     box-sizing: border-box;
 }
 
 /* Style the left column for the logo */
 .logo {
-    flex: 1;
-    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
 }
 
+.number {
+    margin-top: 15px;
+    font-size: 12em;
+    font-family: 'Ostrich Sans','Gang of Three', Verdana, Geneva, Tahoma, sans-serif;
+    align-items: center;
+}
+
+
+.floating-div {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+
+}
 /* Center the form in the right column */
 .form-container {
-    flex: 2;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background-color: rgb(143, 20, 31)
+    padding: 0 10px;
+
+
+    text-align: center;
 }
 
 /* Add some spacing between form elements */
@@ -47,7 +76,8 @@ h1, h2 {
     margin-bottom: 10px;
 }
 label {
-    color: rgb(239, 143, 151);
+    color: rgb(246, 136, 21);
+
 }
 /* Style form elements */
 input, textarea {
@@ -56,6 +86,7 @@ input, textarea {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+    color: rgb(246, 136, 21);
 }
 
 textarea {
@@ -63,44 +94,25 @@ textarea {
 }
 
 input[type="submit"] {
-    background-color: rgb(210, 30, 45);
-    color: #fff;
+    color:  rgb(246, 136, 21);
+
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 input[type="submit"]:hover {
-    background-color:rgb(239, 143, 151);
+    background-color: rgb(239, 143, 151);
+    color: white;
 }
 
 a {
-    color:rgb(239, 143, 151);
+    color: rgb(246, 136, 21);
 }
 
-.list-row {
-    display: none;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 20px;
 
-}
-
-.list {
-    max-width: 800px;
-    width: 100%;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background-color: rgb(143, 20, 31)
-}
-
-.list-item {
-    margin: 5px 0;
-    color: rgb(239, 143, 151);
-}
 
 footer {
     clear: both;
     text-align: center;
+    color: rgb(246, 136, 21);
 }

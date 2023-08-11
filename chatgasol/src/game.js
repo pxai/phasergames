@@ -1,9 +1,7 @@
 import Player from "./player";
 import Chat from "./chat";
-import Fireball from "./fireball";
-import Shield from "./shield";
-import MapGenerator from "./map_generator";
-import Explosion from "./explosion";
+import { Particle, Debris, Dust } from "./particle";
+import Gasol from "./gasol";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -31,9 +29,14 @@ export default class Game extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
         this.cameras.main.setBackgroundColor(+this.backgroundColor);
-        this.physics.world.setBoundsCollision(true, true, false, true);
+        this.physics.world.setBoundsCollision(true, true, true, true);
+        this.mainColor = 0xF68815;
         this.addChat();
         this.loadAudios();
+        this.addGameElements();
+        this.addMap();
+       // this.addHelp();
+        this.addPlayer ()
         this.cursor = this.input.keyboard.createCursorKeys();
     }
 
@@ -41,168 +44,157 @@ export default class Game extends Phaser.Scene {
         this.chat = new Chat(this);
     }
 
-    loadGame () {
-        this.addMap();
-        this.addHelp();
+    addGameElements () {
+        this.scores = this.add.group();
+        this.clearScores()
+        this.addGasol();
+        this.addBasket();
+        this.playing = true;
+    }
 
-        // this.playMusic();
+    addBasket () {
+        const x = Phaser.Math.Between(32, this.width - 32);
+        const y = Phaser.Math.Between(128, this.height/3);
+        if (this.basket) {
+            this.basket.x = this.table.x = x;
+            this.basket.y = y;
+            this.table.y = y - 40;
+        } else {
+            this.table = this.add.image(x, y - 40, "table")
+            this.basket = new Basket(this, x, y);
+        }
+      }
+
+    addGasol () {
+        if (this.gasol) this.gasol.destroy();
+        const {x, y} = {x: Phaser.Math.Between(32, this.width - 64), y: this.height - 32};
+        this.gasol = new Gasol(this, x, y);
     }
 
     addHelp () {
-        this.add.bitmapText(35, 50, "mainFont", "!join", 10).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xbf2522, 0.7);
-        this.add.bitmapText(35, 65, "mainFont", "!f speed angle", 10).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xbf2522, 0.7);
-        // this.add.sprite(35, 80, "help").setScale(1).setOrigin(0).setTint(0xFFD700)
+        this.add.bitmapText(35, 65, "mainFont", "!speed angle", 20).setOrigin(0).setTint(this.mainColor).setDropShadow(1, 1, 0xbf2522, 0.7);
+        this.add.bitmapText(35, 95, "mainFont", "!42 210", 20).setOrigin(0).setTint(this.mainColor).setDropShadow(1, 1, 0xbf2522, 0.7);
+        // this.add.sprite(35, 80, "help").setScale(1).setOrigin(0).setTint(this.mainColor)
     }
 
     addMap () {
-        this.waterTime = 0;
-        this.tileMap = this.make.tilemap({ key: `scene${this.number}`, tileWidth: 32, tileHeight: 32 });
-
-        this.tileSetBg = this.tileMap.addTilesetImage("map");
-        this.backgroundLayer = this.tileMap.createLayer("background", this.tileSetBg);
-
-        this.tileSet = this.tileMap.addTilesetImage("map");
-        this.platform = this.tileMap.createLayer(`scene${this.number}`, this.tileSet);
-        this.objectsLayer = this.tileMap.getObjectLayer("objects");
-
-        this.tileSetItems = this.tileMap.addTilesetImage("tiles");
-        this.tileMap.createLayer("items", this.tileSetItems);
-
-        this.platform.setCollisionByExclusion([-1]);
-
+        this.batGroup = this.add.group();
+        this.playerGroup = this.add.group();
         this.allPlayers = {};
-        this.playersLeft = this.add.group();
-        this.playersRight = this.add.group();
-        this.foesGroup = this.add.group();
-        this.skeletons = this.add.group();
-        this.fireballs = this.add.group();
-        this.trailLayer = this.add.layer();
-        this.shields = this.add.group();
-        this.arrows = this.add.group();
-        this.explosions = this.add.group();
+
         this.texts = [];
-
-        this.objectsLayer.objects.forEach(object => {
-            if (object.name === "text") {
-                this.texts.push(object);
-            }
-        });
-
-        //new MapGenerator(this)
     }
 
-    addPlayer (name) {
-        const player = this.chooseSide(name);
-
-        this.physics.add.collider(player, this.platform, this.hitFloor, () => {
+    addPlayer () {
+        this.physics.add.collider(this.playerGroup, this.basket, this.hitBasket, ()=>{
             return true;
-        }, this);
+          }, this);
 
-
-        this.physics.add.collider(player, this.bricks, this.hitFloor, () => {
+          this.physics.add.overlap(this.playerGroup, this.basket.entrance, this.gotcha, ()=>{
             return true;
-        }, this);
+          }, this);
 
-        this.physics.add.collider(player, this.arrows, this.arrowHitPlayer, () => {
-            return true;
-        }, this);
+          this.physics.add.collider(this.batGroup, this.physics.world.bounds.left, () => {
+            this.turnFoe();
+          }, null, this);
 
-        this.physics.add.overlap(player, this.fireballs, this.fireballHitsPlayer, () => {
-            return true;
-        }, this);
+          this.physics.add.collider(this.batGroup, this.physics.world.bounds.right, () => {
+            this.turnFoe();
+          }, null, this);
 
-        this.physics.add.collider(player, this.explosions, this.explosionHitsPlayer, () => {
+          this.physics.add.collider(this.playerGroup, this.batGroup, this.hitBat, ()=>{
             return true;
-        }, this);
-
-        this.physics.add.overlap(this.fireballs, this.shields, this.fireballHitShield, () => {
-            return true;
-        }, this);
-
-        this.physics.add.overlap(this.fireballs, this.platform, this.fireballHitPlatform, () => {
-            return true;
-        }, this);
-
-        this.physics.add.overlap(this.fireballs, this.playersLeft, this.fireballHitPlayer, () => {
-            return true;
-        }, this);
-
-        this.physics.add.overlap(this.fireballs, this.playersRight, this.fireballHitPlayer, () => {
-            return true;
-        }, this);
+          }, this);
     }
 
-    fireballHitsPlayer(player, fireball) {
-        player.hit(4, fireball.shooter);
-        fireball.destroy();
-        this.explosions.add(new Explosion(this, fireball.x, fireball.y))
-        this.playAudio("boom")
+    hitBorder (point) {
+        const {x, y} = point.center;
+        console.log("What is this: ", x, y)
+        new Dust(this, x, y)
     }
 
-    explosionHitsPlayer(player, explosion) {
-        player.body.setVelocityX(Phaser.Math.Between(-100, 100));
-        player.body.setVelocityY(Phaser.Math.Between(-100, -1));
-    }
-
-    hitFloor (player, platform) {
-    }
-
-    brickHitPlatform (brick, platform) {
-    }
-
-    fireballHitShield (fireball, shield) {
-        fireball.destroy();
-        shield.destroy();
-    }
-
-    chooseSide (name) {
-        const y = Phaser.Math.Between(128, 192);
-        let player = null;
-        let side = "";
-
-        const x = parseInt(Phaser.Math.Between(64, this.width - 128));
-
-        player = new Player(this, x, y, side, name);
-        this.allPlayers[name] = player;
-        this.chat.say(`Player ${name} joins game!`);
-        return player;
-    }
-
-    getTile(platform) {
-        const {x, y} = platform;
-        return this.platform.getTileAt(x, y);
+    hitBasket (ball, basket) {
+        this.playAudio("boing")
+        this.hit(ball.x, ball.y, 4)
+        this.cameras.main.shake(30);
+        this.tweens.add({
+          targets: [basket],
+          x: "-=5",
+          yoyo: true,
+          duration: 30,
+          repeat: 10
+        })
       }
 
-    fireballHitPlatform (fireball, platform) {
-        //if (!fireball.activate) return
-        const tile = this.getTile(platform)
-        if (tile && tile.x) {
-            this.platform.removeTileAt(tile.x, tile.y);
-            fireball.destroy();
-            this.explosions.add(new Explosion(this, fireball.x, fireball.y, fireball.shooter))
-            this.playAudio("boom")
-        }
-
-        //platform.destroy();
+    gotcha (player) {
+        console.log("This is the player: ", player)
+        this.playAudio("gotcha")
+        this.gasol.celebrate();
+        this.basket.anims.play("basket", true);
+        //this.ball.destroy();
+        player.addPoints();
+        player.die();
+        this.textYAY1 = this.add.bitmapText(this.center_width, this.center_height, "mainFont",  player.name, 40).setTint(this.mainColor).setOrigin(0.5).setDropShadow(1, 2, 0xffffff, 0.9);
+        this.textYAY2 = this.add.bitmapText(this.center_width, this.center_height + 50, "mainFont",  " +3 points!", 40).setTint(0x539DDB).setOrigin(0.5).setDropShadow(1, 2, 0xffffff, 0.9);
+        this.scores.add(this.textYAY1, this.textYAY2)
+        this.showResult();
     }
 
+    hitBat(ball, bat) {
+        //this.playAudio("boing")
+        this.hit(ball.x, ball.y)
+        bat.turn();
+      }
+
+      turnFoe (foe, platform) {
+        foe.turn();
+      }
+
+
+      hit (x, y, total = 10) {
+        Array(Phaser.Math.Between(4, total)).fill(0).forEach((_,i) => {
+          x += Phaser.Math.Between(-10, 10);
+          y += Phaser.Math.Between(-10, 10);
+          new Dust(this, x, y);
+        })
+      }
+
     attack (playerName, speed, angle) {
-        const player = this.allPlayers[playerName];
-        if (player instanceof Player === false) return;
+        if (!this.playing) return;
+        let player = this.allPlayers[playerName];
+        console.log("Ball: ", playerName, speed, angle, player,  " Instance? ", player instanceof Player)
+        if (!player) {
+            console.log("Here we go!")
+            player = new Player(this, this.gasol.x, this.gasol.y - 48, playerName);
+            this.playerGroup.add(player);
+            this.allPlayers[playerName] = player;
+            this.chat.say(`Player ${playerName} joins game!`);
+        } else if (player.dead) {
+            player.reborn();
+            console.log("Player back")
+        } else {
+            console.log("Wait a bit")
+            return;
+        }
+
         if (player.dead) return;
 
         if (this.isValidNumber(speed) && this.isValidNumber(angle)) {
-            player.sprite.anims.play("playerspell", true);
-            const fireball = new Fireball(this, player.x + 16, player.y - 16, player.name);
-            this.fireballs.add(fireball);
+            this.gasol.anims.play("playershot", true)
             const finalAngle = Phaser.Math.DegToRad(+angle);
             const velocity = this.physics.velocityFromRotation(finalAngle, (+speed*10));
-            fireball.body.setVelocity(velocity.x, velocity.y);
-            player.changeDirection(+angle);
-            this.playAudio("fireball")
+            player.body.setVelocity(velocity.x, velocity.y);
+            this.time.delayedCall(5000, () => { this.removePlayer(player)}, null, this)
+            //this.playAudio("fireball")
         } else {
-            this.chat.say(`Player ${playerName} invalid attack values. Use speed: 0-100, angle: 0-360!`);
+            this.chat.say(`Player ${playerName} invalid throw values. Use speed: 0-100, angle: 0-360!`);
         }
+    }
+
+    removePlayer(player) {
+        console.log("Removing player")
+        new Dust(this, player.x, player.y)
+        player.die();
     }
 
     isValidSpeed(number) {
@@ -211,37 +203,6 @@ export default class Game extends Phaser.Scene {
 
     isValidAngle(number) {
         return this.isValidNumber(number) && +number >= 0 && +number <= 360;
-    }
-
-    move (playerName, x, y) {
-        return;
-        const player = this.allPlayers[playerName];
-        if (this.isValidRange(Math.abs(x), player.range) && this.isValidRange( Math.abs(y),player.range)) {
-            const player = this.allPlayers[playerName];
-            player.sprite.anims.play("playerwalk", true);
-            const point = new Phaser.Geom.Point(player.x + (+x), player.y + (+y));
-            const velocity = (Math.abs(x) + Math.abs(y)) * 5;
-            console.log("Move: ", playerName, velocity, player.x, player.y, point.x, point.y);
-            this.physics.moveTo(player, point.x, point.y, velocity);
-        }
-    }
-
-    shield (playerName, size) {
-        const player = this.allPlayers[playerName];
-        if (this.isValidRange(size, player.mana)) {
-            console.log("Shield: ", playerName, player);
-            player.sprite.anims.play("playerspell", true);
-            new Shield(this, player.x, player.y);
-        }
-    }
-
-    info (playerName, playerToGetInfo) {
-      const player = this.allPlayers[playerName];
-      const playerInfo = this.allPlayers[playerToGetInfo];
-      if (player && playerInfo) {
-          const info = playerInfo.getInfo();
-          return Object.keys(info).map(key => `${key} ${info[key]}`).join(", ");
-      }
     }
 
     isValidNumber (number) {
@@ -254,14 +215,14 @@ export default class Game extends Phaser.Scene {
 
     loadAudios () {
         this.audios = {
-            fireball: this.sound.add("fireball"),
-            step: this.sound.add("step"),
-            death: this.sound.add("death"),
-            boom: this.sound.add("boom"),
-            fireball: this.sound.add("fireball"),
-            win: this.sound.add("win")
+          "boing": this.sound.add("boing"),
+          "gotcha": this.sound.add("gotcha"),
+          "marble": this.sound.add("marble"),
+          "win": this.sound.add("win"),
+          "break": this.sound.add("break"),
+          "start": this.sound.add("start"),
         };
-    }
+      }
 
     playAudio (key) {
         this.audios[key].play();
@@ -291,55 +252,110 @@ export default class Game extends Phaser.Scene {
 
     update () {
         if (Phaser.Input.Keyboard.JustDown(this.cursor.up)) {
-            this.attack("devdiaries", Phaser.Math.Between(0, 100), Phaser.Math.Between(0, 360));
+            this.attack("devdiaries", Phaser.Math.Between(0, 100), Phaser.Math.Between(180, 360));
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.cursor.down)) {
+            this.gotcha(this.allPlayers["devdiaries"])
         }
     }
 
-    checkGameOver () {
-        console.log(this.allPlayers, Object.values(this.allPlayers));
-        const remaining = Object.values(this.allPlayers).map(player => !player.dead).length;
-
-        if (remaining == 1) {
-            const last = Object.values(this.allPlayers).find(player => !player.dead) ;
-            this.winner = last ? last.name : "No Winn" ;
-            this.gameOver = true;
-        } else if (remaining <= 1)
-            this.winner = "No Winn"
-            this.gameOver = true;
-            this.showResult();
-    }
-
     showResult () {
+        this.playing = false;
         const scoreBoard = this.createScoreBoard()
 
-        this.add.bitmapText(this.center_width, 80, "mainFont", "Game Over:", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
+        console.log("ScoreBoard: ", scoreBoard)
+        this.scores.add(this.add.bitmapText(8, 8, "mainFont", "Chat Gasol - Scoreboard", 30).setOrigin(0).setTint(0x539DDB).setDropShadow(1, 1, 0xffffff, 0.7));
         scoreBoard.slice(0, 5).forEach((player, i) => {
-            const winnerText = `${i+1}.  ${player.name}, kills: ${player.kills.length}`;
-            this.add.bitmapText(this.center_width, 170 + (i * 50), "mainFont", winnerText, 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
+            const winnerText = `${i+1}.  ${player.name}: ${player.points}`;
+            this.scores.add(this.add.bitmapText(20, 36 + (i * 50), "mainFont", winnerText, 30).setOrigin(0).setTint(this.mainColor).setDropShadow(1, 1, 0xffffff, 0.7));
         })
 
-       console.log("ScoreBoard: ", scoreBoard[0].name)
-
-       this.restart = this.add.bitmapText(this.center_width, this.height - 100, "mainFont", "CLICK TO RESTART", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
-       this.restart.setInteractive();
-       this.restart.on('pointerdown', () => {
-            this.scene.start("splash")
+        this.tweens.add({
+            targets: [this.textYAY1, this.textYAY2],
+            duration: 4000,
+            alpha: {from: 1, to: 0},
+            onComplete: () => {
+                this.clearScores();
+            }
         })
+
+        this.time.delayedCall(4000, () => {
+            console.log("CLEARING OUT!! ")
+            this.addGameElements();
+        }, null, this)
     }
 
-    addKill(killedPlayerName, killerPlayerName) {
-        const player = this.allPlayers[killerPlayerName];
-        if (player instanceof Player === false) return;
-        player.kills.push(killedPlayerName)
+    clearScores () {
+        this.scores.getChildren().forEach(function(child) {
+            child.destroy();
+        }, this);
+        this.scores.clear(true, true);
     }
 
     createScoreBoard () {
-        return [...Object.values(this.allPlayers)].sort((player1, player2) => player2.kills.length - player1.kills.length);
-    }
-
-    updateScore (points = 0) {
-        const score = +this.registry.get("score") + points;
-        this.registry.set("score", score);
-        this.scoreText.setText(Number(score).toLocaleString());
+        return [...Object.values(this.allPlayers)].sort((player1, player2) => player2.points - player1.points);
     }
 }
+
+
+export class Ball extends Phaser.GameObjects.Sprite {
+    constructor (scene, x, y, scale = 0.8) {
+        super(scene, x, y, "ball")
+        this.setScale(0.8)
+        scene.add.existing(this)
+        scene.physics.add.existing(this);
+        this.body.setCollideWorldBounds(true);
+        this.body.onWorldBounds = true;
+        this.body.setCircle(15);
+        this.body.setBounce(1)
+        //this.body.setOffset(6, 9)
+        this.body.setAllowGravity(true);
+        this.init();
+    }
+
+    init () {
+
+      this.scene.anims.create({
+        key: "ball",
+        frames: this.scene.anims.generateFrameNumbers("ball", { start: 0, end: 3 }),
+        frameRate: 8,
+        repeat: -1
+      });
+
+      this.anims.play("ball", true);
+      this.scene.tweens.add({
+          targets: this,
+          duration: 200,
+          rotation: "+=1",
+          repeat: -1
+      });
+    }
+  }
+
+  class Basket extends Phaser.GameObjects.Sprite {
+    constructor (scene, x, y, bounce = 0.5) {
+        super(scene, x, y, "basket")
+        scene.add.existing(this)
+        scene.physics.add.existing(this);
+        this.body.setCollideWorldBounds(true);
+        this.body.onWorldBounds = true;
+        this.body.setSize(48, 6)
+        const offset = scene.number === 1 ? -20 : 5
+        this.entrance = this.scene.add.rectangle(x, this.body.y + 32, 40, 6, 0xffffff).setAlpha(0);
+        scene.physics.add.existing(this.entrance);
+        this.body.setImmovable(true)
+        this.body.setAllowGravity(false);
+        this.entrance.body.setAllowGravity(false);
+        this.init();
+      }
+
+      init () {
+
+        this.scene.anims.create({
+          key: "basket",
+          frames: this.scene.anims.generateFrameNumbers("basket", { start: 0, end: 8 }),
+          frameRate: 15,
+        });
+      }
+  }
