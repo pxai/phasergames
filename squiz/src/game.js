@@ -26,7 +26,7 @@ export default class Game extends Phaser.Scene {
         parambg = parseInt(parambg.substring(1), 16)
         this.backgroundColor = '0x' + parambg.toString(16)
 
-        let paramfg = urlParams.get('foreground') || "#F0EAD6";
+        let paramfg = urlParams.get('foreground') || "#914104";
         paramfg = parseInt(paramfg.substring(1), 16)
         this.foregroundColor = '0x' + paramfg.toString(16)
 
@@ -64,12 +64,16 @@ export default class Game extends Phaser.Scene {
     }
 
     addUI () {
-        this.questionText = this.add.bitmapText(this.center_width, this.center_height - 50, "mainFont", "question", 30).setOrigin(0.5).setTint(0x000000)
-        this.answers = Array(4).fill('').map((answer, i) => {
-            return this.add.bitmapText(200 * i, 80 , "mainFont", `Question ${i}`, 15).setOrigin(0).setTint(0x000000)
+        this.rectanglesLayer = this.add.layer();
+        this.answerwLayer = this.add.layer();
+        this.questionText = this.add.bitmapText(this.center_width, 8, "mainFont", "question", 30).setOrigin(0.5, 0).setTint(0xffffff)
+        this.answers = Array(4).fill('').map((_, i) => {
+            const answer = this.add.bitmapText(8 + (200 * i), this.height - 80 , "mainFont", `Question ${i}`, 20).setOrigin(0).setTint(0xffffff);
+            this.answerwLayer.add(answer)
+            return answer;
         });
         this.addScore();
-        this.byText = this.add.bitmapText(this.center_width, this.height -10, "mainFont", "by Pello", 10).setOrigin(0.5).setTint(0x000000);
+        this.byText = this.add.bitmapText(this.center_width, this.height -10, "mainFont", "SQUIZ by Pello", 10).setOrigin(0.5).setTint(0xffffff);
     }
 
     showNextQuestion() {
@@ -79,8 +83,15 @@ export default class Game extends Phaser.Scene {
             this.showResult();
             return;
         }
-        this.questionText.setText(question.question);
-        this.answers.forEach((answer , i)=> answer.setText(`${i+1}. ${question.answers[i]}`).setTint(0x000000))
+        if (this.rectangles) { this.rectangles.clear(true, true); }
+        this.rectangles = this.add.group();
+        this.questionText.setText(question.question).setMaxWidth(700);
+        this.answers.forEach((answer , i)=> { 
+            answer.setText(`${i+1}. ${question.answers[i]}`).setTint(0xffffff).setMaxWidth(200)
+            const rectangle = this.add.rectangle(answer.x, answer.y, 195, answer.height + 16, 0xfdba21).setOrigin(0, 0.25).setAlpha(0.2)
+            this.rectangles.add(rectangle)
+            this.rectanglesLayer.add(rectangle)
+        });
         this.showTimestamp = new Date();
         this.time.delayedCall(this.timeToAnswer, () =>{ this.showCorrect()}, null, this )
     }
@@ -92,7 +103,6 @@ export default class Game extends Phaser.Scene {
 
     addScore () {
         const scoreBoard = this.createScoreBoard()
-        this.add.bitmapText(this.center_width, 25, "mainFont", "SQUIZ", 25).setOrigin(0.5).setTint(0x000000);
         scoreBoard.slice(0, 3).forEach((player, i) => {
             const winnerText = `${i+1}.  ${player.name}: ${player.score}`;
             this.add.bitmapText(this.center_width, 100 + (i * 50), "mainFont", winnerText, 30).setOrigin(0.5).setTint(this.foregroundColor).setDropShadow(1, 2, 0xbf2522, 0.7);

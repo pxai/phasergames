@@ -42,6 +42,15 @@ export default class Chat {
             if (message.toLowerCase() === "!hello") {
                 this.client.say(channel, `@${tags.username}, heya!`);
             }
+
+            console.log(`Chat> ${message}`);
+            const messageParts = message.toLowerCase().split(" ");
+            console.log("Received chat: ", channel, tags.username, messageParts);
+            const username = tags.username;
+
+            if (this.isValidNumber(message)) {
+                this.scene.guess(username, +message);
+            }
         });
 
         this.client.on("chat", async (channel, user, message, self) => {
