@@ -92,7 +92,7 @@ export default class Game extends Phaser.Scene {
 
     addScore () {
         const scoreBoard = this.createScoreBoard()
-        this.add.bitmapText(this.center_width, 25, "mainFont", "zenbaki", 25).setOrigin(0.5).setTint(0x000000);
+        this.add.bitmapText(this.center_width, 25, "mainFont", "SQUIZ", 25).setOrigin(0.5).setTint(0x000000);
         scoreBoard.slice(0, 3).forEach((player, i) => {
             const winnerText = `${i+1}.  ${player.name}: ${player.score}`;
             this.add.bitmapText(this.center_width, 100 + (i * 50), "mainFont", winnerText, 30).setOrigin(0.5).setTint(this.foregroundColor).setDropShadow(1, 2, 0xbf2522, 0.7);
@@ -179,9 +179,7 @@ export default class Game extends Phaser.Scene {
         const scoreBoard = this.createScoreBoard()
         this.scoreRectangle = this.add.rectangle(0, 0, this.width, this.height, this.foregroundColor, 0.9).setOrigin(0, 0);
         this.scores = this.add.group();
-        this.sensei = this.add.image(this.center_width, this.height - 60, "sensei", ).setOrigin(0.5).setScale(0.4)
-        this.scores.add(this.sensei);
-        this.scores.add(this.add.bitmapText(this.center_width, 60, "mainFont", "Senseis:", 30).setOrigin(0.5).setTint(0x000000));
+        this.scores.add(this.add.bitmapText(this.center_width, 60, "mainFont", "Scoreboard:", 30).setOrigin(0.5).setTint(0x000000));
         scoreBoard.slice(0, 5).forEach((player, i) => {
              const winnerText = `${i+1}.  ${player.name}, ${player.score}`;
              this.scores.add(this.add.bitmapText(this.center_width, 100 + (i * 20), "mainFont", winnerText, 15).setOrigin(0.5).setTint(0x000000));

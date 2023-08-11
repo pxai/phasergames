@@ -8,5 +8,6 @@ https://snowb.org/
 
 Music: ETC
 
-foreground: rgb(242, 44, 46) #f22c2e
-1px solid #d0d0d0
+Orange: #fb9204
+Orange2: #fdba21
+Dark bg: #914104

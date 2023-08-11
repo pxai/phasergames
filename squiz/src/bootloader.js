@@ -29,7 +29,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("win", "assets/sounds/win.mp3");
         this.load.audio("drip", "assets/sounds/drip.mp3");
         this.load.audio("fail", "assets/sounds/fail.mp3");
-        this.load.bitmapFont("mainFont", "assets/fonts/hiro.png", "assets/fonts/hiro.xml");
+        this.load.bitmapFont("mainFont", "assets/fonts/staat.png", "assets/fonts/staat.xml");
 
 
         this.registry.set("score", 0);

@@ -5,58 +5,45 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="assets/css/styles.css">
-  <style>
-    @import url('https://fonts.cdnfonts.com/css/gang-of-three');
-    </style>
-  <title>ZenBaki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Staatliches&display=swap" rel="stylesheet">
+  <title>Squiz: quiz for Twitch chat</title>
 </head>
 <body>
 
   <div class="container">
     <div class="logo">
-      <div class="floating-div left"></div>
-      <div class="round">
-        <div class="number">Z</div>
-      </div>
-      <div class="floating-div right"></div>
-    </div>
-    <div class="title">
-      ZenBaki
+        <img src="assets/images/squiz_logo.png" alt="Logo">
+        <div class="title">Quiz for Twitch</div>
     </div>
     <div class="form-container">
         <header>
-          <h2>Options</h2>
+          <h1>Enter options</h1>
         </header>
         <form action="game.html">
             <div><label for="channel">Channel</label></div>
             <div><input type="text" name="channel" id="channel" value="devdiaries"></div>
             <div><label for="background">Background Color</label></div>
             <div><input type="color" name="background" id="background", value = '#00b140'></div>
-            <div><label for="foreground">Foreground Color</label></div>
-            <div><input type="color" name="foreground" id="foreground", value = '#F0EAD6'></div>
-            <br />
+            <div><label for="language">Language</label></div>
+            <div>
+              <select name="language" id="language">
+                  <option value="en" selected>EN</option>
+                </select>
+            </div>
             <div><input type="submit", value = 'PLAY'></div>
         </form>
         <footer>
+          <a href="javascript:toggleList()" id="">Show Advanced options</a>
         </footer>
     </div>
-    <div>
-      <a href="https://pello.itch.io">By Pello</a>
-    </div>
+  </div>
     <div class="list-row" id="listBlock">
       <div class="list">
-          <h2>Game Rules</h2>
-          <ul>
-              <li class="list-item">You will see a number...</li>
-              <li class="list-item">...and an operation below.</li>
-              <li class="list-item">Guess the result</li>
-              <li class="list-item">and write it on the chat!</li>
-              <!-- Add more list items here -->
-          </ul>
+          <h2>Other options</h2>
       </div>
     </div>
-  </div>
-
 
       <script>
         const listBlock = document.getElementById('listBlock');
