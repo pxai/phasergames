@@ -38,7 +38,7 @@ export default class Game extends Phaser.Scene {
         this.spamTimeWait = 2;
         this.result = Phaser.Math.Between(1, 9);
         this.cursor = this.input.keyboard.createCursorKeys();
-        this.timeToAnswer = 3000;
+        this.timeToAnswer = 1000;
         this.infiniteLoop = !this.rounds;
     }
 
@@ -70,13 +70,14 @@ export default class Game extends Phaser.Scene {
     addUI () {
         this.rectanglesLayer = this.add.layer();
         this.answerwLayer = this.add.layer();
+        this.logo = this.add.image(0,0, "squiz_logo").setOrigin(0).setAlpha(0.2)
         this.questionText = this.add.bitmapText(this.center_width, 8, "mainFont", "question", 30).setOrigin(0.5, 0).setTint(0xffffff)
         this.answers = Array(4).fill('').map((_, i) => {
-            const answer = this.add.bitmapText(8 + (242 * i), this.height - 80 , "mainFont", `Question ${i}`, 20).setOrigin(0).setTint(0xffffff);
+            const answer = this.add.bitmapText(8 + (242 * i), this.height - 90 , "mainFont", `Question ${i}`, 20).setOrigin(0).setTint(0xffffff);
             this.answerwLayer.add(answer)
             return answer;
         });
-        this.addScore();
+        //this.addScore();
         this.byText = this.add.bitmapText(this.center_width, this.height -10, "mainFont", "SQUIZ by Pello", 10).setOrigin(0.5).setTint(0xffffff);
     }
 
@@ -92,23 +93,24 @@ export default class Game extends Phaser.Scene {
         this.questionText.setText(question.question).setMaxWidth(700);
         this.answers.forEach((answer , i)=> { 
             answer.setText(`${i+1}. ${question.answers[i]}`).setTint(0xffffff).setMaxWidth(200)
-            const rectangle = this.add.rectangle(answer.x, answer.y, 195, answer.height + 16, 0xfdba21).setOrigin(0, 0.25).setAlpha(0.2)
+            const rectangle = this.add.rectangle(answer.x, answer.y - 8, 238, answer.height + 16, 0xfdba21).setOrigin(0).setAlpha(0.2)
             this.rectangles.add(rectangle)
             this.rectanglesLayer.add(rectangle)
         });
         this.showTimestamp = new Date();
         this.time.delayedCall(this.timeToAnswer, () =>{ this.showCorrect()}, null, this )
+        this.showingResult = false;
     }
 
     showCorrect() {
-        this.answers[this.quiz.currentQuestion.correctIndex - 1].setTint(0x00ff00)
+        this.rectangles.getChildren()[this.quiz.currentQuestion.correctIndex - 1].setAlpha(1)
         this.time.delayedCall(this.timeToAnswer, () =>{ this.showNextQuestion()}, null, this )
     }
 
     addScore () {
         const scoreBoard = this.createScoreBoard()
         scoreBoard.slice(0, 3).forEach((player, i) => {
-            const winnerText = `${i+1}.  ${player.name}: ${player.score}`;
+            const winnerText = `${i+1}.  ${player.name}: ${player.points}pt ${player.time}ms`;
             this.add.bitmapText(this.center_width, 100 + (i * 50), "mainFont", winnerText, 30).setOrigin(0.5).setTint(this.foregroundColor).setDropShadow(1, 2, 0xbf2522, 0.7);
         })
 
@@ -126,6 +128,7 @@ export default class Game extends Phaser.Scene {
     }
 
     guess (playerName, number) {
+        if (this.showingResult) return;
         console.log("Game> guess: ", playerName, number)
 
         const player = this.addPlayer(playerName);
@@ -140,7 +143,6 @@ export default class Game extends Phaser.Scene {
     }
 
     showScores () {
-        console.log
     }
 
     isValidValue (number) {
@@ -194,44 +196,60 @@ export default class Game extends Phaser.Scene {
     }
 
     showResult () {
+        this.showingResult = true;
         const scoreBoard = this.createScoreBoard()
         this.scoreRectangle = this.add.rectangle(0, 0, this.width, this.height, this.foregroundColor, 0.9).setOrigin(0, 0);
         this.scores = this.add.group();
-        this.scores.add(this.add.bitmapText(this.center_width, 60, "mainFont", "Scoreboard:", 30).setOrigin(0.5).setTint(0x000000));
+        this.scores.add(this.add.bitmapText(this.center_width, 20, "mainFont", "Scoreboard", 50).setOrigin(0.5).setTint(0xffffff));
         scoreBoard.slice(0, 5).forEach((player, i) => {
-             const winnerText = `${i+1}.  ${player.name}, ${player.score}`;
-             this.scores.add(this.add.bitmapText(this.center_width, 100 + (i * 20), "mainFont", winnerText, 15).setOrigin(0.5).setTint(0x000000));
+             const winnerText = `${i+1}.  ${player.name}, ${player.points}pts ${player.time}`;
+             this.scores.add(this.add.bitmapText(this.center_width, 60 + (i * 20), "mainFont", winnerText, 15).setOrigin(0.5).setTint(0x000000));
         })
 
 
        console.log("ScoreBoard: ", scoreBoard)
 
         this.time.delayedCall(5000, async() => {
-            this.tweens.add({
-                targets: [this.scoreRectangle, this.scores, this.sensei],
-                duration: 1000,
-                alpha: {from: 1, to: 0},
-                onComplete: () => {
-                    this.scoreRectangle.destroy();
-                    this.scores.getChildren().forEach(function(child) {
-                        child.destroy();
-                    }, this);
-
-                    this.scores.clear(true, true);
-                }
-            })
             this.resetScore();
             this.roundCount++;
-            if (this.infiniteLoop) {
-                await this.loadQuestions();
-                this.showNextQuestion()
+            console.log("Is infinite loop? ", this.infiniteLoop, " roundcount: " ,this.roundCount, " rounds:", this.rounds)
+            if (this.infiniteLoop || (this.roundCount < this.rounds)) {
+                this.tweens.add({
+                    targets: [this.scoreRectangle, this.scores],
+                    duration: 1000,
+                    alpha: {from: 1, to: 0},
+                    onComplete: async () => {
+                        this.scoreRectangle.destroy();
+                        this.scores.getChildren().forEach(function(child) {
+                            child.destroy();
+                        }, this);
+    
+                        this.scores.clear(true, true);
+                        await this.loadQuestions();
+                        this.showNextQuestion()
+                    }
+                })
+            } else {
+                console.log("End of game!")
+                this.reloadText = this.add.bitmapText(this.width - 128, this.center_height, "mainFont", "RESTART", 40);
+                this.reloadText.setInteractive();
+                this.reloadText.on('pointerdown', () => {
+                    window.location.reload();
+                });
             }
 
         }, null, this)
     }
 
     createScoreBoard () {
-        return [...Object.values(this.allPlayers)].sort((player1, player2) => player2.points - player1.points).sort((player1, player2) => player1.time - player2.time);
+        return [...Object.values(this.allPlayers)].sort(function(player1, player2) {          
+            if (player1.points === player2.points) {
+               return player1.time - player2.time;
+            }
+            return player1.points < player2.points ? 1 : -1;
+         });
+            
+          //  (player1, player2) => player2.points - player1.points).sort((player1, player2) => player1.time - player2.time);
     }
 
     resetScore () {

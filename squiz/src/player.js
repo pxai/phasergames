@@ -15,11 +15,11 @@ class Player {
     }
 
     get points () {
-        this.answers.reduce((answer, acc) => answer.points + acc, 0);
+        return this.answers.reduce((acc, answer) => answer.points + acc, 0) 
     }
 
     get time () {
-        this.answers.reduce((answer, acc) =>  answer.time + acc, 0);
+        return  this.answers.reduce((acc, answer) =>  answer.time + acc, 0);
     }
 
     notAnswered(number) {
