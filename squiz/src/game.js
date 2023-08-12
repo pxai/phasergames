@@ -26,6 +26,11 @@ export default class Game extends Phaser.Scene {
         parambg = parseInt(parambg.substring(1), 16)
         this.backgroundColor = '0x' + parambg.toString(16)
 
+        this.difficulties = urlParams.get('difficulties') || "";
+        this.categories = urlParams.get('categories') || "";
+        this.rounds = this.isValidNumber(urlParams.get('rounds')) ? +urlParams.get('rounds') : "";
+        this.roundCount = 0;
+
         let paramfg = urlParams.get('foreground') || "#914104";
         paramfg = parseInt(paramfg.substring(1), 16)
         this.foregroundColor = '0x' + paramfg.toString(16)
@@ -34,7 +39,7 @@ export default class Game extends Phaser.Scene {
         this.result = Phaser.Math.Between(1, 9);
         this.cursor = this.input.keyboard.createCursorKeys();
         this.timeToAnswer = 3000;
-        this.infiniteLoop = true;
+        this.infiniteLoop = !this.rounds;
     }
 
     async create () {
@@ -50,13 +55,12 @@ export default class Game extends Phaser.Scene {
         await this.loadQuestions()
         this.addUI();
 
-
         this.showNextQuestion();
     }
 
     async loadQuestions () {
         this.quiz = new Quiz();
-        await this.quiz.init();
+        await this.quiz.init(this.difficulties, this.categories);
     }
 
     addChat () {
@@ -68,7 +72,7 @@ export default class Game extends Phaser.Scene {
         this.answerwLayer = this.add.layer();
         this.questionText = this.add.bitmapText(this.center_width, 8, "mainFont", "question", 30).setOrigin(0.5, 0).setTint(0xffffff)
         this.answers = Array(4).fill('').map((_, i) => {
-            const answer = this.add.bitmapText(8 + (200 * i), this.height - 80 , "mainFont", `Question ${i}`, 20).setOrigin(0).setTint(0xffffff);
+            const answer = this.add.bitmapText(8 + (242 * i), this.height - 80 , "mainFont", `Question ${i}`, 20).setOrigin(0).setTint(0xffffff);
             this.answerwLayer.add(answer)
             return answer;
         });
@@ -129,7 +133,7 @@ export default class Game extends Phaser.Scene {
 
         console.log("Game> guess go on: ", playerName, number)
 
-        if (this.isValidNumber(number) && player.notAnswered(this.quiz.currentIndex)) {
+        if (this.isValidValue(number) && player.notAnswered(this.quiz.currentIndex)) {
             player.answerQuestion(this.quiz.currentIndex, new Date() - this.showTimestamp, number === this.quiz.currentQuestion.correctIndex)
             console.log("Player", playerName, "guess", number);
         }  
@@ -139,8 +143,12 @@ export default class Game extends Phaser.Scene {
         console.log
     }
 
-    isValidNumber (number) {
+    isValidValue (number) {
         return !isNaN(number) && number >= 1 && number <= MAX_ANSWERS;
+    }
+
+    isValidNumber (number) {
+        return !isNaN(number) && number >= 1;
     }
 
     loadAudios () {
@@ -213,6 +221,7 @@ export default class Game extends Phaser.Scene {
                 }
             })
             this.resetScore();
+            this.roundCount++;
             if (this.infiniteLoop) {
                 await this.loadQuestions();
                 this.showNextQuestion()

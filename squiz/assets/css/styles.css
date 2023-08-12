@@ -83,18 +83,16 @@ a {
     color:#914104;
 }
 
-.list-row {
+#listBlock {
     display: none;
     justify-content: center;
     align-items: flex-start;
-    padding: 20px;
-
 }
 
 .list {
     max-width: 800px;
     width: 100%;
-    padding: 20px;
+    padding: 10px;
     border: 1px solid #fdba21;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

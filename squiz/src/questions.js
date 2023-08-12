@@ -5,8 +5,12 @@ export default class Quiz {
         this.currentIndex = 0;
     }
 
-    async init () {
-        const response = await axios.get('https://the-trivia-api.com/api/questions/')
+    async init (difficulties, categories) {
+        const difficultiesOption = difficulties ? `&difficulties=${difficulties}`: '';
+        const categoriesOption = categories ? `&categories=${categories}`: '';
+        const options = `${difficultiesOption}${categoriesOption}`;
+        console.log("Options: ", options)
+        const response = await axios.get(`https://the-trivia-api.com/api/questions/?${options}`)
         const questionsData = response.data;
         console.log("Questions: ", questionsData)
         this.questions = questionsData.map(question => new Question(question))

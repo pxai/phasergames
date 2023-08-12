@@ -32,19 +32,45 @@
                   <option value="en" selected>EN</option>
                 </select>
             </div>
+            <div id="listBlock">
+              <div class="list">
+                  <h2>Other options</h2>
+                  <div><label for="rounds">Rounds</label></div>
+                  <div><input type="number" name="rounds" id="rounds" value="" placeholder="Leave blank for infinite"></div>
+                  <div><label for="difficulties">Difficulties</label></div>
+                  <div>
+                    <select name="difficulties" id="difficulties" multtiple>
+                      <option disabled selected value> -- select an option -- </option>
+                      <option value="easy">Easy</option>
+                      <option value="medium">Medium</option>
+                      <option value="hard">Hard</option>
+                    </select>
+                  </div>
+                  <div><label for="categories">Categories</label></div>
+                  <div>
+                    <select name="categories" id="categories" multtiple>
+                      <option disabled selected value> -- select an option -- </option>
+                      <option value="science">Science</option>
+                      <option value="film_and_tv">Film and tTv</option>
+                      <option value="music">Music</option>
+                      <option value="history">History</option>
+                      <option value="geography">Geography</option>
+                      <option value="art_and_literature">Art and Literature></option>
+                      <option value="sport_and_leisure">Sport and Leisure</option>
+                      <option value="general_knowledge">General Knowledge</option>
+                      <option value="science">Science</option>
+                      <option value="food_and_drink">Food and Drink</option>
+                    </select>
+                  </div>
+              </div>
+            </div>
+            <footer>
+              <a href="javascript:toggleList()" id="">Show Advanced options</a>
+            </footer>
             <div><input type="submit", value = 'PLAY'></div>
         </form>
-        <footer>
-          <a href="javascript:toggleList()" id="">Show Advanced options</a>
-        </footer>
     </div>
   </div>
-    <div class="list-row" id="listBlock">
-      <div class="list">
-          <h2>Other options</h2>
-      </div>
-    </div>
-
       <script>
         const listBlock = document.getElementById('listBlock');
 
