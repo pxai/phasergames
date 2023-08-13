@@ -106,7 +106,6 @@ export default class Game extends Phaser.Scene {
         this.chat.say(`Player ${name} joins game as ${side}!`);
         console.log("Player added: ", player)
         this.sideFlip = !this.sideFlip;
-        this.scenario.print();
         this.gameLayer.add(player)
         return player;
     }

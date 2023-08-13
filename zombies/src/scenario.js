@@ -54,7 +54,6 @@ export default class Scenario {
     _getSlot() {
         if (this.slots.length === 0) { this.createSlots()}
         const slot = this.slots.pop();
-        console.log("About to return: ", slot)
         return slot;
     }
 
@@ -75,7 +74,6 @@ export default class Scenario {
             this.map[y][x]
         ].flat()
 
-        console.log("Chopper:", adjacents, "chopper :", adjacents.some(tile => tile.chopperInside()))
         return adjacents.some(tile => tile.chopperInside());
     }
 
