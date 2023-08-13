@@ -40,6 +40,8 @@ export default class Game extends Phaser.Scene {
         this.loadAudios();
         this.cursor = this.input.keyboard.createCursorKeys();
         this.loadGame();
+        this.tmpCounter = 0;
+        this.infoPanel = Array(6).fill(this.add.bitmapText(0, 0, "mainFont", "", 0));
     }
 
     addChat () {
@@ -58,8 +60,13 @@ export default class Game extends Phaser.Scene {
         this.add.bitmapText(0, 0, "creep", "Zombie Night", 40).setOrigin(0,0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
         this.add.bitmapText(225, 0, "mainFont", "!join", 15).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
         this.add.bitmapText(280, 0, "mainFont", "!x y", 15).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
-        this.add.bitmapText(330, 0, "mainFont", "!info", 15).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
-        this.add.bitmapText(380, 0, "mainFont", "!marco", 15).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
+        this.add.bitmapText(225, 24, "mainFont", "!info", 15).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
+        this.add.bitmapText(280, 24, "mainFont", "!marco", 15).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
+
+
+        this.zombiesCountText =  this.add.bitmapText(400, 0, "creep", "ZOMBIES: 0", 25).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
+        this.humansCountText =  this.add.bitmapText(650, 0, "creep", "HUMANS: 0", 25).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
+        this.savedHumansCountText =  this.add.bitmapText(900, 0, "creep", "SAVED: 0", 25).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
     }
 
     addMap () {
@@ -84,6 +91,8 @@ export default class Game extends Phaser.Scene {
     addPlayer (name) {
         if (this.allPlayers[name]) return;
         const player = this.chooseSide(name);
+        this.updateScore();
+        this.updateInfoPanel(`${player.name} joins the game as ${player.side}`)
     }
 
     chooseSide (name) {
@@ -113,13 +122,17 @@ export default class Game extends Phaser.Scene {
             console.log(`Moving ${player.name} ${player.side} to ${x} ${y} - ${movedX} ${movedY}`)
             player.move(movedX, movedY)
             if (this.scenario.zombieInside(movedX, movedY)) {
+                this.updateInfoPanel(`${player.name} becomes a zombie!!`)
                 console.log("Zombie inside, player dies")
                 player.die();
+                this.updateScore();
             }
 
             if (this.scenario.chopperInside(movedX, movedY)) {
                 console.log("Chopper inside, player is saved!")
+                this.updateInfoPanel(`${player.name} reaches the chopper!!`)
                 player.saved = true;
+                this.updateScore();
             }
         } else {
             this.chat.say(`Player ${playerName} invalid attack values. Use speed: 0-100, angle: 0-360!`);
@@ -130,7 +143,7 @@ export default class Game extends Phaser.Scene {
         const player = this.allPlayers[playerName];
         if (player instanceof Player === false) return;
         if (player.marcoUsed) return;
-
+        this.updateInfoPanel("POLO!!")
         player.marcoUsed = true;
         console.log("Marco!")
         this.tweens.add({
@@ -216,19 +229,20 @@ export default class Game extends Phaser.Scene {
 
     update () {
         if (Phaser.Input.Keyboard.JustDown(this.cursor.down)) {
-            this.addPlayer("devdiaries");
+            this.addPlayer("devdiaries"+ this.tmpCounter);
+            this.tmpCounter++;
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.cursor.left)) {
-            this.move("devdiaries", Phaser.Math.Between(-5, 5), Phaser.Math.Between(-5, 5));
+            this.move("devdiaries" + Phaser.Math.Between(0, this.tmpCounter), Phaser.Math.Between(-5, 5), Phaser.Math.Between(-5, 5));
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.cursor.right)) {
-            this.marco("devdiaries");
+            this.marco("devdiaries"+ Phaser.Math.Between(0, this.tmpCounter));
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.cursor.up)) {
-            this.showInfo("devdiaries");
+            this.showInfo("devdiaries"+ Phaser.Math.Between(0, this.tmpCounter));
         }
     }
 
@@ -244,9 +258,7 @@ export default class Game extends Phaser.Scene {
     }
 
     showResult () {
-
         this.add.bitmapText(this.center_width, 80, "mainFont", "Game Over:", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
-
 
        console.log("ScoreBoard: ", scoreBoard[0].name)
 
@@ -260,13 +272,30 @@ export default class Game extends Phaser.Scene {
     showInfo(playerName) {
         const player = this.allPlayers[playerName];
         const cell = this.scenario.findPlayerCell(player)
-        console.log("Sho player info:", cell.x, cell.y, player.name, player.side)
+        this.updateInfoPanel(`${player.name} x: ${cell.x}, y: ${cell.y}`)
     }
 
 
     updateScore (points = 0) {
-        const score = +this.registry.get("score") + points;
-        this.registry.set("score", score);
-        this.scoreText.setText(Number(score).toLocaleString());
+        const players = Object.values(this.allPlayers);
+        const zombiesCount = players.filter(player => player.side === "zombie").length;
+        this.zombiesCountText.setText("ZOMBIES: " + zombiesCount);
+        const humansCount = players.filter(player => player.side === "human" && !player.saved).length;
+        this.humansCountText.setText("HUMANS: " + humansCount);
+        const savedHumansCount = players.filter(player => player.side === "human" && player.saved).length;
+        this.savedHumansCountText.setText("SAVED: " + savedHumansCount);
+    }
+
+    updateInfoPanel (text) {
+        this.infoPanel.pop().destroy();
+        this.infoPanel.forEach((text, i) =>{ text.y += 32; })
+        const addedText = this.add.bitmapText(0, 64, "creep", text, 25).setDropShadow(1, 1, 0xFFD700, 0.7);
+        this.infoPanel.unshift(addedText);
+        console.log("Info: ", this.infoPanel)
+        this.tweens.add({
+            targets: this.infoPanel[0],
+            duration: 5000,
+            alpha: {from: 1 , to: 0},
+        })
     }
 }
