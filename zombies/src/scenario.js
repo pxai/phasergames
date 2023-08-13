@@ -63,12 +63,29 @@ export default class Scenario {
     }
 
     chopperInside (x, y) {
-        return this.map[y][x].chopperInside()
+        const adjacents = [
+            this._valid(y-1, x-1) ? this.map[y-1][x-1] : [],
+            this._valid(y-1, x) ? this.map[y-1][x] : [],
+            this._valid(y-1, x+1) ? this.map[y-1][x+1] : [],
+            this._valid(y, x-1) ? this.map[y][x-1] : [],
+            this._valid(y, x+1) ? this.map[y][x+1] : [],
+            this._valid(y+1, x-1) ? this.map[y+1][x-1] : [],
+            this._valid(y+1, x) ? this.map[y+1][x] : [],
+            this._valid(y+1, x+1) ? this.map[y+1][x+1] : [],
+            this.map[y][x]
+        ].flat()
+
+        console.log("Chopper:", adjacents, "chopper :", adjacents.some(tile => tile.chopperInside()))
+        return adjacents.some(tile => tile.chopperInside());
     }
 
     print() {
         for (let i = 0; i < this.rowCount;i++) {
             console.log(i, this.map[i].map(cell => cell.print()).join(""))
         }
+    }
+
+    _valid(y, x) {
+        return x >= 0 && x < this.columnCount && y >= 0 && y < this.rowCount;
     }
 }

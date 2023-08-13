@@ -45,45 +45,59 @@ export default class Chat {
         });
 
         this.client.on("chat", async (channel, user, message, self) => {
-            if (user.mod) {
-                // User is a mod.
-            }
-            let [command, x, y, speed, angle, size, shield, userInfo] = ["", "", "", "", "", "", "", ""];
-            console.log(`Chat> ${message}`);
-            const messageParts = message.toLowerCase().split(" ");
-            console.log("Received chat: ", channel, user, messageParts);
-            const username = user["display-name"];
-            switch (messageParts[0]) {
-            case "!hello":
-                this.sendAction(channel, `${username} just said hello`);
-                break;
-            case "!j":
-            case "!join":
-                console.log(this.scene.allPlayers.length, this.maxPlayers)
-                if (Object.values(this.scene.allPlayers).length < this.maxPlayers) {
-                    this.sendAction(channel, `${username} joins the battle!!!`);
-                    this.scene.addPlayer(user["display-name"]);
-                } else {
-                    this.sendAction(channel, `${username} tries to join the battle, but it's full`);
-                }
-
-                break;
-            case "!marco":
-                [command, userInfo] = messageParts;
-
-                this.sendAction(channel, `${username} requests marco ${userInfo}`);
-                this.scene.marco(username);
-                break;
-            case "!in":
-                [command] = messageParts;
-                this.sendAction(channel, `${username} requests info for ${userInfo}`);
-                this.scene.showInfo(username);
-                this.sendAction(channel, `${userInfo} has ${info}`);
-                break;
-            default:
-                break;
-            }
+            this.processMessage(channel, user["display-name"], message)
         });
+    }
+
+    processMessage(channel, username, message) {
+        let [command, speed, angle, size, shield, userInfo] = ["", "", "", "", "", ""];
+        console.log(`Chat> ${message}`);
+        const messageParts = message.toLowerCase().split(" ");
+        console.log("Received chat: ", channel, username, messageParts);
+
+        if (this.isMoveCommand(messageParts)) {
+            console.log("Its a move! ")
+            const x = +messageParts[0].substring(1);
+            const y = +messageParts[1];
+            this.scene.move(username,x, y );
+            return;
+        }
+
+        switch (messageParts[0]) {
+        case "!hello":
+            this.sendAction(channel, `${username} just said hello`);
+            break;
+        case "!j":
+        case "!join":
+            console.log(this.scene.allPlayers.length, this.maxPlayers)
+            if (Object.values(this.scene.allPlayers).length < this.maxPlayers) {
+                this.sendAction(channel, `${username} joins the battle!!!`);
+                this.scene.addPlayer(username);
+            } else {
+                this.sendAction(channel, `${username} tries to join the battle, but it's full`);
+            }
+
+            break;
+        case "!marco":
+            [command] = messageParts;
+
+            this.sendAction(channel, `${username} requests marco`);
+            this.scene.marco(username);
+            break;
+        case "!info":
+        case "!in":
+            [command] = messageParts;
+            this.sendAction(channel, `${username} requests info for himself`);
+            this.scene.showInfo(username);
+            this.sendAction(channel, `${userInfo} asked for info`);
+            break;
+        default:
+            break;
+        }
+    }
+
+    isMoveCommand(moveCommands) {
+        return this.isValidMove(moveCommands[0].substring(1)) && this.isValidMove(moveCommands[1])
     }
 
     sendAction (channel, msg) {
@@ -103,5 +117,9 @@ export default class Chat {
 
     isValidNumber (number) {
         return !isNaN(number) && number >= 0;
+    }
+
+    isValidMove (number) {
+        return !isNaN(number) && +number >= -5 && +number <= 5;
     }
 }

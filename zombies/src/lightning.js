@@ -1,11 +1,11 @@
 export default class Lightning {
     constructor(scene) {
         this.scene = scene;
-       // this.lightning();
+      // this.lightning();
     }
 
     lightning () {
-          this.scene.time.delayedCall(Phaser.Math.Between(10000, 20000), () => this.dewIt(), null, this);
+      this.scene.time.delayedCall(Phaser.Math.Between(20000, 30000), () => this.lightning(), null, this);
     }
 
     dewIt() {
