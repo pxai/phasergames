@@ -73,7 +73,7 @@ export default class Game extends Phaser.Scene {
         this.gameLayer = this.add.layer();
         this.coverLayer = this.add.layer();
         const {width, heigth} = this.maxPlayers < 500 ? {width: 800, heigth: 600} : {width: 1200, heigth: 800};
-        this.scenario = new Scenario(this.tileSize * 10, this.tileSize * 10)
+        this.scenario = new Scenario(this.tileSize * 33, this.tileSize * 25)
         this.addChopper();
         this.cover = this.add.rectangle(0, 0, this.width, this.height, this.backgroundColor).setOrigin(0);
         this.coverLayer.add(this.cover)
