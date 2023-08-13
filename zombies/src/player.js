@@ -25,6 +25,7 @@ class Player extends Phaser.GameObjects.Container {
 
         this.flashing = false;
         this.marcoUsed = false;
+        this.saved = false;
         this.dead = false;
         this.scene.events.on("update", this.update, this);
     }

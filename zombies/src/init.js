@@ -9,7 +9,7 @@ const width = +urlParams.get('width') || 1200;
 console.log("Final Width: ", width);
 
 const config = {
-    width,
+    width: 1200,
     height: 800,
     scale: {
         autoCenter: Phaser.Scale.CENTER_BOTH

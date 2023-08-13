@@ -38,13 +38,17 @@ export default class Scenario {
 
 
     move(player, x, y) {
-        const cell = this.map.flat().find(tile => tile.players.find(p => p.name === player.name));
+        const cell = this.findPlayerCell(player)
         const finalX = x + cell.x >= this.columnCount || x + cell.x < 0 ? this.columnCount - 1 : (x + cell.x);
         const finalY = y + cell.y >= this.rowCount || y + cell.y < 0 ? this.rowCount - 1 : (y + cell.y);
         cell.removePlayer(player);
         this.map[finalY][finalY].addPlayer(player);
 
         return {movedX: finalX, movedY: finalY}
+    }
+
+    findPlayerCell(player) {
+        return this.map.flat().find(tile => tile.players.find(p => p.name === player.name));
     }
 
     _getSlot() {

@@ -74,6 +74,12 @@ export default class Chat {
                 this.sendAction(channel, `${username} requests marco ${userInfo}`);
                 this.scene.marco(username);
                 break;
+            case "!in":
+                [command] = messageParts;
+                this.sendAction(channel, `${username} requests info for ${userInfo}`);
+                this.scene.showInfo(username);
+                this.sendAction(channel, `${userInfo} has ${info}`);
+                break;
             default:
                 break;
             }

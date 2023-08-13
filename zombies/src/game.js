@@ -2,6 +2,8 @@ import Player from "./player";
 import Chat from "./chat";
 import Scenario from "./scenario";
 import Chopper from "./chopper";
+import Weather from "./weather";
+import Lightning from "./lightning";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -35,7 +37,7 @@ export default class Game extends Phaser.Scene {
         this.cameras.main.setBackgroundColor(+this.backgroundColor);
         this.allPlayers = {};
         this.addChat();
-        //this.loadAudios();
+        this.loadAudios();
         this.cursor = this.input.keyboard.createCursorKeys();
         this.loadGame();
     }
@@ -47,7 +49,8 @@ export default class Game extends Phaser.Scene {
     loadGame () {
         this.addMap();
         this.addUI();
-
+        new Weather(this, "rain");
+        this.setLightning();
         // this.playMusic();
     }
 
@@ -55,13 +58,18 @@ export default class Game extends Phaser.Scene {
         this.add.bitmapText(0, 0, "creep", "Zombie Night", 40).setOrigin(0,0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
         this.add.bitmapText(225, 0, "mainFont", "!join", 15).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
         this.add.bitmapText(280, 0, "mainFont", "!x y", 15).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
-        this.add.bitmapText(330, 0, "mainFont", "!marco", 15).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
+        this.add.bitmapText(330, 0, "mainFont", "!info", 15).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
+        this.add.bitmapText(380, 0, "mainFont", "!marco", 15).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
     }
 
     addMap () {
+        this.gameLayer = this.add.layer();
+        this.coverLayer = this.add.layer();
         const {width, heigth} = this.maxPlayers < 500 ? {width: 800, heigth: 600} : {width: 1200, heigth: 800};
         this.scenario = new Scenario(this.tileSize * 10, this.tileSize * 10)
         this.addChopper();
+        this.cover = this.add.rectangle(0, 0, this.width, this.height, this.backgroundColor).setOrigin(0);
+        this.coverLayer.add(this.cover)
     }
 
 
@@ -70,9 +78,11 @@ export default class Game extends Phaser.Scene {
         const {x, y} = this.scenario.addChopper(this.chopper)
         this.chopper.x = x * this.tileSize;
         this.chopper.y = y * this.tileSize;
+        this.gameLayer.add(this.chopper)
     }
 
     addPlayer (name) {
+        if (this.allPlayers[name]) return;
         const player = this.chooseSide(name);
     }
 
@@ -88,7 +98,7 @@ export default class Game extends Phaser.Scene {
         console.log("Player added: ", player)
         this.sideFlip = !this.sideFlip;
         this.scenario.print();
-
+        this.gameLayer.add(player)
         return player;
     }
 
@@ -96,7 +106,7 @@ export default class Game extends Phaser.Scene {
     move (playerName, x, y) {
         const player = this.allPlayers[playerName];
         if (player instanceof Player === false) return;
-        if (player.dead) return;
+        if (player.dead || player.saved) return;
 
         if (this.isValidXNumber(x) && this.isValidYNumber(y)) {
             const {movedX, movedY} = this.scenario.move(player, x, y)
@@ -105,6 +115,11 @@ export default class Game extends Phaser.Scene {
             if (this.scenario.zombieInside(movedX, movedY)) {
                 console.log("Zombie inside, player dies")
                 player.die();
+            }
+
+            if (this.scenario.chopperInside(movedX, movedY)) {
+                console.log("Chopper inside, player is saved!")
+                player.saved = true;
             }
         } else {
             this.chat.say(`Player ${playerName} invalid attack values. Use speed: 0-100, angle: 0-360!`);
@@ -118,7 +133,23 @@ export default class Game extends Phaser.Scene {
 
         player.marcoUsed = true;
         console.log("Marco!")
+        this.tweens.add({
+            targets: this.cover,
+            alpha: {from: 0, to: 1},
+            duration: 3000
+        })
+        this.lightning.dewIt();
     }
+
+    setLightning () {
+        this.lightsOut = this.add.rectangle(0, 0, this.width + 200, this.height + 500, 0x0).setOrigin(0).setScrollFactor(0)
+        this.lightsOut.setAlpha(0);
+        this.lightningEffect = this.add.rectangle(0, 0, this.width + 200, this.height + 500, 0xffffff).setOrigin(0).setScrollFactor(0)
+        this.lightningEffect.setAlpha(0);
+        this.lightning = new Lightning(this);
+        this.gameLayer.add(this.lightsOut);
+        this.gameLayer.add(this.lightningEffect);
+      }
 
     isValidXNumber(number) {
         return this.isValidNumber(number) && Math.abs(+number) >= 0 && Math.abs(+number)  <= 5;
@@ -144,13 +175,22 @@ export default class Game extends Phaser.Scene {
 
     loadAudios () {
         this.audios = {
-            win: this.sound.add("win")
+          "thunder0": this.sound.add("thunder0"),
+          "thunder1": this.sound.add("thunder1"),
+          "thunder2": this.sound.add("thunder2"),
+          "thunder3": this.sound.add("thunder3"),
         };
-    }
+      }
 
-    playAudio (key) {
+      playAudio(key) {
         this.audios[key].play();
-    }
+      }
+
+      playAudioRandomly(key) {
+        const volume = Phaser.Math.Between(0.8, 1);
+        const rate = Phaser.Math.Between(0.8, 1);
+        this.audios[key].play({volume, rate});
+      }
 
     playRandom(key) {
         this.audios[key].play({
@@ -186,6 +226,10 @@ export default class Game extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.cursor.right)) {
             this.marco("devdiaries");
         }
+
+        if (Phaser.Input.Keyboard.JustDown(this.cursor.up)) {
+            this.showInfo("devdiaries");
+        }
     }
 
     checkGameOver () {
@@ -211,6 +255,12 @@ export default class Game extends Phaser.Scene {
        this.restart.on('pointerdown', () => {
             this.scene.start("splash")
         })
+    }
+
+    showInfo(playerName) {
+        const player = this.allPlayers[playerName];
+        const cell = this.scenario.findPlayerCell(player)
+        console.log("Sho player info:", cell.x, cell.y, player.name, player.side)
     }
 
 
