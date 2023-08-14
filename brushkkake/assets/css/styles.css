@@ -1,0 +1,134 @@
+/* Apply a flex container to the <body> to center its children */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensure the container takes at least the full viewport height */
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #37b6ff;
+    font-family: 'Adumu';
+    letter-spacing: 1px;
+}
+
+@font-face {
+    font-family: 'Adumu';
+    src: url('../fonts/Adumu.woff2') format('woff2'),
+        url('../fonts/Adumu.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+.title {
+    font-size: 3em;
+    color: #820333;
+    font-family: 'Adumu', cursive,Verdana, Geneva, Tahoma, sans-serif, sans-serif;
+    text-align: center;
+}
+
+.subtitle {
+    font-size: 2em;
+    color: #820333;
+    font-family: 'Adumu', cursive,Verdana, Geneva, Tahoma, sans-serif, sans-serif;
+    text-align: center;
+}
+
+h1, h2 {
+    color: #c9bf27;
+    font-family: 'Adumu', cursive,Verdana, Geneva, Tahoma, sans-serif, sans-serif;
+    text-align: center;
+}
+
+/* Create a two-column layout using flex */
+.container {
+    display: flex;
+    align-items: center;
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Style the left column for the logo */
+.logo {
+    flex: 2;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Center the form in the right column */
+.form-container {
+    flex: 2;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #c9bf27;
+    background-color: rgb(84, 0, 50, 0.2);
+}
+
+/* Add some spacing between form elements */
+.form-container > * {
+    margin-bottom: 10px;
+}
+label {
+    color: #c9bf27;
+}
+/* Style form elements */
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+}
+
+input[type="submit"] {
+    background-color:rgb(14, 77, 138);
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-family: 'Adumu';
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color:#820333;
+}
+
+a {
+    color:rgb(14, 77, 138);
+}
+
+.list-row {
+    display: none;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+
+}
+
+.list {
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: rgb(143, 20, 31)
+}
+
+.list-item {
+    margin: 5px 0;
+    color: rgb(239, 143, 151);
+}
+
+footer {
+    clear: both;
+    text-align: center;
+}

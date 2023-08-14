@@ -1,0 +1,196 @@
+import Player from "./player";
+import Chat from "./chat";
+
+export default class Game extends Phaser.Scene {
+    constructor () {
+        super({ key: "game" });
+        this.player = null;
+        this.score = 0;
+        this.scoreText = null;
+    }
+
+    init (data) {
+        this.name = data.name;
+        this.number = Phaser.Math.RND.pick([0, 1, 2, 3])
+    }
+
+    preload () {
+        const urlParams = new URLSearchParams(window.location.search);
+        let param = urlParams.get('background') || "#00b140";
+        param = parseInt(param.substring(1), 16)
+        this.backgroundColor = '0x' + param.toString(16)
+
+        this.maxPlayers = urlParams.get('maxPlayers') || 100;
+        this.sideFlip = false;
+
+        this.maxSize = +urlParams.get('maxSize') || 5;
+    }
+
+    create () {
+        this.width = this.sys.game.config.width;
+        this.height = this.sys.game.config.height;
+        this.center_width = this.width / 2;
+        this.center_height = this.height / 2;
+        this.cameras.main.setBackgroundColor(+this.backgroundColor);
+        this.allPlayers = {};
+        this.infoPanel = Array(6).fill(this.add.bitmapText(0, 0, "mainFont", "", 0));
+        this.addChat();
+        this.loadAudios();
+        this.cursor = this.input.keyboard.createCursorKeys();
+        this.loadGame();
+        this.tmpCounter = 0;
+
+        this.stopThisShit = false;
+    }
+
+    addChat () {
+        this.chat = new Chat(this);
+    }
+
+    loadGame () {
+        this.addUI();
+        // this.playMusic();
+    }
+
+    addUI () {
+        this.add.bitmapText(0, 0, "mainFont", "Brushkkake", 40).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
+        this.add.bitmapText(280, 0, "mainFont", "!x y color", 15).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
+        this.add.rectangle(0, 0, this.width, this.height - 20, 0xffffff).setOrigin(0)
+    }
+
+    addPlayer (name) {
+        if (this.allPlayers[name]) return this.allPlayers[name];
+        const player = new Player(name);
+
+        this.allPlayers[name] = player;
+        this.updateInfoPanel(`${player.name} joins the game`)
+        this.chat.say(`Player ${name} joins game!`);
+        console.log("Player added: ", player)
+
+        return this.player;
+    }
+
+
+    paint (playerName, x, y, color = "#000000", size = 4) {
+        console.log(`Try Painting 0 to ${x} ${y} ${color}`)
+        if (this.stopThisShit) return;
+        console.log(`Try Painting 1 o ${x} ${y} ${color}`)
+        const player = this.addPlayer(playerName);
+        console.log(`Try Painting 2 o ${player}`)
+        if (!player) return;
+        console.log(`Try Painting 3 ${player.name}to ${this.isValidXNumber(x)} ${this.isValidYNumber(y)} ${this.isValidColor(color)}`)
+        if (this.isValidXNumber(x) && this.isValidYNumber(y) && this.isValidColor(color) && this.isValidSize(size)) {
+            this.add.circle(x, y, size, this.rgbtoHex(color));
+            console.log(`Painting ${player.name}to ${x} ${y} ${color}`)
+        } else {
+            this.chat.say(`Player ${playerName} invalid attack values. Use speed: 0-100, angle: 0-360!`);
+        }
+    }
+
+    isValidXNumber(number) {
+        return this.isValidNumber(number) && Math.abs(+number) >= 0 && Math.abs(+number)  <= this.width;
+    }
+
+    isValidYNumber(number) {
+        return this.isValidNumber(number) && Math.abs(+number)  >= 0 && Math.abs(+number)  <= this.height;
+    }
+
+    isValidSize(number) {
+        return this.isValidNumber(number) && Math.abs(+number)  >= 1 && Math.abs(+number)  <= this.maxSize;
+    }
+
+    isValidColor(color) {
+        console.log("CSS supports color: ", "color", CSS.supports(color))
+        return CSS.supports("color", color)
+    }
+
+    rgbtoHex(color) {
+        return parseInt(color.substring(1), 16);
+    }
+
+    isValidNumber (number) {
+        return !isNaN(number);
+    }
+
+
+    loadAudios () {
+        this.audios = {
+        };
+      }
+
+      playAudio(key) {
+        this.audios[key].play();
+      }
+
+      playAudioRandomly(key) {
+        const volume = Phaser.Math.Between(0.8, 1);
+        const rate = Phaser.Math.Between(0.8, 1);
+        this.audios[key].play({volume, rate});
+      }
+
+    playRandom(key) {
+        this.audios[key].play({
+          rate: Phaser.Math.Between(1, 1.5),
+          detune: Phaser.Math.Between(-1000, 1000),
+          delay: 0
+        });
+      }
+
+    playMusic (theme = "game") {
+        this.theme = this.sound.add(theme);
+        this.theme.stop();
+        this.theme.play({
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+        });
+    }
+
+    update () {
+        if (Phaser.Input.Keyboard.JustDown(this.cursor.down)) {
+            this.paint("devdiaries", Phaser.Math.Between(0, this.height), Phaser.Math.Between(0, this.height));
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.cursor.left)) {
+            console.log("Dale")
+            this.paint("devdiaries", Phaser.Math.Between(0, this.height), Phaser.Math.Between(0, this.height));
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.cursor.right)) {
+            this.paint("devdiaries", Phaser.Math.Between(0, this.height), Phaser.Math.Between(0, this.height));
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.cursor.up)) {
+            this.paint("devdiaries", Phaser.Math.Between(0, this.height), Phaser.Math.Between(0, this.height));
+        }
+    }
+
+    showResult () {
+        this.add.bitmapText(this.center_width, 80, "mainFont", "Game Over:", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
+
+       console.log("ScoreBoard: ", scoreBoard[0].name)
+
+       this.restart = this.add.bitmapText(this.center_width, this.height - 100, "mainFont", "CLICK TO RESTART", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
+       this.restart.setInteractive();
+       this.restart.on('pointerdown', () => {
+            this.scene.start("splash")
+        })
+    }
+
+    updateInfoPanel (text) {
+        this.infoPanel.pop().destroy();
+        this.infoPanel.forEach((text, i) =>{ text.y += 32; })
+        const addedText = this.add.bitmapText(0, 64, "mainFont", text, 25).setDropShadow(1, 1, 0xFFD700, 0.7);
+        this.infoPanel.unshift(addedText);
+        console.log("Info: ", this.infoPanel)
+        this.tweens.add({
+            targets: this.infoPanel[0],
+            duration: 5000,
+            alpha: {from: 1 , to: 0},
+        })
+    }
+}

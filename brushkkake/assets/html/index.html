@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Staatliches&display=swap" rel="stylesheet">
+  <meta name="author" content="Pello Altadill">
+  <title>Brushkkake: a twitch game by Pello Altadill</title>
+</head>
+<body>
+
+  <div class="container">
+    <div class="logo">
+        <img src="assets/images/logo.png" alt="Logo" width="300">
+        <div class="title">Brushkkake</div>
+        <div class="subtitle">Twitch Game</div>
+    </div>
+    <div class="form-container">
+        <header>
+          <h1>OPTIONS</h1>
+        </header>
+        <form action="game.html">
+            <div><label for="channel">Channel</label></div>
+            <div><input type="text" name="channel" id="channel" value="devdiaries"></div>
+            <div><label for="background">Background Color</label></div>
+            <div><input type="color" name="background" id="background", value = '#00b140'></div>
+            <div><label for="maxSize">Max brush size</label></div>
+            <div><input type="number" name="maxSize" id="maxSize" value="5"></div>
+            <div><label for="width">Canvas Width</label></div>
+            <div><input type="number" name="width" id="width" value="250" disabled></div>
+            <div><label for="height">Canvas Height</label></div>
+            <div><input type="number" name="Height" id="height" value="400" disabled></div>
+            <br >
+            <div><input type="submit", value = 'START PAINTING'></div>
+        </form>
+        <footer>
+          <p><b>!x y html_color size</p></p>
+          <a href="javascript:toggleList()" id="">By Pello Altadill</a>
+        </footer>
+    </div>
+  </div>
+  
+
+</body>
+</html>
