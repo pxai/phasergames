@@ -31,19 +31,48 @@
             <div><label for="maxSize">Max brush size</label></div>
             <div><input type="number" name="maxSize" id="maxSize" value="5"></div>
             <div><label for="width">Canvas Width</label></div>
-            <div><input type="number" name="width" id="width" value="250" disabled></div>
+            <div><input type="number" name="width" id="width" value="300"></div>
             <div><label for="height">Canvas Height</label></div>
-            <div><input type="number" name="Height" id="height" value="400" disabled></div>
+            <div><input type="number" name="height" id="height" value="300"></div>
             <br >
+            <div id="listBlock">
+              <div class="list">
+                  <h2>Other options</h2>
+                  <div><label for="canvasColor">Canvas Color</label></div>
+                  <div><input type="color" name="canvasColor" id="canvasColor", value = '#ffffff'></div>
+                  <div><label for="mode">Mode</label></div>
+                  <div>
+                    <select name="mode" id="mode" multtiple>
+                      <option value="round" selected>Default</option>
+                      <option value="pixelArt">PixelArt</option>
+                    </select>
+                  </div>
+                  <div><label for="pixelArtSize">Pixel Art Pixel Size</label></div>
+                  <div><input type="number" name="pixelArtSize" id="pixelArtSize" value="5"></div>
+              </div>
+            </div>
             <div><input type="submit", value = 'START PAINTING'></div>
         </form>
         <footer>
           <p><b>!x y html_color size</p></p>
-          <a href="javascript:toggleList()" id="">By Pello Altadill</a>
+          <div><a href="javascript:toggleList()" id="">Show Advanced options</a></div>
+          <div>By Pello</div>
+          <div>
+            <div><small>Juego dedicado con cariño al gran Loulogio</small></div>
+            <img src="assets/images/lou.png" alt="Juego dedicado con cariño al gran Loulogio"  title="Juego dedicado con cariño al gran Loulogio" width="300">
+            <div><small>Mad Max Fury Road, obra maestra.</small></div>
+          </div>
         </footer>
     </div>
   </div>
-  
+  <script>
+    const listBlock = document.getElementById('listBlock');
+
+    function toggleList() {
+        listBlock.style.display = listBlock.style.display === 'none'|| listBlock.style.display !== 'flex' ? 'flex' : 'none';
+    }
+
+</script>
 
 </body>
 </html>

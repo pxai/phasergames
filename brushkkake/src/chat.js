@@ -67,7 +67,7 @@ export default class Chat {
     }
 
     isMoveCommand(moveCommands) {
-        return this.isValidMove(moveCommands[0].substring(1)) && this.isValidMove(moveCommands[1])
+        return this.isValidNumber(moveCommands[0].substring(1)) && this.isValidNumber(moveCommands[1])
     }
 
     sendAction (channel, msg) {

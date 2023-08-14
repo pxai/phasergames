@@ -6,7 +6,7 @@ import Game from "./game";
 const urlParams = new URLSearchParams(window.location.search);
 
 const width = +urlParams.get('width') || 300;
-const height = (+urlParams.get('width') || 200) + 20;
+const height = (+urlParams.get('height') || 200) + 20;
 console.log("Final Width: ", width);
 console.log("Final height: ", height);
 

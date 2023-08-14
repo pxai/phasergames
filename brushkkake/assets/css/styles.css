@@ -76,7 +76,7 @@ label {
     color: #c9bf27;
 }
 /* Style form elements */
-input, textarea {
+input, textarea, select {
     width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
@@ -105,6 +105,10 @@ a {
     color:rgb(14, 77, 138);
 }
 
+#listBlock {
+    display: none;
+}
+
 .list-row {
     display: none;
     justify-content: center;
@@ -120,7 +124,7 @@ a {
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background-color: rgb(143, 20, 31)
+    background-color: rgb(84, 0, 50, 0.2);
 }
 
 .list-item {

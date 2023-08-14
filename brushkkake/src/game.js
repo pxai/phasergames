@@ -24,6 +24,12 @@ export default class Game extends Phaser.Scene {
         this.sideFlip = false;
 
         this.maxSize = +urlParams.get('maxSize') || 5;
+        this.pixelArtSize = +urlParams.get('pixelArtSize') || 5;
+        this.mode = urlParams.get('mode');
+        let canvasColor = urlParams.get('canvasColor') || "##ffffff";
+        this.canvasColor = parseInt(canvasColor.substring(1), 16)
+        this.backgroundColor = '0x' + param.toString(16)
+        this.canvasPadding = 30;
     }
 
     create () {
@@ -53,9 +59,11 @@ export default class Game extends Phaser.Scene {
     }
 
     addUI () {
-        this.add.bitmapText(0, 0, "mainFont", "Brushkkake", 40).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
-        this.add.bitmapText(280, 0, "mainFont", "!x y color", 15).setOrigin(0).setTint(0xFFD700).setDropShadow(1, 1, 0xFFD700, 0.7);
-        this.add.rectangle(0, 0, this.width, this.height - 20, 0xffffff).setOrigin(0)
+
+        this.add.rectangle(0, this.canvasPadding, this.width, this.height, this.canvasColor).setOrigin(0)
+        this.add.bitmapText(0, 0, "mainFont", "Brushkkake", 20).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
+        this.add.bitmapText(130, 10, "mainFont", `${this.width}x${this.height - 20}`, 12).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
+        this.add.bitmapText(210, 10, "mainFont", "!x y color size", 12).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
     }
 
     addPlayer (name) {
@@ -63,7 +71,6 @@ export default class Game extends Phaser.Scene {
         const player = new Player(name);
 
         this.allPlayers[name] = player;
-        this.updateInfoPanel(`${player.name} joins the game`)
         this.chat.say(`Player ${name} joins game!`);
         console.log("Player added: ", player)
 
@@ -72,16 +79,18 @@ export default class Game extends Phaser.Scene {
 
 
     paint (playerName, x, y, color = "#000000", size = 4) {
-        console.log(`Try Painting 0 to ${x} ${y} ${color}`)
         if (this.stopThisShit) return;
-        console.log(`Try Painting 1 o ${x} ${y} ${color}`)
         const player = this.addPlayer(playerName);
-        console.log(`Try Painting 2 o ${player}`)
         if (!player) return;
-        console.log(`Try Painting 3 ${player.name}to ${this.isValidXNumber(x)} ${this.isValidYNumber(y)} ${this.isValidColor(color)}`)
+
         if (this.isValidXNumber(x) && this.isValidYNumber(y) && this.isValidColor(color) && this.isValidSize(size)) {
-            this.add.circle(x, y, size, this.rgbtoHex(color));
-            console.log(`Painting ${player.name}to ${x} ${y} ${color}`)
+            if (this.mode === "pixelArt") {
+                this.add.rectangle(x, y + this.canvasPadding, this.pixelArtSize, this.pixelArtSize, this.rgbtoHex(color));
+            } else {
+                this.add.circle(x, y + this.canvasPadding, size, this.rgbtoHex(color));
+            }
+
+            console.log(`Painting ${player.name}to ${x} ${y} ${color} mode: ${this.mode}`)
         } else {
             this.chat.say(`Player ${playerName} invalid attack values. Use speed: 0-100, angle: 0-360!`);
         }
