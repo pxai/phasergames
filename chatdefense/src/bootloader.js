@@ -60,9 +60,7 @@ export default class Bootloader extends Phaser.Scene {
 
         this.load.image("map", "assets/maps/map.png");
 
-        Array(4).fill(0).forEach((_, i) => {
-            this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`);
-        });
+        this.load.tilemapTiledJSON(`scene0`, `assets/maps/scene0.json`);
 
         this.registry.set("score", 0);
         this.registry.set("coins", 0);
