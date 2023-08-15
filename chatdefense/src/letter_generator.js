@@ -17,6 +17,7 @@ export default class LetterGenerator {
                 //this.scene.playAudio("spawn");
                 // new StarBurst(this.scene, letter.x, letter.y, "0xffffff", true, false)
                 this.scene.letters.add(letter);
+                this.scene.gameLayer.add(letter);
                 //this.scene.updateLetterCount();
                 //this.scene.checkGameOver();
             },

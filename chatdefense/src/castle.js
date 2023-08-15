@@ -11,9 +11,8 @@ class Castle extends Phaser.GameObjects.Container {
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
-        this.sprite = this.scene.add.sprite(0, 0, "foe");
+        this.sprite = this.scene.add.sprite(-96, -64, "castle");
         this.sprite.setOrigin(0);
-        this.sprite.setTint(Math.random() * 0xffffff);
         this.add(this.sprite);
 
         this.nameText = this.scene.add.bitmapText(16, 40, "mainFont", this.name, 10).setOrigin(0.5).setTint(0xffffff).setDropShadow(1, 1, 0x75b947, 0.7);

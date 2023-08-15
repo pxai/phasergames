@@ -5,6 +5,7 @@ import Word from "./word";
 import LetterGenerator from "./letter_generator";
 import { Dust, Explosion } from "./particle";
 import letterValues from "./letters";
+import Letter from "./letter";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -44,7 +45,9 @@ export default class Game extends Phaser.Scene {
         this.cursor = this.input.keyboard.createCursorKeys();
         this.allPlayers = {}
         this.loadGame()
+        this.gameLayer = this.add.layer();
         this.letterGenerator = new LetterGenerator(this);
+        this.cursor = this.input.keyboard.createCursorKeys();
 
     }
 
@@ -120,6 +123,8 @@ export default class Game extends Phaser.Scene {
       }
 
     addPlayer (name) {
+        if (this.allPlayers[name]) return this.allPlayers[name];
+
         const player = new Player(this, name);
         console.log("Player added: ", player, this.allPlayers)
         this.allPlayers[name] = player;
@@ -170,12 +175,6 @@ export default class Game extends Phaser.Scene {
 
     loadAudios () {
         this.audios = {
-            fireball: this.sound.add("fireball"),
-            step: this.sound.add("step"),
-            death: this.sound.add("death"),
-            boom: this.sound.add("boom"),
-            fireball: this.sound.add("fireball"),
-            win: this.sound.add("win")
         };
     }
 
@@ -206,8 +205,8 @@ export default class Game extends Phaser.Scene {
     }
 
     update () {
-        if (Phaser.Input.Keyboard.JustDown(this.cursor.up)) {
-            this.attack("devdiaries", Phaser.Math.Between(0, 100), Phaser.Math.Between(0, 360));
+        if (Phaser.Input.Keyboard.JustDown(this.cursor.down)) {
+            this.showResult();
         }
     }
 
@@ -220,10 +219,13 @@ export default class Game extends Phaser.Scene {
 
         if (this.word.isValid(playerWord) && this.solvesWithCurrent(playerWord)) {
             const score = this.calculateScore(playerWord);
+            this.destroySolvedLetters(playerWord);
+            this.writeProposedText(playerWord);
+
             player.score += score;
             this.updateInfoPanel(`${playerName}, solved with ${playerWord}, ${score}pts`);
             console.log("Player", playerName, "guess", playerWord);
-            this.destroySolvedLetters(playerWord);
+
         }
     }
 
@@ -268,32 +270,64 @@ export default class Game extends Phaser.Scene {
 
     showResult () {
         const scoreBoard = this.createScoreBoard()
-        //this.scoreRectangle = this.add.rectangle(0, 0, this.width, this.height, this.foregroundColor, 0.9).setOrigin(0, 0);
 
         if (this.scores) {
             this.scores.destroy(true);
         }
         this.scores = this.add.group();
 
-        let previousName = "";
-        let previousPosition = 0;
+        this.add.rectangle(0, 0, 300, this.height, 0x000000).setAlpha(0.5).setOrigin(0);
+        this.add.bitmapText(10, 8, "mainFont", "ChatDefense", 30).setOrigin(0).setTint(0xffffff).setTint(this.foregroundColor).setDropShadow(1, 1, 0xffffff, 0.7);
 
+        this.add.bitmapText(10, 32, "mainFont", "Scoreboard", 25).setOrigin(0).setTint(0xffffff).setTint(this.foregroundColor).setDropShadow(1, 1, 0xffffff, 0.7);
         scoreBoard.slice(0, 10).forEach((player, i) => {
              const winnerText = `${i+1}. ${player.name}: ${player.score}.`;
-             const x = !previousName ? 8 : previousPosition + (previousName.width * 8) + 16;
-             const size = i === 0 ? 20 : 15;
-             this.scores.add(this.add.bitmapText(10, x, "mainFont", winnerText, size).setOrigin(0).setTint(0x000000).setTint(this.foregroundColor).setDropShadow(1, 1, 0xffffff, 0.7));
-             previousName = winnerText;
-             previousPosition = x;
+             this.scores.add(this.add.bitmapText(10, 100 + (i * 32), "mainFont", winnerText, 20).setOrigin(0).setTint(0xffffff).setTint(this.foregroundColor).setDropShadow(1, 1, 0xffffff, 0.7));
         })
 
 
-       console.log("ScoreBoard: ", scoreBoard)
+        this.reloadText = this.add.bitmapText(64, this.height - 32, "mainFont", "RESTART", 30);
+        this.reloadText.setInteractive();
+        this.reloadText.on('pointerdown', () => {
+            window.location.reload();
+        });
+
+        this.reloadText.on('pointerover', () => {
+            this.reloadText.setTint(0x00ff00)
+        });
+
+        this.reloadText.on('pointerout', () => {
+            this.reloadText.clearTint()
+        });
+
+    }
+
+    writeProposedText (text) {
+        if (text === "" && this.proposedText) {
+            this.proposedText.destroy();
+        }
+
+
+        if (this.proposedText) {
+            this.proposedText.destroy();
+        }
+
+        if (!text) return;
+        console.log("Writing proposed text: ", text)
+        this.proposedText = new Letter(this, 200, 32, { letter: text.slice(0,1), points: this.getPointsForLetter(text.slice(0,1))}, true)
+
+        text.substring(1).split("").forEach((letter, i) => {
+            this.proposedText.addLetters([{ letter, points: this.getPointsForLetter(letter)}])
+        });
+
+        this.time.delayedCall(2000, () => {
+            this.proposedText.destroy();
+        }, null, this)
     }
 
 
     createScoreBoard () {
-        return [...Object.values(this.allPlayers)].sort((player1, player2) => player2.points - player1.points);
+        return [...Object.values(this.allPlayers)].sort((player1, player2) => player2.score - player1.score);
     }
 
     updateInfoPanel (text) {

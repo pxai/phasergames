@@ -1,6 +1,6 @@
 import LETTERS from "./letters";
 import EasyStar from "easystarjs";
-import { Dust } from "./particle";
+import { Dust, Explosion } from "./particle";
 
 export default class Letter extends Phaser.GameObjects.Container {
     constructor (scene, x, y, letter = "", demo = false) {
@@ -10,13 +10,14 @@ export default class Letter extends Phaser.GameObjects.Container {
         this.scene = scene;
         this.letter = letter;
         this.sticky = false;
+        this.demo = demo;
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
 
 
-        this.add(new SingleLetter(this.scene, 0, 0, this.letter))
+        this.add(new SingleLetter(this.scene, 0, 0, this.letter, this.demo))
         this.letterLength = 1;
         this.change = 0;
         this.body.setSize(32, 32)
@@ -25,7 +26,8 @@ export default class Letter extends Phaser.GameObjects.Container {
         this.easystar = new EasyStar.js();
         this.easystar.setGrid(this.scene.grid);
         this.easystar.setAcceptableTiles([0]);
-        this.launchMove();
+        if (!this.demo)
+            this.launchMove();
     }
 
     get length () {
@@ -38,7 +40,7 @@ export default class Letter extends Phaser.GameObjects.Container {
 
     addLetters(letters) {
         letters.forEach((letter, i) => {
-            this.add(new SingleLetter(this.scene, 42 * this.letterLength, 0, letter))
+            this.add(new SingleLetter(this.scene, 42 * this.letterLength, 0, letter, this.demo))
             this.letterLength++;
         })
 
@@ -141,16 +143,22 @@ export default class Letter extends Phaser.GameObjects.Container {
             });
         }
     }
+
+    // destroy() {
+    //     this.iterate(child => new Explosion(this.scene, child.x, child.y + 32, 1, 0.5));
+    //     super.destroy();
+    // }
 }
 
 export class SingleLetter extends Phaser.GameObjects.Container {
-    constructor (scene, x, y, letter = "") {
+    constructor (scene, x, y, letter = "", demo = false) {
         super(scene, x, y);
         this.x = x;
         this.y = y;
         this.scene = scene;
         this.letter = letter;
         this.name = "SingleLetter";
+        this.demo = demo;
 
         this.squareBack = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, 32, 32, 0xcccccc).setOrigin(0.5);
         //this.squareBack.setScale(0.8)
@@ -165,6 +173,10 @@ export class SingleLetter extends Phaser.GameObjects.Container {
         this.letterPoints = new Phaser.GameObjects.BitmapText(this.scene, 0, 8, "mainFont", this.letter['points'], 8).setTint(0x000000).setOrigin(0.5);
         this.add(this.letterPoints);
 
+        if (!this.demo) this.init();
+    }
+
+    init () {
         this.scene.tweens.add({
             targets: this,
             yoyo: true,
