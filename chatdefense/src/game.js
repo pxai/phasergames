@@ -89,12 +89,10 @@ export default class Game extends Phaser.Scene {
 
         this.objectsLayer.objects.forEach(object => {
             if (object.name === "castle") {
-                console.log("Adding castle at: ", object.x, object.y);
                 this.castle = new Castle(this, object.x, object.y);
             }
 
             if (object.name === "start") {
-                console.log("Adding start at: ", object.x, object.y);
                 this.spawnPoint = { x: object.x, y: object.y };
             }
         });
@@ -126,7 +124,6 @@ export default class Game extends Phaser.Scene {
         if (this.allPlayers[name]) return this.allPlayers[name];
 
         const player = new Player(this, name);
-        console.log("Player added: ", player, this.allPlayers)
         this.allPlayers[name] = player;
         this.chat.say(`Player ${name} joins game!`);
         this.updateInfoPanel(`Player ${name} joins game!`);
@@ -138,7 +135,6 @@ export default class Game extends Phaser.Scene {
     }
 
     hitCastle (letter, castle) {
-        console.log("Hit castle by", letter, letter.letter.points)
         letter.destroy();
         this.cameras.main.shake(100, 0.01);
         new Explosion(this, letter.x, letter.y);
@@ -205,14 +201,12 @@ export default class Game extends Phaser.Scene {
     }
 
     update () {
-        if (Phaser.Input.Keyboard.JustDown(this.cursor.down)) {
-            this.showResult();
-        }
+        // if (Phaser.Input.Keyboard.JustDown(this.cursor.down)) {
+        //     this.showResult();
+        // }
     }
 
     guess (playerName, playerWord) {
-        console.log("Game> try guess: ", playerName, playerWord)
-
         const player = this.addPlayer(playerName);
 
         console.log("Game> try guess ", playerWord, ", isValid ", !this.word.isValid(playerWord) , " is current: ", this.currentLetters(), " solves? ", this.solvesWithCurrent(playerWord));
@@ -224,7 +218,6 @@ export default class Game extends Phaser.Scene {
 
             player.score += score;
             this.updateInfoPanel(`${playerName}, solved with ${playerWord}, ${score}pts`);
-            console.log("Player", playerName, "guess", playerWord);
 
         }
     }
@@ -232,9 +225,7 @@ export default class Game extends Phaser.Scene {
     destroySolvedLetters(playerWord) {
         playerWord.split("").forEach(playerLetter => {
             this.letters.children.entries.filter(letter => letter.active).forEach(letter => {
-                console.log("Checking letter: ", playerLetter, playerLetter === letter.letter.letter)
                 if (playerLetter === letter.letter.letter) {
-                    console.log("Destroying letter: ", letter.letter.letter)
                     letter.destroy();
                     new Explosion(this, letter.x, letter.y);
                 }
@@ -244,7 +235,6 @@ export default class Game extends Phaser.Scene {
 
     calculateScore (playerWord) {
         const points = this.calculateWordPoints(playerWord);
-        console.log("Game> calculateScore: ", playerWord, playerWord.length, points)
         return playerWord.length + points;
     }
 
@@ -262,8 +252,6 @@ export default class Game extends Phaser.Scene {
 
     checkGameOver () {
         this.gameOver = true;
-        console.log("GAME OVER!", this.allPlayers, Object.values(this.allPlayers));
-
         this.showResult();
     }
 
@@ -313,7 +301,7 @@ export default class Game extends Phaser.Scene {
         }
 
         if (!text) return;
-        console.log("Writing proposed text: ", text)
+
         this.proposedText = new Letter(this, 200, 32, { letter: text.slice(0,1), points: this.getPointsForLetter(text.slice(0,1))}, true)
 
         text.substring(1).split("").forEach((letter, i) => {
@@ -335,7 +323,7 @@ export default class Game extends Phaser.Scene {
         this.infoPanel.forEach((text, i) =>{ text.y += 32; })
         const addedText = this.add.bitmapText(0, 64, "mainFont", text, 15).setDropShadow(1, 1, 0xFFD700, 0.7);
         this.infoPanel.unshift(addedText);
-        console.log("Info: ", this.infoPanel)
+
         this.tweens.add({
             targets: this.infoPanel[0],
             duration: 10000,
@@ -344,7 +332,6 @@ export default class Game extends Phaser.Scene {
     }
 
     currentLetters () {
-        console.log("Current letters: ", this.letters.children.entries.filter(letter => letter.active).map(letter => letter.letter.letter));
         return this.letters.children.entries.filter(letter => letter.active).map(letter => letter.letter.letter);
     }
 }

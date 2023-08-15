@@ -6,8 +6,7 @@ import Game from "./game";
 
 const urlParams = new URLSearchParams(window.location.search);
 
-const width = +urlParams.get('width') || 1200;
-console.log("Final Width: ", width);
+const width = +urlParams.get('width') || 800;
 
 const config = {
     width,

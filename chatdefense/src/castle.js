@@ -76,9 +76,7 @@ class Castle extends Phaser.GameObjects.Container {
     }
 
     hit (points) {
-
         this.health -= points;
-        console.log("Castle hit: ", points, this.health)
         if (this.health <= 0) {
             // this.scene.addKill(this.name, shooter)
             this.die();
@@ -102,7 +100,6 @@ class Castle extends Phaser.GameObjects.Container {
        // this.sprite.anims.play("playerdead", true);
 
         this.body.moves = false;
-        console.log("Castle dead: ", this.name)
         this.scene.checkGameOver();
     }
 }

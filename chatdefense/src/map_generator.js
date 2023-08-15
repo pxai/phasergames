@@ -48,7 +48,6 @@ export default class MapGenerator {
 
   generateFalling () {
     this.scene.time.delayedCall(10, () => {
-      console.log("Generated: ", this.columnCount, this.columnCount * this.tileSize)
       if (Phaser.Math.Between(0, this.heightCount) >= this.heightCount/2) {
         const brick = new Brick(this.scene, this.columnCount * this.tileSize, 0 + Phaser.Math.Between(-50, 50), "bricks");
         this.scene.bricks.add(brick);
