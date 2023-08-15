@@ -1,8 +1,10 @@
 import Player from "./player";
 import Chat from "./chat";
 import Castle from "./castle";
+import Word from "./word";
 import LetterGenerator from "./letter_generator";
 import { Dust, Explosion } from "./particle";
+import letterValues from "./letters";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -13,14 +15,17 @@ export default class Game extends Phaser.Scene {
     }
 
     init (data) {
-        this.name = data.name;
+        this.dictionary = data.dictionary;
         this.number = 0;
     }
+
 
     preload () {
         const urlParams = new URLSearchParams(window.location.search);
         let param = urlParams.get('background') || "#00b140";
         param = parseInt(param.substring(1), 16)
+
+        this.speed = +urlParams.get('speed') || 10;
         this.backgroundColor = '0x' + param.toString(16)
     }
 
@@ -32,6 +37,7 @@ export default class Game extends Phaser.Scene {
         this.cameras.main.setBackgroundColor(+this.backgroundColor);
         this.physics.world.setBoundsCollision(true, true, false, true);
         this.gameOver = false;
+        this.word = new Word(this.dictionary);
         this.infoPanel = Array(6).fill(this.add.bitmapText(0, 0, "mainFont", "", 0));
         this.addChat();
         this.loadAudios();
@@ -119,6 +125,7 @@ export default class Game extends Phaser.Scene {
         this.allPlayers[name] = player;
         this.chat.say(`Player ${name} joins game!`);
         this.updateInfoPanel(`Player ${name} joins game!`);
+        return player;
     }
 
 
@@ -126,7 +133,7 @@ export default class Game extends Phaser.Scene {
     }
 
     hitCastle (letter, castle) {
-        console.log("Hit castle by", letter)
+        console.log("Hit castle by", letter, letter.letter.points)
         letter.destroy();
         this.cameras.main.shake(100, 0.01);
         new Explosion(this, letter.x, letter.y);
@@ -208,21 +215,47 @@ export default class Game extends Phaser.Scene {
         console.log("Game> try guess: ", playerName, playerWord)
 
         const player = this.addPlayer(playerName);
-        player.lastMessage = new Date();
-        console.log("Game> try guess: isValid ", !this.word.isValid(playerWord) , " is previous: ",   playerWord === this.currentWord)
-        if (playerWord === this.currentWord) return;
 
-        const overlap = this.word.overlap(this.currentWord, playerWord);
-        console.log("Game> Is it valid?", playerName, playerWord, this.previousWowrd," overlap: ", overlap, "  this.chained: ", this.chained, "  this.word.isValid: ", this.word.isValid(playerWord));
-        if (this.word.isValid(playerWord) && overlap > 1 && !this.chained) {
-            this.chained = true;
-            const score = this.calculateScore(overlap, playerWord);
+        console.log("Game> try guess ", playerWord, ", isValid ", !this.word.isValid(playerWord) , " is current: ", this.currentLetters(), " solves? ", this.solvesWithCurrent(playerWord));
+
+        if (this.word.isValid(playerWord) && this.solvesWithCurrent(playerWord)) {
+            const score = this.calculateScore(playerWord);
             player.score += score;
             this.updateInfoPanel(`${playerName}, solved with ${playerWord}, ${score}pts`);
             console.log("Player", playerName, "guess", playerWord);
-            // this.time.delayedCall(3000, () => { this.generateNextOperation(playerWord) }, null, this);
-            // this.showResult()
+            this.destroySolvedLetters(playerWord);
         }
+    }
+
+    destroySolvedLetters(playerWord) {
+        playerWord.split("").forEach(playerLetter => {
+            this.letters.children.entries.filter(letter => letter.active).forEach(letter => {
+                console.log("Checking letter: ", playerLetter, playerLetter === letter.letter.letter)
+                if (playerLetter === letter.letter.letter) {
+                    console.log("Destroying letter: ", letter.letter.letter)
+                    letter.destroy();
+                    new Explosion(this, letter.x, letter.y);
+                }
+            });
+        });
+    }
+
+    calculateScore (playerWord) {
+        const points = this.calculateWordPoints(playerWord);
+        console.log("Game> calculateScore: ", playerWord, playerWord.length, points)
+        return playerWord.length + points;
+    }
+
+    calculateWordPoints(word) {
+        return word.split("").map((letter, i) =>  this.getPointsForLetter(letter)).reduce((a, b) => a + b, 0);
+    }
+
+    getPointsForLetter (letter) {
+        return letterValues['en'][letter.toLowerCase()] || 1;
+    }
+
+    solvesWithCurrent (word) {
+        return word.split().some((string) => this.currentLetters().indexOf(string) === -1);
     }
 
     checkGameOver () {
@@ -232,9 +265,30 @@ export default class Game extends Phaser.Scene {
         this.showResult();
     }
 
-    showResult () {
-        const scoreBoard = this.createScoreBoard();
 
+    showResult () {
+        const scoreBoard = this.createScoreBoard()
+        //this.scoreRectangle = this.add.rectangle(0, 0, this.width, this.height, this.foregroundColor, 0.9).setOrigin(0, 0);
+
+        if (this.scores) {
+            this.scores.destroy(true);
+        }
+        this.scores = this.add.group();
+
+        let previousName = "";
+        let previousPosition = 0;
+
+        scoreBoard.slice(0, 10).forEach((player, i) => {
+             const winnerText = `${i+1}. ${player.name}: ${player.score}.`;
+             const x = !previousName ? 8 : previousPosition + (previousName.width * 8) + 16;
+             const size = i === 0 ? 20 : 15;
+             this.scores.add(this.add.bitmapText(10, x, "mainFont", winnerText, size).setOrigin(0).setTint(0x000000).setTint(this.foregroundColor).setDropShadow(1, 1, 0xffffff, 0.7));
+             previousName = winnerText;
+             previousPosition = x;
+        })
+
+
+       console.log("ScoreBoard: ", scoreBoard)
     }
 
 
@@ -250,8 +304,13 @@ export default class Game extends Phaser.Scene {
         console.log("Info: ", this.infoPanel)
         this.tweens.add({
             targets: this.infoPanel[0],
-            duration: 5000,
+            duration: 10000,
             alpha: {from: 1 , to: 0},
         })
+    }
+
+    currentLetters () {
+        console.log("Current letters: ", this.letters.children.entries.filter(letter => letter.active).map(letter => letter.letter.letter));
+        return this.letters.children.entries.filter(letter => letter.active).map(letter => letter.letter.letter);
     }
 }

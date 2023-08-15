@@ -100,10 +100,10 @@ export default class Letter extends Phaser.GameObjects.Container {
       move () {
         try {
             if (this.moveTimeline) this.moveTimeline.destroy();
-            if (this.scene.gameOver) return;
+            if (this.scene && this.scene.gameOver) return;
 
             this.easystar.findPath(Math.floor(this.x/32), Math.floor(this.y/32), Math.floor(this.scene.castle.x/32), Math.floor(this.scene.castle.y/32), this.moveIt.bind(this));
-            this.easystar.setIterationsPerCalculation(10000);
+            this.easystar.setIterationsPerCalculation(1000);
             this.easystar.enableSync();
             this.easystar.calculate();
         } catch (err) {
@@ -125,7 +125,7 @@ export default class Letter extends Phaser.GameObjects.Container {
                 this.scene.dustLayer.add(new Dust(this.scene, this.x, this.y, 1));
                 tweens.push({
                     targets: this,
-                    duration: 400,
+                    duration: 10000/this.scene.speed,
                     x: ex,
                     y: ey
                 });
@@ -152,16 +152,17 @@ export class SingleLetter extends Phaser.GameObjects.Container {
         this.letter = letter;
         this.name = "SingleLetter";
 
-        this.squareBack = new Phaser.GameObjects.Sprite(this.scene, 0, 0, "letterbg").setOrigin(0.5);
+        this.squareBack = new Phaser.GameObjects.Rectangle(this.scene, 0, 0, 32, 32, 0xcccccc).setOrigin(0.5);
+        //this.squareBack.setScale(0.8)
         this.add(this.squareBack);
 
         this.square = new Phaser.GameObjects.Sprite(this.scene, 0, 0, "letter").setTint(0x000000).setOrigin(0.5);
         this.add(this.square);
 
-        this.letterText = new Phaser.GameObjects.BitmapText(this.scene, 0, 0, "mainFont", this.letter['letter'].toUpperCase(), 16).setTint(0x000000).setOrigin(0.5)
+        this.letterText = new Phaser.GameObjects.BitmapText(this.scene, 0, -3, "mainFont", this.letter['letter'].toUpperCase(), 16).setTint(0x000000).setOrigin(0.5)
         this.add(this.letterText);
 
-        this.letterPoints = new Phaser.GameObjects.BitmapText(this.scene, 0, 12, "mainFont", this.letter['points'], 5).setTint(0x000000).setOrigin(0.5);
+        this.letterPoints = new Phaser.GameObjects.BitmapText(this.scene, 0, 8, "mainFont", this.letter['points'], 8).setTint(0x000000).setOrigin(0.5);
         this.add(this.letterPoints);
 
         this.scene.tweens.add({
