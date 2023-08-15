@@ -29,7 +29,7 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      this.cameras.main.setBackgroundColor(0x000000); 
+      this.cameras.main.setBackgroundColor(0x000000);
       this.addLight();
       this.createMap();
       this.smokeLayer = this.add.layer();
@@ -40,7 +40,7 @@ export default class Game extends Phaser.Scene {
       this.addScore();
       this.addShells();
       this.addMineName();
-      this.loadAudios(); 
+      this.loadAudios();
 
       this.playMusic();
     }
@@ -89,7 +89,7 @@ export default class Game extends Phaser.Scene {
       this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 64, tileHeight: 64 });
       this.tileSetBg = this.tileMap.addTilesetImage("cave");
       this.tileMap.createStaticLayer('background', this.tileSetBg).setPipeline('Light2D');
-  
+
       this.tileSet = this.tileMap.addTilesetImage("cave");
       this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet).setPipeline('Light2D');;
       this.border = this.tileMap.createLayer('border', this.tileSet).setPipeline('Light2D');;
@@ -136,7 +136,7 @@ export default class Game extends Phaser.Scene {
           let wall = this.border.getTileAt(Math.floor(j), Math.floor(i));
           this.grid[i][j] = (rock || wall) ?  1 : 0;
         });
-    });
+      });
     }
 
     addPlayer () {
@@ -234,7 +234,7 @@ export default class Game extends Phaser.Scene {
       this.cameras.main.shake(100);
       player.death();
       this.restartScene();
-    } 
+    }
 
     foeHitByShot (shot, foe) {
       this.lights.removeLight(shot.light);

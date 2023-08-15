@@ -248,7 +248,7 @@ export default class Game extends Phaser.Scene {
     checkGameOver () {
         console.log(this.allPlayers, Object.values(this.allPlayers));
         const remaining = Object.values(this.allPlayers).map(player => player.side === "human").length;
-  
+
         if (remaining <= 1) {
             this.winner = "No Winn"
             this.gameOver = true;

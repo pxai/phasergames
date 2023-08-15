@@ -91,7 +91,7 @@ export default class Game extends Phaser.Scene {
         if (this.rectangles) { this.rectangles.clear(true, true); }
         this.rectangles = this.add.group();
         this.questionText.setText(question.question).setMaxWidth(700);
-        this.answers.forEach((answer , i)=> { 
+        this.answers.forEach((answer , i)=> {
             answer.setText(`${i+1}. ${question.answers[i]}`).setTint(0xffffff).setMaxWidth(200)
             const rectangle = this.add.rectangle(answer.x, answer.y - 8, 238, answer.height + 16, 0xfdba21).setOrigin(0).setAlpha(0.2)
             this.rectangles.add(rectangle)
@@ -139,7 +139,7 @@ export default class Game extends Phaser.Scene {
         if (this.isValidValue(number) && player.notAnswered(this.quiz.currentIndex)) {
             player.answerQuestion(this.quiz.currentIndex, new Date() - this.showTimestamp, number === this.quiz.currentQuestion.correctIndex)
             console.log("Player", playerName, "guess", number);
-        }  
+        }
     }
 
     showScores () {
@@ -223,7 +223,7 @@ export default class Game extends Phaser.Scene {
                         this.scores.getChildren().forEach(function(child) {
                             child.destroy();
                         }, this);
-    
+
                         this.scores.clear(true, true);
                         await this.loadQuestions();
                         this.showNextQuestion()
@@ -236,19 +236,27 @@ export default class Game extends Phaser.Scene {
                 this.reloadText.on('pointerdown', () => {
                     window.location.reload();
                 });
+
+                this.reloadText.on('pointerover', () => {
+                    this.reloadText.setTint(0x00ff00)
+                });
+
+                this.reloadText.on('pointerout', () => {
+                    this.reloadText.clearTint()
+                });
             }
 
         }, null, this)
     }
 
     createScoreBoard () {
-        return [...Object.values(this.allPlayers)].sort(function(player1, player2) {          
+        return [...Object.values(this.allPlayers)].sort(function(player1, player2) {
             if (player1.points === player2.points) {
                return player1.time - player2.time;
             }
             return player1.points < player2.points ? 1 : -1;
          });
-            
+
           //  (player1, player2) => player2.points - player1.points).sort((player1, player2) => player1.time - player2.time);
     }
 

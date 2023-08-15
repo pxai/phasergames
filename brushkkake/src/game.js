@@ -160,22 +160,22 @@ export default class Game extends Phaser.Scene {
     }
 
     update () {
-        if (Phaser.Input.Keyboard.JustDown(this.cursor.down)) {
-            this.paint("devdiaries", Phaser.Math.Between(0, this.height), Phaser.Math.Between(0, this.height));
-        }
+        // if (Phaser.Input.Keyboard.JustDown(this.cursor.down)) {
+        //     this.paint("devdiaries", Phaser.Math.Between(0, this.height), Phaser.Math.Between(0, this.height));
+        // }
 
-        if (Phaser.Input.Keyboard.JustDown(this.cursor.left)) {
-            console.log("Dale")
-            this.paint("devdiaries", Phaser.Math.Between(0, this.height), Phaser.Math.Between(0, this.height));
-        }
+        // if (Phaser.Input.Keyboard.JustDown(this.cursor.left)) {
+        //     console.log("Dale")
+        //     this.paint("devdiaries", Phaser.Math.Between(0, this.height), Phaser.Math.Between(0, this.height));
+        // }
 
-        if (Phaser.Input.Keyboard.JustDown(this.cursor.right)) {
-            this.paint("devdiaries", Phaser.Math.Between(0, this.height), Phaser.Math.Between(0, this.height));
-        }
+        // if (Phaser.Input.Keyboard.JustDown(this.cursor.right)) {
+        //     this.paint("devdiaries", Phaser.Math.Between(0, this.height), Phaser.Math.Between(0, this.height));
+        // }
 
-        if (Phaser.Input.Keyboard.JustDown(this.cursor.up)) {
-            this.paint("devdiaries", Phaser.Math.Between(0, this.height), Phaser.Math.Between(0, this.height));
-        }
+        // if (Phaser.Input.Keyboard.JustDown(this.cursor.up)) {
+        //     this.paint("devdiaries", Phaser.Math.Between(0, this.height), Phaser.Math.Between(0, this.height));
+        // }
     }
 
     showResult () {
