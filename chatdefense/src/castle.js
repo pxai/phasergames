@@ -1,9 +1,8 @@
 
-import { JumpSmoke, RockSmoke, Particle } from "./particle";
 import HealthBar from "./health_bar";
 
 class Castle extends Phaser.GameObjects.Container {
-    constructor (scene, x, y, side, name, health = 10, tnt = 1, velocity = 200, remote = false) {
+    constructor (scene, x, y, side, name, health = 100, tnt = 1, velocity = 200, remote = false) {
         super(scene, x, y);
 
         this.scene = scene;
@@ -27,7 +26,7 @@ class Castle extends Phaser.GameObjects.Container {
 
 
         this.health = health;
-        this.healthBar = new HealthBar(this, -20, 46, 10);
+        this.healthBar = new HealthBar(this, 32, -32, 10);
         this.add(this.healthBar.bar);
 
         this.dead = false;
@@ -78,9 +77,10 @@ class Castle extends Phaser.GameObjects.Container {
     }
 
     hit (points, shooter) {
+
         this.health -= points;
         if (this.health <= 0) {
-            this.scene.addKill(this.name, shooter)
+            // this.scene.addKill(this.name, shooter)
             this.die();
         }
 

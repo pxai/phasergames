@@ -1,5 +1,6 @@
 import LETTERS from "./letters";
-import { Particle } from "./particle";
+import EasyStar from "easystarjs";
+import { Dust } from "./particle";
 
 export default class Letter extends Phaser.GameObjects.Container {
     constructor (scene, x, y, letter = "", demo = false) {
@@ -11,14 +12,20 @@ export default class Letter extends Phaser.GameObjects.Container {
         this.sticky = false;
 
         this.scene.add.existing(this);
-
+        this.scene.physics.add.existing(this);
+        this.body.setAllowGravity(false);
 
 
         this.add(new SingleLetter(this.scene, 0, 0, this.letter))
         this.letterLength = 1;
         this.change = 0;
+        this.body.setSize(32, 32)
+        this.body.setOffset(-16, -16)
 
-        this.setSize(42, 42)
+        this.easystar = new EasyStar.js();
+        this.easystar.setGrid(this.scene.grid);
+        this.easystar.setAcceptableTiles([0]);
+        this.launchMove();
     }
 
     get length () {
@@ -72,47 +79,67 @@ export default class Letter extends Phaser.GameObjects.Container {
         return letters;
     }
 
-    changeSticky (value) {
-        let first = this;
-        while (first.left !== null)
-            first = first.left;
-
-        while(first !== null) {
-            first.sticky = value;
-            first = first.right;
-        }
-    }
-
-    getFirstLetter () {
-        return this.iterate( child => {
-            if (child.type === 'Container') {
-                return child.list[0];
-            }
-         });
-    }
-
-     clearWord () {
-         let i = 0;
-         this.iterate(child => {
-            if (child.type === 'Container') {
-                //(scene, x, y, color = "0xffffff", launch = false, multi = false)
-                //new StarBurst(this.scene, this.x + (i*48), this.y, "0xffffff", true, true)
-            }
-             child.destroy();
-             i++;
-         });
-     }
-
-     randomLetter () {
-        const letters = LETTERS["en"];
-        return letters[Phaser.Math.Between(0, letters.length - 1)];
-    }
-
     changeLetterColor (color = 0xfcae1e) {
         const letters = this.getAll("name", "SingleLetter");
         letters.forEach( singleLetter => {
             singleLetter.squareBack.setFillStyle(color);
         })
+    }
+
+    launchMove() {
+        if (!this.scene) return;
+        this.delayedMove = this.scene.time.addEvent({
+            delay: 2000,                // ms
+            callback: this.move.bind(this),
+            startAt: 0,
+            callbackScope: this,
+            loop: true
+        });
+      }
+
+      move () {
+        try {
+            if (this.moveTimeline) this.moveTimeline.destroy();
+            if (this.scene.gameOver) return;
+
+            this.easystar.findPath(Math.floor(this.x/32), Math.floor(this.y/32), Math.floor(this.scene.castle.x/32), Math.floor(this.scene.castle.y/32), this.moveIt.bind(this));
+            this.easystar.setIterationsPerCalculation(10000);
+            this.easystar.enableSync();
+            this.easystar.calculate();
+        } catch (err) {
+            console.log("Cant move yet: ", err)
+        }
+
+    }
+
+    moveIt (path) {
+        if (path === null) {
+            console.log("Path was not found.");
+        } else {
+            let tweens = [];
+            this.i = 0;
+            this.path = path;
+            for(let i = 0; i < path.length-1; i++){
+                let ex = (path[i+1].x * 32) + 16;
+                let ey = (path[i+1].y * 32) + 16;
+                this.scene.dustLayer.add(new Dust(this.scene, this.x, this.y, 1));
+                tweens.push({
+                    targets: this,
+                    duration: 400,
+                    x: ex,
+                    y: ey
+                });
+            }
+
+            this.moveTimeline = this.scene.tweens.timeline({
+                tweens: tweens,
+                onComplete: () => {
+                    this.delayedMove.remove()
+                    if (this.alpha > 0)
+                      this.launchMove();
+                }
+            });
+        }
     }
 }
 
@@ -136,6 +163,22 @@ export class SingleLetter extends Phaser.GameObjects.Container {
 
         this.letterPoints = new Phaser.GameObjects.BitmapText(this.scene, 0, 12, "mainFont", this.letter['points'], 5).setTint(0x000000).setOrigin(0.5);
         this.add(this.letterPoints);
+
+        this.scene.tweens.add({
+            targets: this,
+            yoyo: true,
+            duration: 400,
+            rotation: {from: -0.1, to: 0.1},
+            repeat: -1
+        });
+
+        this.scene.tweens.add({
+            targets: this,
+            y: "-=5",
+            yoyo: true,
+            duration: 400,
+            repeat: -1
+        });
     }
 
     setLetter (letter) {

@@ -2,6 +2,7 @@ import Player from "./player";
 import Chat from "./chat";
 import Castle from "./castle";
 import LetterGenerator from "./letter_generator";
+import { Dust, Explosion } from "./particle";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -30,6 +31,7 @@ export default class Game extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.cameras.main.setBackgroundColor(+this.backgroundColor);
         this.physics.world.setBoundsCollision(true, true, false, true);
+        this.gameOver = false;
         this.infoPanel = Array(6).fill(this.add.bitmapText(0, 0, "mainFont", "", 0));
         this.addChat();
         this.loadAudios();
@@ -67,14 +69,14 @@ export default class Game extends Phaser.Scene {
         this.platform = this.tileMap.createLayer(`scene${this.number}`, this.tileSet);
         this.objectsLayer = this.tileMap.getObjectLayer("objects");
 
-        this.tileSetItems = this.tileMap.addTilesetImage("tiles");
-        this.tileMap.createLayer("items", this.tileSetItems);
-
         this.platform.setCollisionByExclusion([-1]);
+
+        this.dustLayer = this.add.layer();
 
         this.allPlayers = {};
         this.letters = this.add.group();
         this.texts = [];
+
 
         this.objectsLayer.objects.forEach(object => {
             if (object.name === "castle") {
@@ -88,6 +90,8 @@ export default class Game extends Phaser.Scene {
             }
         });
 
+        this.createGrid();
+
         this.physics.add.collider(this.letters, this.platform, this.hitFloor, () => {
             return true;
         }, this);
@@ -96,6 +100,18 @@ export default class Game extends Phaser.Scene {
             return true;
         }, this);
     }
+
+    createGrid () {
+        this.grid = [];
+
+        Array(25).fill(0).forEach((_,i) => {
+          this.grid[i] = []
+          Array(8).fill(0).forEach((_, j) => {
+            let rock = this.platform.getTileAt(Math.floor(j), Math.floor(i));
+            this.grid[i][j] = rock ?  1 : 0;
+          });
+        });
+      }
 
     addPlayer (name) {
         const player = new Player(this, name);
@@ -112,12 +128,11 @@ export default class Game extends Phaser.Scene {
     hitCastle (letter, castle) {
         console.log("Hit castle by", letter)
         letter.destroy();
+        this.cameras.main.shake(100, 0.01);
+        new Explosion(this, letter.x, letter.y);
+        this.castle.hit(letter.letter.points);
     }
 
-    fireballHitShield (fireball, shield) {
-        fireball.destroy();
-        shield.destroy();
-    }
 
     getTile(platform) {
         const {x, y} = platform;
@@ -197,41 +212,34 @@ export default class Game extends Phaser.Scene {
         console.log("Game> try guess: isValid ", !this.word.isValid(playerWord) , " is previous: ",   playerWord === this.currentWord)
         if (playerWord === this.currentWord) return;
 
-        if (playerWord === "wordinary")  {
-            this.cameras.main.shake(100, 0.01);
-            this.generateNextOperation(this.dictionary.randomWord());
-            return;
-        }
-
         const overlap = this.word.overlap(this.currentWord, playerWord);
         console.log("Game> Is it valid?", playerName, playerWord, this.previousWowrd," overlap: ", overlap, "  this.chained: ", this.chained, "  this.word.isValid: ", this.word.isValid(playerWord));
         if (this.word.isValid(playerWord) && overlap > 1 && !this.chained) {
             this.chained = true;
             const score = this.calculateScore(overlap, playerWord);
             player.score += score;
-            this.showScore(playerName, playerWord, score);
+            this.updateInfoPanel(`${playerName}, solved with ${playerWord}, ${score}pts`);
             console.log("Player", playerName, "guess", playerWord);
-            this.time.delayedCall(3000, () => { this.generateNextOperation(playerWord) }, null, this);
-            this.showResult()
+            // this.time.delayedCall(3000, () => { this.generateNextOperation(playerWord) }, null, this);
+            // this.showResult()
         }
     }
 
     checkGameOver () {
-        console.log(this.allPlayers, Object.values(this.allPlayers));
-        const remaining = Object.values(this.allPlayers).map(player => !player.dead).length;
+        this.gameOver = true;
+        console.log("GAME OVER!", this.allPlayers, Object.values(this.allPlayers));
 
-        if (remaining == 1) {
-            const last = Object.values(this.allPlayers).find(player => !player.dead) ;
-            this.winner = last ? last.name : "No Winn" ;
-            this.gameOver = true;
-        } else if (remaining <= 1)
-            this.winner = "No Winn"
-            this.gameOver = true;
-            this.showResult();
+        this.showResult();
     }
 
+    showResult () {
+        const scoreBoard = this.createScoreBoard();
+
+    }
+
+
     createScoreBoard () {
-        return [...Object.values(this.allPlayers)].sort((player1, player2) => player2.kills.length - player1.kills.length);
+        return [...Object.values(this.allPlayers)].sort((player1, player2) => player2.points - player1.points);
     }
 
     updateInfoPanel (text) {

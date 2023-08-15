@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "dotenv": "^16.3.1",
+    "easystarjs": "^0.4.4",
     "phaser": "^3.52.0",
     "tmi.js": "^1.8.5"
   },

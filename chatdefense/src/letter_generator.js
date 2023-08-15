@@ -31,7 +31,7 @@ export default class LetterGenerator {
 
     randomLetter () {
         const letters = Object.keys(letterValues["en"]);
-        const letter = letters[Phaser.Math.Between(0, letters.length - 1)];
+        const letter = letters[Phaser.Math.Between(0, letters.length - 1)].trim();
         console.log("Generating: ", letter, {letter, points: this.getPointsForLetter(letter)})
         return {letter, points: this.getPointsForLetter(letter)};
     }
