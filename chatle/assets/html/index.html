@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <meta name="author" content="Pello Altadill">
+  <title>Chatle: a twitch game by Pello Altadill</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Germania+One&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+  <div class="container">
+    <div class="title">
+    </div>
+    <div class="form-container">
+        <header>
+          <h2>Options</h2>
+        </header>
+        <form action="game.html">
+            <div><label for="channel">Channel</label></div>
+            <div><input type="text" name="channel" id="channel" value="devdiaries"></div>
+            <div><label for="language">Language</label></div>
+            <div>
+              <select name="language" id="language">
+                  <option value="en">EN</option>
+                  <option value="es"selected>ES</option>
+                  <option value="fr">FR</option>
+              </select>
+            </div>
+            <div><label for="mode">Mode</label></div>
+            <div>
+              <select name="mode" id="mode">
+                  <option value="strict" selected>Only valid words</option>
+                  <option value="any">Any words</option>
+              </select>
+            </div>
+            <div><label for="background">Background Color</label></div>
+            <div><input type="color" name="background" id="background", value = '#00b140'></div>
+            <br />
+            <div><input type="submit", value = 'PLAY'></div>
+        </form>
+        <footer>
+        </footer>
+    </div>
+    <div>
+      <a href="https://pello.itch.io">By Pello</a>
+    </div>
+    <div class="list-row" id="listBlock">
+      <div class="list">
+          <h2>Game Rules</h2>
+          <ul>
+              <li class="list-item">You will see a number...</li>
+              <li class="list-item">...and an operation below.</li>
+              <li class="list-item">Guess the result</li>
+              <li class="list-item">and write it on the chat!</li>
+              <!-- Add more list items here -->
+          </ul>
+      </div>
+    </div>
+  </div>
+
+
+      <script>
+        const listBlock = document.getElementById('listBlock');
+
+        function toggleList() {
+            listBlock.style.display = listBlock.style.display === 'none'|| listBlock.style.display !== 'flex' ? 'flex' : 'none';
+        }
+
+    </script>
+
+</body>
+</html>

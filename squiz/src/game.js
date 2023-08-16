@@ -39,6 +39,7 @@ export default class Game extends Phaser.Scene {
         this.result = Phaser.Math.Between(1, 9);
         this.cursor = this.input.keyboard.createCursorKeys();
         this.timeToAnswer = 5000;
+        this.timeCount = this.timeToAnswer / 1000;
         this.infiniteLoop = !this.rounds;
     }
 
@@ -71,9 +72,10 @@ export default class Game extends Phaser.Scene {
         this.rectanglesLayer = this.add.layer();
         this.answerwLayer = this.add.layer();
         this.logo = this.add.image(0,0, "squiz_logo").setOrigin(0).setAlpha(0.2)
-        this.questionText = this.add.bitmapText(this.center_width, 8, "mainFont", "question", 30).setOrigin(0.5, 0).setTint(0xffffff)
+        this.questionText = this.add.bitmapText(this.center_width, 8, "nuno", "question", 30).setOrigin(0.5, 0).setTint(0xffffff)
+        this.timeCountText = this.add.bitmapText(this.width - 64, this.center_height, "mainFont", this.timeCount, 140).setAlpha(0.2).setOrigin(0.5);
         this.answers = Array(4).fill('').map((_, i) => {
-            const answer = this.add.bitmapText(8 + (242 * i), this.height - 90 , "mainFont", `Question ${i}`, 20).setOrigin(0).setTint(0xffffff);
+            const answer = this.add.bitmapText(8 + (242 * i), this.height - 90 , "nuno", `Question ${i}`, 20).setOrigin(0).setTint(0xffffff);
             this.answerwLayer.add(answer)
             return answer;
         });
@@ -82,6 +84,8 @@ export default class Game extends Phaser.Scene {
     }
 
     showNextQuestion() {
+        this.timeCount = this.timeToAnswer / 1000;
+        this.showTimer();
         const question = this.quiz.nextQuestion();
         console.log("This is next!! ", question, this.quiz.currentIndex)
         if (!question) {
@@ -100,6 +104,17 @@ export default class Game extends Phaser.Scene {
         this.showTimestamp = new Date();
         this.time.delayedCall(this.timeToAnswer, () =>{ this.showCorrect()}, null, this )
         this.showingResult = false;
+
+    }
+
+    showTimer() {
+        if (this.timeCount === 0) return;
+
+        this.time.delayedCall(1000, () => {
+            this.timeCountText.setText(this.timeCount - 1);
+           this.timeCount--;
+           this.showTimer();
+        }, null, this);
     }
 
     showCorrect() {

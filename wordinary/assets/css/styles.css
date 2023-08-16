@@ -67,7 +67,7 @@ label {
     color: #588DDD;
 }
 /* Style form elements */
-input, textarea {
+input, textarea, select {
     width: 100%;
     padding: 8px;
     border: 1px solid #ccc;

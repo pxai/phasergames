@@ -104,7 +104,7 @@ export default class Game extends Phaser.Scene {
 
     addScore () {
         const scoreBoard = this.createScoreBoard()
-        this.add.bitmapText(10, 0, "mainFont", "Wordinary", 25).setOrigin(0).setTint(0xF1F1E6);
+        this.add.bitmapText(this.width - 196, 0, "mainFont", "Wordinary", 25).setOrigin(0).setTint(0xF1F1E6);
         scoreBoard.slice(0, 3).forEach((player, i) => {
             const winnerText = `${i+1}.  ${player.name}: ${player.score}`;
             this.add.bitmapText(this.center_width, 100 + (i * 50), "mainFont", winnerText, 30).setOrigin(0.5).setTint(this.foregroundColor).setDropShadow(1, 2, 0xbf2522, 0.7);

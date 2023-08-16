@@ -23,6 +23,7 @@
     "itchio": "cd dist && rm -f assets/html/index.html && butler push . pello/squiz:html --userversion 0.0.1 && cd .. && butler status pello/squiz:html"
   },
   "dependencies": {
+    "axios": "^1.4.0",
     "dotenv": "^16.3.1",
     "phaser": "^3.52.0",
     "tmi.js": "^1.8.5"
@@ -50,7 +51,7 @@
     "path": "^0.12.7",
     "webpack": "^5.49.0",
     "webpack-cli": "^4.4.0",
-    "webpack-dev-server": "^3.11.2",
+    "webpack-dev-server": "^3.11.3",
     "webpack-merge": "^5.7.3",
     "write-file-webpack-plugin": "^4.5.1"
   },

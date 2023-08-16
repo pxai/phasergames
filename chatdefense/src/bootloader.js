@@ -21,10 +21,10 @@ export default class Bootloader extends Phaser.Scene {
             },
             this
         );
+        this.loadDictionary();
 
-        const dictionary = new Dictionary("en");
         this.load.on("complete", () => {
-            this.scene.start("game", { dictionary });
+            this.scene.start("game", { dictionary: this.dictionary, lang: this.language });
         }, this);
 
         /* Array(7).fill(0).forEach((_,i) => {
@@ -51,6 +51,13 @@ export default class Bootloader extends Phaser.Scene {
         this.registry.set("score", 0);
         this.registry.set("coins", 0);
         this.registry.set("hull", 10);
+    }
+
+
+    loadDictionary () {
+        const urlParams = new URLSearchParams(window.location.search);
+        this.language = urlParams.get('language') || "en";
+        this.dictionary = new Dictionary(this.language);
     }
 
     create () {
