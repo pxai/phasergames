@@ -2,6 +2,7 @@ import Player from "./player";
 import Chat from "./chat";
 import items from "./items";
 import SlotMachine from "./slot";
+import Character from "./character";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -38,6 +39,7 @@ export default class Game extends Phaser.Scene {
         this.tmpCounter = 0;
         this.slot = new SlotMachine(Object.keys(items));
         this.stopThisShit = false;
+        this.addCharacter();
     }
 
     addChat () {
@@ -53,9 +55,20 @@ export default class Game extends Phaser.Scene {
     addUI () {
 
        // this.add.rectangle(0, this.canvasPadding, this.width, this.height, this.canvasColor).setOrigin(0)
-        this.add.bitmapText(0, 0, "mainFont", "Brushkkake", 20).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
+        this.add.bitmapText(0, 0, "mainFont", "Slotgeon", 20).setOrigin(0, 0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
         this.add.bitmapText(130, 10, "mainFont", `${this.width}x${this.height - 20}`, 12).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
         this.add.bitmapText(210, 10, "mainFont", "!x y color size", 12).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
+        this.add.rectangle(0, 32, 98, 32, 0x000000).setOrigin(0, 0.5).setAlpha(0.2);
+        this.add.rectangle(0, 64, 98, 32, 0x000000).setOrigin(0, 0.5).setAlpha(0.5);
+        this.add.rectangle(0, 96, 98, 32, 0x000000).setOrigin(0, 0.5).setAlpha(0.2);
+    }
+
+    addCharacter () {
+        this.character = new Character(this, 0, 128, "knight").setOrigin(0, 0.5)
+        this.infoGroup = this.add.group();
+        [this.character.attack, this.character.defense, this.character.health].forEach((text, i) => {
+            this.infoGroup.add(this.add.bitmapText(32 + (32 * i), 128, "mainFont", text, 12).setOrigin(0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
+        })
     }
 
     addPlayer (name) {
@@ -72,17 +85,16 @@ export default class Game extends Phaser.Scene {
     spin () {
         const totalRepeats = 20;
         let completedRepeats = 0;
-        this.counter = 0;
 
         this.time.addEvent({
-            delay: 500,
+            delay: 200,
             callback: () => {
                 console.log("Spinning")
                 this.slot.spin();
                 this.paintSlot()
                 completedRepeats++;
                 if (completedRepeats === totalRepeats) {
-                    this.getSlotResult();
+                    this.time.delayedCall(200, () => { this.round() }, [], this);
                 }
             },
             callbackScope: this,
@@ -91,6 +103,7 @@ export default class Game extends Phaser.Scene {
     }
 
     paintSlot () {
+        this.cells = [[0,0,0],[0,0,0],[0,0,0]];
         if (this.slotsCells) {
             // this.scores.getChildren().forEach(function(child) {
             //     child.destroy();
@@ -102,38 +115,47 @@ export default class Game extends Phaser.Scene {
         }
 
         [0, 1, 2].forEach((row, i) => {
-            [0, 1, 2].forEach((col, j) => {
-                const cell = this.add.sprite(i * 32, j * 32, this.slot.columns[i][j]).setOrigin(0);
+            [2, 1, 0].forEach((col, j) => {
+                const cell = this.add.sprite(16 + (i * 32), 32 + (j * 32), this.slot.columns[col][row]).setOrigin(0.5);
+                this.cells[i][j] = cell;
                 this.slotsCells.add(cell);
                 this.gameLayer.add(cell);
             });
         })
     }
 
+    round (index = 0) {
+        this.infoGroup.setAlpha(0)
+        this.getSlotResult();
+        this.face(index)
+    }
+
+    face(index) {
+        console.log("Face: ", this.result[index])
+        this.animate(index);
+
+    }
+
+    animate (index) {
+        const item = this.cells[index][1]
+        this.tweens.add({
+            targets: item,
+            duration: 1000,
+            x: {from: item.x, to: this.character.x + 32},
+            y: {from: item.y, to: this.character.y},
+            onComplete: () => {
+                if (index < 2) this.face(index + 1)
+            }
+        })
+    }
+
+
+
     getSlotResult () {
-        this.result = this.slot.columns.map(column => items[column[1]]);
+        this.result = [ this.slot.columns[1][0], this.slot.columns[1][1], this.slot.columns[1][2]];
         console.log("Result: ", this.result)
     }
 
-
-    paint (playerName, x, y, color = "#000000", size = 4) {
-        return;
-        if (this.stopThisShit) return;
-        const player = this.addPlayer(playerName);
-        if (!player) return;
-
-        if (this.isValidXNumber(x) && this.isValidYNumber(y) && this.isValidColor(color) && this.isValidSize(size)) {
-            if (this.mode === "pixelArt") {
-                this.add.rectangle(x, y + this.canvasPadding, this.pixelArtSize, this.pixelArtSize, this.rgbtoHex(color));
-            } else {
-                this.add.circle(x, y + this.canvasPadding, size, this.rgbtoHex(color));
-            }
-
-            console.log(`Painting ${player.name}to ${x} ${y} ${color} mode: ${this.mode}`)
-        } else {
-            this.chat.say(`Player ${playerName} invalid attack values. Use speed: 0-100, angle: 0-360!`);
-        }
-    }
 
     isValidXNumber(number) {
         return this.isValidNumber(number) && Math.abs(+number) >= 0 && Math.abs(+number)  <= this.width;
