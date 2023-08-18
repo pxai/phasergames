@@ -1,8 +1,13 @@
 
 
 class Player {
-    constructor (name) {
+    constructor (name, health = 10) {
         this.name = name;
+        this.vote = "";
+    }
+
+    reset () {
+        this.vote = "";
     }
 }
 

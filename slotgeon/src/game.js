@@ -39,7 +39,7 @@ export default class Game extends Phaser.Scene {
         this.tmpCounter = 0;
         this.slot = new SlotMachine(Object.keys(items));
         this.stopThisShit = false;
-        this.addCharacter();
+        this.generateCharacter();
     }
 
     addChat () {
@@ -53,17 +53,17 @@ export default class Game extends Phaser.Scene {
 
 
     addUI () {
-
        // this.add.rectangle(0, this.canvasPadding, this.width, this.height, this.canvasColor).setOrigin(0)
         this.add.bitmapText(0, 0, "mainFont", "Slotgeon", 20).setOrigin(0, 0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
-        this.add.bitmapText(130, 10, "mainFont", `${this.width}x${this.height - 20}`, 12).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
-        this.add.bitmapText(210, 10, "mainFont", "!x y color size", 12).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
+
         this.add.rectangle(0, 32, 98, 32, 0x000000).setOrigin(0, 0.5).setAlpha(0.2);
         this.add.rectangle(0, 64, 98, 32, 0x000000).setOrigin(0, 0.5).setAlpha(0.5);
         this.add.rectangle(0, 96, 98, 32, 0x000000).setOrigin(0, 0.5).setAlpha(0.2);
+        this.timeToVoteText = this.add.bitmapText(48, 48, "mainFont", "", 18).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
+        this.infoText = this.add.bitmapText(0, 48, "mainFont", "", 14).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
     }
 
-    addCharacter () {
+    generateCharacter () {
         this.character = new Character(this, 0, 128, "knight").setOrigin(0, 0.5)
         this.infoGroup = this.add.group();
         [this.character.attack, this.character.defense, this.character.health].forEach((text, i) => {
@@ -79,7 +79,7 @@ export default class Game extends Phaser.Scene {
         this.chat.say(`Player ${name} joins game!`);
         console.log("Player added: ", player)
 
-        return this.player;
+        return player;
     }
 
     spin () {
@@ -89,7 +89,6 @@ export default class Game extends Phaser.Scene {
         this.time.addEvent({
             delay: 200,
             callback: () => {
-                console.log("Spinning")
                 this.slot.spin();
                 this.paintSlot()
                 completedRepeats++;
@@ -125,63 +124,100 @@ export default class Game extends Phaser.Scene {
     }
 
     round (index = 0) {
-        this.infoGroup.setAlpha(0)
+        //this.infoGroup.setAlpha(0)
         this.getSlotResult();
         this.face(index)
+        this.timeToVote = 5;
+        this.countDown();
+        this.time.delayedCall(5000, () => {
+            this.runAction(this.calculateVotes());
+
+        }, null, this)
+    }
+
+    runAction(votes) {
+        this.selectedAction = this.areEmpty(votes) ? Phaser.Math.RND.pick(["run", "fight", "buy"]) : votes[0].action;
+
+        if (this.selectedAction === "run") this.actionRun();
+        if (this.selectedAction === "buy") this.actionBuy();
+        if (this.selectedAction === "fight") this.actionFight();
+        this.checkGameOver();
+    }
+
+    actionRun () {
+        this.showInfo("Runs like a rat!")
+        this.character.hit(2);
+    }
+
+    actionBuy () {
+        this.showInfo("Go shopping!")
+        this.character.hit(1);
+    }
+
+    actionFight () {
+        this.showInfo("You chose violence!")
+    }
+
+    showInfo(message) {
+        this.infoText.setText(message);
+        this.tweens.add({
+            targets: this.infoText,
+            duration: 3000,
+            alpha: { from: 1, to: 0}
+        })
+    }
+
+    areEmpty(votes) {
+        return votes.every(vote => vote.total === 0);
+    }
+
+    countDown () {
+        this.time.delayedCall(1000, () => {
+            this.timeToVoteText.setText(this.timeToVote)
+            if (this.timeToVote === 0) return;
+            this.timeToVote--;
+            this.countDown();
+        }, null, this)
     }
 
     face(index) {
-        console.log("Face: ", this.result[index])
+        this.showInfo("Face: ", this.result[index])
         this.animate(index);
 
     }
 
     animate (index) {
         const item = this.cells[index][1]
+        item.setOrigin(0);
         this.tweens.add({
             targets: item,
             duration: 1000,
-            x: {from: item.x, to: this.character.x + 32},
-            y: {from: item.y, to: this.character.y},
+            x: {from: item.x, to: this.character.x},
+            y: {from: item.y, to: this.character.y + 32 + (index * 32)},
             onComplete: () => {
+                this.showItemDetail(item, this.character.x, this.character.y + 32 + (index * 32))
                 if (index < 2) this.face(index + 1)
             }
         })
     }
 
+    showItemDetail(item, x, y) {
+        const itemInfo = items[item.texture.key];
+        this.itemDetails = this.add.group();
+        this.itemDetails.add(this.add.bitmapText(x, y - 12, "mainFont", itemInfo["name"], 10).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
 
+        ["attack", "defense", "value"].forEach((value, i) => {
+            this.itemDetails.add(this.add.bitmapText(x + 32 + (i * 32), y, "mainFont", itemInfo[value], 12).setOrigin(0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
+        })
+    }
 
     getSlotResult () {
         this.result = [ this.slot.columns[1][0], this.slot.columns[1][1], this.slot.columns[1][2]];
-        console.log("Result: ", this.result)
-    }
-
-
-    isValidXNumber(number) {
-        return this.isValidNumber(number) && Math.abs(+number) >= 0 && Math.abs(+number)  <= this.width;
-    }
-
-    isValidYNumber(number) {
-        return this.isValidNumber(number) && Math.abs(+number)  >= 0 && Math.abs(+number)  <= this.height;
-    }
-
-    isValidSize(number) {
-        return this.isValidNumber(number) && Math.abs(+number)  >= 1 && Math.abs(+number)  <= this.maxSize;
-    }
-
-    isValidColor(color) {
-        console.log("CSS supports color: ", "color", CSS.supports(color))
-        return CSS.supports("color", color)
-    }
-
-    rgbtoHex(color) {
-        return parseInt(color.substring(1), 16);
     }
 
     isValidNumber (number) {
         return !isNaN(number);
     }
-
 
     loadAudios () {
         this.audios = {
@@ -225,18 +261,27 @@ export default class Game extends Phaser.Scene {
             this.spin();
         }
 
-        // if (Phaser.Input.Keyboard.JustDown(this.cursor.left)) {
-        //     console.log("Dale")
-        //     this.paint("devdiaries", Phaser.Math.Between(0, this.height), Phaser.Math.Between(0, this.height));
-        // }
+        if (Phaser.Input.Keyboard.JustDown(this.cursor.right)) {
+            console.log("Dale run")
+            this.vote("devdiaries" + Phaser.Math.Between(0, this.height), "run");
+        }
 
-        // if (Phaser.Input.Keyboard.JustDown(this.cursor.right)) {
-        //     this.paint("devdiaries", Phaser.Math.Between(0, this.height), Phaser.Math.Between(0, this.height));
-        // }
+        if (Phaser.Input.Keyboard.JustDown(this.cursor.left)) {
+            console.log("Dale buy")
+            this.vote("devdiaries" + Phaser.Math.Between(0, this.height), "buy");
+        }
 
-        // if (Phaser.Input.Keyboard.JustDown(this.cursor.up)) {
-        //     this.paint("devdiaries", Phaser.Math.Between(0, this.height), Phaser.Math.Between(0, this.height));
-        // }
+        if (Phaser.Input.Keyboard.JustDown(this.cursor.right)) {
+            console.log("Dale fight")
+            this.vote("devdiaries" + Phaser.Math.Between(0, this.height), "fight");
+        }
+    }
+
+    vote (playerName, vote) {
+        console.log("Game> vote: ", playerName, vote)
+        const player = this.addPlayer(playerName);
+        console.log("Game> guess go on: ", player, player.vote, vote)
+        player.vote = vote;
     }
 
     showResult () {
@@ -251,6 +296,30 @@ export default class Game extends Phaser.Scene {
         })
     }
 
+    resetPlayerVote () {
+        Object.values(this.allPlayers).forEach(player => player.reset())
+    }
+
+    calculateVotes () {
+        const players = [...Object.values(this.allPlayers)];
+        const votes = [
+            {action: "fight", total: players.filter(player => player.vote === "fight").length},
+            {action: "run", total: players.filter(player => player.vote === "run").length},
+            {action: "buy", total: players.filter(player => player.vote === "buy").length}
+        ];
+        votes.sort((votea, voteb) => voteb.total - votea.total);
+        console.log(votes);
+        return votes;
+    }
+
+    checkGameOver () {
+        if (this.character.isDead()) {
+            this.time.delayedCall(3000, () => {
+                console.log("Life goes on!")
+                this.generateCharacter();
+            }, null, this)
+        }
+    }
     updateInfoPanel (text) {
         this.infoPanel.pop().destroy();
         this.infoPanel.forEach((text, i) =>{ text.y += 32; })

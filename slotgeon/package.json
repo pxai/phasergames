@@ -20,7 +20,7 @@
     "lint": "eslint src/**/*.js test/**/*.js --fix",
     "unit": "mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js",
     "publish": "npm run-script build && npm run-script itchio",
-    "itchio": "cd dist && rm -f assets/html/index.html && butler push . pello/brushkkake:html --userversion 0.0.1 && cd .. && butler status pello/brushkkake:html"
+    "itchio": "cd dist && rm -f assets/html/index.html && butler push . pello/slotgeon:html --userversion 0.0.1 && cd .. && butler status pello/slotgeon:html"
   },
   "dependencies": {
     "dotenv": "^16.3.1",

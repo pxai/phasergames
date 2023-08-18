@@ -12,6 +12,15 @@ class Character extends Phaser.GameObjects.Sprite{
         this.level = 1;
         this.coins = 10;
     }
+
+    hit (points) {
+        this.health -= points;
+        console.log("Character gets hit: -", points)
+    }
+
+    isDead () {
+        return this.health < 0;
+    }
 }
 
 export default Character;

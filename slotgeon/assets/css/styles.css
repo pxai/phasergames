@@ -5,38 +5,26 @@ body {
     align-items: center;
     min-height: 100vh; /* Ensure the container takes at least the full viewport height */
     margin: 0;
-    font-family: Arial, sans-serif;
     background-color: #37b6ff;
-    font-family: 'Adumu';
+    font-family: 'Pirata One', sans-serif;
+    font-size: 1.2em;
     letter-spacing: 1px;
 }
 
-@font-face {
-    font-family: 'Adumu';
-    src: url('../fonts/Adumu.woff2') format('woff2'),
-        url('../fonts/Adumu.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
 .title {
-    font-size: 3em;
-    color: #820333;
-    font-family: 'Adumu', cursive,Verdana, Geneva, Tahoma, sans-serif, sans-serif;
+    font-size: 4.5em;
+    color: #092B35;
     text-align: center;
 }
 
 .subtitle {
-    font-size: 2em;
-    color: #820333;
-    font-family: 'Adumu', cursive,Verdana, Geneva, Tahoma, sans-serif, sans-serif;
+    font-size: 3em;
+    color: #187691;
     text-align: center;
 }
 
 h1, h2 {
-    color: #c9bf27;
-    font-family: 'Adumu', cursive,Verdana, Geneva, Tahoma, sans-serif, sans-serif;
+    color: #092B35;
     text-align: center;
 }
 
@@ -64,7 +52,7 @@ h1, h2 {
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    color: #c9bf27;
+    color: #092B35;
     background-color: rgb(84, 0, 50, 0.2);
 }
 
@@ -73,7 +61,7 @@ h1, h2 {
     margin-bottom: 10px;
 }
 label {
-    color: #c9bf27;
+    color: #092B35;
 }
 /* Style form elements */
 input, textarea, select {
@@ -82,6 +70,7 @@ input, textarea, select {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+    font-family: 'Pirata One', sans-serif;
 }
 
 textarea {
@@ -93,7 +82,7 @@ input[type="submit"] {
     color: #fff;
     cursor: pointer;
     font-size: 1.2em;
-    font-family: 'Adumu';
+    font-family: 'Pirata One', cursive;
     transition: background-color 0.3s ease;
 }
 
