@@ -141,7 +141,7 @@ export default class Game extends Phaser.Scene {
         if (this.selectedAction === "run") this.actionRun();
         if (this.selectedAction === "buy") this.actionBuy();
         if (this.selectedAction === "fight") this.actionFight();
-        this.checkGameOver();
+        //this.checkGameOver();
     }
 
     actionRun () {
@@ -151,7 +151,25 @@ export default class Game extends Phaser.Scene {
 
     actionBuy () {
         this.showInfo("Go shopping!")
+        console.log("Selected_", this.result)
+        this.itemsToBuy = this.result.filter(item => !["enemy", "chest0"].includes(items[item].type) );
+        this.buyStuff();
+    }
+
+    finishActionBuy () {
         this.character.hit(1);
+    }
+
+    buyStuff() {
+        console.log("Buying stuff", this.itemsToBuy)
+        this.itemsToBuy.forEach(item => {
+            const object = items[item];
+            console.log("Buying ", this.character.coins, object.value)
+            if (this.character.coins >= object.value) {
+                this.character.buy(object);
+                this.showInfo(`${object.name} for ${object.value}$`)
+            }
+        })
     }
 
     actionFight () {
@@ -187,6 +205,7 @@ export default class Game extends Phaser.Scene {
     }
 
     animate (index) {
+       // if (this.itemDetails) this.itemDetails.clear(true, true);
         const item = this.cells[index][1]
         item.setOrigin(0);
         this.tweens.add({
