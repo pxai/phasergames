@@ -53,6 +53,7 @@ export default class Game extends Phaser.Scene {
 
 
     addUI () {
+        this.itemDetails = this.add.group();
        // this.add.rectangle(0, this.canvasPadding, this.width, this.height, this.canvasColor).setOrigin(0)
         this.add.bitmapText(0, 0, "mainFont", "Slotgeon", 20).setOrigin(0, 0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
 
@@ -85,7 +86,7 @@ export default class Game extends Phaser.Scene {
     spin () {
         const totalRepeats = 20;
         let completedRepeats = 0;
-
+        this.removeItemDetails ()
         this.time.addEvent({
             delay: 200,
             callback: () => {
@@ -136,6 +137,7 @@ export default class Game extends Phaser.Scene {
     }
 
     runAction(votes) {
+        this.timeToVoteText.setAlpha(0);
         this.selectedAction = this.areEmpty(votes) ? Phaser.Math.RND.pick(["run", "fight", "buy"]) : votes[0].action;
 
         if (this.selectedAction === "run") this.actionRun();
@@ -180,7 +182,8 @@ export default class Game extends Phaser.Scene {
         this.infoText.setText(message);
         this.tweens.add({
             targets: this.infoText,
-            duration: 3000,
+            duration: 5000,
+            ease: 'cubic',
             alpha: { from: 1, to: 0}
         })
     }
@@ -204,8 +207,17 @@ export default class Game extends Phaser.Scene {
 
     }
 
+    removeItemDetails () {
+        if (this.itemDetails)  {
+            this.itemDetails.getChildren().forEach(function(child) {
+                child.destroy();
+            }, this);
+            this.itemDetails.clear(true, true);
+        }
+    }
+
     animate (index) {
-       // if (this.itemDetails) this.itemDetails.clear(true, true);
+
         const item = this.cells[index][1]
         item.setOrigin(0);
         this.tweens.add({
@@ -222,7 +234,6 @@ export default class Game extends Phaser.Scene {
 
     showItemDetail(item, x, y) {
         const itemInfo = items[item.texture.key];
-        this.itemDetails = this.add.group();
         this.itemDetails.add(this.add.bitmapText(x, y - 12, "mainFont", itemInfo["name"], 10).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
 
         ["attack", "defense", "value"].forEach((value, i) => {
