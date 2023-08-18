@@ -1,0 +1,139 @@
+/* Apply a flex container to the <body> to center its children */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensure the container takes at least the full viewport height */
+    margin: 0;
+    background-color: #730030;
+    color: #4BBED3;
+    font-size: 1.2em;
+    font-family: 'Nerko One',Lato,LatoExtended,sans-serif;
+}
+
+.title {
+    font-size: 3em;
+}
+
+.title, h2 {
+    font-family: 'Nerko One',Lato,LatoExtended,sans-serif;
+    text-align: center;
+}
+
+/* Create a two-column layout using flex */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Style the left column for the logo */
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+    width: 200px;
+    height: 200px;
+    background-color: #4BBED3;
+    border-radius: 50%;
+
+}
+
+.letter {
+    margin-top: -10px;
+    font-size: 12em;
+    color: #730030;
+    font-family: 'Nerko One',Lato,LatoExtended,sans-serif;
+    align-items: center;
+}
+
+
+.floating-div {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+
+}
+
+
+/* Center the form in the right column */
+.form-container {
+    padding: 0 1.2em;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Add some spacing between form elements */
+.form-container > * {
+    margin-bottom: 10px;
+}
+label {
+}
+/* Style form elements */
+input, textarea {
+    font-family: 'Nerko One',Lato,LatoExtended,sans-serif;
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+}
+
+input[type="submit"] {
+    background-color:#FEE24E;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color:rgb(239, 143, 151);
+}
+
+a {
+    color:rgb(239, 143, 151);
+}
+
+.list-row {
+    display: none;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+
+}
+
+.list {
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: rgb(143, 20, 31)
+}
+
+.list-item {
+    margin: 5px 0;
+    color: rgb(239, 143, 151);
+}
+
+footer {
+    clear: both;
+    text-align: center;
+}
+
+.notes {
+    text-align: center;
+}

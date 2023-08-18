@@ -1,0 +1,70 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBJ2S2DDKK"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VBJ2S2DDKK');
+  </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
+  <title>Romanica: a roman version of Numerica</title>
+</head>
+<body>
+
+  <div class="container">
+    <div class="logo">
+        <img src="assets/images/logo.png" alt="Romanica Logo" width="300">
+      <div class="title">
+        Romanica
+      </div>
+      <div class="subtitle">
+        Twitch Game
+      </div>
+    </div>
+    <div class="form-container">
+      <header>
+        <h2>Options</h2>
+      </header>
+      <form action="game.html">
+          <div><label for="channel">Channel</label></div>
+          <div><input type="text" name="channel" id="channel" value="devdiaries"></div>
+          <div><label for="background">Background Color</label></div>
+          <div><input type="color" name="background" id="background", value = '#00b140'></div>
+          <div><label for="rectangle">Rectangle Color</label></div>
+          <div><input type="color" name="rectangle" id="rectangle", value = '#730030' onInput="changeColors()"></div>
+          <div><label for="numbers">Numbers Color</label></div>
+          <div><input type="color" name="numbers" id="numbers", value = '#4BBED3' onInput="changeColors()"></div>
+          <br />
+          <div><input type="submit", value = 'PLAY'></div>
+      </form>
+      <footer>
+        <div>Based on <a href="https://rothiotome.itch.io/numerica">Numerica by Rothio Tome</a></div>
+        <div><a href="https://pello.itch.io">By Pello</a></div>
+      </footer>
+  </div>
+    </div>
+  </div>
+  <script>
+    const roundBlock = document.getElementById('round');
+
+    function changeColors() {
+      roundBlock.style.backgroundColor = document.forms[0].elements[3].value;
+      document.body.style.backgroundColor = document.forms[0].elements[2].value;
+    }
+
+</script>
+
+</body>
+</html>
+
