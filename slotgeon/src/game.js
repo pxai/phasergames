@@ -67,9 +67,16 @@ export default class Game extends Phaser.Scene {
     generateCharacter () {
         this.character = new Character(this, 0, 128, "knight").setOrigin(0, 0.5)
         this.infoGroup = this.add.group();
-        [this.character.attack, this.character.defense, this.character.health].forEach((text, i) => {
-            this.infoGroup.add(this.add.bitmapText(32 + (32 * i), 128, "mainFont", text, 12).setOrigin(0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
+        [this.character.attack, this.character.defense, this.character.health, this.character.coins].forEach((text, i) => {
+            this.infoGroup.add(this.add.bitmapText(32 + (20 * i), 128, "mainFont", text, 12).setOrigin(0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
         })
+    }
+
+    updateCharacterInfo() {
+        const values = [this.character.attack, this.character.defense, this.character.health, this.character.coins];
+        this.infoGroup.getChildren().forEach((text,i) => {
+            text.setText(values[i]);        
+        });
     }
 
     addPlayer (name) {
@@ -149,6 +156,8 @@ export default class Game extends Phaser.Scene {
     actionRun () {
         this.showInfo("Runs like a rat!")
         this.character.hit(2);
+        this.updateCharacterInfo()
+        this.time.delayedCall(3000, () => { this.spin() }, null, this );
     }
 
     actionBuy () {
@@ -156,11 +165,11 @@ export default class Game extends Phaser.Scene {
         console.log("Selected_", this.result)
         this.itemsToBuy = this.result.filter(item => !["enemy", "chest0"].includes(items[item].type) );
         this.buyStuff();
+        this.character.hit(1);
+        this.updateCharacterInfo()
+        this.time.delayedCall(3000, () => { this.spin() }, null, this );
     }
 
-    finishActionBuy () {
-        this.character.hit(1);
-    }
 
     buyStuff() {
         console.log("Buying stuff", this.itemsToBuy)
@@ -176,6 +185,22 @@ export default class Game extends Phaser.Scene {
 
     actionFight () {
         this.showInfo("You chose violence!")
+        console.log("Selected_", this.result)
+        this.enemiesToFight = this.result.filter(item => items[item].type === "enemy");
+        this.fightStuff();
+        this.updateCharacterInfo()
+        this.time.delayedCall(3000, () => { this.spin() }, null, this );
+    }
+
+    fightStuff() {
+        console.log("Fighting enemies", this.enemiesToFight)
+        this.enemiesToFight.forEach(enemy => {
+            const foe = items[enemy];
+            console.log("fighting ", this.character.coins, foe.value)
+            const attack = this.character.defense - foe.attack;
+            this.character.hit(attack);
+            this.showInfo(`Hit with ${attack}$`)
+        })
     }
 
     showInfo(message) {
@@ -237,7 +262,7 @@ export default class Game extends Phaser.Scene {
         this.itemDetails.add(this.add.bitmapText(x, y - 12, "mainFont", itemInfo["name"], 10).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
 
         ["attack", "defense", "value"].forEach((value, i) => {
-            this.itemDetails.add(this.add.bitmapText(x + 32 + (i * 32), y, "mainFont", itemInfo[value], 12).setOrigin(0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
+            this.itemDetails.add(this.add.bitmapText(x + 32 + (i * 20), y, "mainFont", itemInfo[value], 12).setOrigin(0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
         })
     }
 
