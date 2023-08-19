@@ -100,8 +100,9 @@ export default class Game extends Phaser.Scene {
         const totalRepeats = 20;
         let completedRepeats = 0;
         this.removeOverInfo()
-        this.removeItemDetails ()
+        this.removeItemDetails()
         this.playAudio("slot")
+        this.playAudio("reel")
         this.time.addEvent({
             delay: 200,
             callback: () => {
@@ -287,7 +288,7 @@ export default class Game extends Phaser.Scene {
     showItemDetail(item, x, y) {
         const itemInfo = items[item.texture.key];
         this.itemDetails.add(this.add.bitmapText(x, y - 16, "mainFont", itemInfo["name"], 12).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
-
+        this.playAudio("pick");
         ["attack", "defense", "value"].forEach((value, i) => {
             this.itemDetails.add(this.add.bitmapText(x + 32 + (i * 20), y, "mainFont", itemInfo[value], 12).setOrigin(0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
         })
@@ -328,6 +329,8 @@ export default class Game extends Phaser.Scene {
             "chicken": this.sound.add("chicken"),
             "sword": this.sound.add("sword"),
             "slot": this.sound.add("slot"),
+            "reel": this.sound.add("reel"),
+            "pick": this.sound.add("pick"),
         };
       }
 
