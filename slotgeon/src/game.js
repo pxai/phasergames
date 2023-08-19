@@ -73,7 +73,7 @@ export default class Game extends Phaser.Scene {
         this.infoGroup = this.add.group();
         this.showOverInfo(this.character.heroName.replace(" ", "\n") + "\n!slot to start");
         ["attack", "defense", "heart", "chest"].forEach((text, i) => {
-            this.infoGroup.add(this.add.sprite(32 + (20 * i), 120, text).setOrigin(0.5).setScale(0.8));
+            this.add.sprite(32 + (20 * i), 120, text).setOrigin(0.5).setScale(0.8)
         });
         [this.character.attack, this.character.defense, this.character.health, this.character.coins].forEach((text, i) => {
             this.infoGroup.add(this.add.bitmapText(32 + (20 * i), 128, "mainFont", text, 12).setOrigin(0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
@@ -83,7 +83,7 @@ export default class Game extends Phaser.Scene {
     updateCharacterInfo() {
         const values = [this.character.attack, this.character.defense, this.character.health, this.character.coins];
         this.infoGroup.getChildren().forEach((text,i) => {
-            text.setText(values[i]);        
+            if (text) text.setText(values[i]);        
         });
     }
 
