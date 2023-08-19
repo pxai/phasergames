@@ -3,6 +3,7 @@ import Chat from "./chat";
 import items from "./items";
 import SlotMachine from "./slot";
 import Character from "./character";
+import Chest from "./chest";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -22,6 +23,8 @@ export default class Game extends Phaser.Scene {
         let param = urlParams.get('background') || "#00b140";
         param = parseInt(param.substring(1), 16)
         this.backgroundColor = '0x' + param.toString(16)
+        this.votingTime = +urlParams.get('votingTime') * 1000 || 5000;
+        this.spinning = false;
     }
 
     create () {
@@ -40,6 +43,7 @@ export default class Game extends Phaser.Scene {
         this.slot = new SlotMachine(Object.keys(items));
         this.stopThisShit = false;
         this.generateCharacter();
+        this.loadAudios();
     }
 
     addChat () {
@@ -54,19 +58,20 @@ export default class Game extends Phaser.Scene {
 
     addUI () {
         this.itemDetails = this.add.group();
+        this.overInfo = this.add.group()
        // this.add.rectangle(0, this.canvasPadding, this.width, this.height, this.canvasColor).setOrigin(0)
         this.add.bitmapText(0, 0, "mainFont", "Slotgeon", 20).setOrigin(0, 0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
 
         this.add.rectangle(0, 32, 98, 32, 0x000000).setOrigin(0, 0.5).setAlpha(0.2);
         this.add.rectangle(0, 64, 98, 32, 0x000000).setOrigin(0, 0.5).setAlpha(0.5);
         this.add.rectangle(0, 96, 98, 32, 0x000000).setOrigin(0, 0.5).setAlpha(0.2);
-        this.timeToVoteText = this.add.bitmapText(48, 48, "mainFont", "", 18).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
-        this.infoText = this.add.bitmapText(0, 48, "mainFont", "", 14).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
+        //this.chest = new Chest(this, 64, 196)
     }
 
     generateCharacter () {
         this.character = new Character(this, 0, 128, "knight").setOrigin(0, 0.5)
         this.infoGroup = this.add.group();
+        this.showOverInfo(this.character.heroName.replace(" ", "\n") + "\n!slot to start");
         [this.character.attack, this.character.defense, this.character.health, this.character.coins].forEach((text, i) => {
             this.infoGroup.add(this.add.bitmapText(32 + (20 * i), 128, "mainFont", text, 12).setOrigin(0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
         })
@@ -91,9 +96,12 @@ export default class Game extends Phaser.Scene {
     }
 
     spin () {
+        this.spinning = true;
         const totalRepeats = 20;
         let completedRepeats = 0;
+        this.removeOverInfo()
         this.removeItemDetails ()
+        this.playAudio("slot")
         this.time.addEvent({
             delay: 200,
             callback: () => {
@@ -133,11 +141,12 @@ export default class Game extends Phaser.Scene {
 
     round (index = 0) {
         //this.infoGroup.setAlpha(0)
+        this.showOverInfo("VOTE\n!run\n!fight\n!buy");
         this.getSlotResult();
         this.face(index)
         this.timeToVote = 5;
         this.countDown();
-        this.time.delayedCall(5000, () => {
+        this.time.delayedCall(this.votingTime, () => {
             this.runAction(this.calculateVotes());
 
         }, null, this)
@@ -151,13 +160,21 @@ export default class Game extends Phaser.Scene {
         if (this.selectedAction === "buy") this.actionBuy();
         if (this.selectedAction === "fight") this.actionFight();
         //this.checkGameOver();
+        this.spinning = false;
     }
 
     actionRun () {
+        this.playChicken();
         this.showInfo("Runs like a rat!")
-        this.character.hit(2);
+        this.hit(2);
         this.updateCharacterInfo()
-        this.time.delayedCall(3000, () => { this.spin() }, null, this );
+        this.time.delayedCall(3000, () => { if (!this.spinning) this.spin() }, null, this );
+    }
+
+    hit(points) {
+        this.character.hit(points);
+        this.playAudio("punch");
+        this.cameras.main.shake(100 * points);
     }
 
     actionBuy () {
@@ -165,9 +182,9 @@ export default class Game extends Phaser.Scene {
         console.log("Selected_", this.result)
         this.itemsToBuy = this.result.filter(item => !["enemy", "chest0"].includes(items[item].type) );
         this.buyStuff();
-        this.character.hit(1);
+        this.hit(1);
         this.updateCharacterInfo()
-        this.time.delayedCall(3000, () => { this.spin() }, null, this );
+        this.time.delayedCall(3000, () => { if (!this.spinning) this.spin() }, null, this );
     }
 
 
@@ -189,7 +206,7 @@ export default class Game extends Phaser.Scene {
         this.enemiesToFight = this.result.filter(item => items[item].type === "enemy");
         this.fightStuff();
         this.updateCharacterInfo()
-        this.time.delayedCall(3000, () => { this.spin() }, null, this );
+        this.time.delayedCall(3000, () => { if (!this.spinning) this.spin() }, null, this );
     }
 
     fightStuff() {
@@ -197,8 +214,9 @@ export default class Game extends Phaser.Scene {
         this.enemiesToFight.forEach(enemy => {
             const foe = items[enemy];
             console.log("fighting ", this.character.coins, foe.value)
+            this.playAudio("sword")
             const attack = this.character.defense - foe.attack;
-            this.character.hit(attack);
+            this.hit(attack);
             this.showInfo(`Hit with ${attack}$`)
         })
     }
@@ -227,7 +245,7 @@ export default class Game extends Phaser.Scene {
     }
 
     face(index) {
-        this.showInfo("Face: ", this.result[index])
+       // this.showInfo("Face: ", this.result[index])
         this.animate(index);
 
     }
@@ -241,8 +259,17 @@ export default class Game extends Phaser.Scene {
         }
     }
 
-    animate (index) {
+    removeOverInfo () {
+        console.log("Removing over info: ")
+        if (this.overInfo)  {
+            this.overInfo.getChildren().forEach(function(child) {
+                child.destroy();
+            }, this);
+            this.overInfo.clear(true, true);
+        }
+    }
 
+    animate (index) {
         const item = this.cells[index][1]
         item.setOrigin(0);
         this.tweens.add({
@@ -259,11 +286,32 @@ export default class Game extends Phaser.Scene {
 
     showItemDetail(item, x, y) {
         const itemInfo = items[item.texture.key];
-        this.itemDetails.add(this.add.bitmapText(x, y - 12, "mainFont", itemInfo["name"], 10).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
+        this.itemDetails.add(this.add.bitmapText(x, y - 16, "mainFont", itemInfo["name"], 12).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
 
         ["attack", "defense", "value"].forEach((value, i) => {
             this.itemDetails.add(this.add.bitmapText(x + 32 + (i * 20), y, "mainFont", itemInfo[value], 12).setOrigin(0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
         })
+    }
+
+    showGeneralInfo(item, x, y) {
+        const itemInfo = items[item.texture.key];
+        this.itemDetails.add(this.add.bitmapText(x, y - 16, "mainFont", itemInfo["name"], 12).setOrigin(0).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
+
+        ["attack", "defense", "value"].forEach((value, i) => {
+            this.itemDetails.add(this.add.bitmapText(x + 32 + (i * 20), y, "mainFont", itemInfo[value], 12).setOrigin(0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7));
+        })
+    }
+
+    showOverInfo(message) {
+        console.log("Showing over info: ", message)
+        this.overRectangle = this.add.rectangle(0, 16, 98, 98, 0x000000).setAlpha(0.5).setOrigin(0)
+        this.infoText = this.add.bitmapText(48, 90, "mainFont", "", 14).setOrigin(0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
+        this.timeToVoteText = this.add.bitmapText(48, 90, "mainFont", "", 18).setOrigin(0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7);
+        this.overTextTitle = this.add.bitmapText(48, 48, "mainFont", message, 14).setOrigin(0.5).setTint(0xc9bf27).setDropShadow(1, 1, 0x540032, 0.7)
+        this.overInfo.add(this.timeToVoteText);
+        this.overInfo.add(this.overTextTitle);
+        this.overInfo.add(this.overRectangle);
+        this.overInfo.add(this.infoText);
     }
 
     getSlotResult () {
@@ -276,24 +324,28 @@ export default class Game extends Phaser.Scene {
 
     loadAudios () {
         this.audios = {
+            "punch": this.sound.add("punch"),
+            "chicken": this.sound.add("chicken"),
+            "sword": this.sound.add("sword"),
+            "slot": this.sound.add("slot"),
         };
       }
 
       playAudio(key) {
+        console.log("playing: ", key)
         this.audios[key].play();
       }
 
-      playAudioRandomly(key) {
+      playChicken(key = "chicken") {
+        const soundDuration = this.audios[key].duration;
+        const randomStartTime = Phaser.Math.FloatBetween(0, soundDuration);
+        const randomDuration = Phaser.Math.FloatBetween(2, 3);
         const volume = Phaser.Math.Between(0.8, 1);
         const rate = Phaser.Math.Between(0.8, 1);
-        this.audios[key].play({volume, rate});
-      }
-
-    playRandom(key) {
         this.audios[key].play({
-          rate: Phaser.Math.Between(1, 1.5),
-          detune: Phaser.Math.Between(-1000, 1000),
-          delay: 0
+            volume, rate,
+            seek: randomStartTime,
+            duration: randomDuration
         });
       }
 
@@ -333,6 +385,9 @@ export default class Game extends Phaser.Scene {
     }
 
     vote (playerName, vote) {
+        if (vote === "slot" && !this.spinning)  {            
+            this.spin();
+        }
         console.log("Game> vote: ", playerName, vote)
         const player = this.addPlayer(playerName);
         console.log("Game> guess go on: ", player, player.vote, vote)

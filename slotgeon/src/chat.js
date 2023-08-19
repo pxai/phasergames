@@ -42,11 +42,11 @@ export default class Chat {
             if (message.toLowerCase() === "!hello") {
                 this.client.say(channel, `@${tags.username}, heya!`);
             }
-            this.processMessage(channel, tags.username, message)
+            this.scene.vote(tags.username, message.substring(1))
         });
 
         this.client.on("chat", async (channel, user, message, self) => {
-            this.processMessage(channel, user["display-name"], message)
+            this.scene.vote(user["display-name"], message.substring(1))
         });
     }
 

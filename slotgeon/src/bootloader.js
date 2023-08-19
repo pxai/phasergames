@@ -23,13 +23,17 @@ export default class Bootloader extends Phaser.Scene {
             this.scene.start("game", { next: "game", name: "STAGE", number: 0, time: 30 });
         }, this);
 
-        Array(4).fill(0).forEach((e, i) => { this.load.audio(`thunder${i}`, `./assets/sounds/thunder${i}.mp3`);})
+
+        this.load.audio("chicken", "assets/sounds/chicken.mp3");
+        this.load.audio("punch", "assets/sounds/punch.mp3");
+        this.load.audio("sword", "assets/sounds/sword.mp3");
+        this.load.audio("slot", "assets/sounds/slot.mp3");
 
         this.load.image("pello", "assets/images/pello.png");
         this.load.image("logo", "assets/images/logo.png");
         this.load.image("attack", "assets/images/items/sword0.png");
         this.load.image("defense", "assets/images/items/shield.png");
-
+        this.load.spritesheet("chest", "assets/images/chest.png", { frameWidth: 16, frameHeight: 16 });
         //this.load.audio("step", "assets/sounds/step.mp3");
 
         const images = [
