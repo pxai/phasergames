@@ -1,9 +1,9 @@
 export default class SlotMachine {
-  constructor(symbols) {
+  constructor(symbols, bonus) {
     this.columns = [[], [], []];
     this.currentPositions = [0, 0, 0];
     this.isSpinning = false;
-    this.generateSymbolColumns(symbols);
+    this.generateSymbolColumns(symbols.concat(Array(5).fill(bonus)));
     this.counter = 3;
   }
 
