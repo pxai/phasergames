@@ -136,7 +136,8 @@ class Player extends Phaser.GameObjects.Container {
     hit (points, shooter) {
         this.health -= points;
         if (this.health <= 0) {
-            this.scene.addKill(this.name, shooter)
+            if (shooter !== this.name)
+                this.scene.addKill(this.name, shooter)
             this.die();
         }
 

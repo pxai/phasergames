@@ -38,7 +38,7 @@ export default class Game extends Phaser.Scene {
         this.spamTimeWait = 2;
         this.result = Phaser.Math.Between(1, 9);
         this.cursor = this.input.keyboard.createCursorKeys();
-        this.timeToAnswer = 5000;
+        this.timeToAnswer = 10000;
         this.timeCount = this.timeToAnswer / 1000;
         this.infiniteLoop = !this.rounds;
     }

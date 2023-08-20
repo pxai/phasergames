@@ -141,7 +141,7 @@ export default class Game extends Phaser.Scene {
     marco (playerName) {
         const player = this.allPlayers[playerName];
         if (player instanceof Player === false) return;
-        if (player.marcoUsed) return;
+        //if (player.marcoUsed) return;
         this.updateInfoPanel("POLO!!")
         player.marcoUsed = true;
         console.log("Marco!")

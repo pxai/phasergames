@@ -79,20 +79,24 @@ export default class Game extends Phaser.Scene {
 
 
     paint (playerName, x, y, color = "#000000", size = 4) {
-        if (this.stopThisShit) return;
-        const player = this.addPlayer(playerName);
-        if (!player) return;
+        try {
+            if (this.stopThisShit) return;
+            const player = this.addPlayer(playerName);
+            if (!player) return;
 
-        if (this.isValidXNumber(x) && this.isValidYNumber(y) && this.isValidColor(color) && this.isValidSize(size)) {
-            if (this.mode === "pixelArt") {
-                this.add.rectangle(x, y + this.canvasPadding, this.pixelArtSize, this.pixelArtSize, this.rgbtoHex(color));
+            if (this.isValidXNumber(x) && this.isValidYNumber(y) && this.isValidColor(color) && this.isValidSize(size)) {
+                if (this.mode === "pixelArt") {
+                    this.add.rectangle(x, y + this.canvasPadding, this.pixelArtSize, this.pixelArtSize, this.rgbtoHex(color));
+                } else {
+                    this.add.circle(x, y + this.canvasPadding, size, this.rgbtoHex(color));
+                }
+
+                console.log(`Painting ${player.name}to ${x} ${y} ${color} mode: ${this.mode}`)
             } else {
-                this.add.circle(x, y + this.canvasPadding, size, this.rgbtoHex(color));
+                this.chat.say(`Player ${playerName} invalid attack values. Use speed: 0-100, angle: 0-360!`);
             }
-
-            console.log(`Painting ${player.name}to ${x} ${y} ${color} mode: ${this.mode}`)
-        } else {
-            this.chat.say(`Player ${playerName} invalid attack values. Use speed: 0-100, angle: 0-360!`);
+        } catch (error) {
+            console.log("Just in case the unexpected happens: ", error)
         }
     }
 

@@ -53,7 +53,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addBasket () {
-        const x = Phaser.Math.Between(32, this.width - 32);
+        const x = Phaser.Math.Between(128, this.width - 32);
         const y = Phaser.Math.Between(128, this.height/3);
         if (this.basket) {
             this.basket.x = this.table.x = x;
@@ -251,13 +251,17 @@ export default class Game extends Phaser.Scene {
     }
 
     update () {
-        if (Phaser.Input.Keyboard.JustDown(this.cursor.up)) {
-            this.attack("devdiaries", Phaser.Math.Between(0, 100), Phaser.Math.Between(180, 360));
-        }
+        // if (Phaser.Input.Keyboard.JustDown(this.cursor.up)) {
+        //     this.attack("devdiaries", Phaser.Math.Between(0, 100), Phaser.Math.Between(180, 360));
+        // }
 
-        if (Phaser.Input.Keyboard.JustDown(this.cursor.down)) {
-            this.gotcha(this.allPlayers["devdiaries"])
-        }
+        // if (Phaser.Input.Keyboard.JustDown(this.cursor.left)) {
+        //     this.attack("devdiaries" + Phaser.Math.Between(0, 100), Phaser.Math.Between(0, 100), Phaser.Math.Between(180, 360));
+        // }
+
+        // if (Phaser.Input.Keyboard.JustDown(this.cursor.down)) {
+        //     this.gotcha(this.allPlayers["devdiaries"])
+        // }
     }
 
     showResult () {
@@ -267,8 +271,8 @@ export default class Game extends Phaser.Scene {
         console.log("ScoreBoard: ", scoreBoard)
         this.scores.add(this.add.bitmapText(8, 8, "mainFont", "Chat Gasol - Scoreboard", 30).setOrigin(0).setTint(0x539DDB).setDropShadow(1, 1, 0xffffff, 0.7));
         scoreBoard.slice(0, 5).forEach((player, i) => {
-            const winnerText = `${i+1}.  ${player.name}: ${player.points}`;
-            this.scores.add(this.add.bitmapText(20, 36 + (i * 50), "mainFont", winnerText, 30).setOrigin(0).setTint(this.mainColor).setDropShadow(1, 1, 0xffffff, 0.7));
+            const winnerText = `${i+1}.  ${player.name.substring(0, 11)}: ${player.points}`;
+            this.scores.add(this.add.bitmapText(20, 42 + (i * 40), "mainFont", winnerText, 30).setOrigin(0).setTint(this.mainColor).setDropShadow(0.5, .5, 0xffffff, 0.7));
         })
 
         this.tweens.add({

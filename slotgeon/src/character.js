@@ -10,7 +10,7 @@ class Character extends Phaser.GameObjects.Sprite{
         this.heroName = new NameGenerator().generateName();
         this.health = 100;
         this.attack = 10;
-        this.defense = 10;
+        this.defense = 5;
         this.level = 1;
         this.coins = 100;
     }

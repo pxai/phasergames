@@ -92,6 +92,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addPlayer (name) {
+        if ( this.allPlayers[name]) return;
         const player = this.chooseSide(name);
 
         this.physics.add.collider(player, this.platform, this.hitFloor, () => {

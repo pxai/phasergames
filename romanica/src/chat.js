@@ -40,7 +40,7 @@ export default class Chat {
             console.log(`Message: ${tags.username} just ${message}`);
             // if(self) return;
             if (this.isValidEntry(message)) {
-                this.scene.guess(tags.username, message.substring(1).trim().toLowerCase());
+                this.scene.guess(tags.username, message.substring(1).trim().toUpperCase());
             }
         });
 
@@ -55,7 +55,7 @@ export default class Chat {
             const username = user["display-name"];
 
             if (this.isValidEntry(message)) {
-                this.scene.guess(username, message.substring(1).trim().toLowerCase());
+                this.scene.guess(username, message.substring(1).trim().toUpperCase());
             }
         });
     }

@@ -82,7 +82,7 @@ export default class Game extends Phaser.Scene {
 
     updateCharacterInfo() {
         const values = [this.character.attack, this.character.defense, this.character.health, this.character.coins];
-        this.infoGroup.getChildren().forEach((text,i) => {
+        this.infoGroup.getChildren().slice(0, 4).forEach((text,i) => {
             if (text) text.setText(values[i]);        
         });
     }
@@ -148,7 +148,7 @@ export default class Game extends Phaser.Scene {
         this.showOverInfo("VOTE\n!run\n!fight\n!buy");
         this.getSlotResult();
         this.face(index)
-        this.timeToVote = 5;
+        this.timeToVote = 10;
         this.countDown();
         this.time.delayedCall(this.votingTime, () => {
             this.runAction(this.calculateVotes());
