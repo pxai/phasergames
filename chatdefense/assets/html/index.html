@@ -46,7 +46,9 @@
                   <option value="es">ES</option>
                 </select>
             </div>
-            <div><input type="submit", value = 'PLAY'></div>
+            <div><input type="submit", value = 'PLAY'>
+              <input type="button" value = 'PLAY IN POPUP' onclick="openCopy()">
+            </div>
         </form>
         <footer>
           <a href="https://pello.itch.io" id="">By Pello</a>
@@ -54,5 +56,17 @@
     </div>
   </div>
 
+  <script>
+    function openCopy() {
+      const currentUrl = window.location.href;
+      const copyWindow = window.open(currentUrl, 'Game', 'width=400,height=300,menubar=no,toolbar=no,searchlocation=no,resizable=no,scrollbars=no,status=no');
+
+      if (copyWindow) {
+        copyWindow.focus();
+      } else {
+        alert('Popup blocked. Please allow popups for this site.');
+      }
+    }
+  </script>
 </body>
 </html>

@@ -28,6 +28,8 @@ export default class Game extends Phaser.Scene {
 
         this.speed = +urlParams.get('speed') || 10;
         this.backgroundColor = '0x' + param.toString(16)
+
+        this.mode = urlParams.get('mode') || "hard";
     }
 
     create () {
@@ -48,6 +50,7 @@ export default class Game extends Phaser.Scene {
         this.gameLayer = this.add.layer();
         this.letterGenerator = new LetterGenerator(this);
         this.cursor = this.input.keyboard.createCursorKeys();
+
 
     }
 
@@ -247,7 +250,7 @@ export default class Game extends Phaser.Scene {
     }
 
     solvesWithCurrent (word) {
-        return word.split().some((string) => this.currentLetters().indexOf(string) === -1);
+        return word.split("").every((string) => this.currentLetters().includes(string));
     }
 
     checkGameOver () {

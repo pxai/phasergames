@@ -48,7 +48,6 @@ h1, h2 {
 .form-container {
     flex: 2;
     padding: 20px;
-    border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: rgb(92, 188, 100);
@@ -73,18 +72,30 @@ input, textarea, select {
     font-family: 'Germania One', cursive, Arial, sans-serif;
 }
 
+input[type=button], input[type=submit], input[type=reset] {
+    width: 49%;
+}
+
+input[type="color"] {
+    box-sizing     : border-box;
+    vertical-align : top;
+    font-size      : 12px;
+    height         : 50px;
+    background     : #0000;
+    }
+
 textarea {
     resize: vertical;
 }
 
-input[type="submit"] {
+input[type="submit"],input[type=button] {
     background-color:  rgb(12, 60, 12);
     color: rgb(255, 222, 89);
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-input[type="submit"]:hover {
+input[type="submit"]:hover,input[type=button]:hover {
     background-color:rgb(92, 188, 100);
 }
 
