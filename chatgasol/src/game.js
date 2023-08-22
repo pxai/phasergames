@@ -21,6 +21,7 @@ export default class Game extends Phaser.Scene {
         let param = urlParams.get('background') || "#00b140";
         param = parseInt(param.substring(1), 16)
         this.backgroundColor = '0x' + param.toString(16)
+        this.character = urlParams.get('channel').toLowerCase() === "niv3k_el_pato" ? "quack" : "gasol";
     }
 
     create () {
@@ -36,7 +37,7 @@ export default class Game extends Phaser.Scene {
         this.addGameElements();
         this.addMap();
        // this.addHelp();
-        this.addPlayer ()
+        this.addColliders ()
         this.cursor = this.input.keyboard.createCursorKeys();
     }
 
@@ -49,6 +50,7 @@ export default class Game extends Phaser.Scene {
         this.clearScores()
         this.addGasol();
         this.addBasket();
+        this.addColliders();
         this.playing = true;
     }
 
@@ -56,19 +58,17 @@ export default class Game extends Phaser.Scene {
         const x = Phaser.Math.Between(128, this.width - 32);
         const y = Phaser.Math.Between(128, this.height/3);
         if (this.basket) {
-            this.basket.x = this.table.x = x;
-            this.basket.y = y;
-            this.table.y = y - 40;
-        } else {
-            this.table = this.add.image(x, y - 40, "table")
-            this.basket = new Basket(this, x, y);
-        }
+            this.basket.destroy();
+            this.table.destroy();
+        } 
+        this.table = this.add.image(x, y - 40, "table")
+        this.basket = new Basket(this, x, y);
       }
 
     addGasol () {
         if (this.gasol) this.gasol.destroy();
         const {x, y} = {x: Phaser.Math.Between(32, this.width - 64), y: this.height - 32};
-        this.gasol = new Gasol(this, x, y);
+        this.gasol = new Gasol(this, x, y, this.character);
     }
 
     addHelp () {
@@ -85,26 +85,31 @@ export default class Game extends Phaser.Scene {
         this.texts = [];
     }
 
-    addPlayer () {
-        this.physics.add.collider(this.playerGroup, this.basket, this.hitBasket, ()=>{
+    addColliders () {
+        if (this.collider1) {
+            this.collider1.destroy();
+            this.collider2.destroy();
+        }
+
+        this.collider1 = this.physics.add.collider(this.playerGroup, this.basket, this.hitBasket, ()=>{
             return true;
           }, this);
 
-          this.physics.add.overlap(this.playerGroup, this.basket.entrance, this.gotcha, ()=>{
+        this.collider2 = this.physics.add.overlap(this.playerGroup, this.basket.entrance, this.gotcha, ()=>{
             return true;
           }, this);
 
-          this.physics.add.collider(this.batGroup, this.physics.world.bounds.left, () => {
-            this.turnFoe();
-          }, null, this);
+        //   this.physics.add.collider(this.batGroup, this.physics.world.bounds.left, () => {
+        //     this.turnFoe();
+        //   }, null, this);
 
-          this.physics.add.collider(this.batGroup, this.physics.world.bounds.right, () => {
-            this.turnFoe();
-          }, null, this);
+        //   this.physics.add.collider(this.batGroup, this.physics.world.bounds.right, () => {
+        //     this.turnFoe();
+        //   }, null, this);
 
-          this.physics.add.collider(this.playerGroup, this.batGroup, this.hitBat, ()=>{
-            return true;
-          }, this);
+        //   this.physics.add.collider(this.playerGroup, this.batGroup, this.hitBat, ()=>{
+        //     return true;
+        //   }, this);
     }
 
     hitBorder (point) {
@@ -127,8 +132,9 @@ export default class Game extends Phaser.Scene {
       }
 
     gotcha (player) {
+        if (player && player.dead) return;
         console.log("This is the player: ", player)
-        this.playAudio("gotcha")
+        this.playAudio(this.character === "quack" ? "quack" : "gotcha")
         this.gasol.celebrate();
         this.basket.anims.play("basket", true);
         //this.ball.destroy();
@@ -221,6 +227,7 @@ export default class Game extends Phaser.Scene {
           "win": this.sound.add("win"),
           "break": this.sound.add("break"),
           "start": this.sound.add("start"),
+          "quack": this.sound.add("quack"),
         };
       }
 
@@ -285,7 +292,6 @@ export default class Game extends Phaser.Scene {
         })
 
         this.time.delayedCall(4000, () => {
-            console.log("CLEARING OUT!! ")
             this.addGameElements();
         }, null, this)
     }
