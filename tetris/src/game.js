@@ -26,7 +26,6 @@ export default class Game extends Phaser.Scene {
         this.addKeys();
 
         this.addFigure();
-        // this.addEnemy();
         this.addColliders();
         // this.loadAudios();
         // this.playMusic();
@@ -35,32 +34,13 @@ export default class Game extends Phaser.Scene {
     addFigure () {
         this.figures = this.add.group();
 
-        // this.figure = new Figure(this, this.center_width, this.center_height + 128);
-    }
-
-    addEnemy () {
-        this.enemies = this.add.group();
-        this.enemy = new Enemy(this, this.center_width, this.center_height - 128);
+        this.figure = new Figure(this, this.center_width, this.center_height + 128);
     }
 
     addColliders () {
     /*  this.physics.add.collider(this.figures, this.figures, (obj) => {
 
     }); */
-
-        this.physics.add.collider(this.figure.blocks, this.enemy.blocks, (obj) => {
-            console.log("Collision!! ", obj);
-        });
-    }
-
-    hitFigures (figure1, figure2) {
-
-    }
-
-    hitEnemies (figure, enemy) {
-        console.log("HIT enemy! ", figure, enemy);
-        // figure.freeze();
-        enemy.setTint(0x00ff00);
     }
 
     loadAudios () {
