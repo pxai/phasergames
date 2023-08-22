@@ -1,5 +1,5 @@
 export default class Board {
-    constructor (width = 10, height = 10) {
+    constructor (width = 10, height = 20) {
         this.width = width;
         this.height = height;
         this.board = [];
@@ -7,19 +7,18 @@ export default class Board {
     }
 
     #createBoard () {
-      this.board = new Array(this.height).fill(false);
-      for (let i = 0; i < this.width; i++) {
-        this.board[i] = new Array(this.width).fill(false);
+      for (let i = 0; i < this.height; i++) {
+        this.board.push([]);
+        for (let j= 0; j < this.width; j++)
+          this.board[i].push(false);
       }
     }
 
     print() {
       let all = "";
-      for (let i = 0; i < this.board.length; i++) {
+      for (let i = 0; i < this.height; i++) {
         let row = "";
-        for (let j = 0; j < this.board.length; j++) {
-          row += this.board[i][j] ? "[X]" : "[ ]";
-        }
+        for (let j = 0; j < this.width; j++) row += this.board[i][j] ? "[X]" : "[ ]";
         all += row + "\n";
       }
 
@@ -38,14 +37,18 @@ export default class Board {
     move () {
         this.tetronimos.forEach((tetronimo) => {
             if (tetronimo.floating) {
-              console.log("Before", tetronimo);
                 this.#moveDown(tetronimo);
-                console.log("Moving tetronimo", tetronimo);
             }
         });
     }
 
     #moveDown (tetronimo) {
-      tetronimo.y += 1;
+      const {x, y} = tetronimo;
+      if (y < this.height - 1) {
+        this.board[tetronimo.y][tetronimo.x] = false;
+        tetronimo.y += 1;
+        this.board[tetronimo.y][tetronimo.x] = tetronimo;
+        tetronimo.floating = tetronimo.y < this.height - 1;
+      } 
     }
 }

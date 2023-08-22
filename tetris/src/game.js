@@ -27,10 +27,9 @@ export default class Game extends Phaser.Scene {
         this.addKeys();
         this.figures = this.add.group();
         this.board = new Board();
+        this.tetronimosLayer = this.add.layer();
         this.addFigure(1000);
-        this.moveThisShit();
-        // this.addEnemy();
-        //this.addColliders();
+        this.moveThisShit(1000);
         // this.loadAudios();
         // this.playMusic();
     }
@@ -41,10 +40,10 @@ export default class Game extends Phaser.Scene {
             callback: () => {
                 const tetronimo = new Tetronimo(4, 4, "L", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black"]));
                 this.board.add(tetronimo);
-                this.addFigure();
+                //this.addFigure();
             },
             callbackScope: this,
-            loop: true
+            loop: false
           });
         // this.figure = new Figure(this, this.center_width, this.center_height + 128);
     }
@@ -53,6 +52,7 @@ export default class Game extends Phaser.Scene {
         this.time.addEvent({
             delay,
             callback: () => {
+                this.tetronimosLayer.removeAll();
                 this.render(this.board);
                 console.log(this.board.print());
                 this.board.move();
@@ -66,24 +66,14 @@ export default class Game extends Phaser.Scene {
     }
 
     render (board) {
+        console.log("Rendering tetronimos!: ", board.tetronimos)
         board.tetronimos.forEach(tetronimo => {
             console.log("About to render", tetronimo.current);
             tetronimo.current.forEach(({x, y}) => {
                 console.log("Rendering position at", tetronimo.x, tetronimo.y, x, y, "with color", tetronimo.color, "and pos: ", (tetronimo.x + x) * 32, (tetronimo.y + y) * 32);
-                this.add.sprite((tetronimo.x + x) * 32, (tetronimo.y + y) * 32, tetronimo.color)
+                this.tetronimosLayer.add(this.add.sprite((tetronimo.x + x) * 32, (tetronimo.y + y) * 32, tetronimo.color))
             });
         });
-    }
-
-    addEnemy () {
-        this.enemies = this.add.group();
-        this.enemy = new Enemy(this, this.center_width, this.center_height - 128);
-    }
-
-    addColliders () {
-    /*  this.physics.add.collider(this.figures, this.figures, (obj) => {
-
-    }); */
     }
 
     loadAudios () {
@@ -121,7 +111,7 @@ export default class Game extends Phaser.Scene {
 
     update () {
         if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
-            this.resolve();
+            this.addFigure()
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.S)) {
