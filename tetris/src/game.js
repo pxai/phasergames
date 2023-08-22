@@ -1,5 +1,6 @@
 import Tetronimo from "./tetronimo";
 import Enemy from "./enemy";
+import Board from "./board";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -24,17 +25,59 @@ export default class Game extends Phaser.Scene {
         this.center_height = this.height / 2;
 
         this.addKeys();
-
-        this.addFigure();
-        this.addColliders();
+        this.figures = this.add.group();
+        this.board = new Board();
+        this.addFigure(1000);
+        this.moveThisShit();
+        // this.addEnemy();
+        //this.addColliders();
         // this.loadAudios();
         // this.playMusic();
     }
 
-    addFigure () {
-        this.figures = this.add.group();
+    addFigure (delay = 5000) {
+        this.time.addEvent({
+            delay,
+            callback: () => {
+                const tetronimo = new Tetronimo(4, 4, "L", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black"]));
+                this.board.add(tetronimo);
+                this.addFigure();
+            },
+            callbackScope: this,
+            loop: true
+          });
+        // this.figure = new Figure(this, this.center_width, this.center_height + 128);
+    }
 
-        this.figure = new Figure(this, this.center_width, this.center_height + 128);
+    moveThisShit (delay = 5000) {
+        this.time.addEvent({
+            delay,
+            callback: () => {
+                this.render(this.board);
+                console.log(this.board.print());
+                this.board.move();
+                console.log(this.board.print());
+                this.moveThisShit();
+            },
+            callbackScope: this,
+            loop: true
+          });
+        // this.figure = new Figure(this, this.center_width, this.center_height + 128);
+    }
+
+    render (board) {
+        board.tetronimos.forEach(tetronimo => {
+            console.log("About to render", tetronimo.current);
+            tetronimo.current.forEach(({x, y}) => {
+                console.log("Rendering position at", tetronimo.x, tetronimo.y, x, y, "with color", tetronimo.color, "and pos: ", (tetronimo.x + x) * 32, (tetronimo.y + y) * 32);
+                this.add.sprite((tetronimo.x + x) * 32, (tetronimo.y + y) * 32, tetronimo.color)
+            });
+        });
+    }
+
+    addEnemy () {
+        this.enemies = this.add.group();
+        this.enemy = new Enemy(this, this.center_width, this.center_height - 128);
     }
 
     addColliders () {

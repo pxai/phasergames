@@ -30,12 +30,12 @@ export default class Bootloader extends Phaser.Scene {
         // this.load.image("logo", "assets/images/logo.png");
         // this.load.audio("beam", "assets/sounds/beam.mp3");
 
-        this.load.image("block_green", "assets/images/block_green.png");
-        this.load.image("block_blue", "assets/images/block_blue.png");
-        this.load.image("block_red", "assets/images/block_red.png");
-        this.load.image("block_gold", "assets/images/block_gold.png");
-        this.load.image("block_grey", "assets/images/block_grey.png");
-        this.load.image("block_black", "assets/images/block_black.png");
+        this.load.image("green", "assets/images/green.png");
+        this.load.image("blue", "assets/images/blue.png");
+        this.load.image("red", "assets/images/red.png");
+        this.load.image("yellow", "assets/images/yellow.png");
+        this.load.image("grey", "assets/images/grey.png");
+        this.load.image("black", "assets/images/black.png");
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
 
         // this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");

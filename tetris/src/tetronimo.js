@@ -2,13 +2,14 @@
 import shapes from "./shapes";
 
 export default class Tetromino {
-    constructor (x, y, shape, color) {
+    constructor (x, y, shape, color = "red") {
         this.x = x;
         this.y = y;
         this.color = color;
         this.shape = shape;
         this.rotation = 0;
         this.#loadPositions();
+        this.floating = true;
     }
 
     #loadPositions () {
