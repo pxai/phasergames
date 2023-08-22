@@ -27,4 +27,10 @@ export default class Tetromino {
     get current() {
         return this.positions[this.rotation];
     }
+
+    get absolute() {
+        return [
+            {x: this.x, y: this.y}, 
+            ...this.positions[this.rotation].slice(1, 4).map(position => ({x: this.x + position.x, y: this.y + position.y}))];
+    }
 }

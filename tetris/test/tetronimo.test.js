@@ -25,6 +25,15 @@ describe("Tetronimo class", () => {
             expect(tetronimo.positions.length).toBe(4);
         });
 
+        it("should have real positions from start", () => {
+            expect(tetronimo.absolute).toEqual([{x: tetronimo.x, y: tetronimo.y}, {x: 0, y: -1},{x:0, y: -2},{x: 1, y: 0}]);
+        });
+
+        it("should have real positions anywhere", () => {
+            const tetronimo = new Tetronimo(4, 5, "L")
+            expect(tetronimo.absolute).toEqual([{x: tetronimo.x, y: tetronimo.y}, {x: 4, y: 4},{x:4, y: 3},{x: 5, y: 5}]);
+        });
+
         it("should rotate to the right", () => {
             const tetronimo = new Tetronimo(0, 0, "L")
             expect(tetronimo.current).toEqual(initial);
