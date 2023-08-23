@@ -44,7 +44,7 @@ export default class Game extends Phaser.Scene {
                 //this.addFigure();
             },
             callbackScope: this,
-            loop: true
+            loop: false
           });
         // this.figure = new Figure(this, this.center_width, this.center_height + 128);
     }
@@ -54,10 +54,9 @@ export default class Game extends Phaser.Scene {
             delay,
             callback: () => {
                 this.render(this.board);
-                console.log(this.board.print());
                 this.board.move();
-                console.log(this.board.print());
-                this.moveThisShit();
+                //console.log(this.board.print());
+                //this.moveThisShit();
             },
             callbackScope: this,
             loop: true
@@ -69,9 +68,9 @@ export default class Game extends Phaser.Scene {
         this.tetronimosLayer.removeAll();
         console.log("Rendering tetronimos!: ", board.tetronimos)
         board.tetronimos.forEach(tetronimo => {
-            console.log("About to render", tetronimo.current);
+            //console.log("About to render", tetronimo.current);
             tetronimo.current.forEach(({x, y}) => {
-                console.log("Rendering position at", tetronimo.x, tetronimo.y, x, y, "with color", tetronimo.color, "and pos: ", (tetronimo.x + x) * 32, (tetronimo.y + y) * 32);
+                //console.log("Rendering position at", tetronimo.x, tetronimo.y, x, y, "with color", tetronimo.color, "and pos: ", (tetronimo.x + x) * 32, (tetronimo.y + y) * 32);
                 this.tetronimosLayer.add(this.add.sprite((tetronimo.x + x) * 32, (tetronimo.y + y) * 32, tetronimo.color))
             });
         });
@@ -111,22 +110,27 @@ export default class Game extends Phaser.Scene {
     }
 
     update () {
+
+        if (this.board.touchdown) {
+            console.log("ADD FIGURE!", new Date().toDateString())
+            this.addFigure();
+        }
         if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
             this.addFigure()
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.S)) {
-            this.figure.rotateLeft();
+            this.board.activeTetronimo.rotateLeft();
             this.render(this.board);
         } else if (Phaser.Input.Keyboard.JustDown(this.cursor.up) || Phaser.Input.Keyboard.JustDown(this.W)) {
             console.log("Up!");
-            this.figure.rotateRight();
+            this.board.activeTetronimo.rotateRight();
             this.render(this.board);
         } else if (Phaser.Input.Keyboard.JustDown(this.cursor.right) || Phaser.Input.Keyboard.JustDown(this.D)) {
-            this.figure.right();
+            this.board.right(this.board.activeTetronimo);
             this.render(this.board);
         } else if (Phaser.Input.Keyboard.JustDown(this.cursor.left) || Phaser.Input.Keyboard.JustDown(this.A)) {
-            this.figure.left();
+            this.board.left(this.board.activeTetronimo);
             this.render(this.board);
         }
     }

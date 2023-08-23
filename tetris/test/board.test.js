@@ -80,6 +80,26 @@ describe("Board class", () => {
         expect(board.board[19][0].floating).toBe(false);
     });
 
+    describe("#touchdown", () => {
+        it("return false if one tetronimo is not blocked", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(0, 19, "L");
+            board.add(tetronimo);
+
+            expect(board.touchdown).toBe(false)
+        });
+
+        it("return true if all tetronimo are blocked", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(0, 19, "L");
+            board.add(tetronimo);
+
+            board.move()
+
+            expect(board.touchdown).toBe(true)
+        });
+    });
+
     describe("#collidesToBottom", () => {
         it("should return false if a tetronimo does not collide", () => {
             const board = new Board();

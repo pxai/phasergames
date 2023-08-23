@@ -3,6 +3,7 @@ export default class Board {
         this.width = width;
         this.height = height;
         this.board = [];
+        this.activeTetronimo = null;
         this.#createBoard();
     }
 
@@ -28,8 +29,14 @@ export default class Board {
     }
 
     add (tetronimo) {
+      if (!this.touchdown) return;
         const {x, y} = tetronimo;
         this.board[y][x] = tetronimo;
+        this.activeTetronimo = tetronimo;
+    }
+
+    get touchdown () {
+      return this.tetronimos.every(tetronimo => !tetronimo.floating);
     }
 
     get tetronimos () {
@@ -51,12 +58,32 @@ export default class Board {
 
     #moveDown (tetronimo) {
       const {x, y} = tetronimo;
-      if (y < this.height - 1) {
+      if (y < this.height - 1 && !this.collidesToBottom(tetronimo)) {
         this.board[tetronimo.y][tetronimo.x] = false;
         tetronimo.y += 1;
         this.board[tetronimo.y][tetronimo.x] = tetronimo;
         tetronimo.floating = tetronimo.y < this.height - 1;
-      } 
+      }  else {
+        tetronimo.floating = false; 
+      }
+    }
+
+    right (tetronimo) {
+      const {x, y} = tetronimo;
+      if (x < this.width - 1 && !this.collidesToRight(tetronimo)) {
+        this.board[tetronimo.y][tetronimo.x] = false;
+        tetronimo.right();
+        this.board[tetronimo.y][tetronimo.x + 1] = tetronimo;
+      }
+    }
+
+    left (tetronimo) {
+      const {x, y} = tetronimo;
+      if (x > 0 && !this.collidesToLeft(tetronimo)) {
+        this.board[tetronimo.y][tetronimo.x] = false;
+        tetronimo.left();
+        this.board[tetronimo.y][tetronimo.x - 1] = tetronimo;
+      }
     }
 
     collidesToBottom(tetronimo) {
