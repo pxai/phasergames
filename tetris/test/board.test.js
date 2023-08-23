@@ -37,7 +37,7 @@ describe("Board class", () => {
         expect(board.tetronimos).toEqual([tetronimo1, tetronimo3, tetronimo2]);
     });
 
-    it.only("moves down floating elements", () => {
+    it("moves down floating elements", () => {
         const board = new Board();
         const tetronimo = new Tetronimo(0, 0, "L");
 
@@ -77,6 +77,72 @@ describe("Board class", () => {
 
         expect(board.board[19][0]).toBe(tetronimo);
         expect(board.board[19][0].y).toBe(19);
-        expect(board.board[19][0].floating).toBe(true);
+        expect(board.board[19][0].floating).toBe(false);
+    });
+
+    describe("#collidesToBottom", () => {
+        it("should return false if a tetronimo does not collide", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(0, 19, "L");
+            board.add(tetronimo);
+            const notColliding = new Tetronimo(0, 0, "L");
+            board.add(notColliding);
+
+            expect(board.collidesToBottom(notColliding)).toBe(false);
+        })
+
+        it("should return true if a tetronimo does collide", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(0, 19, "L");
+            board.add(tetronimo);
+            const colliding = new Tetronimo(0, 16, "L");
+            board.add(colliding);
+
+            expect(board.collidesToBottom(colliding)).toBe(true);
+        })
+    })
+
+    describe("#collidesToRight", () => {
+        it("should return false if a tetronimo does not collide", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(0, 19, "L");
+            board.add(tetronimo);
+            const notColliding = new Tetronimo(0, 0, "L");
+            board.add(notColliding);
+
+            expect(board.collidesToRight(notColliding)).toBe(false);
+        });
+
+        it("should return true if a tetronimo does collide", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(2, 19, "L");
+            board.add(tetronimo);
+            const colliding = new Tetronimo(0, 19, "L");
+            board.add(colliding);
+
+            expect(board.collidesToRight(colliding)).toBe(true);
+        });
+    });
+
+    describe("#collidesToLeft", () => {
+        it("should return false if a tetronimo does not collide", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(0, 19, "L");
+            board.add(tetronimo);
+            const notColliding = new Tetronimo(0, 0, "L");
+            board.add(notColliding);
+
+            expect(board.collidesToLeft(notColliding)).toBe(false);
+        });
+
+        it("should return true if a tetronimo does collide", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(0, 19, "L");
+            board.add(tetronimo);
+            const colliding = new Tetronimo(2, 19, "L");
+            board.add(colliding);
+
+            expect(board.collidesToLeft(colliding)).toBe(true);
+        });
     });
 });

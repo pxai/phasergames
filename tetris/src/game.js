@@ -38,12 +38,13 @@ export default class Game extends Phaser.Scene {
         this.time.addEvent({
             delay,
             callback: () => {
-                const tetronimo = new Tetronimo(4, 4, "L", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black"]));
-                this.board.add(tetronimo);
+                // TODO remove this.figure
+                const figure = this.figure = new Tetronimo(4, 4, "L", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black"]));
+                this.board.add(figure);
                 //this.addFigure();
             },
             callbackScope: this,
-            loop: false
+            loop: true
           });
         // this.figure = new Figure(this, this.center_width, this.center_height + 128);
     }
@@ -52,7 +53,6 @@ export default class Game extends Phaser.Scene {
         this.time.addEvent({
             delay,
             callback: () => {
-                this.tetronimosLayer.removeAll();
                 this.render(this.board);
                 console.log(this.board.print());
                 this.board.move();
@@ -66,6 +66,7 @@ export default class Game extends Phaser.Scene {
     }
 
     render (board) {
+        this.tetronimosLayer.removeAll();
         console.log("Rendering tetronimos!: ", board.tetronimos)
         board.tetronimos.forEach(tetronimo => {
             console.log("About to render", tetronimo.current);
@@ -115,14 +116,18 @@ export default class Game extends Phaser.Scene {
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.S)) {
-            this.figure.turn();
+            this.figure.rotateLeft();
+            this.render(this.board);
         } else if (Phaser.Input.Keyboard.JustDown(this.cursor.up) || Phaser.Input.Keyboard.JustDown(this.W)) {
             console.log("Up!");
-            this.figure.up();
+            this.figure.rotateRight();
+            this.render(this.board);
         } else if (Phaser.Input.Keyboard.JustDown(this.cursor.right) || Phaser.Input.Keyboard.JustDown(this.D)) {
             this.figure.right();
+            this.render(this.board);
         } else if (Phaser.Input.Keyboard.JustDown(this.cursor.left) || Phaser.Input.Keyboard.JustDown(this.A)) {
             this.figure.left();
+            this.render(this.board);
         }
     }
 

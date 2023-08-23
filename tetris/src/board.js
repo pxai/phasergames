@@ -18,7 +18,9 @@ export default class Board {
       let all = "";
       for (let i = 0; i < this.height; i++) {
         let row = "";
-        for (let j = 0; j < this.width; j++) row += this.board[i][j] ? "[X]" : "[ ]";
+        for (let j = 0; j < this.width; j++) {
+          row += this.board[i][j] ? "[X]" : "[ ]";
+        }
         all += row + "\n";
       }
 
@@ -32,6 +34,11 @@ export default class Board {
 
     get tetronimos () {
       return this.board.flat().filter((cell) => cell !== false);
+    }
+
+
+    get absoluteTetronimos () {
+      return this.tetronimos.map(tetronimo => tetronimo.absolute)
     }
 
     move () {
@@ -50,5 +57,21 @@ export default class Board {
         this.board[tetronimo.y][tetronimo.x] = tetronimo;
         tetronimo.floating = tetronimo.y < this.height - 1;
       } 
+    }
+
+    collidesToBottom(tetronimo) {
+      return tetronimo.collidingBottom.some(this.#overlaps());
+    }
+
+    collidesToRight(tetronimo) {
+      return tetronimo.collidingRight.some(this.#overlaps());
+    }
+
+    collidesToLeft(tetronimo) {
+      return tetronimo.collidingLeft.some(this.#overlaps());
+    }
+
+    #overlaps(part) {
+      return part => this.absoluteTetronimos.flat().some(existing => existing.x === part.x && existing.y === part.y)
     }
 }

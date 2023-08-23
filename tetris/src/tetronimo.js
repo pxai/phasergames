@@ -16,11 +16,23 @@ export default class Tetromino {
         this.positions = shapes[this.shape];
     }
 
+    right () {
+        if (!this.floating) return;
+        this.x++;
+    }
+
+    left () {
+        if (!this.floating) return;
+        this.x--;
+    }
+
     rotateLeft () {
+        if (!this.floating) return;
         this.rotation = this.rotation === 0 ? 3 : this.rotation - 1;
     }
 
     rotateRight () {
+        if (!this.floating) return;
         this.rotation = this.rotation === 3 ? 0 : this.rotation + 1;
     }
 
@@ -32,5 +44,32 @@ export default class Tetromino {
         return [
             {x: this.x, y: this.y}, 
             ...this.positions[this.rotation].slice(1, 4).map(position => ({x: this.x + position.x, y: this.y + position.y}))];
+    }
+
+    get bottomParts () {
+        const partial = [...this.current].sort((pointA, pointB) => pointB.y - pointA.y);
+        return [partial[0], ...partial.slice(1, 4).filter(point => point.y === partial[0].y)]
+    }
+
+    get rightParts () {
+        const partial = [...this.current].sort((pointA, pointB) => pointB.x - pointA.x);
+        return [partial[0], ...partial.slice(1, 4).filter(point => point.x === partial[0].x)]
+    }
+
+    get leftParts () {
+        const partial = [...this.current].sort((pointA, pointB) => pointA.x - pointB.x);
+        return [partial[0], ...partial.slice(1, 4).filter(point => point.x === partial[0].x)]
+    }
+
+    get collidingBottom () {
+        return this.bottomParts.map(part => ({x: this.x + part.x, y: this.y + part.y + 1}));
+    }
+
+    get collidingLeft () {
+        return this.leftParts.map(part => ({x: this.x + part.x - 1, y: this.y + part.y}));
+    }
+
+    get collidingRight () {
+        return this.rightParts.map(part => ({x: this.x + part.x + 1, y: this.y + part.y}));
     }
 }
