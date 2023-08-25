@@ -137,7 +137,6 @@ export default class Game extends Phaser.Scene {
         this.playAudio(this.character === "quack" ? "quack" : "gotcha")
         this.gasol.celebrate();
         this.basket.anims.play("basket", true);
-        //this.ball.destroy();
         player.addPoints();
         player.die();
         this.textYAY1 = this.add.bitmapText(this.center_width, this.center_height, "mainFont",  player.name, 40).setTint(this.mainColor).setOrigin(0.5).setDropShadow(1, 2, 0xffffff, 0.9);
@@ -276,10 +275,10 @@ export default class Game extends Phaser.Scene {
         const scoreBoard = this.createScoreBoard()
 
         console.log("ScoreBoard: ", scoreBoard)
-        this.scores.add(this.add.bitmapText(8, 8, "mainFont", "Chat Gasol - Scoreboard", 30).setOrigin(0).setTint(0x539DDB).setDropShadow(1, 1, 0xffffff, 0.7));
+        this.scores.add(this.add.bitmapText(8, 8, "mainFont", "Chat Gasol - Scoreboard", 35).setOrigin(0).setTint(0x539DDB).setDropShadow(.5, .5, 0xffffff, 0.7));
         scoreBoard.slice(0, 5).forEach((player, i) => {
-            const winnerText = `${i+1}.  ${player.name.substring(0, 11)}: ${player.points}`;
-            this.scores.add(this.add.bitmapText(20, 42 + (i * 40), "mainFont", winnerText, 30).setOrigin(0).setTint(this.mainColor).setDropShadow(0.5, .5, 0xffffff, 0.7));
+            const winnerText = `${i+1}.  ${player.name.substring(0, 11)}:  ${player.points}`;
+            this.scores.add(this.add.bitmapText(20, 45 + (i * 40), "mainFont", winnerText, 35).setOrigin(0).setTint(this.mainColor).setDropShadow(0.5, .5, 0xffffff, 0.7));
         })
 
         this.tweens.add({
@@ -298,6 +297,7 @@ export default class Game extends Phaser.Scene {
 
     clearScores () {
         this.scores.getChildren().forEach(function(child) {
+            child.setText("")
             child.destroy();
         }, this);
         this.scores.clear(true, true);
