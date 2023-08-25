@@ -29,12 +29,37 @@ describe("Board class", () => {
 
         board.add(tetronimo1);
         expect(board.tetronimos).toEqual([tetronimo1]);
-
+        tetronimo1.floating = false;
         board.add(tetronimo2);
         expect(board.tetronimos).toEqual([tetronimo1, tetronimo2]);
 
+        tetronimo2.floating = false;
         board.add(tetronimo3);
         expect(board.tetronimos).toEqual([tetronimo1, tetronimo3, tetronimo2]);
+    });
+
+    it("return absoluteTetronimos", () => {
+        const board = new Board();
+        const tetronimo1 = new Tetronimo(0, 0, "L");
+        const tetronimo2 = new Tetronimo(4, 4, "L");
+        const tetronimo3 = new Tetronimo(2, 2, "L");
+
+        board.add(tetronimo1);
+
+        expect(board.absoluteTetronimos).toEqual([{x: tetronimo1.x, y: tetronimo1.y}, {x: 0, y: -1},{x:0, y: -2},{x: 1, y: 0}]);
+    });
+
+    it("return absoluteTetronimos", () => {
+        const board = new Board();
+        const tetronimo1 = new Tetronimo(0, 19, "L");
+        const tetronimo2 = new Tetronimo(4, 4, "L");
+        const tetronimo3 = new Tetronimo(2, 2, "L");
+
+        board.add(tetronimo1);
+        expect(board.absoluteFixedTetronimos).toEqual([]);
+        board.move();
+
+        expect(board.absoluteFixedTetronimos.map(tetronimo => tetronimo.absolute).flat()).toEqual([{x: tetronimo1.x, y: tetronimo1.y}, {x: 0, y: 18},{x:0, y: 17},{x: 1, y: 19}]);
     });
 
     it("moves down floating elements", () => {
@@ -163,6 +188,45 @@ describe("Board class", () => {
             board.add(colliding);
 
             expect(board.collidesToLeft(colliding)).toBe(true);
+        });
+    });
+
+
+    describe("#completed", () => {
+        it("should return empty array if lines are not completed", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(0, 19, "L");
+
+            expect(board.completed().flat()).toEqual([]);
+        })
+
+        it("should return array with completed lines completed", () => {
+            const board = new Board();
+            const tetronimos = Array(5).fill(0).map((_,i) => new Tetronimo(i*2, 19, "L"));
+            tetronimos.forEach(tetronimo => { board.add(tetronimo); board.move()})
+
+            expect(board.completed()[0].flat()).toEqual([
+                { x: 0, y: 19 },{ x: 1, y: 19 }, { x: 2, y: 19 }, { x: 3, y: 19 },{ x: 4, y: 19 },
+                { x: 5, y: 19 },{ x: 6, y: 19 }, { x: 7, y: 19 }, { x: 8, y: 19 }, { x: 9, y: 19 }
+              ]);
+        });
+    });
+
+    describe("#tetronimoIn", () => {
+        it("should return null array if there's nothing in that position", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(0, 19, "L");
+            board.add(tetronimo)
+
+            expect(board.tetronimoIn({x: 0, y: 0})).toEqual(undefined);
+        })
+
+        it("should return the tetronimo in that position", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(0, 19, "L");
+            board.add(tetronimo)
+
+            expect(board.tetronimoIn({x: 0, y: 19})).toEqual(tetronimo);
         });
     });
 });

@@ -71,7 +71,7 @@ export default class Game extends Phaser.Scene {
             //console.log("About to render", tetronimo.current);
             tetronimo.current.forEach(({x, y}) => {
                 //console.log("Rendering position at", tetronimo.x, tetronimo.y, x, y, "with color", tetronimo.color, "and pos: ", (tetronimo.x + x) * 32, (tetronimo.y + y) * 32);
-                this.tetronimosLayer.add(this.add.sprite((tetronimo.x + x) * 32, (tetronimo.y + y) * 32, tetronimo.color))
+                this.tetronimosLayer.add(this.add.sprite((tetronimo.x + x) * 32, (tetronimo.y + y) * 32, tetronimo.color).setOrigin(0))
             });
         });
     }

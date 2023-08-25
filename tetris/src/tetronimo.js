@@ -72,4 +72,9 @@ export default class Tetromino {
     get collidingRight () {
         return this.rightParts.map(part => ({x: this.x + part.x + 1, y: this.y + part.y}));
     }
+
+    removePosition ({x, y}) {
+        const indexOf = this.absolute.findIndex(position => position.x === x && position.y === y);
+        this.current.splice(indexOf, 1)
+    }
 }

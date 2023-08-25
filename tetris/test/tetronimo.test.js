@@ -167,5 +167,17 @@ describe("Tetronimo class", () => {
                 expect(tetronimo.collidingLeft).toEqual([{ x: 4, y: 6 }, { x: 4, y: 5 }, { x: 4, y: 4 } ]);
             });
         });
+
+        describe("#removePosition", () => {
+            it("should remove the indicated position", () => {
+                const tetronimo = new Tetronimo(0, 0, "L")
+
+                expect(tetronimo.absolute).toEqual([{x: tetronimo.x, y: tetronimo.y}, {x: 0, y: -1},{x:0, y: -2},{x: 1, y: 0}])
+
+                tetronimo.removePosition({x: 1, y: 0})
+
+                expect(tetronimo.absolute).toEqual([{x: tetronimo.x, y: tetronimo.y}, {x: 0, y: -1},{x:0, y: -2}])
+            });
+        });
     })
 });

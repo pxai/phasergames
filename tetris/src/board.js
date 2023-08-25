@@ -45,7 +45,11 @@ export default class Board {
 
 
     get absoluteTetronimos () {
-      return this.tetronimos.map(tetronimo => tetronimo.absolute)
+      return this.tetronimos.map(tetronimo => tetronimo.absolute).flat()
+    }
+
+    get absoluteFixedTetronimos () {
+      return this.tetronimos.filter(tetronimo => !tetronimo.floating).flat()
     }
 
     move () {
@@ -99,6 +103,23 @@ export default class Board {
     }
 
     #overlaps(part) {
-      return part => this.absoluteTetronimos.flat().some(existing => existing.x === part.x && existing.y === part.y)
+      return part => this.absoluteTetronimos.some(existing => existing.x === part.x && existing.y === part.y)
+    }
+
+    completed() {
+      return this.#bottomUp.map(y =>{
+        const touchingTetronimos = this.absoluteFixedTetronimos.filter(tetro => tetro.absolute.some(position => position.y === y));
+        const touching = touchingTetronimos.map(tetronimo => tetronimo.absolute.filter(position => position.y === y))
+
+        return touching.flat().length === this.width ? touching : []
+      })
+    }
+
+    tetronimoIn({x, y}) {
+      return this.tetronimos.find(tetronimo => tetronimo.absolute.some(position => position.x === x && position.y === y))
+    }
+
+    get #bottomUp () {
+      return [...Array(this.height).keys()].sort((a,b) => b-a)
     }
 }
