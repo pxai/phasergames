@@ -26,7 +26,7 @@ export default class Game extends Phaser.Scene {
         parambg = parseInt(parambg.substring(1), 16)
         this.backgroundColor = '0x' + parambg.toString(16)
 
-        this.difficulties = urlParams.get('difficulties') || "";
+        this.difficulties = urlParams.get('difficulties') || "easy";
         this.categories = urlParams.get('categories') || "";
         this.rounds = this.isValidNumber(urlParams.get('rounds')) ? +urlParams.get('rounds') : "";
         this.roundCount = 0;
@@ -38,8 +38,9 @@ export default class Game extends Phaser.Scene {
         this.spamTimeWait = 2;
         this.result = Phaser.Math.Between(1, 9);
         this.cursor = this.input.keyboard.createCursorKeys();
-        this.timeToAnswer = 10000;
+        this.timeToAnswer = +urlParams.get('timeToAnswer') * 1000 || 15000;
         this.timeCount = this.timeToAnswer / 1000;
+        this.timeForNext = 4000;
         this.infiniteLoop = !this.rounds;
     }
 
@@ -119,7 +120,7 @@ export default class Game extends Phaser.Scene {
 
     showCorrect() {
         this.rectangles.getChildren()[this.quiz.currentQuestion.correctIndex - 1].setAlpha(1)
-        this.time.delayedCall(this.timeToAnswer, () =>{ this.showNextQuestion()}, null, this )
+        this.time.delayedCall(this.timeForNext, () =>{ this.showNextQuestion()}, null, this )
     }
 
     addScore () {
