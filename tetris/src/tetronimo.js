@@ -47,8 +47,9 @@ export default class Tetromino {
     }
 
     get bottomParts () {
-        const partial = [...this.current].sort((pointA, pointB) => pointB.y - pointA.y);
-        return [partial[0], ...partial.slice(1, 4).filter(point => point.y === partial[0].y)]
+        console.log(this.current)
+        const partial = this.current.filter(position => !this.current.some(current => current.x === position.x && current.y === position.y + 1));
+        return partial.sort((pointA, pointB) => pointB.y - pointA.y);
     }
 
     get rightParts () {
@@ -80,25 +81,20 @@ export default class Tetromino {
     }
 
     #hasCenter() {
-        console.log(this.current)
         return this.current.some(position => position.x === 0  && position.y === 0)
     }
 
     #correctCenter () {
         if (!this.#hasCenter()) {
-            console.log("It dows not have center!")
             const remaining = this.current.filter(position => position.y < 0);
-            console.log(remaining)
             remaining[0] = {x: 0, y: 0};
-            console.log("Here: ", remaining, remaining.slice(1).length)
+
             for (let i = 1; i <= remaining.slice(1).length;i++) {
-                console.log("Checking: ", remaining[i], remaining[i].x, remaining[i].y)
                 remaining[i] = {x: remaining[i].x, y: remaining[i].y + 1}
             }
-            console.log(remaining)
+
             this.positions[this.rotation] = remaining;
             this.y--;
-            console.log("Finally: ", remaining, this.x, this.y, this.current, this.absolute)
         }
     }
 }

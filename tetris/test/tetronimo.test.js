@@ -56,6 +56,26 @@ describe("Tetronimo class", () => {
     
                 expect(tetronimo.current).toEqual(initial);
             });
+
+            it("should have right bottomParts and collidingBottom after rotate", () => {
+                const tetronimo = new Tetronimo(0, 0, "L")
+                expect(tetronimo.current).toEqual(initial);
+
+                expect(tetronimo.bottomParts).toEqual([ { x: 0, y: 0 }, { x: 1, y: 0 } ])
+                expect(tetronimo.collidingBottom).toEqual([ { x: 0, y: 1 }, { x: 1, y: 1 } ])
+
+                tetronimo.rotateRight();
+
+                expect(tetronimo.bottomParts).toEqual([{x:0, y: 1},{x: 1, y: 0}, {x: 2, y: 0}])
+                expect(tetronimo.collidingBottom).toEqual([{x:0, y: 2},{x: 1, y: 1}, {x: 2, y: 1}])
+
+                tetronimo.rotateRight();
+
+                expect(tetronimo.bottomParts).toEqual([ { x: 0, y: 2 }, { x: -1, y: 0 } ])
+                expect(tetronimo.collidingBottom).toEqual([ { x: 0, y: 3 }, { x: -1, y: 1 } ])
+
+                expect(tetronimo.current).toEqual(tetronimo.positions[2]);
+            });
         })
 
         describe("#rotateLeft", () => {
@@ -112,6 +132,18 @@ describe("Tetronimo class", () => {
                 const tetronimo = new Tetronimo(0, 0, "L")
 
                 expect(tetronimo.bottomParts).toEqual([{x:0, y: 0},{x: 1, y: 0}]);
+            });
+
+            it("should return lowest parts of first rotation", () => {
+                const tetronimo = new Tetronimo(0, 0, "L")
+
+                expect(tetronimo.bottomParts).toEqual([{x:0, y: 0},{x: 1, y: 0}]);
+                tetronimo.rotateRight();
+                expect(tetronimo.bottomParts).toEqual([{x:0, y: 1},{x: 1, y: 0}, {x: 2, y: 0}]);
+                tetronimo.rotateRight();
+                expect(tetronimo.bottomParts).toEqual([ { x: 0, y: 2 }, { x: -1, y: 0 } ]);
+                tetronimo.rotateRight();
+                expect(tetronimo.bottomParts).toEqual([ { x: 0, y: 0 }, { x: -1, y: 0 }, { x: -2, y: 0 } ]);
             });
         })
 
@@ -194,7 +226,7 @@ describe("Tetronimo class", () => {
                 expect(tetronimo2.absolute).toEqual([{x: tetronimo2.x, y: tetronimo2.y}, {x: 2, y: -1},{x:2, y: -2},{x: 3, y: 0}])
             });
 
-            it.only("should change the center of the tetronimo", () => {
+            it("should change the center of the tetronimo", () => {
                 const tetronimo = new Tetronimo(0, 0, "L")
 
                 expect(tetronimo.absolute).toEqual([{x: tetronimo.x, y: tetronimo.y}, {x: 0, y: -1},{x:0, y: -2},{x: 1, y: 0}])
@@ -202,6 +234,16 @@ describe("Tetronimo class", () => {
                 tetronimo.removePosition({x: 1, y: 0})
 
                 expect(tetronimo.absolute).toEqual([{x: tetronimo.x, y: tetronimo.y}, {x: 0, y: -2}])
+            });
+
+            it("should change the colliding bottom parts", () => {
+                const tetronimo = new Tetronimo(0, 0, "L")
+
+                expect(tetronimo.collidingBottom).toEqual([{"x": 0, "y": 1}, {"x": 1, "y": 1}])
+                tetronimo.removePosition({x: 0, y: 0})
+                tetronimo.removePosition({x: 1, y: 0})
+
+                expect(tetronimo.collidingBottom).toEqual([{"x": 0, "y": 0}])
             });
         });
     })

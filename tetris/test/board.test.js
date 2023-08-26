@@ -306,26 +306,41 @@ describe("Board class", () => {
     });
 
     describe("#moveFixed", () => {
-        it("should move Fixed if empty space below", () => {
-            const board = new Board();
-            const tetronimos = Array(5).fill(0).map((_,i) => new Tetronimo(i*2, 19, "L"));
-            tetronimos.forEach(tetronimo => { board.add(tetronimo); board.move()})
+        let board, tetronimos;
 
+        beforeEach(() => {
+            board = new Board();
+            tetronimos = Array(5).fill(0).map((_,i) => new Tetronimo(i*2, 19, "L"));
+            tetronimos.forEach(tetronimo => { board.add(tetronimo); board.move()})
+        })
+
+        it("should move Fixed if empty space below", () => {
             tetronimos.forEach((tetronimo, i) => { 
                 expect(tetronimo.x).toBe(2*i) 
                 expect(tetronimo.y).toBe(19) 
             })
 
-            console.log(tetronimos[0].absolute)
             expect(tetronimos[0].absolute).toEqual([ { x: 0, y: 19 }, { x: 0, y: 18 }, { x: 0, y: 17 }, { x: 1, y: 19 } ])
 
             board.removeLines();
-            expect(tetronimos[0].absolute).toEqual([{ x: 0, y: 18 }, { x: 0, y: 17 } ])
-            console.log(tetronimos[0])
+
+            expect(tetronimos[0].absolute).toEqual([{ x: 0, y: 19 }, { x: 0, y: 18 } ])
+
             tetronimos.forEach((tetronimo, i) => { 
                 expect(tetronimo.x).toBe(2*i) 
                 expect(tetronimo.y).toBe(19) 
             })
+        });
+
+        it("should work collision after removing a line", () => {
+            board.removeLines();
+
+            const colliding = new Tetronimo(0, 17, "L")
+            board.add(colliding);
+
+            expect(board.collidesToBottom(colliding)).toBe(true)
+
+            // ADD extra check
         });
     });
 });

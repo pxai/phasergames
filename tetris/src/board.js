@@ -128,9 +128,7 @@ export default class Board {
     #moveFixed() {
       this.fixedTetronimos.forEach(tetronimo => {
         if (!this.collidesToBottom(tetronimo)) {
-          console.log("Moving down! :", tetronimo.absolute)
           this.#moveDown(tetronimo)
-          console.log("Moved :", tetronimo.absolute)
         }
       })
     }
