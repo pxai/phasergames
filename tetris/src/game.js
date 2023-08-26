@@ -36,7 +36,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addFigure () {
-        const figure = this.figure = new Tetronimo(4, 4, "L", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black"]));
+        const figure = this.figure = new Tetronimo(4, 4, "O", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black"]));
         this.board.add(figure);
         // this.figure = new Figure(this, this.center_width, this.center_height + 128);
     }

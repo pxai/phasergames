@@ -117,9 +117,11 @@ export default class Board {
 
     removeLines() {
       const lines = this.completed().flat().flat();
+
       if (lines < 0) return;
       lines.forEach(position => {
         const tetronimo = this.tetronimoIn({x: position.x, y: position.y});
+        console.log("About to remove:", {x: position.x, y: position.y}, tetronimo?.name)
         tetronimo && tetronimo.removePosition({x: position.x, y: position.y})
       })
       this.#moveFixed();
@@ -134,6 +136,7 @@ export default class Board {
     }
 
     tetronimoIn({x, y}) {
+      if (x === 1 && y === 19) console.log("This is the case: ", x,y, this.tetronimos.map(t => t.absolute))
       return this.tetronimos.find(tetronimo => tetronimo.absolute.some(position => position.x === x && position.y === y))
     }
 

@@ -47,7 +47,6 @@ export default class Tetromino {
     }
 
     get bottomParts () {
-        console.log(this.current)
         const partial = this.current.filter(position => !this.current.some(current => current.x === position.x && current.y === position.y + 1));
         return partial.sort((pointA, pointB) => pointB.y - pointA.y);
     }
@@ -75,9 +74,11 @@ export default class Tetromino {
     }
 
     removePosition ({x, y}) {
+        console.log("Removing: ", x, y)
         const indexOf = this.absolute.findIndex(position => position.x === x && position.y === y);
-        this.positions[this.rotation] = this.positions[this.rotation].filter((position,i)=>  i !== indexOf)
-        this.#correctCenter();
+        this.positions[this.rotation].splice(indexOf, 1); //= this.positions[this.rotation].filter((position,i)=>  i !== indexOf)
+        console.log("After removal: ", this.positions[this.rotation], this.absolute)
+        //this.#correctCenter();
     }
 
     #hasCenter() {
