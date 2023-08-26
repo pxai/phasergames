@@ -55,10 +55,10 @@ describe("Board class", () => {
         const tetronimo3 = new Tetronimo(2, 2, "L");
 
         board.add(tetronimo1);
-        expect(board.absoluteFixedTetronimos).toEqual([]);
+        expect(board.fixedTetronimos).toEqual([]);
         board.move();
 
-        expect(board.absoluteFixedTetronimos.map(tetronimo => tetronimo.absolute).flat()).toEqual([{x: tetronimo1.x, y: tetronimo1.y}, {x: 0, y: 18},{x:0, y: 17},{x: 1, y: 19}]);
+        expect(board.fixedTetronimos.map(tetronimo => tetronimo.absolute).flat()).toEqual([{x: tetronimo1.x, y: tetronimo1.y}, {x: 0, y: 18},{x:0, y: 17},{x: 1, y: 19}]);
     });
 
     it("moves down floating elements", () => {
@@ -302,6 +302,30 @@ describe("Board class", () => {
             board.removeLines();
 
             tetronimos.forEach(tetronimo => { expect(tetronimo.absolute.length).toBe(2) })
+        });
+    });
+
+    describe("#moveFixed", () => {
+        it("should move Fixed if empty space below", () => {
+            const board = new Board();
+            const tetronimos = Array(5).fill(0).map((_,i) => new Tetronimo(i*2, 19, "L"));
+            tetronimos.forEach(tetronimo => { board.add(tetronimo); board.move()})
+
+            tetronimos.forEach((tetronimo, i) => { 
+                expect(tetronimo.x).toBe(2*i) 
+                expect(tetronimo.y).toBe(19) 
+            })
+
+            console.log(tetronimos[0].absolute)
+            expect(tetronimos[0].absolute).toEqual([ { x: 0, y: 19 }, { x: 0, y: 18 }, { x: 0, y: 17 }, { x: 1, y: 19 } ])
+
+            board.removeLines();
+            expect(tetronimos[0].absolute).toEqual([{ x: 0, y: 18 }, { x: 0, y: 17 } ])
+            console.log(tetronimos[0])
+            tetronimos.forEach((tetronimo, i) => { 
+                expect(tetronimo.x).toBe(2*i) 
+                expect(tetronimo.y).toBe(19) 
+            })
         });
     });
 });

@@ -48,7 +48,7 @@ export default class Board {
       return this.tetronimos.map(tetronimo => tetronimo.absolute).flat()
     }
 
-    get absoluteFixedTetronimos () {
+    get fixedTetronimos () {
       return this.tetronimos.filter(tetronimo => !tetronimo.floating).flat()
     }
 
@@ -108,7 +108,7 @@ export default class Board {
 
     completed() {
       return this.#bottomUp.map(y =>{
-        const touchingTetronimos = this.absoluteFixedTetronimos.filter(tetro => tetro.absolute.some(position => position.y === y));
+        const touchingTetronimos = this.fixedTetronimos.filter(tetro => tetro.absolute.some(position => position.y === y));
         const touching = touchingTetronimos.map(tetronimo => tetronimo.absolute.filter(position => position.y === y))
 
         return touching.flat().length === this.width ? touching : []
@@ -121,6 +121,17 @@ export default class Board {
       lines.forEach(position => {
         const tetronimo = this.tetronimoIn({x: position.x, y: position.y});
         tetronimo && tetronimo.removePosition({x: position.x, y: position.y})
+      })
+      this.#moveFixed();
+    }
+
+    #moveFixed() {
+      this.fixedTetronimos.forEach(tetronimo => {
+        if (!this.collidesToBottom(tetronimo)) {
+          console.log("Moving down! :", tetronimo.absolute)
+          this.#moveDown(tetronimo)
+          console.log("Moved :", tetronimo.absolute)
+        }
       })
     }
 

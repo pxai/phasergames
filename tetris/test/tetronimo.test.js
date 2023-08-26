@@ -193,6 +193,16 @@ describe("Tetronimo class", () => {
                 expect(tetronimo1.absolute).toEqual([{x: tetronimo.x, y: tetronimo.y}, {x: 0, y: -1},{x:0, y: -2}])
                 expect(tetronimo2.absolute).toEqual([{x: tetronimo2.x, y: tetronimo2.y}, {x: 2, y: -1},{x:2, y: -2},{x: 3, y: 0}])
             });
+
+            it.only("should change the center of the tetronimo", () => {
+                const tetronimo = new Tetronimo(0, 0, "L")
+
+                expect(tetronimo.absolute).toEqual([{x: tetronimo.x, y: tetronimo.y}, {x: 0, y: -1},{x:0, y: -2},{x: 1, y: 0}])
+                tetronimo.removePosition({x: 0, y: 0})
+                tetronimo.removePosition({x: 1, y: 0})
+
+                expect(tetronimo.absolute).toEqual([{x: tetronimo.x, y: tetronimo.y}, {x: 0, y: -2}])
+            });
         });
     })
 });
