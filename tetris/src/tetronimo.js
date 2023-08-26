@@ -14,7 +14,7 @@ export default class Tetromino {
     }
 
     #loadPositions () {
-        this.positions = shapes[this.shape];
+        this.positions = shapes[this.shape].map(positions => [...positions]);
     }
 
     right () {

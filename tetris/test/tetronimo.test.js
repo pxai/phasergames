@@ -168,7 +168,7 @@ describe("Tetronimo class", () => {
             });
         });
 
-        describe.skip("#removePosition", () => {
+        describe("#removePosition", () => {
             it("should remove the indicated position", () => {
                 const tetronimo = new Tetronimo(0, 0, "L")
 
@@ -179,6 +179,19 @@ describe("Tetronimo class", () => {
                 expect(tetronimo.absolute).toEqual([{x: tetronimo.x, y: tetronimo.y},{x:0, y: -2}])
                 tetronimo.removePosition({x: 0, y: -2})
                 expect(tetronimo.absolute).toEqual([{x: tetronimo.x, y: tetronimo.y}])
+            });
+
+            it("should remove from just one tetronimo, not others", () => {
+                const tetronimo1 = new Tetronimo(0, 0, "L")
+                const tetronimo2 = new Tetronimo(2, 0, "L")
+
+                expect(tetronimo1.absolute).toEqual([{x: tetronimo1.x, y: tetronimo1.y}, {x: 0, y: -1},{x:0, y: -2},{x: 1, y: 0}])
+                expect(tetronimo2.absolute).toEqual([{x: tetronimo2.x, y: tetronimo2.y}, {x: 2, y: -1},{x:2, y: -2},{x: 3, y: 0}])
+
+                tetronimo1.removePosition({x: 1, y: 0})
+
+                expect(tetronimo1.absolute).toEqual([{x: tetronimo.x, y: tetronimo.y}, {x: 0, y: -1},{x:0, y: -2}])
+                expect(tetronimo2.absolute).toEqual([{x: tetronimo2.x, y: tetronimo2.y}, {x: 2, y: -1},{x:2, y: -2},{x: 3, y: 0}])
             });
         });
     })

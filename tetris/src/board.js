@@ -32,7 +32,7 @@ export default class Board {
       if (!this.touchdown) return;
         const {x, y} = tetronimo;
         this.board[y][x] = tetronimo;
-       // this.activeTetronimo = tetronimo;
+        this.activeTetronimo = tetronimo;
     }
 
     get touchdown () {
@@ -110,21 +110,18 @@ export default class Board {
       return this.#bottomUp.map(y =>{
         const touchingTetronimos = this.absoluteFixedTetronimos.filter(tetro => tetro.absolute.some(position => position.y === y));
         const touching = touchingTetronimos.map(tetronimo => tetronimo.absolute.filter(position => position.y === y))
-        console.log("completed()", touchingTetronimos, touching)
-        return touching.flat().length === this.width ? y : -1
+
+        return touching.flat().length === this.width ? touching : []
       })
     }
 
     removeLines() {
-
-      const lines = this.completed().flat();
+      const lines = this.completed().flat().flat();
       if (lines < 0) return;
       console.log("Are completed?", lines)
-      lines.forEach(y => {
-        this.absoluteFixedTetronimos.filter(tetro => tetro.absolute.some(position => position.y === y)).forEach(position => {
-          const tetronimo = this.tetronimoIn({x: position.x, y: position.y});
-          tetronimo && tetronimo.removePosition({x: position.x, y: position.y})
-        })
+      lines.forEach(position => {
+        const tetronimo = this.tetronimoIn({x: position.x, y: position.y});
+        tetronimo && tetronimo.removePosition({x: position.x, y: position.y})
       })
     }
 

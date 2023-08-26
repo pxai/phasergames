@@ -13,6 +13,7 @@ export default class Game extends Phaser.Scene {
     init (data) {
         this.name = data.name;
         this.number = data.number;
+        this.speed = 300;
     }
 
     preload () {
@@ -29,7 +30,7 @@ export default class Game extends Phaser.Scene {
         this.board = new Board();
         this.tetronimosLayer = this.add.layer();
         this.addFigure();
-        this.moveThisShit(1000);
+        this.moveThisShit(this.speed);
         // this.loadAudios();
         // this.playMusic();
     }
@@ -104,6 +105,7 @@ export default class Game extends Phaser.Scene {
 
         if (this.board.touchdown) {
             console.log("ADD FIGURE!", new Date().toDateString())
+            this.render(this.board);
             this.board.removeLines();
             this.addFigure();
         }

@@ -277,28 +277,19 @@ describe("Board class", () => {
         });
     });
 
-    describe.only("#removeLines", () => {
-        it("should remove a line when it is completed", () => {
+    describe("#removeLines", () => {
+        it.only("should remove a line when it is completed", () => {
             const board = new Board();
             const tetronimos = Array(5).fill(0).map((_,i) => new Tetronimo(i*2, 19, "L"));
             tetronimos.forEach(tetronimo => { board.add(tetronimo); board.move()})
 
-            // const tetronimo1 = new Tetronimo(0, 19, "L")
-            // const tetronimo2 = new Tetronimo(2, 19, "L")
-            // const tetronimo3 = new Tetronimo(4, 19, "L")
-            // const tetronimo4 = new Tetronimo(6, 19, "L")
-            // const tetronimo5 = new Tetronimo(8, 19, "L")
-            // board.add(tetronimo1); tetronimo1.floating = false;
-            // board.add(tetronimo2); tetronimo2.floating = false;
-            // board.add(tetronimo3); tetronimo3.floating = false;
-            // board.add(tetronimo4); tetronimo4.floating = false;
-            // board.add(tetronimo5); tetronimo5.floating = false;
-
-            expect(board.completed()).toEqual([19]);
-
-              //console.log(board.tetronimos[0].positions)
-              board.removeLines();
-              //console.log(board.tetronimos[0].positions)
+            expect(board.completed().flat()).toEqual([
+                [ { x: 0, y: 19 }, { x: 1, y: 19 } ],
+                [ { x: 2, y: 19 }, { x: 3, y: 19 } ],
+                [ { x: 4, y: 19 }, { x: 5, y: 19 } ],
+                [ { x: 6, y: 19 }, { x: 7, y: 19 } ],
+                [ { x: 8, y: 19 }, { x: 9, y: 19 } ]
+              ]);
         });
     });
 });
