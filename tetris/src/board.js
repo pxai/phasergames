@@ -118,7 +118,6 @@ export default class Board {
     removeLines() {
       const lines = this.completed().flat().flat();
       if (lines < 0) return;
-      console.log("Are completed?", lines)
       lines.forEach(position => {
         const tetronimo = this.tetronimoIn({x: position.x, y: position.y});
         tetronimo && tetronimo.removePosition({x: position.x, y: position.y})
@@ -126,11 +125,10 @@ export default class Board {
     }
 
     tetronimoIn({x, y}) {
-      console.log("Find it: ", this.tetronimos.map(t => t.absolute), this.tetronimos.find(tetronimo => tetronimo.absolute.some(position => position.x === x && position.y === y)));
       return this.tetronimos.find(tetronimo => tetronimo.absolute.some(position => position.x === x && position.y === y))
     }
 
     get #bottomUp () {
-      return [19]//[...Array(this.height).keys()].sort((a,b) => b-a)
+      return [...Array(this.height).keys()].sort((a,b) => b-a)
     }
 }

@@ -76,6 +76,5 @@ export default class Tetromino {
     removePosition ({x, y}) {
         const indexOf = this.absolute.findIndex(position => position.x === x && position.y === y);
         this.positions[this.rotation] = this.positions[this.rotation].filter((position,i)=>  i !== indexOf)
-        console.log("Removing: ",{x,y}, indexOf, this.current, this.positions[0])
     }
 }
