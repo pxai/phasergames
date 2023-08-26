@@ -5,6 +5,7 @@ export default class Tetromino {
     constructor (x, y, shape, color = "red") {
         this.x = x;
         this.y = y;
+        this.name = color + Math.random()
         this.color = color;
         this.shape = shape;
         this.rotation = 0;
@@ -42,8 +43,7 @@ export default class Tetromino {
 
     get absolute() {
         return [
-            {x: this.x, y: this.y}, 
-            ...this.positions[this.rotation].slice(1, 4).map(position => ({x: this.x + position.x, y: this.y + position.y}))];
+            ...this.positions[this.rotation].map(position => ({x: this.x + position.x, y: this.y + position.y}))];
     }
 
     get bottomParts () {
@@ -62,7 +62,7 @@ export default class Tetromino {
     }
 
     get collidingBottom () {
-        return this.bottomParts.map(part => ({x: this.x + part.x, y: this.y + part.y + 1}));
+        return this.bottomParts && this.bottomParts.map(part => ({x: this.x + part.x, y: this.y + part.y + 1}));
     }
 
     get collidingLeft () {
@@ -75,6 +75,7 @@ export default class Tetromino {
 
     removePosition ({x, y}) {
         const indexOf = this.absolute.findIndex(position => position.x === x && position.y === y);
-        this.current.splice(indexOf, 1)
+        this.positions[this.rotation] = this.positions[this.rotation].filter((position,i)=>  i !== indexOf)
+        console.log("Removing: ",{x,y}, indexOf, this.current, this.positions[0])
     }
 }

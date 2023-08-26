@@ -28,24 +28,15 @@ export default class Game extends Phaser.Scene {
         this.figures = this.add.group();
         this.board = new Board();
         this.tetronimosLayer = this.add.layer();
-        this.addFigure(1000);
+        this.addFigure();
         this.moveThisShit(1000);
         // this.loadAudios();
         // this.playMusic();
     }
 
-    addFigure (delay = 5000) {
-        this.time.addEvent({
-            delay,
-            callback: () => {
-                // TODO remove this.figure
-                const figure = this.figure = new Tetronimo(4, 4, "L", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black"]));
-                this.board.add(figure);
-                //this.addFigure();
-            },
-            callbackScope: this,
-            loop: false
-          });
+    addFigure () {
+        const figure = this.figure = new Tetronimo(4, 4, "L", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black"]));
+        this.board.add(figure);
         // this.figure = new Figure(this, this.center_width, this.center_height + 128);
     }
 
@@ -113,6 +104,7 @@ export default class Game extends Phaser.Scene {
 
         if (this.board.touchdown) {
             console.log("ADD FIGURE!", new Date().toDateString())
+            this.board.removeLines();
             this.addFigure();
         }
         if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
