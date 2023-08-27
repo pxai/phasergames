@@ -29,6 +29,7 @@ export default class Board {
     }
 
     add (tetronimo) {
+      this.latest = tetronimo;
       if (!this.touchdown) return;
         const {x, y} = tetronimo;
         this.board[y][x] = tetronimo;
@@ -43,7 +44,6 @@ export default class Board {
       return this.board.flat().filter((cell) => cell !== false);
     }
 
-
     get absoluteTetronimos () {
       return this.tetronimos.map(tetronimo => tetronimo.absolute).flat()
     }
@@ -53,7 +53,8 @@ export default class Board {
     }
 
     gameOver () {
-      return this.collidesToBottom(this.activeTetronimo );
+     // console.log("Active: ", this.latest, this.collidesToBottom(this.latest), this.latest.absolute.some(position => position.y <= 0))
+      return this.collidesToBottom(this.latest) && this.latest.absolute.some(position => position.y <= 0)
     }
 
     move () {
@@ -69,7 +70,6 @@ export default class Board {
       if (y < this.height - 1 && !this.collidesToBottom(tetronimo)) {
         this.board[tetronimo.y][tetronimo.x] = false;
         tetronimo.y += 1;
-        console.log("About to fail: ", tetronimo.x, tetronimo.y)
         if (tetronimo.y < this.height)
           this.board[tetronimo.y][tetronimo.x] = tetronimo;
         tetronimo.floating = tetronimo.lowest < this.height - 1;
@@ -80,7 +80,7 @@ export default class Board {
 
     right (tetronimo) {
       const {x, y} = tetronimo;
-      if (x < this.width - 1 && !this.collidesToRight(tetronimo)) {
+      if (tetronimo.rightest < this.width - 1 && !this.collidesToRight(tetronimo)) {
         this.board[tetronimo.y][tetronimo.x] = false;
         tetronimo.right();
         this.board[y][x + 1] = tetronimo;
@@ -89,7 +89,7 @@ export default class Board {
 
     left (tetronimo) {
       const {x, y} = tetronimo;  
-      if (x > 0 && !this.collidesToLeft(tetronimo)) {
+      if (tetronimo.leftest > 0 && !this.collidesToLeft(tetronimo)) {
         this.board[tetronimo.y][tetronimo.x] = false;
         tetronimo.left();
         this.board[y][x - 1] = tetronimo;
@@ -97,7 +97,7 @@ export default class Board {
     }
 
     collidesToBottom(tetronimo) {
-      console.log(tetronimo.collidingBottom,tetronimo.collidingBottom.map(position => position.y),  tetronimo.collidingBottom.map(position => position.y).every(y => y >= this.height), this.height)
+      //console.log(tetronimo.collidingBottom,tetronimo.collidingBottom.map(position => position.y),  tetronimo.collidingBottom.map(position => position.y).every(y => y >= this.height), this.height)
       return tetronimo.collidingBottom.some(this.#overlaps()) || tetronimo.collidingBottom.map(position => position.y).every(y => y >= this.height);
     }
 
@@ -137,16 +137,13 @@ export default class Board {
       })
       this.#moveFixed();
     }
-moveIt () {
-  console.log("Dale")
-  this.#moveFixed()
-}
+
     #moveFixed() {     
-      console.log("What do we have: ", this.fixedTetronimos)
+      //console.log("What do we have: ", this.fixedTetronimos)
       this.fixedTetronimos.forEach(tetronimo => {
-        console.log("Lets move this: ", tetronimo, " Free to go?", !this.collidesToBottom(tetronimo))
+        //console.log("Lets move this: ", tetronimo, " Free to go?", !this.collidesToBottom(tetronimo))
         if (!this.collidesToBottom(tetronimo)) {
-          console.log("Moving down!!")
+          //console.log("Moving down!!")
           this.#moveDown(tetronimo)
         }
       })

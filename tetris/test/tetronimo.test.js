@@ -173,6 +173,26 @@ describe("Tetronimo class", () => {
                 expect(tetronimo3.lowest).toBe(5);
             });
         });
+
+        describe("#rightest", () => {
+            it("should return rightest point", () => {
+                const tetronimo1 = new Tetronimo(0, 0, "L")
+                expect(tetronimo1.rightest).toBe(1);
+
+                const tetronimo2 = new Tetronimo(4, 4, "L")
+                expect(tetronimo2.rightest).toBe(5);
+            });
+        });
+
+        describe("#leftest", () => {
+            it("should return rightest point", () => {
+                const tetronimo1 = new Tetronimo(0, 0, "L")
+                expect(tetronimo1.leftest).toBe(0);
+
+                const tetronimo2 = new Tetronimo(4, 4, "L")
+                expect(tetronimo2.leftest).toBe(4);
+            });
+        });
     
         describe("#leftParts", () => {
             it("should return parts to the left limit", () => {

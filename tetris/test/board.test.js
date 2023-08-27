@@ -117,8 +117,10 @@ describe("Board class", () => {
         it("should detect gameOver", () => {
             const board = new Board();
 
-            Array(6).fill(0).forEach((tetronimo,i) => {
-                board.add(new Tetronimo(0, 19 - (i*3), "L"))
+            Array(7).fill(0).forEach((_,i) => {
+                const tetronimo =new Tetronimo(0, 19 - (i*3), "L")
+                board.add(tetronimo)
+                board.move()
             })
 
             expect(board.gameOver()).toBe(true);
@@ -213,7 +215,7 @@ describe("Board class", () => {
     
             expect(board.collidesToBottom(tetronimo)).toBe(false);
             tetronimo.floating = false;
-            board.moveIt()
+            //board.moveIt()
         })
     })
 

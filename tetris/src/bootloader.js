@@ -35,6 +35,8 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image("red", "assets/images/red.png");
         this.load.image("yellow", "assets/images/yellow.png");
         this.load.image("grey", "assets/images/grey.png");
+        this.load.image("purple", "assets/images/purple.png");
+        this.load.image("orange", "assets/images/orange.png");
         this.load.image("black", "assets/images/black.png");
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
 

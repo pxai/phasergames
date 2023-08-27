@@ -55,6 +55,14 @@ export default class Tetromino {
         return this.bottomParts[0].y + this.y;
     }
 
+    get rightest () {
+        return this.rightParts[0].x + this.x;
+    }
+
+    get leftest () {
+        return this.x - this.leftParts[0].x;
+    }
+
     get rightParts () {
         const partial = [...this.current].sort((pointA, pointB) => pointB.x - pointA.x);
         return [partial[0], ...partial.slice(1, 4).filter(point => point.x === partial[0].x)]

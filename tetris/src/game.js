@@ -30,14 +30,21 @@ export default class Game extends Phaser.Scene {
         this.board = new Board();
         this.tetronimosLayer = this.add.layer();
         this.addFigure();
+        this.addBorders();
         this.moveThisShit(this.speed);
         this.gameOver = false;
         // this.loadAudios();
         // this.playMusic();
+    }   
+
+    addBorders () {
+        this.add.rectangle(320, 0, 200, this.height, 0x222222).setOrigin(0)
+        this.add.rectangle(0, 32 * this.board.height, this.width/2, 200, 0x222222).setOrigin(0)
+
     }
 
     addFigure () {
-        const figure = this.figure = new Tetronimo(4, 4, "L", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black"]));
+        const figure = this.figure = new Tetronimo(4, 0, "L", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"]));
         this.board.add(figure);
         // this.figure = new Figure(this, this.center_width, this.center_height + 128);
     }
@@ -46,6 +53,7 @@ export default class Game extends Phaser.Scene {
         this.time.addEvent({
             delay,
             callback: () => {
+                if (this.gameOver) return;
                 this.render(this.board);
                 this.board.move();
                 //console.log(this.board.print());
