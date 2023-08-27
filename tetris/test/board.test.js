@@ -155,6 +155,21 @@ describe("Board class", () => {
         });
     });
 
+    describe("#pushDown", () => {
+        it("should push the tetronimo to the bottom", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(0, 0, "L");
+            board.add(tetronimo);
+            
+            expect(board.tetronimos.length).toBe(1)
+
+            board.pushDown(tetronimo);
+
+            expect(board.tetronimos.length).toBe(1)
+        });
+    });
+
+
     describe("#touchdown", () => {
         it("return false if one tetronimo is not blocked", () => {
             const board = new Board();

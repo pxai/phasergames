@@ -56,7 +56,7 @@ export default class Tetromino {
     }
 
     get lowest () {
-        console.log("See before fail: ", this, this.absolute, this.bottomParts)
+        //console.log("See before fail: ", this, this.absolute, this.bottomParts)
         return this.bottomParts[0].y + this.y;
     }
 

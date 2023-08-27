@@ -65,6 +65,12 @@ export default class Board {
         });
     }
 
+    pushDown (tetronimo) {
+      if (this.collidesToBottom(tetronimo)) return;
+      this.#moveDown(tetronimo);
+      this.pushDown(tetronimo);
+    }
+
     #moveDown (tetronimo) {
       const {x, y} = tetronimo;
       if (y < this.height - 1 && !this.collidesToBottom(tetronimo)) {
@@ -135,14 +141,14 @@ export default class Board {
           //console.log("About to remove:", {x: position.x, y: position.y}, tetronimo?.name)
           tetronimo && tetronimo.removePosition({x: position.x, y: position.y})
         })
-        console.log("After", this.tetronimos.map(t => t.absolute), lines)
+        //console.log("After", this.tetronimos.map(t => t.absolute), lines)
 
       })
       this.#moveFixed(levelsRemoved);
     }
 
     #moveFixed(levelsRemoved) {     
-      console.log("About to move: ", this.fixedTetronimos, levelsRemoved)
+     // console.log("About to move: ", this.fixedTetronimos, levelsRemoved)
       this.fixedTetronimos.forEach(tetronimo => {
         //console.log("Lets move this: ", tetronimo, " Free to go?", !this.collidesToBottom(tetronimo))
         if (tetronimo.absolute.length > 0 && tetronimo.lowest < 19) tetronimo.fall(levelsRemoved);

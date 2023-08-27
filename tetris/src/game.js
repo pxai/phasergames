@@ -24,7 +24,7 @@ export default class Game extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-
+        this.loadAudios();
         this.addKeys();
         this.figures = this.add.group();
         this.board = new Board();
@@ -33,7 +33,6 @@ export default class Game extends Phaser.Scene {
         this.addBorders();
         this.moveThisShit(this.speed);
         this.gameOver = false;
-        // this.loadAudios();
         // this.playMusic();
     }   
 
@@ -46,6 +45,7 @@ export default class Game extends Phaser.Scene {
     addFigure () {
         const figure = this.figure = new Tetronimo(4, 0, "L", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"]));
         this.board.add(figure);
+        this.playAudio("appear")
         // this.figure = new Figure(this, this.center_width, this.center_height + 128);
     }
 
@@ -77,7 +77,13 @@ export default class Game extends Phaser.Scene {
 
     loadAudios () {
         this.audios = {
-            beam: this.sound.add("beam")
+            clear: this.sound.add("clear"),
+            rotate: this.sound.add("rotate"),
+            move: this.sound.add("move"),
+            gameOver: this.sound.add("gameOver"),
+            appear: this.sound.add("appear"),
+            push: this.sound.add("push"),
+            land: this.sound.add("land"),
         };
     }
 
@@ -111,6 +117,7 @@ export default class Game extends Phaser.Scene {
     update () {
         if (this.gameOver) return;
         if (this.board.touchdown) {
+            this.playAudio("land");
             console.log("ADD FIGURE!", new Date().toDateString())
             this.render(this.board);
             this.board.removeLines();
@@ -124,18 +131,22 @@ export default class Game extends Phaser.Scene {
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.S)) {
-            this.board.activeTetronimo.rotateLeft();
+            this.board.pushDown(this.board.activeTetronimo)
+            this.playAudio("push");
             this.render(this.board);
         } else if (Phaser.Input.Keyboard.JustDown(this.cursor.up) || Phaser.Input.Keyboard.JustDown(this.W)) {
             console.log("Up!");
             this.board.activeTetronimo.rotateRight();
+            this.playAudio("rotate");
             this.render(this.board);
         } else if (Phaser.Input.Keyboard.JustDown(this.cursor.right) || Phaser.Input.Keyboard.JustDown(this.D)) {
             this.board.right(this.board.activeTetronimo);
+            this.playAudio("move");
             this.render(this.board);
         } else if (Phaser.Input.Keyboard.JustDown(this.cursor.left) || Phaser.Input.Keyboard.JustDown(this.A)) {
             this.board.left(this.board.activeTetronimo);
             this.render(this.board);
+            this.playAudio("move");
         }
     }
 
@@ -145,6 +156,7 @@ export default class Game extends Phaser.Scene {
 
     finishScene () {
         this.gameOver = true;
+        this.playAudio("gameOver");
         console.log("GAME OVER")
         this.add.bitmapText(this.center_width, this.center_height, "pixelFont", "GAME OVER", 40).setOrigin(0.5);
         // this.theme.stop();
