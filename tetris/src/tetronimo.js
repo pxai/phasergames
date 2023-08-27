@@ -51,6 +51,10 @@ export default class Tetromino {
         return partial.sort((pointA, pointB) => pointB.y - pointA.y);
     }
 
+    get lowest () {
+        return this.bottomParts[0].y + this.y;
+    }
+
     get rightParts () {
         const partial = [...this.current].sort((pointA, pointB) => pointB.x - pointA.x);
         return [partial[0], ...partial.slice(1, 4).filter(point => point.x === partial[0].x)]
@@ -74,11 +78,9 @@ export default class Tetromino {
     }
 
     removePosition ({x, y}) {
-        console.log("Removing: ", x, y)
         const indexOf = this.absolute.findIndex(position => position.x === x && position.y === y);
         this.positions[this.rotation].splice(indexOf, 1); //= this.positions[this.rotation].filter((position,i)=>  i !== indexOf)
-        console.log("After removal: ", this.positions[this.rotation], this.absolute)
-        //this.#correctCenter();
+       //this.#correctCenter();
     }
 
     #hasCenter() {

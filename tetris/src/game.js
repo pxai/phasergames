@@ -31,12 +31,13 @@ export default class Game extends Phaser.Scene {
         this.tetronimosLayer = this.add.layer();
         this.addFigure();
         this.moveThisShit(this.speed);
+        this.gameOver = false;
         // this.loadAudios();
         // this.playMusic();
     }
 
     addFigure () {
-        const figure = this.figure = new Tetronimo(4, 4, "O", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black"]));
+        const figure = this.figure = new Tetronimo(4, 4, "L", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black"]));
         this.board.add(figure);
         // this.figure = new Figure(this, this.center_width, this.center_height + 128);
     }
@@ -60,9 +61,7 @@ export default class Game extends Phaser.Scene {
         this.tetronimosLayer.removeAll();
         console.log("Rendering tetronimos!: ", board.tetronimos)
         board.tetronimos.forEach(tetronimo => {
-            //console.log("About to render", tetronimo.current);
             tetronimo.current.forEach(({x, y}) => {
-                //console.log("Rendering position at", tetronimo.x, tetronimo.y, x, y, "with color", tetronimo.color, "and pos: ", (tetronimo.x + x) * 32, (tetronimo.y + y) * 32);
                 this.tetronimosLayer.add(this.add.sprite((tetronimo.x + x) * 32, (tetronimo.y + y) * 32, tetronimo.color).setOrigin(0))
             });
         });
@@ -102,12 +101,15 @@ export default class Game extends Phaser.Scene {
     }
 
     update () {
-
+        if (this.gameOver) return;
         if (this.board.touchdown) {
             console.log("ADD FIGURE!", new Date().toDateString())
             this.render(this.board);
             this.board.removeLines();
             this.addFigure();
+            if (this.board.gameOver()) {
+                this.finishScene();
+            }
         }
         if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
             this.addFigure()
@@ -134,9 +136,11 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene () {
-        this.sky.stop();
-        this.theme.stop();
-        this.scene.start("transition", { next: "underwater", name: "STAGE", number: this.number + 1 });
+        this.gameOver = true;
+        console.log("GAME OVER")
+        this.add.bitmapText(this.center_width, this.center_height, "pixelFont", "GAME OVER", 40).setOrigin(0.5);
+        // this.theme.stop();
+       // this.scene.start("transition", { next: "underwater", name: "STAGE", number: this.number + 1 });
     }
 
     updateScore (points = 0) {

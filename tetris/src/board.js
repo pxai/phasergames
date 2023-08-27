@@ -52,6 +52,10 @@ export default class Board {
       return this.tetronimos.filter(tetronimo => !tetronimo.floating).flat()
     }
 
+    gameOver () {
+      return this.collidesToBottom(this.activeTetronimo );
+    }
+
     move () {
         this.tetronimos.forEach((tetronimo) => {
             if (tetronimo.floating) {
@@ -65,8 +69,10 @@ export default class Board {
       if (y < this.height - 1 && !this.collidesToBottom(tetronimo)) {
         this.board[tetronimo.y][tetronimo.x] = false;
         tetronimo.y += 1;
-        this.board[tetronimo.y][tetronimo.x] = tetronimo;
-        tetronimo.floating = tetronimo.y < this.height - 1;
+        console.log("About to fail: ", tetronimo.x, tetronimo.y)
+        if (tetronimo.y < this.height)
+          this.board[tetronimo.y][tetronimo.x] = tetronimo;
+        tetronimo.floating = tetronimo.lowest < this.height - 1;
       }  else {
         tetronimo.floating = false; 
       }
@@ -91,7 +97,8 @@ export default class Board {
     }
 
     collidesToBottom(tetronimo) {
-      return tetronimo.collidingBottom.some(this.#overlaps());
+      console.log(tetronimo.collidingBottom,tetronimo.collidingBottom.map(position => position.y),  tetronimo.collidingBottom.map(position => position.y).every(y => y >= this.height), this.height)
+      return tetronimo.collidingBottom.some(this.#overlaps()) || tetronimo.collidingBottom.map(position => position.y).every(y => y >= this.height);
     }
 
     collidesToRight(tetronimo) {
@@ -109,34 +116,44 @@ export default class Board {
     completed() {
       return this.#bottomUp.map(y =>{
         const touchingTetronimos = this.fixedTetronimos.filter(tetro => tetro.absolute.some(position => position.y === y));
-        const touching = touchingTetronimos.map(tetronimo => tetronimo.absolute.filter(position => position.y === y))
+        const touching = touchingTetronimos.map(tetronimo => tetronimo.absolute.filter(position => position.y === y)).flat()
 
         return touching.flat().length === this.width ? touching : []
       })
     }
 
     removeLines() {
-      const lines = this.completed().flat().flat();
+      const lines = this.completed();
 
       if (lines < 0) return;
-      lines.forEach(position => {
-        const tetronimo = this.tetronimoIn({x: position.x, y: position.y});
-        console.log("About to remove:", {x: position.x, y: position.y}, tetronimo?.name)
-        tetronimo && tetronimo.removePosition({x: position.x, y: position.y})
+      lines.forEach(line => {
+        //console.log("Before", this.tetronimos.map(t => t.absolute))
+        line.forEach(position => {
+          const tetronimo = this.tetronimoIn({x: position.x, y: position.y});
+          //console.log("About to remove:", {x: position.x, y: position.y}, tetronimo?.name)
+          tetronimo && tetronimo.removePosition({x: position.x, y: position.y})
+        })
+        //console.log("After", this.tetronimos.map(t => t.absolute))
       })
       this.#moveFixed();
     }
-
-    #moveFixed() {
+moveIt () {
+  console.log("Dale")
+  this.#moveFixed()
+}
+    #moveFixed() {     
+      console.log("What do we have: ", this.fixedTetronimos)
       this.fixedTetronimos.forEach(tetronimo => {
+        console.log("Lets move this: ", tetronimo, " Free to go?", !this.collidesToBottom(tetronimo))
         if (!this.collidesToBottom(tetronimo)) {
+          console.log("Moving down!!")
           this.#moveDown(tetronimo)
         }
       })
     }
 
     tetronimoIn({x, y}) {
-      if (x === 1 && y === 19) console.log("This is the case: ", x,y, this.tetronimos.map(t => t.absolute))
+      //if (x === 1 && y === 19) console.log("This is the case: ", x,y, this.tetronimos.map(t => t.absolute))
       return this.tetronimos.find(tetronimo => tetronimo.absolute.some(position => position.x === x && position.y === y))
     }
 
