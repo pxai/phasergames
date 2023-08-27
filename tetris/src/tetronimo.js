@@ -27,6 +27,10 @@ export default class Tetromino {
         this.x--;
     }
 
+    fall (times = 1) {
+        this.y = this.y + times;
+    }
+
     rotateLeft () {
         if (!this.floating) return;
         this.rotation = this.rotation === 0 ? 3 : this.rotation - 1;
@@ -52,6 +56,7 @@ export default class Tetromino {
     }
 
     get lowest () {
+        console.log("See before fail: ", this, this.absolute, this.bottomParts)
         return this.bottomParts[0].y + this.y;
     }
 

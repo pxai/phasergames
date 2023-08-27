@@ -124,28 +124,28 @@ export default class Board {
 
     removeLines() {
       const lines = this.completed();
-
+      let levelsRemoved = 0;
       if (lines < 0) return;
       lines.forEach(line => {
+        if (line.length === 0) return;
+        levelsRemoved++
         //console.log("Before", this.tetronimos.map(t => t.absolute))
         line.forEach(position => {
           const tetronimo = this.tetronimoIn({x: position.x, y: position.y});
           //console.log("About to remove:", {x: position.x, y: position.y}, tetronimo?.name)
           tetronimo && tetronimo.removePosition({x: position.x, y: position.y})
         })
-        //console.log("After", this.tetronimos.map(t => t.absolute))
+        console.log("After", this.tetronimos.map(t => t.absolute), lines)
+
       })
-      this.#moveFixed();
+      this.#moveFixed(levelsRemoved);
     }
 
-    #moveFixed() {     
-      //console.log("What do we have: ", this.fixedTetronimos)
+    #moveFixed(levelsRemoved) {     
+      console.log("About to move: ", this.fixedTetronimos, levelsRemoved)
       this.fixedTetronimos.forEach(tetronimo => {
         //console.log("Lets move this: ", tetronimo, " Free to go?", !this.collidesToBottom(tetronimo))
-        if (!this.collidesToBottom(tetronimo)) {
-          //console.log("Moving down!!")
-          this.#moveDown(tetronimo)
-        }
+        if (tetronimo.absolute.length > 0 && tetronimo.lowest < 19) tetronimo.fall(levelsRemoved);
       })
     }
 
