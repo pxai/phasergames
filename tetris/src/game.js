@@ -26,13 +26,14 @@ export default class Game extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.loadAudios();
         this.addKeys();
+        this.gameOver = false;
         this.figures = this.add.group();
         this.board = new Board();
         this.tetronimosLayer = this.add.layer();
         this.addFigure();
         this.addBorders();
         this.moveThisShit(this.speed);
-        this.gameOver = false;
+
         // this.playMusic();
     }   
 
@@ -43,10 +44,14 @@ export default class Game extends Phaser.Scene {
     }
 
     addFigure () {
-        const figure = this.figure = new Tetronimo(4, 0, "T", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"]));
-        this.board.add(figure);
-        this.playAudio("appear")
-        // this.figure = new Figure(this, this.center_width, this.center_height + 128);
+        if (this.board.fixedTetronimos.length < 5) {
+            const figure = this.figure = new Tetronimo(4, 0, "L", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"]));
+            this.board.add(figure);
+            this.playAudio("appear")
+            // this.figure = new Figure(this, this.center_width, this.center_height + 128);
+        } else {
+            this.gameOver = true;
+        }
     }
 
     moveThisShit (delay = 5000) {
@@ -67,7 +72,7 @@ export default class Game extends Phaser.Scene {
 
     render (board) {
         this.tetronimosLayer.removeAll();
-        console.log("Rendering tetronimos!: ", board.tetronimos)
+        //console.log("Rendering tetronimos!: ", board.tetronimos)
         board.tetronimos.forEach(tetronimo => {
             tetronimo.current.forEach(({x, y}) => {
                 this.tetronimosLayer.add(this.add.sprite((tetronimo.x + x) * 32, (tetronimo.y + y) * 32, tetronimo.color).setOrigin(0))

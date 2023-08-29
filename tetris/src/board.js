@@ -149,6 +149,7 @@ export default class Board {
     removeLines() {
       const lines = this.completed();
       let levelsRemoved = 0;
+      let highest = -1;
       if (lines < 0) return;
       lines.forEach(line => {
         if (line.length === 0) return;
@@ -160,17 +161,23 @@ export default class Board {
           tetronimo && tetronimo.removePosition({x: position.x, y: position.y})
         })
         //console.log("After", this.tetronimos.map(t => t.absolute), lines)
-
+        highest = line[0].y;
       })
-      this.#moveFixed(levelsRemoved);
+
+      if (levelsRemoved > 0) this.#moveFixed(levelsRemoved, highest);
     }
 
-    #moveFixed(levelsRemoved) {     
-     // console.log("About to move: ", this.fixedTetronimos, levelsRemoved)
-      this.fixedTetronimos.forEach(tetronimo => {
-        //console.log("Lets move this: ", tetronimo, " Free to go?", !this.collidesToBottom(tetronimo))
-        if (tetronimo.absolute.length > 0 && tetronimo.lowest < 19) tetronimo.fall(levelsRemoved);
-      })
+    #moveFixed(levelsRemoved, highest) {    
+      console.log("REMOVED LINESSSSS") 
+      console.log("About to move: ", this.fixedTetronimos, levelsRemoved, highest)
+      for (let i=0;i<this.fixedTetronimos.length;i++) {
+        console.log("before: ", this.fixedTetronimos.map(tetro => tetro.absolute))
+        this.fixedTetronimos[i].movePositionAtHeight(highest - 1)
+        console.log("After: ", this.fixedTetronimos.map(tetro => tetro.absolute))
+      }
+      // this.fixedTetronimos.forEach(tetronimo => {
+      //   tetronimo.movePositionAtHeight(highest - 1)
+      // })
     }
 
     tetronimoIn({x, y}) {

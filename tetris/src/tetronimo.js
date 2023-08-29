@@ -14,7 +14,7 @@ export default class Tetromino {
     }
 
     #loadPositions () {
-        this.positions = shapes[this.shape].map(positions => [...positions]);
+        this.positions = [...shapes[this.shape].map(positions => [...positions])];
     }
 
     right () {
@@ -94,6 +94,19 @@ export default class Tetromino {
     removePosition ({x, y}) {
         const indexOf = this.absolute.findIndex(position => position.x === x && position.y === y);
         this.positions[this.rotation].splice(indexOf, 1); //= this.positions[this.rotation].filter((position,i)=>  i !== indexOf)
+       //this.#correctCenter();
+    }
+
+    movePositionAtHeight (y) {
+        console.log("About to move DOWN: ", this.absolute, y)
+        for (let i = 0;i< this.absolute.length;i++) {
+             if (this.absolute[i].y <= y) {
+                console.log("MOOOOOOOVING", y, i, this.absolute, this.absolute[i], this.positions[this.rotation][i])
+                this.positions[this.rotation][i].y = this.positions[this.rotation][i].y + 1;
+            }
+        }
+        //åconsole.log(this.positions[this.rotation], y, indexOf, this.positions[this.rotation][indexOf]); //
+
        //this.#correctCenter();
     }
 

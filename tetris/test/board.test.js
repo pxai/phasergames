@@ -501,7 +501,7 @@ describe("Board class", () => {
         });
     });
 
-    describe.only("#canRotate", () => {
+    describe("#canRotate", () => {
         it("should return true if it can rotate", () => {
             const board = new Board();
             const tetronimo = new Tetronimo(4, 4, "L");
