@@ -14,7 +14,7 @@ export default class Tetromino {
     }
 
     #loadPositions () {
-        this.positions = [...shapes[this.shape].map(positions => [...positions])];
+        this.positions = shapes[this.shape].map(positions => ShapeManager.deepCopy(positions));
     }
 
     right () {
@@ -99,13 +99,13 @@ export default class Tetromino {
 
     movePositionAtHeight (y) {
         console.log("About to move DOWN: ", this.absolute, y)
-        for (let i = 0;i< this.absolute.length;i++) {
-             if (this.absolute[i].y <= y) {
-                console.log("MOOOOOOOVING", y, i, this.absolute, this.absolute[i], this.positions[this.rotation][i])
-                this.positions[this.rotation][i].y = this.positions[this.rotation][i].y + 1;
-            }
-        }
-        //åconsole.log(this.positions[this.rotation], y, indexOf, this.positions[this.rotation][indexOf]); //
+            this.absolute.forEach((position,i) => { 
+                if (position.y <= y) {
+                    console.log("MOOOOOOOVING ", this.name, y, i, this.absolute, this.absolute[i], this.positions[this.rotation][i])
+                    this.positions[this.rotation][i].y++;
+                    console.log("to:", this.name, y, i, this.absolute, this.absolute[i], this.positions[this.rotation][i])
+                }
+            })
 
        //this.#correctCenter();
     }
@@ -141,5 +141,27 @@ export default class Tetromino {
     get #leftPartsNext () {
         const partial = this.next.filter(position => !this.next.some(current => current.y === position.y && current.x === position.x - 1));
         return partial.map(part => ({x: this.x + part.x - 1, y: this.y  + part.y}))
+    }
+}
+
+
+class ShapeManager {
+    static deepCopy(obj) {
+      if (typeof obj !== 'object' || obj === null) {
+        return obj;
+      }
+  
+      if (Array.isArray(obj)) {
+        return obj.map(ShapeManager.deepCopy);
+      }
+  
+      const newObj = {};
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          newObj[key] = ShapeManager.deepCopy(obj[key]);
+        }
+      }
+  
+      return newObj;
     }
 }

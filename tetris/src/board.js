@@ -3,15 +3,20 @@ export default class Board {
         this.width = width;
         this.height = height;
         this.tetronimos = [];
-        this.activeTetronimo = null;
     }
 
     add (tetronimo) {
-      this.latest = tetronimo;
       if (!this.touchdown) return;
         const {x, y} = tetronimo;
         this.tetronimos.push(tetronimo);
-        this.activeTetronimo = tetronimo;
+    }
+
+    get latest (){
+      return this.tetronimos[this.tetronimos.length - 1]
+    }
+
+    get activeTetronimo(){
+      return this.tetronimos[this.tetronimos.length - 1]
     }
 
     get touchdown () {
@@ -27,7 +32,7 @@ export default class Board {
     }
 
     get fixedTetronimos () {
-      return this.tetronimos.filter(tetronimo => !tetronimo.floating).flat()
+      return [...this.tetronimos.filter(tetronimo => !tetronimo.floating)]
     }
 
     gameOver () {
@@ -81,7 +86,6 @@ export default class Board {
     }
 
     canRotate(tetronimo) {
-      console.log("CAN ROTATE: ", tetronimo.nextRotation.map(position => position.x), !tetronimo.nextRotation.map(position => position.x).some(x => x < 0 || x >= this.width), !tetronimo.nextRotation.map(position => position.y).some(y => y >= this.height), !tetronimo.nextRotation.some(this.#overlaps()))
       return !tetronimo.nextRotation.map(position => position.x).some(x => x < 0 || x >= this.width) && 
       !tetronimo.nextRotation.map(position => position.y).some(y => y >= this.height) && !tetronimo.nextRotation.some(this.#overlapsOthers(tetronimo))
     }
@@ -124,13 +128,10 @@ export default class Board {
       lines.forEach(line => {
         if (line.length === 0) return;
         levelsRemoved++
-        //console.log("Before", this.tetronimos.map(t => t.absolute))
         line.forEach(position => {
           const tetronimo = this.tetronimoIn({x: position.x, y: position.y});
-          //console.log("About to remove:", {x: position.x, y: position.y}, tetronimo?.name)
           tetronimo && tetronimo.removePosition({x: position.x, y: position.y})
         })
-        //console.log("After", this.tetronimos.map(t => t.absolute), lines)
         highest = line[0].y;
       })
 
@@ -138,24 +139,27 @@ export default class Board {
     }
 
     #moveFixed(levelsRemoved, highest) {    
-      console.log("REMOVED LINESSSSS") 
-      console.log("About to move: ", this.fixedTetronimos, levelsRemoved, highest)
-      for (let i=0;i<this.fixedTetronimos.length;i++) {
-        console.log("before: ", this.fixedTetronimos.map(tetro => tetro.absolute))
-        this.fixedTetronimos[i].movePositionAtHeight(highest - 1)
-        console.log("After: ", this.fixedTetronimos.map(tetro => tetro.absolute))
-      }
-      // this.fixedTetronimos.forEach(tetronimo => {
-      //   tetronimo.movePositionAtHeight(highest - 1)
-      // })
+      this.fixedTetronimos.forEach(tetronimo => tetronimo.movePositionAtHeight(highest - 1))
+      //this.fixedTetronimos[0].positions[0][0].y++;
+      //this.fixedTetronimos[0].positions[0][1].y++;
     }
 
     tetronimoIn({x, y}) {
-      //if (x === 1 && y === 19) console.log("This is the case: ", x,y, this.tetronimos.map(t => t.absolute))
       return this.tetronimos.find(tetronimo => tetronimo.absolute.some(position => position.x === x && position.y === y))
     }
 
     get #bottomUp () {
       return [...Array(this.height).keys()].sort((a,b) => b-a)
+    }
+
+    areDistinctObjects(array) {
+      for (let i = 0; i < array.length - 1; i++) {
+        for (let j = i + 1; j < array.length; j++) {
+          if (array[i] === array[j]) {
+            return false; // Found two equal references, so they are not distinct
+          }
+        }
+      }
+      return true; // No equal references found, so they are distinct
     }
 }

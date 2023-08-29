@@ -44,14 +44,8 @@ export default class Game extends Phaser.Scene {
     }
 
     addFigure () {
-        if (this.board.fixedTetronimos.length < 5) {
-            const figure = this.figure = new Tetronimo(4, 0, "L", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"]));
-            this.board.add(figure);
-            this.playAudio("appear")
-            // this.figure = new Figure(this, this.center_width, this.center_height + 128);
-        } else {
-            this.gameOver = true;
-        }
+        this.board.add(new Tetronimo(4, 0, "T", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"])));
+        this.playAudio("appear")
     }
 
     moveThisShit (delay = 5000) {
@@ -67,7 +61,6 @@ export default class Game extends Phaser.Scene {
             callbackScope: this,
             loop: true
           });
-        // this.figure = new Figure(this, this.center_width, this.center_height + 128);
     }
 
     render (board) {
