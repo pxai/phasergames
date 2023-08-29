@@ -43,7 +43,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addFigure () {
-        const figure = this.figure = new Tetronimo(4, 0, "L", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"]));
+        const figure = this.figure = new Tetronimo(4, 0, "T", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"]));
         this.board.add(figure);
         this.playAudio("appear")
         // this.figure = new Figure(this, this.center_width, this.center_height + 128);
@@ -136,7 +136,7 @@ export default class Game extends Phaser.Scene {
             this.render(this.board);
         } else if (Phaser.Input.Keyboard.JustDown(this.cursor.up) || Phaser.Input.Keyboard.JustDown(this.W)) {
             console.log("Up!");
-            this.board.activeTetronimo.rotateRight();
+            this.board.rotate(this.board.activeTetronimo);
             this.playAudio("rotate");
             this.render(this.board);
         } else if (Phaser.Input.Keyboard.JustDown(this.cursor.right) || Phaser.Input.Keyboard.JustDown(this.D)) {

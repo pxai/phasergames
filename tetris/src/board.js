@@ -48,6 +48,10 @@ export default class Board {
       return this.tetronimos.map(tetronimo => tetronimo.absolute).flat()
     }
 
+    absoluteTetronimosButThis (notThis) {
+      return this.tetronimos.filter(t => t.name !== notThis.name).map(tetronimo => tetronimo.absolute).flat()
+    }
+
     get fixedTetronimos () {
       return this.tetronimos.filter(tetronimo => !tetronimo.floating).flat()
     }
@@ -66,7 +70,7 @@ export default class Board {
     }
 
     pushDown (tetronimo) {
-      if (this.collidesToBottom(tetronimo)) return;
+      if (tetronimo.lowest >= this.height - 1 || this.collidesToBottom(tetronimo)) return;
       this.#moveDown(tetronimo);
       this.pushDown(tetronimo);
     }
@@ -84,6 +88,10 @@ export default class Board {
       }
     }
 
+    rotate (tetronimo) {
+      if (this.canRotate(tetronimo)) tetronimo.rotateRight()
+    }
+
     right (tetronimo) {
       const {x, y} = tetronimo;
       if (tetronimo.rightest < this.width - 1 && !this.collidesToRight(tetronimo)) {
@@ -94,7 +102,7 @@ export default class Board {
     }
 
     left (tetronimo) {
-      const {x, y} = tetronimo;  
+      const {x, y} = tetronimo;
       if (tetronimo.leftest > 0 && !this.collidesToLeft(tetronimo)) {
         this.board[tetronimo.y][tetronimo.x] = false;
         tetronimo.left();
@@ -102,8 +110,13 @@ export default class Board {
       }
     }
 
+    canRotate(tetronimo) {
+      console.log("CAN ROTATE: ", tetronimo.nextRotation.map(position => position.x), !tetronimo.nextRotation.map(position => position.x).some(x => x < 0 || x >= this.width), !tetronimo.nextRotation.map(position => position.y).some(y => y >= this.height), !tetronimo.nextRotation.some(this.#overlaps()))
+      return !tetronimo.nextRotation.map(position => position.x).some(x => x < 0 || x >= this.width) && 
+      !tetronimo.nextRotation.map(position => position.y).some(y => y >= this.height) && !tetronimo.nextRotation.some(this.#overlapsOthers(tetronimo))
+    }
+
     collidesToBottom(tetronimo) {
-      //console.log(tetronimo.collidingBottom,tetronimo.collidingBottom.map(position => position.y),  tetronimo.collidingBottom.map(position => position.y).every(y => y >= this.height), this.height)
       return tetronimo.collidingBottom.some(this.#overlaps()) || tetronimo.collidingBottom.map(position => position.y).every(y => y >= this.height);
     }
 
@@ -113,6 +126,11 @@ export default class Board {
 
     collidesToLeft(tetronimo) {
       return tetronimo.x === 0 || tetronimo.collidingLeft.some(this.#overlaps());
+    }
+
+    #overlapsOthers(tetronimo) {
+      console.log("HERE: ", this.absoluteTetronimosButThis(tetronimo), tetronimo)
+      return part => this.absoluteTetronimosButThis(tetronimo).some(existing => existing.x === part.x && existing.y === part.y)
     }
 
     #overlaps(part) {

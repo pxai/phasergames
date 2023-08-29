@@ -139,6 +139,18 @@ describe("Board class", () => {
 
             expect(board.tetronimos.length).toBe(1)
         });
+
+        it("should not move tetronimo to the right if limit reached", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(8, 0, "L");
+            board.add(tetronimo);
+            
+            expect(tetronimo.rightest).toBe(9)
+
+            board.right(tetronimo);
+
+            expect(tetronimo.rightest).toBe(9)
+        });
     });
 
     describe("#left", () => {
@@ -153,6 +165,31 @@ describe("Board class", () => {
 
             expect(board.tetronimos.length).toBe(1)
         });
+
+        it("should not move tetronimo to the left if limit reached", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(0, 0, "L");
+            board.add(tetronimo);
+            
+            expect(tetronimo.leftest).toBe(0)
+
+            board.left(tetronimo);
+
+            expect(tetronimo.leftest).toBe(0)
+        });
+
+
+        it("should not move tetronimo to the left after rotations if limit reached", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(4, 0, "L");
+            board.add(tetronimo);
+            
+            expect(tetronimo.leftest).toBe(4)
+
+            board.left(tetronimo);
+
+            expect(tetronimo.leftest).toBe(3)
+        });
     });
 
     describe("#pushDown", () => {
@@ -166,6 +203,18 @@ describe("Board class", () => {
             board.pushDown(tetronimo);
 
             expect(board.tetronimos.length).toBe(1)
+        });
+
+        it("should push the T tetronimo to the bottom", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(0, 4, "T");
+            board.add(tetronimo);
+            
+            expect(board.tetronimos.length).toBe(1)
+
+            board.pushDown(tetronimo);
+
+            expect(tetronimo.y).toBe(18)
         });
     });
 
@@ -451,4 +500,15 @@ describe("Board class", () => {
             // ADD extra check
         });
     });
+
+    describe.only("#canRotate", () => {
+        it("should return true if it can rotate", () => {
+            const board = new Board();
+            const tetronimo = new Tetronimo(4, 4, "L");
+    
+            board.add(tetronimo);
+
+            expect(board.canRotate(tetronimo)).toBe(true)
+        })
+    })
 });

@@ -31,11 +31,6 @@ export default class Tetromino {
         this.y = this.y + times;
     }
 
-    rotateLeft () {
-        if (!this.floating) return;
-        this.rotation = this.rotation === 0 ? 3 : this.rotation - 1;
-    }
-
     rotateRight () {
         if (!this.floating) return;
         this.rotation = this.rotation === 3 ? 0 : this.rotation + 1;
@@ -45,18 +40,19 @@ export default class Tetromino {
         return this.positions[this.rotation];
     }
 
-    get absolute() {
-        return [
-            ...this.positions[this.rotation].map(position => ({x: this.x + position.x, y: this.y + position.y}))];
+    get next() {
+        return this.positions[this.rotation + 1 > 3 ? 0 : this.rotation + 1];
     }
 
-    get bottomParts () {
-        const partial = this.current.filter(position => !this.current.some(current => current.x === position.x && current.y === position.y + 1));
-        return partial.sort((pointA, pointB) => pointB.y - pointA.y);
+    get nextRotation () {
+        return [...this.next.map(position => ({x: this.x + position.x, y: this.y + position.y}))];
+    }
+
+    get absolute() {
+        return [...this.positions[this.rotation].map(position => ({x: this.x + position.x, y: this.y + position.y}))];
     }
 
     get lowest () {
-        //console.log("See before fail: ", this, this.absolute, this.bottomParts)
         return this.bottomParts[0].y + this.y;
     }
 
@@ -65,14 +61,17 @@ export default class Tetromino {
     }
 
     get leftest () {
-        return this.x - this.leftParts[0].x;
+        return this.leftParts[0].x + this.x;
+    }
+
+    get bottomParts () {
+        const partial = this.current.filter(position => !this.current.some(current => current.x === position.x && current.y === position.y + 1));
+        return partial.sort((pointA, pointB) => pointB.y - pointA.y);
     }
 
     get rightParts () {
         const partial = this.current.filter(position => !this.current.some(current => current.y === position.y && current.x === position.x + 1));
         return partial.sort((pointA, pointB) => pointB.x - pointA.x);
-       // const partial = [...this.current].sort((pointA, pointB) => pointB.x - pointA.x);
-        //return [partial[0], ...partial.slice(1, 4).filter(point => point.x === partial[0].x)]
     }
 
     get leftParts () {
@@ -114,5 +113,20 @@ export default class Tetromino {
             this.positions[this.rotation] = remaining;
             this.y--;
         }
+    }
+
+    get #bottomPartsNext () {
+        const partial = this.next.filter(position => !this.next.some(current => current.x === position.x && current.y === position.y + 1));
+        return partial.map(part => ({x: this.x + part.x, y: this.y  + part.y + 1}))
+    }
+
+    get #rightPartsNext () {
+        const partial = this.next.filter(position => !this.next.some(current => current.y === position.y && current.x === position.x + 1));
+        return partial.map(part => ({x: this.x + part.x + 1, y: this.y  + part.y}))
+    }
+
+    get #leftPartsNext () {
+        const partial = this.next.filter(position => !this.next.some(current => current.y === position.y && current.x === position.x - 1));
+        return partial.map(part => ({x: this.x + part.x - 1, y: this.y  + part.y}))
     }
 }
