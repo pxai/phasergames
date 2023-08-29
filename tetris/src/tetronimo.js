@@ -69,13 +69,15 @@ export default class Tetromino {
     }
 
     get rightParts () {
-        const partial = [...this.current].sort((pointA, pointB) => pointB.x - pointA.x);
-        return [partial[0], ...partial.slice(1, 4).filter(point => point.x === partial[0].x)]
+        const partial = this.current.filter(position => !this.current.some(current => current.y === position.y && current.x === position.x + 1));
+        return partial.sort((pointA, pointB) => pointB.x - pointA.x);
+       // const partial = [...this.current].sort((pointA, pointB) => pointB.x - pointA.x);
+        //return [partial[0], ...partial.slice(1, 4).filter(point => point.x === partial[0].x)]
     }
 
     get leftParts () {
-        const partial = [...this.current].sort((pointA, pointB) => pointA.x - pointB.x);
-        return [partial[0], ...partial.slice(1, 4).filter(point => point.x === partial[0].x)]
+        const partial = this.current.filter(position => !this.current.some(current => current.y === position.y && current.x === position.x - 1));
+        return partial.sort((pointA, pointB) => pointA.x - pointB.x);
     }
 
     get collidingBottom () {

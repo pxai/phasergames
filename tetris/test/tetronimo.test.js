@@ -76,6 +76,53 @@ describe("Tetronimo class", () => {
 
                 expect(tetronimo.current).toEqual(tetronimo.positions[2]);
             });
+
+            it("should have right rightParts and collidingRight after rotate", () => {
+                const tetronimo = new Tetronimo(0, 0, "L")
+                expect(tetronimo.current).toEqual(initial);
+
+
+                expect(tetronimo.rightParts).toEqual([ { x: 1, y: 0 }, { x: 0, y: -1 }, { x: 0, y: -2 }])
+                expect(tetronimo.collidingRight).toEqual([ { x: 2, y: 0 }, { x: 1, y: -1 }, { x: 1, y: -2 }])
+
+                tetronimo.rotateRight();
+                
+
+                expect(tetronimo.rightParts).toEqual([ { x: 2, y: 0 }, { x: 0, y: 1 } ])
+                expect(tetronimo.collidingRight).toEqual([ { x: 3, y: 0 }, { x: 1, y: 1 } ])
+
+                tetronimo.rotateRight();
+
+                expect(tetronimo.rightParts).toEqual([ { x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 } ])
+                expect(tetronimo.collidingRight).toEqual([ { x: 1, y: 0 }, { x: 1, y: 1 }, {x: 1, y: 2} ])
+
+                expect(tetronimo.current).toEqual(tetronimo.positions[2]);
+
+                expect(tetronimo.rightParts).toEqual([ { x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 } ])
+                expect(tetronimo.collidingRight).toEqual([ { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 1, y: 2 } ])
+            });
+
+            it("should have right leftParts and collidingLeft after rotate", () => {
+                const tetronimo = new Tetronimo(0, 0, "L")
+                expect(tetronimo.current).toEqual(initial);
+
+                expect(tetronimo.leftParts).toEqual([ { x: 0, y: 0 }, { x: 0, y: -1 }, { x: 0, y: -2 }])
+                expect(tetronimo.collidingLeft).toEqual([ { x: -1, y: 0 }, { x: -1, y: -1 }, { x: -1, y: -2 }])
+
+                tetronimo.rotateRight();
+                expect(tetronimo.leftParts).toEqual([ { x: 0, y: 0 }, { x: 0, y: 1 } ])
+                expect(tetronimo.collidingLeft).toEqual([ { x: -1, y: 0 }, { x: -1, y: 1 } ])
+
+                tetronimo.rotateRight();
+
+                expect(tetronimo.leftParts).toEqual([ { x: -1, y: 0 }, { x: 0, y: 1 }, {x: 0, y: 2} ])
+                expect(tetronimo.collidingLeft).toEqual([ { x: -2, y: 0 }, { x: -1, y: 1 }, {x: -1, y: 2} ])
+
+                expect(tetronimo.current).toEqual(tetronimo.positions[2]);
+
+                expect(tetronimo.leftParts).toEqual([ { x: -1, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 } ])
+                expect(tetronimo.collidingLeft).toEqual([ { x: -2, y: 0 }, { x: -1, y: 1 }, { x: -1, y: 2 } ])
+            });
         })
 
         describe("#rotateLeft", () => {
@@ -206,7 +253,7 @@ describe("Tetronimo class", () => {
             it("should return parts to the right limit", () => {
                 const tetronimo = new Tetronimo(0, 0, "L")
 
-                expect(tetronimo.rightParts).toEqual( [{x: 1, y: 0}]);
+                expect(tetronimo.rightParts).toEqual( [ { x: 1, y: 0 }, { x: 0, y: -1 }, { x: 0, y: -2 }]);
             });
         })
 
@@ -237,13 +284,12 @@ describe("Tetronimo class", () => {
         describe("#collidingRight", () => {
             it("should return bottom colliding points", () => {
                 const tetronimo = new Tetronimo(0, 0, "L")
-                expect(tetronimo.collidingRight).toEqual([{x: 2, y: 0}]);
+                expect(tetronimo.collidingRight).toEqual([ { x: 2, y: 0 }, { x: 1, y: -1 }, { x: 1, y: -2 }]);
             });
 
             it("should return bottom colliding points in any position", () => {
                 const tetronimo = new Tetronimo(5, 6, "L")
-
-                expect(tetronimo.collidingRight).toEqual([{x: 7, y: 6}]);
+                expect(tetronimo.collidingRight).toEqual([ { x: 7, y: 6 }, { x: 6, y: 5 }, { x: 6, y: 4 } ]);
             });
         });
 
