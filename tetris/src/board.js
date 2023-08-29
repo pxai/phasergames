@@ -2,46 +2,20 @@ export default class Board {
     constructor (width = 10, height = 20) {
         this.width = width;
         this.height = height;
-        this.board = [];
+        this.tetronimos = [];
         this.activeTetronimo = null;
-        this.#createBoard();
-    }
-
-    #createBoard () {
-      for (let i = 0; i < this.height; i++) {
-        this.board.push([]);
-        for (let j= 0; j < this.width; j++)
-          this.board[i].push(false);
-      }
-    }
-
-    print() {
-      let all = "";
-      for (let i = 0; i < this.height; i++) {
-        let row = "";
-        for (let j = 0; j < this.width; j++) {
-          row += this.board[i][j] ? "[X]" : "[ ]";
-        }
-        all += row + "\n";
-      }
-
-      return all;
     }
 
     add (tetronimo) {
       this.latest = tetronimo;
       if (!this.touchdown) return;
         const {x, y} = tetronimo;
-        this.board[y][x] = tetronimo;
+        this.tetronimos.push(tetronimo);
         this.activeTetronimo = tetronimo;
     }
 
     get touchdown () {
       return this.tetronimos.every(tetronimo => !tetronimo.floating);
-    }
-
-    get tetronimos () {
-      return this.board.flat().filter((cell) => cell !== false);
     }
 
     get absoluteTetronimos () {
@@ -78,10 +52,10 @@ export default class Board {
     #moveDown (tetronimo) {
       const {x, y} = tetronimo;
       if (y < this.height - 1 && !this.collidesToBottom(tetronimo)) {
-        this.board[tetronimo.y][tetronimo.x] = false;
+
         tetronimo.y += 1;
         if (tetronimo.y < this.height)
-          this.board[tetronimo.y][tetronimo.x] = tetronimo;
+
         tetronimo.floating = tetronimo.lowest < this.height - 1;
       }  else {
         tetronimo.floating = false; 
@@ -95,18 +69,14 @@ export default class Board {
     right (tetronimo) {
       const {x, y} = tetronimo;
       if (tetronimo.rightest < this.width - 1 && !this.collidesToRight(tetronimo)) {
-        this.board[tetronimo.y][tetronimo.x] = false;
         tetronimo.right();
-        this.board[y][x + 1] = tetronimo;
       }
     }
 
     left (tetronimo) {
       const {x, y} = tetronimo;
       if (tetronimo.leftest > 0 && !this.collidesToLeft(tetronimo)) {
-        this.board[tetronimo.y][tetronimo.x] = false;
         tetronimo.left();
-        this.board[y][x - 1] = tetronimo;
       }
     }
 
