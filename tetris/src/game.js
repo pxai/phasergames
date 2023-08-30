@@ -30,21 +30,25 @@ export default class Game extends Phaser.Scene {
         this.figures = this.add.group();
         this.board = new Board();
         this.tetronimosLayer = this.add.layer();
+        this.offsetX = 64;
         this.addFigure();
         this.addBorders();
         this.moveThisShit(this.speed);
+
 
         // this.playMusic();
     }   
 
     addBorders () {
-        this.add.rectangle(320, 0, 200, this.height, 0x222222).setOrigin(0)
+        this.add.rectangle(this.offsetX + 320, 0, 200, this.height, 0x222222).setOrigin(0)
         this.add.rectangle(0, 32 * this.board.height, this.width/2, 200, 0x222222).setOrigin(0)
 
     }
 
     addFigure () {
-        this.board.add(new Tetronimo(4, 0, "T", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"])));
+         this.board.add(new Tetronimo(4, 0, Phaser.Math.RND.pick(["O"]), Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"])));
+
+        //this.board.add(new Tetronimo(4, 0, Phaser.Math.RND.pick(["O", "L", "J", "I", "S", "Z"]), Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"])));
         this.playAudio("appear")
     }
 
@@ -68,7 +72,7 @@ export default class Game extends Phaser.Scene {
         //console.log("Rendering tetronimos!: ", board.tetronimos)
         board.tetronimos.forEach(tetronimo => {
             tetronimo.current.forEach(({x, y}) => {
-                this.tetronimosLayer.add(this.add.sprite((tetronimo.x + x) * 32, (tetronimo.y + y) * 32, tetronimo.color).setOrigin(0))
+                this.tetronimosLayer.add(this.add.sprite(this.offsetX +  (tetronimo.x + x) * 32, (tetronimo.y + y) * 32, tetronimo.color).setOrigin(0))
             });
         });
     }

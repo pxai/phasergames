@@ -97,12 +97,12 @@ export default class Tetromino {
        //this.#correctCenter();
     }
 
-    movePositionAtHeight (y) {
+    movePositionAtHeight (y,levelsRemoved) {
         console.log("About to move DOWN: ", this.absolute, y)
             this.absolute.forEach((position,i) => { 
                 if (position.y <= y) {
                     console.log("MOOOOOOOVING ", this.name, y, i, this.absolute, this.absolute[i], this.positions[this.rotation][i])
-                    this.positions[this.rotation][i].y++;
+                    this.positions[this.rotation][i].y += levelsRemoved;
                     console.log("to:", this.name, y, i, this.absolute, this.absolute[i], this.positions[this.rotation][i])
                 }
             })

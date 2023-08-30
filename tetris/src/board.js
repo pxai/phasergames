@@ -139,7 +139,7 @@ export default class Board {
     }
 
     #moveFixed(levelsRemoved, highest) {    
-      this.fixedTetronimos.forEach(tetronimo => tetronimo.movePositionAtHeight(highest - 1))
+      this.fixedTetronimos.forEach(tetronimo => tetronimo.movePositionAtHeight(highest - 1, levelsRemoved))
       //this.fixedTetronimos[0].positions[0][0].y++;
       //this.fixedTetronimos[0].positions[0][1].y++;
     }
