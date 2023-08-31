@@ -1,6 +1,7 @@
 import Player from "./player";
 import Block from "./block";
-
+import Platform from "./platform";
+import createRotatingPlatform from "./seesaw";
 export default class Game extends Phaser.Scene {
     constructor () {
         super({ key: "game" });
@@ -67,7 +68,12 @@ export default class Game extends Phaser.Scene {
       // Tiled origin for its coordinate system is (0, 1), but we want coordinates relative to an
       // origin of (0.5, 0.5)
       new Block(this, x + width / 2, y - height / 2)
+      new Platform(this, x + Phaser.Math.Between(-128, 128), y)
       // this.matter.add.image(x + width / 2, y - height / 2, "block").setBody({ shape: "rectangle", density: 0.001 });
+    });
+
+    this.map.getObjectLayer("Platform Locations").objects.forEach(seeSawObject => {
+      createRotatingPlatform(this, seeSawObject.x, seeSawObject.y);
     });
   }
 
@@ -75,6 +81,7 @@ export default class Game extends Phaser.Scene {
     console.log("Player collide: ", gameObjectA, gameObjectB)
     if (!gameObjectB) return;
     if (gameObjectB.name === "block") this.playerHitsBlock(gameObjectB);
+    if (gameObjectB instanceof Platform) this.playerOnPlatform(gameObjectB);
     if (!(gameObjectB instanceof Phaser.Tilemaps.Tile)) return;
 
     const tile = gameObjectB;
@@ -92,6 +99,10 @@ export default class Game extends Phaser.Scene {
 
   playerHitsBlock(block) {
     console.log("Hit block!!", block)
+  }
+
+  playerOnPlatform(block) {
+    console.log("Hit Platform!!", block)
   }
 
   addCamera() {

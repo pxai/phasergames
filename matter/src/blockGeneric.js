@@ -1,10 +1,7 @@
-export default class Block extends Phaser.Physics.Matter.Sprite {
-    constructor(scene, x, y, texture = "block", frame = 0) {
-        super(scene.matter.world, x, y, texture);
+export default class BlockGeneric {
+    constructor(scene, x, y) {
         this.scene = scene;
         this.name = "block";
-       // this.setPosition(x, y);
-
         this.init(x,y);
     }
 
@@ -12,11 +9,13 @@ export default class Block extends Phaser.Physics.Matter.Sprite {
         // this.scene.matter.world.on("beforeupdate", this.resetTouching, this);
 
         // Create the physics-based sprite that we will move around and animate
+        this.sprite = this.scene.matter.add.sprite(0, 0, this.name, 0);
+        this.sprite.name = this.name;
 
         const { Body, Bodies } = Phaser.Physics.Matter.Matter; // Native Matter modules
-        const { width: w, height: h } = this;
+        const { width: w, height: h } = this.sprite;
         const mainBody = Bodies.rectangle(0, 0, w , h);
 
-        this.setExistingBody(mainBody).setPosition(x, y);
+        this.sprite.setExistingBody(mainBody).setPosition(x, y);
     }
 }
