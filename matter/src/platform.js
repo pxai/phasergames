@@ -8,11 +8,15 @@ export default class Platform extends Phaser.Physics.Matter.Sprite {
 	 * @param {Phaser.Types.Physics.Matter.MatterBodyConfig} options 
 	 */
 	constructor(scene, x, y, texture = "platform", options = {isStatic: true}) {
+        options =  {
+            isStatic: true,
+            restitution: 0, // No bounciness
+            friction: 0.1, // A little extra friction so the player sticks better
+          }
 		super(scene.matter.world, x, y, texture, 0, options)
-
         this.name = Phaser.Math.RND.pick(["verticalPlatform", "horizontalPlatform"]);
 		scene.add.existing(this)
-        this.setFriction(1, 0, Infinity)
+
         if (this.name.startsWith("vertical")) this.moveVertically();
         else this.moveHorizontally();
 	}

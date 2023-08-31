@@ -1,7 +1,7 @@
 import Player from "./player";
 import Block from "./block";
 import Platform from "./platform";
-import createRotatingPlatform from "./seesaw";
+import SeeSaw from "./seesaw";
 export default class Game extends Phaser.Scene {
     constructor () {
         super({ key: "game" });
@@ -73,7 +73,7 @@ export default class Game extends Phaser.Scene {
     });
 
     this.map.getObjectLayer("Platform Locations").objects.forEach(seeSawObject => {
-      createRotatingPlatform(this, seeSawObject.x, seeSawObject.y);
+      new SeeSaw(this, seeSawObject.x, seeSawObject.y);
     });
   }
 

@@ -1,6 +1,6 @@
 export default class Block extends Phaser.Physics.Matter.Sprite {
     constructor(scene, x, y, texture = "block", frame = 0) {
-        super(scene.matter.world, x, y, texture);
+        super(scene.matter.world, x, y, texture, 0);
         this.scene = scene;
         this.name = "block";
        // this.setPosition(x, y);
