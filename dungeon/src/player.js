@@ -1,3 +1,4 @@
+import Bubble from "./bubble";
 import Dust from "./particle";
 
 export default class Player {
@@ -16,6 +17,7 @@ export default class Player {
         this.canJump = true;
         this.jumpCooldownTimer = null;
     
+        this.onWall = false;
         // Before matter's update, reset our record of what surfaces the player is touching.
         this.scene.matter.world.on("beforeupdate", this.resetTouching, this);
 
@@ -63,12 +65,17 @@ export default class Player {
     onSensorCollide({ bodyA, bodyB, pair }) {
         if (bodyB.isSensor) return; // We only care about collisions with physical objects
         if (bodyA === this.sensors.left) {
+            this.friction();
+            this.onWall = true;
           this.isTouching.left = true;
           if (pair.separation > 0.5) this.sprite.x += pair.separation - 0.5;
-        } else if (bodyA === this.sensors.right) {
+        } else if (bodyA === this.sensors.right) {          
+          this.friction();
+          this.onWall = true;
           this.isTouching.right = true;
           if (pair.separation > 0.5) this.sprite.x -= pair.separation - 0.5;
         } else if (bodyA === this.sensors.bottom) {
+            this.land()
           this.isTouching.ground = true;
         }
       }
@@ -105,21 +112,27 @@ export default class Player {
                 this.step();
                 this.sprite.applyForce({ x: -this.moveForce, y: 0 });
             }
-        }
+        } 
 
         if (this.sprite.body.velocity.x > 7) this.sprite.setVelocityX(7);
         else if (this.sprite.body.velocity.x < -7) this.sprite.setVelocityX(-7);
 
-        if (this.canJump && isOnGround && (this.W.isDown || this.cursor.up.isDown))  {            
+        if (((this.canJump && isOnGround) || this.onWall) && (this.W.isDown || this.cursor.up.isDown))  {            
+        //if (((this.canJump && isOnGround) || (this.isTouching.left) || (this.isTouching.right)) && (this.W.isDown || this.cursor.up.isDown))  {     
             this.sprite.setVelocityY(-11);
-
             // Add a slight delay between jumps since the bottom sensor will still collide for a few
             // frames after a jump is initiated
             this.canJump = false;
+            this.onWall = false;
             this.jumpCooldownTimer = this.scene.time.addEvent({
               delay: 250,
               callback: () => (this.canJump = true)
             });
+        }
+        console.log("Player: right, left: ", this.onWall)
+        if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.W)) {
+            const offset = this.sprite.flipX ? -64 : 64;
+            new Bubble(this.scene, this.sprite.x + offset, this.sprite.y - 32)
         }
     }
 
@@ -146,14 +159,24 @@ export default class Player {
       }
 
     step () {
-        if (Phaser.Math.Between(0, 5) > 3) {
-            console.log("HERE")
-            new Dust(this.scene, this.sprite.x, this.sprite.y)
+        if (Phaser.Math.Between(0, 5) > 4) {
+            this.scene.trailLayer.add(new Dust(this.scene, this.sprite.x, this.sprite.y + Phaser.Math.Between(4, 10)))
         }
     }
 
-    land (x, y) {
+    friction () {
+        console.log("Friction!!")
+        Array(Phaser.Math.Between(2, 4)).fill(0).forEach(i => {
+            new Dust(this.scene, this.sprite.x + Phaser.Math.Between(-8, 8), this.sprite.y + Phaser.Math.Between(-32, 32))
+        })
+    }
 
+    land () {
+       if (this.sprite.body.velocity.y < 1) return;
+       console.log("LAND", this.sprite.body.velocity.y)
+       Array(Phaser.Math.Between(3, 6)).fill(0).forEach(i => {
+            new Dust(this.scene, this.sprite.x + Phaser.Math.Between(-32, 32), this.sprite.y + Phaser.Math.Between(4, 10))
+       })
     }
 
 }

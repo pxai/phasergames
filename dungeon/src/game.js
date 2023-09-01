@@ -59,6 +59,7 @@ export default class Game extends Phaser.Scene {
 
   addPlayer() {
       //const { x, y } = this.map.findObject("Spawn", obj => obj.name === "Spawn Point");
+      this.trailLayer = this.add.layer();
     this.player = new Player(this, 
       this.dungeon.map.widthInPixels / 2,
       this.dungeon.map.heightInPixels / 2, 100);

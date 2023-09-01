@@ -39,6 +39,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image("tiles", "assets/maps/buch-tileset-48px-extruded.png");
         this.load.image("block", "assets/images/block.png");
         this.load.image("seesaw", "assets/images/seesaw.png");
+        this.load.image("bubble", "assets/images/bubble.png");
         this.load.image("platform", "assets/images/platform.png");
         this.load.tilemapTiledJSON("scene0", "assets/maps/level.json");
 
