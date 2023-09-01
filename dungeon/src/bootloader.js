@@ -32,8 +32,8 @@ export default class Bootloader extends Phaser.Scene {
 
 
         this.load.bitmapFont("default", "assets/fonts/pico.png", "assets/fonts/pico.xml");
-        this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
         this.load.spritesheet("player", "assets/images/player.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("dust", "assets/images/dust.png", { frameWidth: 32, frameHeight: 32 });
 
         this.load.image("kenney-tileset-64px-extruded", "assets/maps/kenney-tileset-64px-extruded.png");
         this.load.image("tiles", "assets/maps/buch-tileset-48px-extruded.png");

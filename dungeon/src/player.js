@@ -1,3 +1,4 @@
+import Dust from "./particle";
 
 export default class Player {
     constructor (scene, x, y) {
@@ -95,11 +96,13 @@ export default class Player {
         if (this.D.isDown || this.cursor.right.isDown) {
             this.sprite.setFlipX(false);
             if (!(isInAir && this.isTouching.right)) {
+                this.step();
                 this.sprite.applyForce({ x: this.moveForce, y: 0 });
             }
         } else if (this.A.isDown || this.cursor.left.isDown) {
             this.sprite.setFlipX(true);
             if (!(isInAir && this.isTouching.left)) {
+                this.step();
                 this.sprite.applyForce({ x: -this.moveForce, y: 0 });
             }
         }
@@ -142,8 +145,11 @@ export default class Player {
         this.sprite.destroy();
       }
 
-    step (x, y) {
-
+    step () {
+        if (Phaser.Math.Between(0, 5) > 3) {
+            console.log("HERE")
+            new Dust(this.scene, this.sprite.x, this.sprite.y)
+        }
     }
 
     land (x, y) {

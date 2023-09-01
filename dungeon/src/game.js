@@ -5,6 +5,7 @@ import SeeSaw from "./seesaw";
 import Swing from "./swing";
 import DungeonGenerator from "./dungeon_generator";
 import Dungeon from "@mikewesthad/dungeon";
+import { Particle } from "./particle";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -32,7 +33,7 @@ export default class Game extends Phaser.Scene {
       this.addPlayer();
       this.addCollisions();
       this.addCamera();
-      this.add.bitmapText(this.center_width, this.center_height, "default", "WASD/Arrows: move", 30).setOrigin(0.5).setScrollFactor(0)
+      //this.add.bitmapText(this.center_width, this.center_height, "default", "WASD/Arrows: move", 30).setOrigin(0.5).setScrollFactor(0)
       //this.loadAudios(); 
       // this.playMusic();
     }
@@ -90,7 +91,7 @@ export default class Game extends Phaser.Scene {
   }
 
   onPlayerCollide({ gameObjectA, gameObjectB }) {
-    console.log("Player collide: ", gameObjectA, gameObjectB)
+    //console.log("Player collide: ", gameObjectA, gameObjectB)
     if (!gameObjectB) return;
     if (gameObjectB.name === "block") this.playerHitsBlock(gameObjectB);
     if (gameObjectB instanceof Platform) this.playerOnPlatform(gameObjectB);
@@ -115,6 +116,7 @@ export default class Game extends Phaser.Scene {
 
   playerOnPlatform(block) {
     console.log("Hit Platform!!", block)
+
   }
 
   addCamera() {
