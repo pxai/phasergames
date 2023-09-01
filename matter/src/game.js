@@ -2,6 +2,7 @@ import Player from "./player";
 import Block from "./block";
 import Platform from "./platform";
 import SeeSaw from "./seesaw";
+import Swing from "./swing";
 export default class Game extends Phaser.Scene {
     constructor () {
         super({ key: "game" });
@@ -74,6 +75,10 @@ export default class Game extends Phaser.Scene {
 
     this.map.getObjectLayer("Platform Locations").objects.forEach(seeSawObject => {
       new SeeSaw(this, seeSawObject.x, seeSawObject.y);
+    });
+
+    this.map.getObjectLayer("Swing Locations").objects.forEach(swing => {
+      new Swing(this, swing.x, swing.y);
     });
   }
 
