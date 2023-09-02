@@ -104,13 +104,15 @@ export default class Player {
             this.sprite.setFlipX(false);
             if (!(isInAir && this.isTouching.right)) {
                 this.step();
-                this.sprite.applyForce({ x: this.moveForce, y: 0 });
+                //this.sprite.applyForce({ x: this.moveForce, y: 0 });
+                this.sprite.setVelocityX(5)
             }
         } else if (this.A.isDown || this.cursor.left.isDown) {
             this.sprite.setFlipX(true);
             if (!(isInAir && this.isTouching.left)) {
                 this.step();
-                this.sprite.applyForce({ x: -this.moveForce, y: 0 });
+                //this.sprite.applyForce({ x: -this.moveForce, y: 0 });
+                this.sprite.setVelocityX(-5)
             }
         } 
 

@@ -124,6 +124,7 @@ export default class Game extends Phaser.Scene {
               // Phaser supports multiple cameras, but you can access the default camera like this:
     this.cameras.main.setBounds(0, 0, this.dungeon.map.widthInPixels, this.dungeon.map.heightInPixels);
     this.cameras.main.startFollow(this.player.sprite, false, 0.5, 0.5);
+    this.cameras.main.setBackgroundColor(0x25131a);
   }
 
     loadAudios () {

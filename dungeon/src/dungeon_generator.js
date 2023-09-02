@@ -10,6 +10,7 @@ export default class DungeonGenerator {
         this.dungeon = new Dungeon({
             width: 50,
             height: 50,
+            doorPadding: 2,
             rooms: {
               width: { min: 7, max: 15 },
               height: { min: 7, max: 15 },
@@ -23,22 +24,23 @@ export default class DungeonGenerator {
             width: this.dungeon.width,
             height: this.dungeon.height
           });
-          const tileset = this.map.addTilesetImage("tiles", null, 48, 48, 1, 2); // 1px margin, 2px spacing
-          const layer = this.map.createBlankLayer("Layer 1", tileset);
+          const tileset = this.map.addTilesetImage("tiles", null, 48, 48, 0, 0); // 1px margin, 2px spacing
+          this.groundLayer = this.map.createBlankLayer("Layer 1", tileset);
           
       
           // Get a 2D array of tile indices (using -1 to not render empty tiles) and place them into the
           // blank layer
           const mappedTiles = this.dungeon.getMappedTiles({
             empty: -1,
-            floor: 6,
-            door: 6,
-            wall: 20
+            floor: -1,
+            door: 3,
+            wall: 0
           });
-          layer.putTilesAt(mappedTiles, 0, 0);
-          layer.setCollision(20); 
-          layer.setCollisionByProperty({ collides: true });
-          this.scene.matter.world.convertTilemapLayer(layer);
+          this.groundLayer.putTilesAt(mappedTiles, 0, 0);
+          this.groundLayer.setCollision(0); 
+          this.groundLayer.setCollisionByProperty({ collides: true });
+          this.scene.matter.world.convertTilemapLayer(this.groundLayer);
+          //this.groundLayer.fill(7);
           // We only need one tile index (the walls) to be colliding for now
       
           // Place the player in the center of the map. This works because the Dungeon generator places
@@ -52,6 +54,94 @@ export default class DungeonGenerator {
           // Watch the player and layer for collisions, for the duration of the scene:
           //this.physics.add.collider(this.player.sprite, layer);
     
+          this.dungeon.rooms.forEach(room => {
+            // These room properties are all in grid units (not pixels units)
+            const { x, y, width, height, left, right, top, bottom } = room;
+            console.log("Generating room: ", room)
+            // Fill the room (minus the walls) with mostly clean floor tiles (90% of the time), but
+            // occasionally place a dirty tile (10% of the time).
+            this.groundLayer.weightedRandomize([
+               { index: 17, weight: 9 },              // 9/10 times, use index 6
+               { index: [7, 8, 9, 17, 18, 19], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
+            ], x + 1, y + 1, width - 2, height - 2);
       
+            // Place the room corners tiles
+            this.groundLayer.putTileAt(0, left, top);
+            this.groundLayer.putTileAt(5, right, top);
+            this.groundLayer.putTileAt(45, right, bottom);
+            this.groundLayer.putTileAt(40, left, bottom);
+      
+            // Place the non-corner wall tiles using fill with x, y, width, height parameters
+
+            this.groundLayer.weightedRandomize(
+              [{ index: 2, weight: 4 }, {index: [1, 2, 3, 4], weight: 1}],
+              left + 1,
+              top,
+              width - 2,
+              1
+            );
+            this.groundLayer.weightedRandomize(
+              [{ index: 42, weight: 4 }, {index: [41, 42, 43, 44], weight: 1}],
+              left + 1,
+              bottom,
+              width - 2,
+              1
+            );
+            this.groundLayer.weightedRandomize(
+              [{ index: 10, weight: 4 }, {index: [10, 20, 30], weight: 1}],
+              left,
+              top + 1,
+              1,
+              height - 2
+            );
+            this.groundLayer.weightedRandomize(
+              [{ index: 15, weight: 4 }, {index: [15, 25, 35], weight: 1}],
+              right,
+              top + 1,
+              1,
+              height - 2
+            );
+
+            const doors = room.getDoorLocations(); // → Returns an array of {x, y} objects
+      for (let i = 0; i < doors.length; i++) {
+        if (doors[i].y === 0) {
+          this.groundLayer.putTilesAt(
+            [[7],[7]],
+            x + doors[i].x,
+            y + doors[i].y
+          );
+        } else if (doors[i].y === room.height - 1) {
+          this.groundLayer.putTilesAt(
+            [[7],[7]],
+            x + doors[i].x,
+            y + doors[i].y
+          );
+        } else if (doors[i].x === 0) {
+          this.groundLayer.putTilesAt(
+            [[7]],
+            x + doors[i].x,
+            y + doors[i].y
+          );
+        } else if (doors[i].x === room.width - 1) {
+          this.groundLayer.putTilesAt(
+            [[7]],
+            x + doors[i].x,
+            y + doors[i].y
+          );
+        }
+      }
+            //this.addTopTraps(room)
+
+          });
+    }
+
+    addTopTraps (room) {
+      const { x, y, width, height, left, right, top, bottom, tiles } = room;
+      const topTiles = tiles[0];
+      topTiles.forEach((tile, i) => {
+        if (tile === 1 && i> 0 && i < right)
+          this.groundLayer.putTileAt(5, i + left, top + 1);
+      })
+
     }
 }
