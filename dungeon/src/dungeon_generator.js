@@ -1,4 +1,5 @@
 import Dungeon from "@mikewesthad/dungeon";
+import Coin from "./coin";
 
 export default class DungeonGenerator {
     constructor(scene) {
@@ -104,6 +105,8 @@ export default class DungeonGenerator {
 
             const doors = room.getDoorLocations(); // → Returns an array of {x, y} objects
       for (let i = 0; i < doors.length; i++) {
+        const worldPosition = this.groundLayer.tileToWorldXY(x + doors[i].x, y + doors[i].y);
+        new Coin(this.scene, worldPosition.x + 22, worldPosition.y + 22)
         if (doors[i].y === 0) {
           this.groundLayer.putTilesAt(
             [[7],[7]],

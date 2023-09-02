@@ -94,6 +94,7 @@ export default class Game extends Phaser.Scene {
   onPlayerCollide({ gameObjectA, gameObjectB }) {
     //console.log("Player collide: ", gameObjectA, gameObjectB)
     if (!gameObjectB) return;
+    if (gameObjectB.label === "coin") this.playerPicksCoin(gameObjectB);
     if (gameObjectB.name === "block") this.playerHitsBlock(gameObjectB);
     if (gameObjectB instanceof Platform) this.playerOnPlatform(gameObjectB);
     if (!(gameObjectB instanceof Phaser.Tilemaps.Tile)) return;
@@ -117,7 +118,10 @@ export default class Game extends Phaser.Scene {
 
   playerOnPlatform(block) {
     console.log("Hit Platform!!", block)
+  }
 
+  playerPicksCoin(coin) {
+    coin.destroy();
   }
 
   addCamera() {
