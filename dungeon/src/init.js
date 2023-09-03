@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import Bootloader from "./bootloader";
-import Outro from "./transition";
+import Outro from "./outro";
 import Splash from "./splash";
 import Transition from "./transition";
 import Game from "./game";
@@ -19,7 +19,7 @@ const config = {
     physics: {
         default: "matter",
         matter: {
-            debug: false
+            debug: true
         }
     },
     plugins: {

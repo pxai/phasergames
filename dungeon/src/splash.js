@@ -1,3 +1,4 @@
+import Bubble from "./bubble";
 export default class Splash extends Phaser.Scene {
     constructor () {
         super({ key: "splash" });
@@ -12,9 +13,11 @@ export default class Splash extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
 
-
+        this.backLayer = this.add.layer();
+        this.generateBubbles ()
         this.cameras.main.setBackgroundColor(0x000000);
-        //this.showLogo();        ;
+        this.showTitle();        ;
+
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
@@ -28,6 +31,23 @@ export default class Splash extends Phaser.Scene {
         this.scene.start("transition")
     }
 
+
+    showTitle () {
+        this.textShadow1 = this.add.bitmapText(this.center_width, 100, "default", "DUNGEON", 85).setTint(0x25131a).setOrigin(0.5);
+        this.textShadow2 = this.add.bitmapText(this.center_width, 250, "default", "BOBBLE", 85).setTint(0x25131a).setOrigin(0.5);
+        this.text1 = this.add.bitmapText(this.center_width, 100, "default", "DUNGEON", 85).setTint(0x3d253b).setOrigin(0.5);
+        this.text2 = this.add.bitmapText(this.center_width, 250, "default", "BOBBLE", 85).setTint(0x3d253b).setOrigin(0.5);
+        this.text11 = this.add.bitmapText(this.center_width, 100, "default", "DUNGEON", 88).setTint(0x302030).setOrigin(0.5);
+        this.text22 = this.add.bitmapText(this.center_width, 250, "default", "BOBBLE", 88).setTint(0x302030).setOrigin(0.5);
+        this.tweens.add({
+            targets: [this.textShadow1, this.textShadow2],
+            duration: 1000,
+            x: "+=10",
+            y: "+=10",
+            yoyo: true,
+            repeat: -1
+          })
+    }
     showLogo() {
         this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
         this.tweens.add({
@@ -60,14 +80,21 @@ export default class Splash extends Phaser.Scene {
           loop: true,
           delay: 0
       })
-      }
+    }
+
+    generateBubbles () {
+        this.timer = this.time.addEvent({ delay: 1000, callback: () => {
+            console.log("Generating layer bubble")
+            new Bubble(this, Phaser.Math.Between(0, this.width), 400)
+        }, callbackScope: this, loop: true });
+    }
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "default", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "default", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "default", "Press SPACE to start", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 430, "default", "WASD/Arrows: move", 30).setOrigin(0.5);
+        this.add.sprite(this.center_width - 60, 490, "pello").setOrigin(0.5).setScale(0.3)
+        this.add.bitmapText(this.center_width + 40, 490, "default", "By PELLO", 15).setOrigin(0.5);
+        this.space = this.add.bitmapText(this.center_width, 550, "default", "Press SPACE to start", 25).setOrigin(0.5);
         this.tweens.add({
             targets: this.space,
             duration: 300,
