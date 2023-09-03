@@ -1,6 +1,8 @@
 import Dungeon from "@mikewesthad/dungeon";
 import Coin from "./coin";
-
+import Key from "./key";
+import Bat from "./bat";
+import Wizard from "./wizard";
 export default class DungeonGenerator {
     constructor(scene) {
         this.scene = scene;
@@ -27,7 +29,7 @@ export default class DungeonGenerator {
           });
           const tileset = this.map.addTilesetImage("tiles", null, 48, 48, 0, 0); // 1px margin, 2px spacing
           this.groundLayer = this.map.createBlankLayer("Layer 1", tileset);
-          
+          this.stuffLayer = this.map.createBlankLayer("Stuff", tileset); 
       
           // Get a 2D array of tile indices (using -1 to not render empty tiles) and place them into the
           // blank layer
@@ -58,7 +60,7 @@ export default class DungeonGenerator {
           this.dungeon.rooms.forEach(room => {
             // These room properties are all in grid units (not pixels units)
             const { x, y, width, height, left, right, top, bottom } = room;
-            console.log("Generating room: ", room)
+            // console.log("Generating room: ", room)
             // Fill the room (minus the walls) with mostly clean floor tiles (90% of the time), but
             // occasionally place a dirty tile (10% of the time).
             this.groundLayer.weightedRandomize([
@@ -104,8 +106,12 @@ export default class DungeonGenerator {
             );
 
             const doors = room.getDoorLocations(); // → Returns an array of {x, y} objects
+            this.addKey(room)
+            this.addFoes(room)
+
       for (let i = 0; i < doors.length; i++) {
         const worldPosition = this.groundLayer.tileToWorldXY(x + doors[i].x, y + doors[i].y);
+        // console.log("Adding coin: ",x, y,  doors[i].x, doors[i].y,worldPosition.x, worldPosition.y)
         new Coin(this.scene, worldPosition.x + 22, worldPosition.y + 22)
         if (doors[i].y === 0) {
           this.groundLayer.putTilesAt(
@@ -135,11 +141,35 @@ export default class DungeonGenerator {
       }
             //this.addTopTraps(room)
 
-          });
+      });
+    }
+
+    addKey(room) {
+      const keyX = Phaser.Math.Between(room.left + 2, room.right - 2);
+      const keyY = Phaser.Math.Between(room.top + 2, room.bottom - 2);
+
+      const worldPosition= this.groundLayer.tileToWorldXY(keyX, keyY);
+
+      new Key(this.scene, worldPosition.x + 22, worldPosition.y + 22)
+    }
+
+    addFoes(room) {
+      const keyX = Phaser.Math.Between(room.left + 2, room.right - 2);
+      const keyY = Phaser.Math.Between(room.top + 2, room.bottom - 2);
+
+      const worldPosition= this.groundLayer.tileToWorldXY(keyX, keyY);
+
+      if (Phaser.Math.Between(0, 5 ) > 4) {
+        new Wizard(this.scene, worldPosition.x + 22, worldPosition.y + 22, this.groundLayer)
+      } else {
+        new Wizard(this.scene, worldPosition.x + 22, worldPosition.y + 22, this.groundLayer)
+      }
+
     }
 
     addTopTraps (room) {
       const { x, y, width, height, left, right, top, bottom, tiles } = room;
+
       const topTiles = tiles[0];
       topTiles.forEach((tile, i) => {
         if (tile === 1 && i> 0 && i < right)

@@ -4,6 +4,7 @@ import Dust from "./particle";
 export default class Player {
     constructor (scene, x, y) {
         this.scene = scene;
+        this.label = "player";
         this.init(x,y);
         this.moveForce = 0.01;
         this.addControls();
@@ -26,7 +27,7 @@ export default class Player {
 
         const { Body, Bodies } = Phaser.Physics.Matter.Matter; // Native Matter modules
         const { width: w, height: h } = this.sprite;
-        const mainBody = Bodies.rectangle(0, 0, w , h, { chamfer: { radius: 10 } });
+        const mainBody = Bodies.rectangle(0, 5, w - 10 , h - 10, { chamfer: { radius: 10 } });
         this.sensors = {
             bottom: Bodies.rectangle(0, h * 0.5, w * 0.25, 2, { isSensor: true }),
             left: Bodies.rectangle(-w * 0.35, 0, 2, h * 0.5, { isSensor: true }),
@@ -60,6 +61,27 @@ export default class Player {
             callback: this.onSensorCollide,
             context: this
         });
+
+        this.scene.anims.create({
+            key: "playeridle",
+            frames: this.scene.anims.generateFrameNumbers(this.label, { start: 0, end: 1 }),
+            frameRate: 5,
+            repeat: -1
+          });
+
+          this.scene.anims.create({
+            key: "playerwalk",
+            frames: this.scene.anims.generateFrameNumbers(this.label, { start: 0, end: 3 }),
+            frameRate: 6,
+          });
+
+          this.scene.anims.create({
+            key: "playershot",
+            frames: this.scene.anims.generateFrameNumbers(this.label, { start: 4, end: 5 }),
+            frameRate: 2,
+          });
+          this.sprite.anims.play("playeridle", true)
+          this.sprite.on('animationcomplete', this.animationComplete, this);
     }
 
     onSensorCollide({ bodyA, bodyB, pair }) {
@@ -92,7 +114,6 @@ export default class Player {
         this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D); 
-
     }
 
     update(time, delta) {
@@ -101,20 +122,22 @@ export default class Player {
         this.moveForce = isOnGround ? 0.01 : 0.005;
 
         if (this.D.isDown || this.cursor.right.isDown) {
-            this.sprite.setFlipX(false);
+            this.sprite.setFlipX(true);
             if (!(isInAir && this.isTouching.right)) {
                 this.step();
-                //this.sprite.applyForce({ x: this.moveForce, y: 0 });
+                this.sprite.anims.play("playerwalk", true)
                 this.sprite.setVelocityX(5)
             }
         } else if (this.A.isDown || this.cursor.left.isDown) {
-            this.sprite.setFlipX(true);
+            this.sprite.setFlipX(false);
             if (!(isInAir && this.isTouching.left)) {
                 this.step();
-                //this.sprite.applyForce({ x: -this.moveForce, y: 0 });
+                this.sprite.anims.play("playerwalk", true)
                 this.sprite.setVelocityX(-5)
             }
-        } 
+        } else {
+            //this.sprite.anims.play("playeridle", true)
+        }
 
         if (this.sprite.body.velocity.x > 7) this.sprite.setVelocityX(7);
         else if (this.sprite.body.velocity.x < -7) this.sprite.setVelocityX(-7);
@@ -131,11 +154,13 @@ export default class Player {
               callback: () => (this.canJump = true)
             });
         }
-        console.log("Player: right, left: ", this.onWall)
+
         if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.W)) {
-            const offset = this.sprite.flipX ? -64 : 64;
-            new Bubble(this.scene, this.sprite.x + offset, this.sprite.y - 32)
-        }
+            const offset = this.sprite.flipX ? 128 : -128;
+            this.sprite.anims.play("playershot", true)
+            new Bubble(this.scene, this.sprite.x, this.sprite.y, offset)
+        } 
+
     }
 
     destroy() {
@@ -162,7 +187,7 @@ export default class Player {
 
     step () {
         if (Phaser.Math.Between(0, 5) > 4) {
-            this.scene.trailLayer.add(new Dust(this.scene, this.sprite.x, this.sprite.y + Phaser.Math.Between(4, 10)))
+            this.scene.trailLayer.add(new Dust(this.scene, this.sprite.x, this.sprite.y + Phaser.Math.Between(10, 16)))
         }
     }
 
@@ -177,8 +202,13 @@ export default class Player {
        if (this.sprite.body.velocity.y < 1) return;
        console.log("LAND", this.sprite.body.velocity.y)
        Array(Phaser.Math.Between(3, 6)).fill(0).forEach(i => {
-            new Dust(this.scene, this.sprite.x + Phaser.Math.Between(-32, 32), this.sprite.y + Phaser.Math.Between(4, 10))
+            new Dust(this.scene, this.sprite.x + Phaser.Math.Between(-32, 32), this.sprite.y + Phaser.Math.Between(10, 16))
        })
     }
 
+    animationComplete (animation, frame) {
+        if (animation.key === "playershot") {
+            this.sprite.anims.play("playeridle", true)
+          }
+    }
 }

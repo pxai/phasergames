@@ -9,9 +9,9 @@ https://snowb.org/
 Music: ETC
 
 dark:
-#4e2925
+#25131a
 clear:
-#e4a672
+#0x3d253b
 
 Font
 https://github.com/juanitogan/p8-programming-fonts/tree/master/vector-fonts/DejaVu

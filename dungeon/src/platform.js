@@ -31,7 +31,7 @@ export default class Platform extends Phaser.Physics.Matter.Sprite {
             repeat: -1,
             yoyo: true,
             onUpdate: (tween, target) => {
-                const x = this.startX + target.value
+                const x = this.x + target.value
                 const dx = x - this.x
                 this.x = x
                 this.setVelocityX(dx)

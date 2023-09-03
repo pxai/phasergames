@@ -1,13 +1,16 @@
 export default class Bubble extends Phaser.Physics.Matter.Sprite {
-	constructor(scene, x, y, texture = "bubble", options = {isStatic: true}) {
-		super(scene.matter.world, x, y, texture, 0, options)
+	constructor(scene, x, y, offset, options = {isStatic: true}) {
+		super(scene.matter.world, x + offset, y, "bubble", 0, options)
+        this.offset = offset;
         this.setFriction(1, 0, Infinity)
         this.name = Phaser.Math.RND.pick(["verticalPlatform", "horizontalPlatform"]);
         this.startX = x
         this.startY = y
         this.scene = scene;
 		scene.add.existing(this)
+        //this.setVelocityX(-5)
         this.moveVertically()
+
        // if (this.name.startsWith("vertical")) this.moveVertically();
        // else this.moveHorizontally();
 	}

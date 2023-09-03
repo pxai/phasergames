@@ -18,13 +18,14 @@ export default class Splash extends Phaser.Scene {
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
+        this.input.keyboard.on("keydown-ENTER", () => this.startGame(), this);
         //this.playMusic();
         //this.showPlayer();
     }
 
     startGame () {
         if (this.theme) this.theme.stop();
-        this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
+        this.scene.start("transition")
     }
 
     showLogo() {
@@ -63,12 +64,10 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: track beam", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "pixelFont", "B: shoot coins", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 450, "default", "WASD/Arrows: move", 30).setOrigin(0.5);
         this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Press SPACE to start", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width + 40, 620, "default", "By PELLO", 15).setOrigin(0.5);
+        this.space = this.add.bitmapText(this.center_width, 670, "default", "Press SPACE to start", 30).setOrigin(0.5);
         this.tweens.add({
             targets: this.space,
             duration: 300,
