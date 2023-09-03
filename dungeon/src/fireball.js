@@ -24,7 +24,7 @@ export default class Fireball extends Phaser.Physics.Matter.Sprite  {
             scale: {from: 0.9, to: 1},
             repeat: -1
         });
-        this.scene.time.delayedCall(5000, () => {this.destroy()}, null, this)
+        this.scene.time.delayedCall(3000, () => {this.destroy()}, null, this)
     }
   
     update() {

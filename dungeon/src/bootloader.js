@@ -30,12 +30,17 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("splash", "assets/sounds/splash.mp3");
         this.load.audio("music", "assets/sounds/music.mp3");
 
+
+        this.load.audio("jump", "assets/sounds/jump.mp3");
+        this.load.audio("bubble", "assets/sounds/bubble.mp3");
+        this.load.audio("trap", "assets/sounds/trap.mp3");
+
         this.load.image("pello", "assets/images/pello_ok.png");
         this.load.bitmapFont("default", "assets/fonts/pico.png", "assets/fonts/pico.xml");
         this.load.spritesheet("player", "assets/images/player.png", { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet("dust", "assets/images/dust.png", { frameWidth: 32, frameHeight: 32 });
-        this.load.spritesheet("coin", "assets/images/coin.png", { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet("keys", "assets/images/keys.png", { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet("coin", "assets/images/coin.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("keys", "assets/images/keys.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("bat", "assets/images/bat.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("wizard", "assets/images/wizard.png", { frameWidth: 48, frameHeight: 48 });
 

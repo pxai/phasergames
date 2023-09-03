@@ -27,6 +27,7 @@ export default class Player {
 
         const { Body, Bodies } = Phaser.Physics.Matter.Matter; // Native Matter modules
         const { width: w, height: h } = this.sprite;
+
         const mainBody = Bodies.rectangle(0, 5, w - 10 , h - 10, { chamfer: { radius: 10 } });
         this.sensors = {
             bottom: Bodies.rectangle(0, h * 0.5, w * 0.25, 2, { isSensor: true }),
@@ -42,7 +43,7 @@ export default class Player {
             // matter body's x and y - here we want the sprite centered over the matter body.
             render: { sprite: { xOffset: 0.5, yOffset: 0.5 } },
         });
-        this.sprite.setExistingBody(compoundBody).setScale(1)
+        this.sprite.setExistingBody(compoundBody)
             .setFixedRotation() // Sets inertia to infinity so the player can't rotate
             .setPosition(x, y);
         this.scene.events.on("update", this.update, this);
@@ -148,6 +149,7 @@ export default class Player {
             this.sprite.setVelocityY(-8);
             // Add a slight delay between jumps since the bottom sensor will still collide for a few
             // frames after a jump is initiated
+            this.scene.playAudio("jump")
             this.canJump = false;
             this.onWall = false;
             this.jumpCooldownTimer = this.scene.time.addEvent({
@@ -159,6 +161,7 @@ export default class Player {
         if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.W)) {
             const offset = this.sprite.flipX ? 128 : -128;
             this.sprite.anims.play("playershot", true)
+            this.scene.playAudio("bubble")
             new Bubble(this.scene, this.sprite.x, this.sprite.y, offset)
         } 
 

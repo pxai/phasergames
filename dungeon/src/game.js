@@ -38,7 +38,7 @@ export default class Game extends Phaser.Scene {
       this.addCollisions();
       this.addCamera();
       this.addScores();
-      //this.loadAudios(); 
+      this.loadAudios(); 
       this.playMusic();
     }
 
@@ -171,7 +171,9 @@ export default class Game extends Phaser.Scene {
 
     loadAudios () {
       this.audios = {
-        "beam": this.sound.add("beam"),
+        "jump": this.sound.add("jump"),
+        "bubble": this.sound.add("bubble"),
+        "trap": this.sound.add("trap"),
       };
     }
 
@@ -184,7 +186,7 @@ export default class Game extends Phaser.Scene {
       this.theme.stop();
       this.theme.play({
         mute: false,
-        volume: 0.5,
+        volume: 0.2,
         rate: 1,
         detune: 0,
         seek: 0,

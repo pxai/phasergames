@@ -6,7 +6,7 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
         this.label = "wizard";
         this.scene = scene;
         this.scene.add.existing(this)
-        this.body.position.y -= 10;
+        //this.body.position.y -= 10;
         this.startX = x
         this.direction = Phaser.Math.RND.pick([-1, 1]);
 

@@ -112,7 +112,7 @@ export default class DungeonGenerator {
       for (let i = 0; i < doors.length; i++) {
         const worldPosition = this.groundLayer.tileToWorldXY(x + doors[i].x, y + doors[i].y);
         // console.log("Adding coin: ",x, y,  doors[i].x, doors[i].y,worldPosition.x, worldPosition.y)
-        new Coin(this.scene, worldPosition.x + 22, worldPosition.y + 22)
+        new Coin(this.scene, worldPosition.x + 20, worldPosition.y + 20)
         if (doors[i].y === 0) {
           this.groundLayer.putTilesAt(
             [[7],[7]],
