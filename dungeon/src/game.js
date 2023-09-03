@@ -21,7 +21,7 @@ export default class Game extends Phaser.Scene {
   }
 
     preload () {
-      this.registry.set("score", 0);
+      this.registry.set("seconds", 0);
       this.registry.set("coins", 0);
       this.registry.set("keys", 0);
     }
@@ -39,11 +39,11 @@ export default class Game extends Phaser.Scene {
       this.addCamera();
       this.addScores();
       this.loadAudios(); 
-      this.playMusic();
     }
 
     addMap() {
       this.dungeon = new DungeonGenerator(this);
+      this.input.keyboard.on("keydown-ENTER", () => this.finishScene(), this);
     }
 
     addMap2() {    
@@ -58,14 +58,15 @@ export default class Game extends Phaser.Scene {
 
       this.matter.world.convertTilemapLayer(groundLayer);
       this.matter.world.convertTilemapLayer(lavaLayer);
-
   }
 
   addScores () {
     this.add.sprite(62, 26, "coin", 0).setOrigin(0.5).setScrollFactor(0).setScale(.8)
     this.scoreCoins = this.add.bitmapText(100, 24, "default", "x0", 15).setOrigin(0.5).setScrollFactor(0)
+    this.scoreSeconds = this.add.bitmapText(this.center_width, 24, "default", "0", 15).setOrigin(0.5).setScrollFactor(0)
     this.add.sprite(this.width - 90, 24, "keys", 0).setOrigin(0.5).setScrollFactor(0).setScale(.8)
     this.scoreKeys = this.add.bitmapText(this.width - 48, 24, "default", "x0", 15).setOrigin(0.5).setScrollFactor(0)
+    this.timer = this.time.addEvent({ delay: 1000, callback: () => { this.updateSeconds()}, callbackScope: this, loop: true });
   }
 
   addPlayer() {
@@ -181,26 +182,11 @@ export default class Game extends Phaser.Scene {
       this.audios[key].play();
     }
 
-    playMusic (theme="music") {
-      this.theme = this.sound.add(theme);
-      this.theme.stop();
-      this.theme.play({
-        mute: false,
-        volume: 0.2,
-        rate: 1,
-        detune: 0,
-        seek: 0,
-        loop: true,
-        delay: 0
-      })
-    }
-
     update() {
 
     }
 
     restartScene() {
-      this.sound.stopAll();
       this.player.sprite.visible = false;
       this.cameras.main.shake(100);
       this.cameras.main.fade(250, 0, 0, 0);
@@ -208,12 +194,18 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene () {
-      this.sound.stopAll();
+
       this.cameras.main.fade(250, 0, 0, 0);
       this.cameras.main.once("camerafadeoutcomplete", () => {
-        this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
+        this.scene.start("outro", {next: "underwater", name: "STAGE", number: this.number + 1});
       });
     }
+
+    updateSeconds (points = 1) {
+      const seconds = +this.registry.get("seconds") + points;
+      this.registry.set("seconds", seconds);
+      this.scoreSeconds.setText(seconds);
+  }
 
     updateCoins (points = 1) {
         const coins = +this.registry.get("coins") + points;
