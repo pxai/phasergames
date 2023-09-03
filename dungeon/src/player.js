@@ -78,7 +78,7 @@ export default class Player {
           this.scene.anims.create({
             key: "playershot",
             frames: this.scene.anims.generateFrameNumbers(this.label, { start: 4, end: 5 }),
-            frameRate: 2,
+            frameRate: 4,
           });
           this.sprite.anims.play("playeridle", true)
           this.sprite.on('animationcomplete', this.animationComplete, this);
@@ -136,7 +136,8 @@ export default class Player {
                 this.sprite.setVelocityX(-5)
             }
         } else {
-            //this.sprite.anims.play("playeridle", true)
+            if (this.sprite.anims.currentAnim.key !== 'playershot')
+                this.sprite.anims.play("playeridle", true)
         }
 
         if (this.sprite.body.velocity.x > 7) this.sprite.setVelocityX(7);
@@ -144,7 +145,7 @@ export default class Player {
 
         if (((this.canJump && isOnGround) || this.onWall) && (this.W.isDown || this.cursor.up.isDown))  {            
         //if (((this.canJump && isOnGround) || (this.isTouching.left) || (this.isTouching.right)) && (this.W.isDown || this.cursor.up.isDown))  {     
-            this.sprite.setVelocityY(-11);
+            this.sprite.setVelocityY(-8);
             // Add a slight delay between jumps since the bottom sensor will still collide for a few
             // frames after a jump is initiated
             this.canJump = false;
@@ -205,6 +206,12 @@ export default class Player {
             new Dust(this.scene, this.sprite.x + Phaser.Math.Between(-32, 32), this.sprite.y + Phaser.Math.Between(10, 16))
        })
     }
+
+    explosion () {
+        Array(Phaser.Math.Between(10, 15)).fill(0).forEach(i => {
+             new Dust(this.scene, this.sprite.x + Phaser.Math.Between(-32, 32), this.sprite.y + Phaser.Math.Between(10, 16))
+        })
+     }
 
     animationComplete (animation, frame) {
         if (animation.key === "playershot") {

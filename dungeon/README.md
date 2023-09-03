@@ -27,3 +27,8 @@ https://itnext.io/modular-game-worlds-in-phaser-3-tilemaps-5-matter-physics-plat
 Hook:
 https://www.emanueleferonato.com/2019/02/22/build-a-html5-game-like-mikey-hooks-using-phaser-and-matter-js/
 https://www.emanueleferonato.com/2019/03/08/fling-unity-game-built-in-html5-with-phaser-and-matter-js-updated-with-the-latest-constraints-tweaks-fly-through-the-screen-with-your-ninja-rope/
+
+Bubble bobble theme:
+https://www.youtube.com/watch?v=4vBydMuC32c&ab_channel=LloydTheHammer
+
+https://www.youtube.com/watch?v=PFK_26rK9O0&ab_channel=pressplayontape

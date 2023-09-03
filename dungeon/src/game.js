@@ -27,6 +27,7 @@ export default class Game extends Phaser.Scene {
     }
 
     create () {
+      this.sound.stopAll();
       this.width = this.sys.game.config.width;
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
@@ -38,7 +39,7 @@ export default class Game extends Phaser.Scene {
       this.addCamera();
       this.addScores();
       //this.loadAudios(); 
-      // this.playMusic();
+      this.playMusic();
     }
 
     addMap() {
@@ -61,10 +62,10 @@ export default class Game extends Phaser.Scene {
   }
 
   addScores () {
-    this.add.sprite(62, 26, "coin", 0).setOrigin(0.5).setScrollFactor(0)
-    this.scoreCoins = this.add.bitmapText(100, 24, "default", "x0", 20).setOrigin(0.5).setScrollFactor(0)
-    this.add.sprite(this.width - 100, 24, "keys", 0).setOrigin(0.5).setScrollFactor(0)
-    this.scoreKeys = this.add.bitmapText(this.width - 48, 24, "default", "x0", 20).setOrigin(0.5).setScrollFactor(0)
+    this.add.sprite(62, 26, "coin", 0).setOrigin(0.5).setScrollFactor(0).setScale(.8)
+    this.scoreCoins = this.add.bitmapText(100, 24, "default", "x0", 15).setOrigin(0.5).setScrollFactor(0)
+    this.add.sprite(this.width - 90, 24, "keys", 0).setOrigin(0.5).setScrollFactor(0).setScale(.8)
+    this.scoreKeys = this.add.bitmapText(this.width - 48, 24, "default", "x0", 15).setOrigin(0.5).setScrollFactor(0)
   }
 
   addPlayer() {
@@ -132,8 +133,10 @@ export default class Game extends Phaser.Scene {
   }
 
   playerHitsBat (bat) {
+    this.player.explosion()
     bat.death();
     this.restartScene();
+
   }
 
   playerPicksKey(key) {
@@ -144,7 +147,7 @@ export default class Game extends Phaser.Scene {
   }
 
   showPoints (x, y, score, textElement, color = 0xffffff) {
-    let text = this.add.bitmapText(x + 20, y - 80, "default", "+"+score, 20).setDropShadow(2, 3, color, 0.7).setOrigin(0.5);
+    let text = this.add.bitmapText(x + 20, y - 80, "default", "+"+score, 10).setDropShadow(2, 3, color, 0.7).setOrigin(0.5);
     this.tweens.add({
         targets: text,
         duration: 1000,
@@ -176,12 +179,12 @@ export default class Game extends Phaser.Scene {
       this.audios[key].play();
     }
 
-    playMusic (theme="game") {
+    playMusic (theme="music") {
       this.theme = this.sound.add(theme);
       this.theme.stop();
       this.theme.play({
         mute: false,
-        volume: 1,
+        volume: 0.5,
         rate: 1,
         detune: 0,
         seek: 0,
@@ -195,11 +198,15 @@ export default class Game extends Phaser.Scene {
     }
 
     restartScene() {
+      this.sound.stopAll();
+      this.player.sprite.visible = false;
+      this.cameras.main.shake(100);
       this.cameras.main.fade(250, 0, 0, 0);
       this.cameras.main.once("camerafadeoutcomplete", () => this.scene.restart());
     }
 
     finishScene () {
+      this.sound.stopAll();
       this.cameras.main.fade(250, 0, 0, 0);
       this.cameras.main.once("camerafadeoutcomplete", () => {
         this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});

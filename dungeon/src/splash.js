@@ -22,8 +22,7 @@ export default class Splash extends Phaser.Scene {
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
         this.input.keyboard.on("keydown-ENTER", () => this.startGame(), this);
-        //this.playMusic();
-        //this.showPlayer();
+        this.playMusic();
     }
 
     startGame () {
@@ -33,12 +32,12 @@ export default class Splash extends Phaser.Scene {
 
 
     showTitle () {
-        this.textShadow1 = this.add.bitmapText(this.center_width, 100, "default", "DUNGEON", 85).setTint(0x25131a).setOrigin(0.5);
-        this.textShadow2 = this.add.bitmapText(this.center_width, 250, "default", "BOBBLE", 85).setTint(0x25131a).setOrigin(0.5);
-        this.text1 = this.add.bitmapText(this.center_width, 100, "default", "DUNGEON", 85).setTint(0x3d253b).setOrigin(0.5);
-        this.text2 = this.add.bitmapText(this.center_width, 250, "default", "BOBBLE", 85).setTint(0x3d253b).setOrigin(0.5);
-        this.text11 = this.add.bitmapText(this.center_width, 100, "default", "DUNGEON", 88).setTint(0x302030).setOrigin(0.5);
-        this.text22 = this.add.bitmapText(this.center_width, 250, "default", "BOBBLE", 88).setTint(0x302030).setOrigin(0.5);
+        this.textShadow1 = this.add.bitmapText(this.center_width, 100, "default", "DUNGEON", 85).setTint(0xff787a).setOrigin(0.5);
+        this.textShadow2 = this.add.bitmapText(this.center_width, 250, "default", "BOBBLE", 85).setTint(0xff787a).setOrigin(0.5);
+        this.text1 = this.add.bitmapText(this.center_width, 100, "default", "DUNGEON", 85).setTint(0x302030).setOrigin(0.5);
+        this.text2 = this.add.bitmapText(this.center_width, 250, "default", "BOBBLE", 85).setTint(0x302030).setOrigin(0.5);
+        this.text11 = this.add.bitmapText(this.center_width, 100, "default", "DUNGEON", 88).setTint(0x00aafb).setOrigin(0.5);
+        this.text22 = this.add.bitmapText(this.center_width, 250, "default", "BOBBLE", 88).setTint(0x00aafb).setOrigin(0.5);
         this.tweens.add({
             targets: [this.textShadow1, this.textShadow2],
             duration: 1000,
@@ -52,7 +51,7 @@ export default class Splash extends Phaser.Scene {
         this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
         this.tweens.add({
             targets: this.gameLogo,
-            duration: 1000,
+            duration: 500,
             x: {
               from: this.center_width * 2,
               to: this.center_width
@@ -64,16 +63,13 @@ export default class Splash extends Phaser.Scene {
           })
     }
 
-    showPlayer () {
-
-    }
 
     playMusic (theme="splash") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -91,10 +87,26 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 430, "default", "WASD/Arrows: move", 30).setOrigin(0.5);
+        this.player = this.add.sprite(this.width - 100, 350, "player").setScale(2)
+        this.anims.create({
+            key: "playeridle",
+            frames: this.anims.generateFrameNumbers("player", { start: 0, end: 3 }),
+            frameRate: 5,
+            repeat: -1
+          });
+          this.player.anims.play("playeridle")
+        this.foe = this.add.sprite(this.width, 350, "wizard").setScale(2)
+        this.anims.create({
+            key: "foe",
+            frames: this.anims.generateFrameNumbers("wizard", { start: 0, end: 4 }),
+            frameRate: 5,
+            repeat: -1
+          });
+          this.foe.anims.play("foe")
+        this.add.bitmapText(this.center_width, 430, "default", "WASD/Arrows: move", 30).setDropShadow(1, 1, 0xff787a, 0.7).setOrigin(0.5);
         this.add.sprite(this.center_width - 60, 490, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 490, "default", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 550, "default", "Press SPACE to start", 25).setOrigin(0.5);
+        this.add.bitmapText(this.center_width + 40, 490, "default", "By PELLO", 15).setDropShadow(1, 1, 0xff787a, 0.7).setOrigin(0.5);
+        this.space = this.add.bitmapText(this.center_width, 550, "default", "Press SPACE to start", 25).setDropShadow(1, 1, 0x3d253b, 0.7).setOrigin(0.5);
         this.tweens.add({
             targets: this.space,
             duration: 300,
@@ -102,5 +114,33 @@ export default class Splash extends Phaser.Scene {
             repeat: -1,
             yoyo: true
         });
+
+        this.tweens.add({
+            targets: [this.player],
+            x: {from: this.player.x, to: 0},
+            duration: 2500,
+            yoyo: true,
+            repeat: -1,
+            onYoyo: () => {
+                this.player.flipX = !this.player.flipX;
+            }, 
+            onRepeat: () => {
+                this.player.flipX = !this.player.flipX;
+            }
+        })
+
+        this.tweens.add({
+            targets: [this.foe],
+            x: {from: this.foe.x, to: 100},
+            duration: 2500,
+            yoyo: true,
+            repeat: -1,
+            onYoyo: () => {
+                this.foe.flipX = !this.foe.flipX;
+            }, 
+            onRepeat: () => {
+                this.foe.flipX = !this.foe.flipX;
+            }
+        })
     }
 }

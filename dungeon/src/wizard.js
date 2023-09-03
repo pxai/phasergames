@@ -48,13 +48,13 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
         gameObjectB.load("wizard")
         this.destroy();
       }
-
     }
 
     directShot() {
       const distance = Phaser.Math.Distance.BetweenPoints(this.scene.player, this);
       this.anims.play("wizardshot", true)
       const fireball = new Fireball(this.scene, this.x, this.y, this.direction)
+      this.delayedTurn = this.scene.time.delayedCall(1000, () => { this.turn();}, null, this);
       //this.scene.arrows.add(fireball)
       //this.scene.physics.moveTo(fireball, this.scene.player.x, this.scene.player.y, 100);
     }
@@ -83,7 +83,9 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
     }
 
     destroy () {
-      this.timer.destroy();
+      if (this.timer) this.timer.destroy();
+      if (this.delayedTurn) this.delayedTurn.destroy();
+      if (this.fireball) this.fireball.destroy();
       super.destroy();
     }
 }

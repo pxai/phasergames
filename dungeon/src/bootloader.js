@@ -27,8 +27,8 @@ export default class Bootloader extends Phaser.Scene {
             this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
         });*/
 
-        //this.load.image("logo", "assets/images/logo.png");
-        // this.load.audio("beam", "assets/sounds/beam.mp3");
+        this.load.audio("splash", "assets/sounds/splash.mp3");
+        this.load.audio("music", "assets/sounds/music.mp3");
 
         this.load.image("pello", "assets/images/pello_ok.png");
         this.load.bitmapFont("default", "assets/fonts/pico.png", "assets/fonts/pico.xml");
@@ -55,7 +55,7 @@ export default class Bootloader extends Phaser.Scene {
 
     createBars () {
         this.loadBar = this.add.graphics();
-        this.loadBar.fillStyle(0x3d253b, 1);
+        this.loadBar.fillStyle(0x00aafb, 1);
         this.loadBar.fillRect(
             this.cameras.main.width / 4 - 2,
             this.cameras.main.height / 2 - 18,
