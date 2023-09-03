@@ -1,3 +1,4 @@
+import Bubble from "./bubble";
 export default class Bat extends Phaser.Physics.Matter.Sprite {
 	constructor(scene, x, y, texture = "bat", ground) {
 		super(scene.matter.world, x, y, texture, 0)
@@ -45,8 +46,10 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
     }
 
     onBatCollide({ gameObjectA, gameObjectB }) {
-      if (gameObjectB.label === "bubble") {
-        console.log("It was a bubble!")
+      if (gameObjectB instanceof Bubble) {
+        console.log("Bat collide: ", gameObjectA, gameObjectB)
+        gameObjectB.load("bat")
+        this.destroy();
       }
     }
 

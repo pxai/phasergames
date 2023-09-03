@@ -1,5 +1,5 @@
 import Fireball from "./fireball";
-
+import Bubble from "./bubble";
 export default class Wizard extends Phaser.Physics.Matter.Sprite {
 	constructor(scene, x, y, texture = "wizard", ground) {
 		super(scene.matter.world, x, y, texture, 0)
@@ -43,9 +43,12 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
     }
 
     onWizardCollide({ gameObjectA, gameObjectB }) {
-      console.log("Wizard collide: ", gameObjectA, gameObjectB)
+      if (gameObjectB instanceof Bubble) {
+        console.log("Wizard collide: ", gameObjectA, gameObjectB)
+        gameObjectB.load("wizard")
+        this.destroy();
+      }
 
-        console.log("It was a bubble!")
     }
 
     directShot() {

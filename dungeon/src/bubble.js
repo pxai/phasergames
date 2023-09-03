@@ -1,3 +1,6 @@
+import Bat from "./bat";
+import Wizard from "./wizard";
+
 export default class Bubble extends Phaser.Physics.Matter.Sprite {
 	constructor(scene, x, y, offset, options = {isStatic: true}) {
 		super(scene.matter.world, x + offset, y, "bubble", 0, options)
@@ -10,10 +13,21 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
 		scene.add.existing(this)
         //this.setVelocityX(-5)
         this.moveVertically()
-
+        this.scene.events.on("update", this.update, this);
        // if (this.name.startsWith("vertical")) this.moveVertically();
        // else this.moveHorizontally();
 	}
+
+    load(sprite) {
+        this.loaded = this.scene.add.sprite(this.x, this.y, sprite).setOrigin(0.5).setScale(0.6)
+        this.loaded.name = sprite;
+        this.loadedTween = this.scene.tweens.add({
+            targets: this.loaded,
+            rotation: "+=5",
+            yoyo: true,
+            repeat: -1
+        })
+    }
 
     moveHorizontally () {
         this.scene.tweens.add({
@@ -65,4 +79,31 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
             }
         })
     }
+
+    respawn () {
+        this.loadedTween.destroy();
+
+        if (this.loaded.name === "wizard") {
+            console.log("RESPAWN!! ", this.loaded.name, this.x, this.y)
+            new Wizard(this.scene, this.x, this.y);
+        } else if (this.loaded.name === "bat") {
+            new Bat(this.scene, this.x, this.y)
+        }
+        this.loaded.destroy();
+        this.loaded = null;
+    }
+
+    update () {
+        if (!this.active) return;
+        if (this.loaded ) {
+            this.loaded.x = this.x;
+            this.loaded.y = this.y;
+        }
+    }
+
+    destroy() {               
+        if (this.loaded) this.respawn();
+        super.destroy();
+    }
+
 }

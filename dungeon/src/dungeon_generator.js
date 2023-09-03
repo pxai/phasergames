@@ -162,7 +162,7 @@ export default class DungeonGenerator {
       if (Phaser.Math.Between(0, 5 ) > 4) {
         new Wizard(this.scene, worldPosition.x + 22, worldPosition.y + 22, this.groundLayer)
       } else {
-        new Wizard(this.scene, worldPosition.x + 22, worldPosition.y + 22, this.groundLayer)
+        new Bat(this.scene, worldPosition.x + 22, worldPosition.y + 22, this.groundLayer)
       }
 
     }
