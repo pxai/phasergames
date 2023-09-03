@@ -3,6 +3,7 @@ import Coin from "./coin";
 import Key from "./key";
 import Bat from "./bat";
 import Wizard from "./wizard";
+import SeeSaw from "./seesaw";
 export default class DungeonGenerator {
     constructor(scene) {
         this.scene = scene;
@@ -108,7 +109,8 @@ export default class DungeonGenerator {
             const doors = room.getDoorLocations(); // → Returns an array of {x, y} objects
             this.addKey(room)
             this.addFoes(room)
-
+            this.addCoins(room)
+            this.addSeeSaw(room);
       for (let i = 0; i < doors.length; i++) {
         const worldPosition = this.groundLayer.tileToWorldXY(x + doors[i].x, y + doors[i].y);
         // console.log("Adding coin: ",x, y,  doors[i].x, doors[i].y,worldPosition.x, worldPosition.y)
@@ -151,6 +153,66 @@ export default class DungeonGenerator {
       const worldPosition= this.groundLayer.tileToWorldXY(keyX, keyY);
 
       new Key(this.scene, worldPosition.x + 22, worldPosition.y + 22)
+    }
+
+    addSeeSaw(room) {
+      if (Phaser.Math.Between(0, 10) < 7) return;
+
+      console.log("Adding see saw: ", room);
+
+      const worldPosition= this.groundLayer.tileToWorldXY(room.centerX, room.centerY);
+
+      new SeeSaw(this.scene, worldPosition.x + 22, worldPosition.y + 22, room.width)
+    }
+
+    addCoins(room) {
+      const where = Phaser.Math.RND.pick(["top", "bottom", "left", "right", "none"]);
+      const width = parseInt(room.width/3) - Phaser.Math.Between(1, 2);
+      const height = parseInt(room.height/3) - Phaser.Math.Between(1, 2);
+
+      if (where === "top") {
+        const keyY = room.top + Phaser.Math.Between(1 , 2);
+        const keyX = room.left + Phaser.Math.Between(1, 2);
+
+        Array(width).fill().forEach((x, i) => {
+          Array(height).fill().forEach((y, j) => {
+            const worldPosition= this.groundLayer.tileToWorldXY(keyX + i, keyY + j);
+            new Coin(this.scene, worldPosition.x + 20, worldPosition.y + 20)
+          })
+        })
+        //const worldPosition= this.groundLayer.tileToWorldXY(keyX, keyY);
+      } else if (where === "bottom") {
+        const keyY = room.bottom - Phaser.Math.Between(1 , 2);
+        const keyX = room.left + Phaser.Math.Between(1, 2);
+
+        Array(width).fill().forEach((x, i) => {
+          Array(height).fill().forEach((y, j) => {
+            const worldPosition= this.groundLayer.tileToWorldXY(keyX + i, keyY - j);
+            new Coin(this.scene, worldPosition.x + 20, worldPosition.y + 20)
+          })
+        })
+      } else if (where === "left") {
+        const keyY = room.top + Phaser.Math.Between(1 , 2);
+        const keyX = Phaser.Math.Between(1, 2);
+
+        Array(width).fill().forEach((x, i) => {
+          Array(height).fill().forEach((y, j) => {
+            const worldPosition= this.groundLayer.tileToWorldXY(keyX + i, keyY + j);
+            new Coin(this.scene, worldPosition.x + 20, worldPosition.y + 20)
+          })
+        })
+      } else if (where === "right") {
+        const keyY = room.top + Phaser.Math.Between(1 , 2);
+        const keyX = room.left - Phaser.Math.Between(1, 2);
+
+        Array(width).fill().forEach((x, i) => {
+          Array(height).fill().forEach((y, j) => {
+            const worldPosition= this.groundLayer.tileToWorldXY(keyX - i, keyY + j);
+            new Coin(this.scene, worldPosition.x + 20, worldPosition.y + 20)
+          })
+        })
+      }
+
     }
 
     addFoes(room) {

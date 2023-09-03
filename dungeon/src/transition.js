@@ -18,6 +18,7 @@ export default class Transition extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
+        this.sound.add("start").play()
         this.playMusic();
         this.key = this.add.sprite(this.center_width, this.center_height - 120, "keys", 0).setOrigin(0.5).setScale(2)
 

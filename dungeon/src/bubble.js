@@ -19,6 +19,7 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
 	}
 
     load(sprite) {
+        this.scene.playAudio("trap")
         this.loaded = this.scene.add.sprite(this.x, this.y, sprite).setOrigin(0.5).setScale(0.6)
         this.loaded.name = sprite;
         this.loadedTween = this.scene.tweens.add({
@@ -101,7 +102,9 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
         }
     }
 
-    destroy() {               
+    destroy() {        
+        if (!this.scene) return;       
+        this.scene.playAudio("crash")
         if (this.loaded) this.respawn();
         super.destroy();
     }

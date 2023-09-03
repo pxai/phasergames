@@ -14,7 +14,7 @@ export default class Splash extends Phaser.Scene {
         this.center_height = this.height / 2;
 
         this.backLayer = this.add.layer();
-        this.generateBubbles ()
+        //this.generateBubbles ()
         this.cameras.main.setBackgroundColor(0x000000);
         this.showTitle();        ;
 

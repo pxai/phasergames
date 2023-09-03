@@ -8,6 +8,7 @@ export default class Player {
         this.init(x,y);
         this.moveForce = 0.01;
         this.addControls();
+        this.invincible = true;
     }
 
     init (x,y) {
@@ -17,7 +18,9 @@ export default class Player {
         // Jumping is going to have a cooldown
         this.canJump = true;
         this.jumpCooldownTimer = null;
-    
+        this.canShoot = true;
+        this.shootCooldownTimer = null;
+
         this.onWall = false;
         // Before matter's update, reset our record of what surfaces the player is touching.
         this.scene.matter.world.on("beforeupdate", this.resetTouching, this);
@@ -28,7 +31,7 @@ export default class Player {
         const { Body, Bodies } = Phaser.Physics.Matter.Matter; // Native Matter modules
         const { width: w, height: h } = this.sprite;
 
-        const mainBody = Bodies.rectangle(0, 5, w - 10 , h - 10, { chamfer: { radius: 10 } });
+        const mainBody = Bodies.rectangle(0, 5, w - 14 , h - 10, { chamfer: { radius: 10 } });
         this.sensors = {
             bottom: Bodies.rectangle(0, h * 0.5, w * 0.25, 2, { isSensor: true }),
             left: Bodies.rectangle(-w * 0.35, 0, 2, h * 0.5, { isSensor: true }),
@@ -83,6 +86,15 @@ export default class Player {
           });
           this.sprite.anims.play("playeridle", true)
           this.sprite.on('animationcomplete', this.animationComplete, this);
+          this.scene.tweens.add({
+            targets: this.sprite,
+            alpha: {from: .5, to: 1},
+            duration: 200,
+            repeat: 10,
+            onComplete: () => {
+                this.invincible = false;
+            }
+        })
     }
 
     onSensorCollide({ bodyA, bodyB, pair }) {
@@ -158,16 +170,22 @@ export default class Player {
             });
         }
 
-        if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.W)) {
+        if (this.canShoot && (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.W))) {
             const offset = this.sprite.flipX ? 128 : -128;
             this.sprite.anims.play("playershot", true)
             this.scene.playAudio("bubble")
+            this.canShoot = false;
             new Bubble(this.scene, this.sprite.x, this.sprite.y, offset)
+            this.shootCooldownTimer = this.scene.time.addEvent({
+                delay: 500,
+                callback: () => (this.canShoot = true)
+              });
         } 
 
     }
 
     destroy() {
+        this.scene.playAudio("death")
         this.destroyed = true;
     
         // Event listeners

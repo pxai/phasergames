@@ -51,6 +51,7 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
     }
 
     directShot() {
+      this.scene.playAudio("fireball")
       const distance = Phaser.Math.Distance.BetweenPoints(this.scene.player, this);
       this.anims.play("wizardshot", true)
       const fireball = new Fireball(this.scene, this.x, this.y, this.direction)

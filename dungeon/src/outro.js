@@ -24,6 +24,7 @@ export default class Outro extends Phaser.Scene {
             frameRate: 5,
             repeat: -1
           });
+          this.sound.add("win").play()
           this.player.anims.play("playeridle")
           this.scoreCoins = this.add.bitmapText(this.center_width, 50, "default", "Coins: " + this.registry.get("coins"), 25).setOrigin(0.5).setScrollFactor(0)
           this.scoreSeconds = this.add.bitmapText(this.center_width, 100, "default", "Time: "+ this.registry.get("seconds"), 25).setOrigin(0.5).setScrollFactor(0)

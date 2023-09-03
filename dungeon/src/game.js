@@ -27,7 +27,6 @@ export default class Game extends Phaser.Scene {
     }
 
     create () {
-      this.sound.stopAll();
       this.width = this.sys.game.config.width;
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
@@ -129,11 +128,11 @@ export default class Game extends Phaser.Scene {
     this.showPoints(coin.x, coin.y, 1, this.scoreCoins);
     coin.destroy();
     this.updateCoins();
-    console.log(coin.body)
-
+    this.playAudio("coin")
   }
 
   playerHitsBat (bat) {
+    if (this.player.invincible) return;
     this.player.explosion()
     bat.death();
     this.restartScene();
@@ -175,6 +174,10 @@ export default class Game extends Phaser.Scene {
         "jump": this.sound.add("jump"),
         "bubble": this.sound.add("bubble"),
         "trap": this.sound.add("trap"),
+        "crash": this.sound.add("crash"),
+        "fireball": this.sound.add("fireball"),
+        "death": this.sound.add("death"),
+        "coin": this.sound.add("start"),
       };
     }
 

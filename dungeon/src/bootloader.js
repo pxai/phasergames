@@ -23,9 +23,9 @@ export default class Bootloader extends Phaser.Scene {
             this.scene.start("splash");
         },this);
 
-       /* Array(7).fill(0).forEach((_,i) => {
-            this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
-        });*/
+        Array(5).fill(0).forEach((_,i) => {
+            this.load.audio(`climb${i}`,`assets/sounds/climb${i}.mp3`)
+        });
 
         this.load.audio("splash", "assets/sounds/splash.mp3");
         this.load.audio("music", "assets/sounds/music.mp3");
@@ -34,13 +34,18 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("jump", "assets/sounds/jump.mp3");
         this.load.audio("bubble", "assets/sounds/bubble.mp3");
         this.load.audio("trap", "assets/sounds/trap.mp3");
+        this.load.audio("crash", "assets/sounds/crash.mp3");
+        this.load.audio("fireball", "assets/sounds/fireball.mp3");
+        this.load.audio("win", "assets/sounds/win.mp3");
+        this.load.audio("start", "assets/sounds/start.mp3");
+        this.load.audio("death", "assets/sounds/death.mp3");
 
         this.load.image("pello", "assets/images/pello_ok.png");
         this.load.bitmapFont("default", "assets/fonts/pico.png", "assets/fonts/pico.xml");
         this.load.spritesheet("player", "assets/images/player.png", { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet("dust", "assets/images/dust.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("coin", "assets/images/coin.png", { frameWidth: 32, frameHeight: 32 });
-        this.load.spritesheet("keys", "assets/images/keys.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("keys", "assets/images/keys.png", { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet("bat", "assets/images/bat.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("wizard", "assets/images/wizard.png", { frameWidth: 48, frameHeight: 48 });
 
