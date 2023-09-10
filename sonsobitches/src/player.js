@@ -16,7 +16,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.velocity = 200;
         this.dead = false;
         this.init();
-        this.shells = 0;
+        this.shells = 5;
         this.lastDirection = 0;
         this.shooting = false;
         this.health = 100;
@@ -137,13 +137,13 @@ export default class Player extends Phaser.GameObjects.Sprite {
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.spaceBar) ) {
-           // if (this.shells > 0) {
+           if (this.shells > 0) {
                 this.scene.playAudio("shot");
                 this.shooting = true;
                 this.shoot();
-           // } else {
-             //   this.scene.playAudio("empty");
-            //}
+           } else {
+               this.scene.playAudio("empty");
+            }
         }
 
         this.healthBar.updatePosition(this.x, this.y)
@@ -165,8 +165,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
         Array(Phaser.Math.Between(6, 10)).fill(0).forEach( i => { this.scene.smokeLayer.add(new ShotSmoke(this.scene,  this.x + (x * 64), this.y + (y * 64), x, y))});
         this.scene.shots.add(new Shot(this.scene, this.x + (x * 64), this.y + (y * 64), x, y))
         this.shells--;
-       // this.scene.showPoints(this.x, this.y, "-1")
-        //his.scene.updateShells();
+        this.scene.showPoints(this.x, this.y, "-1")
+        this.scene.updateShells();
         this.body.setVelocityX(200 * -x);
         this.body.setVelocityY(200 * -y)
         this.scene.tweens.add({

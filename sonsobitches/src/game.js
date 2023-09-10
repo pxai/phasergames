@@ -34,6 +34,7 @@ export default class Game extends Phaser.Scene {
       this.smokeLayer = this.add.layer();
       this.addPlayer();
       this.addScore();
+      this.addShells();
       this.loadAudios();
       // this.playMusic();
     }
@@ -46,8 +47,19 @@ export default class Game extends Phaser.Scene {
 
     addLight() {
       this.lights.enable();
-      this.lights.setAmbientColor(0x707070);
+      this.lights.setAmbientColor(0xf1f1f1) //(0x707070);
       this.playerLight = this.lights.addLight(0, 100, 100).setColor(0xffffff).setIntensity(3.0);
+    }
+
+    addShells() {
+      this.shellText = this.add.bitmapText(30, 10, "default", "x" +this.player.shells, 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.shellLogo = this.add.sprite(10, 28, "shell").setScale(0.8).setOrigin(0.5).setScrollFactor(0)
+      const coinAnimation = this.anims.create({
+        key: "shellscore",
+        frames: this.anims.generateFrameNumbers("shell", { start: 0, end: 5 }, ),
+        frameRate: 5,
+      });
+      this.shellLogo.play({ key: "shellscore", repeat: -1 });
     }
 
     createMap () {
@@ -135,7 +147,7 @@ export default class Game extends Phaser.Scene {
       this.cameras.main.shake(10);
       const {x, y} = foe;
       player.hit(x, y, 10);
-      this.playAudio("empty");
+      this.playAudio("hit");
       foe.destroy();
       //this.restartScene();
     }
@@ -173,6 +185,15 @@ export default class Game extends Phaser.Scene {
       tnt.destroy();
     }
 
+    playerPickShell (player, shell) {
+      this.lights.removeLight(shell.light);
+      shell.destroy();
+      this.playAudio("shell");
+      player.shells++;
+      this.showPoints(player.x, player.y, "+1")
+      this.updateShells()
+    }
+
     pickGold (player, gold) {
       this.playAudio("gold");
       this.lights.removeLight(gold.light);
@@ -196,6 +217,7 @@ export default class Game extends Phaser.Scene {
         "cock": this.sound.add("cock"),
         "ghost": this.sound.add("ghost"),
         "ghostdead": this.sound.add("ghostdead"),
+        "hit": this.sound.add("ghostdead"),
         "dead": this.sound.add("dead"),
         "sons": this.sound.add("sons"),
         "goddam": this.sound.add("goddam"),
@@ -264,5 +286,15 @@ export default class Game extends Phaser.Scene {
               text.destroy()
           }
       });
+    }
+
+    updateShells (points = 1) {
+      this.shellText.setText("x"+ this.player.shells);
+      this.tweens.add({
+        targets: [this.shellText, this.shellLogo],
+        scale: { from: 0.5, to: 1},
+        duration: 100,
+        repeat: 5
+      })
     }
 }
