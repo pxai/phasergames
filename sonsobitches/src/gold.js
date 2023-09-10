@@ -29,7 +29,7 @@ class Gold  extends Phaser.GameObjects.Container {
 
     init () {
         this.scene.events.on("update", this.update, this);
-
+        this.light = this.scene.lights.addLight(this.x, this.y, 100).setColor(0xffffff).setIntensity(7.0);
         this.scene.tweens.add({
             targets: this.sprite,
             duration: 500,

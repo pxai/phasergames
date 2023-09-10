@@ -13,8 +13,10 @@ export default class Foe extends Phaser.GameObjects.Container  {
         this.sprite.setOrigin(0)
         this.shadow = this.scene.add.sprite(12, 64, "shadow");
         this.shadow.setOrigin(0)
+        this.harmless = true;
         this.add(this.shadow);
         this.add(this.sprite);
+        this.scene.time.delayedCall(1000, () => { this.harmless = false }, null, this);
 
        this.init();
     }

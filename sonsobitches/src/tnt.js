@@ -25,14 +25,14 @@ class Tnt  extends Phaser.GameObjects.Container {
 
     init () {
         this.scene.events.on("update", this.update, this);
-
+        this.light = this.scene.lights.addLight(this.x, this.y, 100).setColor(0xffffff).setIntensity(4.0);
         this.scene.tweens.add({
             targets: this.sprite,
             duration: 500,
             y: this.sprite.y - 10,
             repeat: -1,
             yoyo: true
-        })  
+        })
 
         this.scene.tweens.add({
             targets: this.shadow,
@@ -40,7 +40,7 @@ class Tnt  extends Phaser.GameObjects.Container {
             scale: { from: 1, to: 0.5},
             repeat: -1,
             yoyo: true
-        })  
+        })
     }
 }
 

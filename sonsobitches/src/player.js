@@ -20,6 +20,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.lastDirection = 0;
         this.shooting = false;
         this.health = 100;
+        this.gold = 0;
         this.healthBar = new HealthBar(this, 32, -32, 10);
     }
 
@@ -148,8 +149,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
         this.healthBar.updatePosition(this.x, this.y)
 
-        //this.scene.playerLight.x = this.x;
-        //this.scene.playerLight.y = this.y;
+        this.scene.playerLight.x = this.x;
+        this.scene.playerLight.y = this.y;
     }
 
     shoot () {
@@ -206,16 +207,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
         const diffY = this.y - y > 0 ? 1 : -1;
         this.body.setVelocityX(200 * diffX)
         this.body.setVelocityY(200 * diffY)
-
         this.healthBar.decrease(points)
-        this.scene.tweens.add({
-          targets: this.healthBar.bar,
-          duration: 1000,
-          alpha: {
-            from: 1,
-            to: 0
-          },
-        });
+        this.showHealth()
 
         this.scene.tweens.add({
             targets: this,
@@ -227,6 +220,18 @@ export default class Player extends Phaser.GameObjects.Sprite {
             repeat: 5
           });
 
+    }
+
+
+    showHealth () {
+        this.scene.tweens.add({
+          targets: this.healthBar.bar,
+          duration: 1000,
+          alpha: {
+            from: 1,
+            to: 0
+          },
+        });
     }
 
     death () {
@@ -246,8 +251,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
             {x: -1, y: 0},
         ][this.lastDirection];
         if(animation.key.startsWith("walk")) {
-            //this.scene.playRandom("step", Phaser.Math.Between(2, 7) / 10);
-            //this.scene.smokeLayer.add(new JumpSmoke(this.scene, this.x + (20 * -x) , this.y + 32 + (20 * -y)))
+            this.scene.playRandom("step", Phaser.Math.Between(2, 7) / 10);
+            this.scene.smokeLayer.add(new JumpSmoke(this.scene, this.x + (20 * -x) , this.y + 32 + (20 * -y)))
         }
     }
 

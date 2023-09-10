@@ -34,10 +34,12 @@ class Shot extends Phaser.GameObjects.Sprite {
             origin: 0.5
           });
 
+          this.light = this.scene.lights.addLight(this.x, this.y, 100).setColor(0xffffff).setIntensity(6.0);
+
           this.anims.play(this.animName, true)
           if (this.id === "FOE") {
             this.scene.physics.moveTo(this, this.scene.player.x, this.scene.player.y, 200);
-          } 
+          }
           this.scene.events.on("update", this.update, this);
           this.scene.time.delayedCall(3000, () => {
             this.destroy();
@@ -54,6 +56,8 @@ class Shot extends Phaser.GameObjects.Sprite {
         if (Phaser.Math.Between(1, 2) > 1) {
             new Particle(this.scene, this.x, this.y,  0xe5cc18, 4)
         }
+        this.light.x = this.x;
+        this.light.y = this.y;
         if (this.id === "FOE") return;
     }
 

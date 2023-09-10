@@ -21,16 +21,19 @@ export default class Game extends Phaser.Scene {
 
     preload () {
       this.registry.set("score", 0)
+      this.registry.set("gold", 0)
     }
+
 
     create () {
       this.width = this.sys.game.config.width;
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      this.cameras.main.setBackgroundColor(0x663b1f);
-      this.addLight();
+      //this.cameras.main.setBackgroundColor(0x663b1f);
+
       this.createMap();
+      this.addLight();
       this.smokeLayer = this.add.layer();
       this.addPlayer();
       this.addScore();
@@ -43,12 +46,15 @@ export default class Game extends Phaser.Scene {
       this.seconds = 0;
       this.scoreText = this.add.bitmapText(this.center_width, 10, "default", this.registry.get("score"), 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
       this.timer = this.time.addEvent({ delay: 1000, callback: () => { this.updateSeconds()}, callbackScope: this, loop: true });
+
+      this.goldText = this.add.bitmapText(this.width - 70, 10, "default", "x" +this.registry.get("gold"), 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.goldLogo = this.add.sprite(this.width - 100, 28, "gold0").setScale(0.5).setOrigin(0.5).setScrollFactor(0)
     }
 
     addLight() {
       this.lights.enable();
-      this.lights.setAmbientColor(0xf1f1f1) //(0x707070);
-      this.playerLight = this.lights.addLight(0, 100, 100).setColor(0xffffff).setIntensity(3.0);
+      this.lights.setAmbientColor(0x707070);
+      this.playerLight = this.lights.addLight(0, 300, 300).setColor(0xffffff).setIntensity(3.0);
     }
 
     addShells() {
@@ -64,12 +70,11 @@ export default class Game extends Phaser.Scene {
 
     createMap () {
       this.tileMap = this.make.tilemap({ key: "scene" , tileWidth: 64, tileHeight: 64 })
-      this.tileSetBg = this.tileMap.addTilesetImage("cave");
-      this.background = this.tileMap.createLayer('background', this.tileSetBg).setPipeline('Light2D');
       this.tileSet = this.tileMap.addTilesetImage("cave");
+      this.background = this.tileMap.createLayer('background', this.tileSet).setPipeline('Light2D');
       this.platform = this.tileMap.createLayer('scene', this.tileSet).setPipeline('Light2D');
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
-      this.background.fill(8);
+     // this.background.fill(6);
       this.platform.setCollisionByExclusion([-1]);
 
       this.shells = this.add.group();
@@ -144,6 +149,7 @@ export default class Game extends Phaser.Scene {
     }
 
     playerHitByFoe (player, foe) {
+      if (foe.harmless) return;
       this.cameras.main.shake(10);
       const {x, y} = foe;
       player.hit(x, y, 10);
@@ -168,7 +174,7 @@ export default class Game extends Phaser.Scene {
     }
 
     foeHitByBlast (blast, foe) {
-      this.playAudio(Phaser.Math.RND.pick(["yee-haw", "goddam", "sons"]))
+      this.playAudio(Phaser.Math.RND.pick(["yee-haw", "sons", "goddam", "sons"]))
       this.playAudio("ghost");
       this.updateScore(10)
       Array(Phaser.Math.Between(20, 34)).fill(0).forEach( i => { this.smokeLayer.add(new Smoke(this, foe.x + 32, foe.y + 32, 0xb79860))});
@@ -177,6 +183,7 @@ export default class Game extends Phaser.Scene {
     }
 
     tntHitByShot (shot, tnt) {
+      this.lights.removeLight(tnt.light);
       this.playAudio("explosion")
       this.cameras.main.shake(500);
       Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => { this.smokeLayer.add(new RockSmoke(this, tnt.x, tnt.y))});
@@ -195,9 +202,21 @@ export default class Game extends Phaser.Scene {
     }
 
     pickGold (player, gold) {
+      this.lights.removeLight(gold.light);
+      this.updateGold(1)
+      this.player.gold++;
       this.playAudio("gold");
       this.lights.removeLight(gold.light);
       gold.destroy()
+      console.log("Gold: ", this.player.gold)
+      if (this.player.gold === 10) {
+        console.log("Increase health!!: ", this.player.gold)
+        this.player.healthBar.increase(20)
+        this.player.showHealth();
+        this.updateGold(-10)
+        this.player.gold = 0;
+        this.playAudio("health")
+      }
 
       this.showPoints(player.x, player.y, "+1", 0xe5cc18)
       this.updateScore()
@@ -221,7 +240,8 @@ export default class Game extends Phaser.Scene {
         "dead": this.sound.add("dead"),
         "sons": this.sound.add("sons"),
         "goddam": this.sound.add("goddam"),
-        "empty": this.sound.add("empty")
+        "empty": this.sound.add("empty"),
+        "health": this.sound.add("health")
       };
     }
 
@@ -287,6 +307,12 @@ export default class Game extends Phaser.Scene {
           }
       });
     }
+
+    updateGold (points = 1) {
+      const score = +this.registry.get("gold") + points;
+      this.registry.set("gold", score);
+      this.goldText.setText("x" + score);
+  }
 
     updateShells (points = 1) {
       this.shellText.setText("x"+ this.player.shells);
