@@ -20,6 +20,9 @@
     "lint": "eslint src/**/*.js test/**/*.js --fix",
     "unit": "mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js"
   },
+  "jest": {
+    "reporters": ["default", "./test/sound-reporter.js"]
+  },
   "dependencies": {
     "phaser": "^3.52.0"
   },
@@ -43,6 +46,7 @@
     "jsdom-global": "^3.0.2",
     "mocha": "^8.2.1",
     "path": "^0.12.7",
+    "play-sound": "^1.1.6",
     "webpack": "^5.49.0",
     "webpack-cli": "^4.4.0",
     "webpack-dev-server": "^3.11.2",

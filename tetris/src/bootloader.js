@@ -28,16 +28,23 @@ export default class Bootloader extends Phaser.Scene {
         }); */
 
         // this.load.image("logo", "assets/images/logo.png");
-        // this.load.audio("beam", "assets/sounds/beam.mp3");
+        this.load.audio("clear", "assets/sounds/clear.mp3");
+        this.load.audio("rotate", "assets/sounds/rotate.mp3");
+        this.load.audio("move", "assets/sounds/move.mp3");
+        this.load.audio("gameOver", "assets/sounds/gameOver.mp3");
+        this.load.audio("appear", "assets/sounds/appear.mp3");
+        this.load.audio("push", "assets/sounds/push.mp3");
+        this.load.audio("land", "assets/sounds/land.mp3");
 
         this.load.image("green", "assets/images/green.png");
         this.load.image("blue", "assets/images/blue.png");
         this.load.image("red", "assets/images/red.png");
         this.load.image("yellow", "assets/images/yellow.png");
         this.load.image("grey", "assets/images/grey.png");
+        this.load.image("purple", "assets/images/purple.png");
+        this.load.image("orange", "assets/images/orange.png");
         this.load.image("black", "assets/images/black.png");
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
-        this.load.spritesheet("chopper", "assets/images/chopper.png", { frameWidth: 128, frameHeight: 128 });
 
         // this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
 

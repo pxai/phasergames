@@ -11,9 +11,9 @@
 
   <div class="container">
     <div class="logo">
-      <img src="assets/images/chat_gasol.png" alt="Chat Gasol Logo" width="350">
+      <img src="assets/images/chat_gasol.png" alt="Chat Gasol Logo" id="logo" width="350">
     </div>
-    <div class="title">
+    <div class="title" id="title">
       Chat Gasol
     </div>
     <div class="form-container">
@@ -22,11 +22,11 @@
         </header>
         <form action="game.html">
             <div><label for="channel">Channel</label></div>
-            <div><input type="text" name="channel" id="channel" value="devdiaries"></div>
+            <div><input type="text" name="channel" id="channel" value="devdiaries" oninput="check(this)" onchange="check(this)"> </div>
             <div><label for="background">Background Color</label></div>
             <div><input type="color" name="background" id="background", value = '#00b140'></div>
             <br />
-            <div><input type="submit", value = 'PLAY'></div>
+            <div><input type="submit" id="submit" value = 'PLAY'></div>
         </form>
         <footer>
           <b>! <em>speed</em> <em>angle</em></b>: shoot balls with speed (0-100) and angle (0-360)
@@ -38,6 +38,16 @@
     </div>
 
   </div>
+  <script>
+    function check (input) {
+      const title = document.getElementById("title")
+      const logo = document.getElementById("logo")
+      const submit = document.getElementById("submit")
+      title.innerHTML = (input.value.toLowerCase() === "niv3k_el_pato") ? "Quack Gasol" : "Chat Gasol"
+      submit.value = (input.value.toLowerCase() === "niv3k_el_pato") ? "QWACK!!" : "PLAY"
+      logo.src = "assets/images/" + ((input.value.toLowerCase() === "niv3k_el_pato") ? "quack_gasol" : "chat_gasol") + ".png"
+    }
+  </script>
 
 </body>
 </html>

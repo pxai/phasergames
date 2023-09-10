@@ -13,6 +13,7 @@ export default class Game extends Phaser.Scene {
     init (data) {
         this.name = data.name;
         this.number = data.number;
+        this.speed = 300;
     }
 
     preload () {
@@ -23,86 +24,68 @@ export default class Game extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-
+        this.loadAudios();
         this.addKeys();
+        this.gameOver = false;
         this.figures = this.add.group();
         this.board = new Board();
-        this.addFigure(1000);
-        this.moveThisShit();
-        // this.addEnemy();
-        //this.addColliders();
-        // this.loadAudios();
+        this.tetronimosLayer = this.add.layer();
+        this.offsetX = 64;
+        this.addFigure();
+        this.addBorders();
+        this.moveThisShit(this.speed);
+
+
         // this.playMusic();
+    }   
+
+    addBorders () {
+        this.add.rectangle(this.offsetX + 320, 0, 200, this.height, 0x222222).setOrigin(0)
+        this.add.rectangle(0, 32 * this.board.height, this.width/2, 200, 0x222222).setOrigin(0)
+
     }
 
-    addFigure (delay = 5000) {
-        this.time.addEvent({
-            delay,
-            callback: () => {
-                const tetronimo = new Tetronimo(4, 4, "L", Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black"]));
-                this.board.add(tetronimo);
-                this.addFigure();
-            },
-            callbackScope: this,
-            loop: true
-          });
-        // this.figure = new Figure(this, this.center_width, this.center_height + 128);
+    addFigure () {
+         this.board.add(new Tetronimo(4, 0, Phaser.Math.RND.pick(["O"]), Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"])));
+
+        //this.board.add(new Tetronimo(4, 0, Phaser.Math.RND.pick(["O", "L", "J", "I", "S", "Z"]), Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"])));
+        this.playAudio("appear")
     }
 
     moveThisShit (delay = 5000) {
         this.time.addEvent({
             delay,
             callback: () => {
+                if (this.gameOver) return;
                 this.render(this.board);
-                console.log(this.board.print());
                 this.board.move();
-                console.log(this.board.print());
-                this.moveThisShit();
+                //console.log(this.board.print());
+                //this.moveThisShit();
             },
             callbackScope: this,
             loop: true
           });
-        // this.figure = new Figure(this, this.center_width, this.center_height + 128);
     }
 
     render (board) {
+        this.tetronimosLayer.removeAll();
+        //console.log("Rendering tetronimos!: ", board.tetronimos)
         board.tetronimos.forEach(tetronimo => {
-            console.log("About to render", tetronimo.current);
             tetronimo.current.forEach(({x, y}) => {
-                console.log("Rendering position at", tetronimo.x, tetronimo.y, x, y, "with color", tetronimo.color, "and pos: ", (tetronimo.x + x) * 32, (tetronimo.y + y) * 32);
-                this.add.sprite((tetronimo.x + x) * 32, (tetronimo.y + y) * 32, tetronimo.color)
+                this.tetronimosLayer.add(this.add.sprite(this.offsetX +  (tetronimo.x + x) * 32, (tetronimo.y + y) * 32, tetronimo.color).setOrigin(0))
             });
         });
     }
 
-    addEnemy () {
-        this.enemies = this.add.group();
-        this.enemy = new Enemy(this, this.center_width, this.center_height - 128);
-    }
-
-    addColliders () {
-    /*  this.physics.add.collider(this.figures, this.figures, (obj) => {
-
-    }); */
-
-        this.physics.add.collider(this.figure.blocks, this.enemy.blocks, (obj) => {
-            console.log("Collision!! ", obj);
-        });
-    }
-
-    hitFigures (figure1, figure2) {
-
-    }
-
-    hitEnemies (figure, enemy) {
-        console.log("HIT enemy! ", figure, enemy);
-        // figure.freeze();
-        enemy.setTint(0x00ff00);
-    }
-
     loadAudios () {
         this.audios = {
-            beam: this.sound.add("beam")
+            clear: this.sound.add("clear"),
+            rotate: this.sound.add("rotate"),
+            move: this.sound.add("move"),
+            gameOver: this.sound.add("gameOver"),
+            appear: this.sound.add("appear"),
+            push: this.sound.add("push"),
+            land: this.sound.add("land"),
         };
     }
 
@@ -134,19 +117,38 @@ export default class Game extends Phaser.Scene {
     }
 
     update () {
+        if (this.gameOver) return;
+        if (this.board.touchdown) {
+            this.playAudio("land");
+            console.log("ADD FIGURE!", new Date().toDateString())
+            this.render(this.board);
+            this.board.removeLines();
+            this.addFigure();
+            if (this.board.gameOver()) {
+                this.finishScene();
+            }
+        }
         if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
-            this.resolve();
+            this.addFigure()
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.S)) {
-            this.figure.turn();
+            this.board.pushDown(this.board.activeTetronimo)
+            this.playAudio("push");
+            this.render(this.board);
         } else if (Phaser.Input.Keyboard.JustDown(this.cursor.up) || Phaser.Input.Keyboard.JustDown(this.W)) {
             console.log("Up!");
-            this.figure.up();
+            this.board.rotate(this.board.activeTetronimo);
+            this.playAudio("rotate");
+            this.render(this.board);
         } else if (Phaser.Input.Keyboard.JustDown(this.cursor.right) || Phaser.Input.Keyboard.JustDown(this.D)) {
-            this.figure.right();
+            this.board.right(this.board.activeTetronimo);
+            this.playAudio("move");
+            this.render(this.board);
         } else if (Phaser.Input.Keyboard.JustDown(this.cursor.left) || Phaser.Input.Keyboard.JustDown(this.A)) {
-            this.figure.left();
+            this.board.left(this.board.activeTetronimo);
+            this.render(this.board);
+            this.playAudio("move");
         }
     }
 
@@ -155,9 +157,12 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene () {
-        this.sky.stop();
-        this.theme.stop();
-        this.scene.start("transition", { next: "underwater", name: "STAGE", number: this.number + 1 });
+        this.gameOver = true;
+        this.playAudio("gameOver");
+        console.log("GAME OVER")
+        this.add.bitmapText(this.center_width, this.center_height, "pixelFont", "GAME OVER", 40).setOrigin(0.5);
+        // this.theme.stop();
+       // this.scene.start("transition", { next: "underwater", name: "STAGE", number: this.number + 1 });
     }
 
     updateScore (points = 0) {

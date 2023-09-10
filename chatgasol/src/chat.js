@@ -34,7 +34,7 @@ export default class Chat {
 
         this.client.on("join", (channel, username, self) => {
             console.log("Somebody joined the chat: ", channel, username);
-            if (self) { this.scene.addPlayer(username); }
+            //if (self) { this.scene.addPlayer(username); }
         });
 
         this.client.on("message", (channel, tags, message, self) => {

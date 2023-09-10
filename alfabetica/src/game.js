@@ -177,7 +177,7 @@ export default class Game extends Phaser.Scene {
     }
 
     update () {
-      /*  if (Phaser.Input.Keyboard.JustDown(this.cursor.down)) {
+/*         if (Phaser.Input.Keyboard.JustDown(this.cursor.down)) {
             this.guess("devdiaries"+Phaser.Math.Between(0, this.height),  "zzz");
         }
 
@@ -187,7 +187,7 @@ export default class Game extends Phaser.Scene {
 
         if (Phaser.Input.Keyboard.JustDown(this.cursor.up)) {
             this.guess("devdiaries"+Phaser.Math.Between(0, this.height),  this.result);
-        }*/
+        } */
     }
 
 
