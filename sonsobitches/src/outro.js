@@ -3,6 +3,12 @@ export default class Outro extends Phaser.Scene {
         super({ key: "outro" });
     }
 
+    init (data) {
+        this.name = data.name;
+        this.number = data.number;
+        this.next = data.next;
+    }
+
     preload () {
     }
 
@@ -11,55 +17,25 @@ export default class Outro extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.introLayer = this.add.layer();
-        this.splashLayer = this.add.layer();
-        this.text = [ 
-            "The U.F.I.S.H. recovered the engines.",
-            "After a terrible fishing day,",
-            "they decided to move to Europa moon,",
-            "to fish under the ice",
-            "But that is another story..."
-        ];
-        this.showHistory();
-        //this.showPlayer();
-        //this.playMusic();
-        this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
-        this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
-    }
-
-    showHistory () {
-        this.text.forEach((line, i) => {
-                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this); 
+        this.player = this.add.sprite(this.center_width, this.center_height - 120, "player").setOrigin(0.5).setScale(2)
+        this.anims.create({
+            key: "startidle",
+            frames: this.anims.generateFrameNumbers("willie", { start: 0, end: 1 }),
+            frameRate: 3,
+            repeat: -1
         });
-        this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
+          this.sound.add("win").play()
+          this.player.anims.play("startidle")
+          this.scoreCoins = this.add.bitmapText(this.center_width, 50, "default", "Score: " + this.registry.get("score"), 25).setOrigin(0.5).setScrollFactor(0)
+        this.add.bitmapText(this.center_width, this.center_height + 40, "default", "Press space to restart", 25).setOrigin(0.5)
+        this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
+        this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
     }
 
-    playMusic (theme="outro") {
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
-        this.theme.play({
-          mute: false,
-          volume: 1,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-      })
-      }
-
-    showLine(text, y) {
-        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "pixelFont", text, 25).setOrigin(0.5).setAlpha(0));
-        this.tweens.add({
-            targets: line,
-            duration: 2000,
-            alpha: 1
-        })
+    update () {
     }
 
-
-    startSplash () {
-        // this.theme.stop();
+    loadNext () {
         this.scene.start("splash");
     }
 }

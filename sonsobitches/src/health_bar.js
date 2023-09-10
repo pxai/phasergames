@@ -15,8 +15,8 @@ export default class HealthBar {
     }
 
     updatePosition (x, y) {
-        this.x = x;
-        this.y = y - 32;
+        this.bar.x = x;
+        this.bar.y = y - 32;
     }
 
     decrease (amount)

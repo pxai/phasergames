@@ -216,6 +216,17 @@ export default class Player extends Phaser.GameObjects.Sprite {
             to: 0
           },
         });
+
+        this.scene.tweens.add({
+            targets: this,
+            duration: 100,
+            alpha: {
+              from: 0,
+              to: 1
+            },
+            repeat: 5
+          });
+
     }
 
     death () {

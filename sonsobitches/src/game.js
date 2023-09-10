@@ -4,6 +4,7 @@ import FoeGenerator from "./foe_generator";
 import { Smoke, RockSmoke, ShotSmoke } from "./particle";
 import Tnt from "./tnt";
 import { Explosion } from "./steam";
+import Gold from "./gold";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -27,7 +28,7 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-
+      this.cameras.main.setBackgroundColor(0x663b1f);
       this.addLight();
       this.createMap();
       this.smokeLayer = this.add.layer();
@@ -38,7 +39,9 @@ export default class Game extends Phaser.Scene {
     }
 
     addScore() {
+      this.seconds = 0;
       this.scoreText = this.add.bitmapText(this.center_width, 10, "default", this.registry.get("score"), 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.timer = this.time.addEvent({ delay: 1000, callback: () => { this.updateSeconds()}, callbackScope: this, loop: true });
     }
 
     addLight() {
@@ -48,6 +51,15 @@ export default class Game extends Phaser.Scene {
     }
 
     createMap () {
+      this.tileMap = this.make.tilemap({ key: "scene" , tileWidth: 64, tileHeight: 64 })
+      this.tileSetBg = this.tileMap.addTilesetImage("cave");
+      this.background = this.tileMap.createLayer('background', this.tileSetBg).setPipeline('Light2D');
+      this.tileSet = this.tileMap.addTilesetImage("cave");
+      this.platform = this.tileMap.createLayer('scene', this.tileSet).setPipeline('Light2D');
+      this.objectsLayer = this.tileMap.getObjectLayer('objects');
+      this.background.fill(8);
+      this.platform.setCollisionByExclusion([-1]);
+
       this.shells = this.add.group();
       this.foes = this.add.group();
       this.fireballs = this.add.group();
@@ -122,7 +134,9 @@ export default class Game extends Phaser.Scene {
     playerHitByFoe (player, foe) {
       this.cameras.main.shake(10);
       const {x, y} = foe;
-      player.hit(x, y);
+      player.hit(x, y, 10);
+      this.playAudio("empty");
+      foe.destroy();
       //this.restartScene();
     }
 
@@ -136,6 +150,8 @@ export default class Game extends Phaser.Scene {
       this.updateScore()
       if (Phaser.Math.Between(1, 10) > 4) {
         this.tnts.add(new Tnt(this, foe.x, foe.y));
+      } else if (Phaser.Math.Between(1, 10) > 4) {
+        this.golds.add(new Gold(this, foe.x, foe.y));
       }
     }
 
@@ -145,6 +161,7 @@ export default class Game extends Phaser.Scene {
       this.updateScore(10)
       Array(Phaser.Math.Between(20, 34)).fill(0).forEach( i => { this.smokeLayer.add(new Smoke(this, foe.x + 32, foe.y + 32, 0xb79860))});
       foe.destroy();
+      this.golds.add(new Gold(this, foe.x, foe.y));
     }
 
     tntHitByShot (shot, tnt) {
@@ -156,7 +173,15 @@ export default class Game extends Phaser.Scene {
       tnt.destroy();
     }
 
+    pickGold (player, gold) {
+      this.playAudio("gold");
+      this.lights.removeLight(gold.light);
+      gold.destroy()
 
+      this.showPoints(player.x, player.y, "+1", 0xe5cc18)
+      this.updateScore()
+
+    }
 
     loadAudios () {
       this.audios = {
@@ -220,8 +245,15 @@ export default class Game extends Phaser.Scene {
       this.scoreText.setText(score);
     }
 
+    updateSeconds (points = 1) {
+      this.seconds++;
+      if (this.seconds % 20 === 0 && this.foeGenerator.frequency > 300) {
+        this.foeGenerator.setFrequency(this.foeGenerator.frequency - 100);
+      }
+  }
+
     showPoints (x, y, msg, color = 0xff0000) {
-      let text = this.add.bitmapText(x + 20, y - 80, "defaultd", msg, 20).setDropShadow(2, 3, color, 0.7).setOrigin(0.5);
+      let text = this.add.bitmapText(x + 20, y - 80, "default", msg, 20).setDropShadow(2, 3, color, 0.7).setOrigin(0.5);
       this.tweens.add({
           targets: text,
           duration: 1000,

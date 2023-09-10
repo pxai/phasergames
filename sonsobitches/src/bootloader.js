@@ -23,9 +23,9 @@ export default class Bootloader extends Phaser.Scene {
             this.scene.start("splash");
         },this);
 
-       /* Array(7).fill(0).forEach((_,i) => {
-            this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
-        });*/
+        Array(4).fill(0).forEach((_,i) => {
+            this.load.image(`gold${i}`, `assets/images/gold${i}.png`);
+        });
 
         this.load.audio("gold", "assets/sounds/gold.mp3");
         this.load.audio("shell", "assets/sounds/shell.mp3");
@@ -42,7 +42,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("dead", "assets/sounds/dead.mp3");
         this.load.audio("goddam", "assets/sounds/goddam.mp3");
         this.load.audio("sons", "assets/sounds/sons.mp3");
-
+        this.load.image("cave", "assets/maps/cave.png");
         this.load.audio("splash", "assets/sounds/splash.mp3");
         this.load.audio("music", "assets/sounds/music.mp3");
         this.load.audio("tutorial", "assets/sounds/tutorial.mp3");
@@ -55,12 +55,13 @@ export default class Bootloader extends Phaser.Scene {
 
         this.load.image("ghosts", "assets/images/ghost.png");
         this.load.image("shadow", "assets/images/shadow.png");
+        this.load.image("pello_ok", "assets/images/pello_ok.png");
 
         this.load.bitmapFont("default", "assets/fonts/shotman.png", "assets/fonts/shotman.xml");
         this.load.spritesheet("chopper", "assets/images/chopper.png", { frameWidth: 128, frameHeight: 128 });
 
 
-        //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
+        this.load.tilemapTiledJSON("scene", "assets/maps/scene.json");
 
         this.registry.set("score", 0);
         this.registry.set("coins", 0);

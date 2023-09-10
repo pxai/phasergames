@@ -32,6 +32,8 @@ export default class Splash extends Phaser.Scene {
         this.gameLogo1 = this.add.bitmapText(this.center_width, 100, "default", "Sons", 100).setTint(0xE67A32).setOrigin(0.5).setDropShadow(1, -5, 0xf0d54a, 0.9);;
         this.gameLogo2 = this.add.bitmapText(this.center_width, 210, "default", "o'Bitches!", 100).setTint(0xE67A32).setOrigin(0.5).setDropShadow(1, -5, 0xf0d54a, 0.9);;
 
+
+
         this.tweens.add({
             targets: this.gameLogo1,
             duration: 500,
@@ -53,6 +55,15 @@ export default class Splash extends Phaser.Scene {
               },
               onComplete: () => {
                 this.sound.add("shot").play()
+                this.player = this.add.sprite(this.center_width, this.center_height , "player").setOrigin(0.5).setScale(1.6)
+                this.anims.create({
+                    key: "startidle",
+                    frames: this.anims.generateFrameNumbers("willie", { start: 0, end: 1 }),
+                    frameRate: 3,
+                    repeat: -1
+                });
+                  this.sound.add("win").play()
+                  this.player.anims.play("startidle")
               }
           })
     }
@@ -77,11 +88,11 @@ export default class Splash extends Phaser.Scene {
 
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "default", "WASD/Arrows: move", 30).setTint(0xE67A32).setOrigin(0.5).setDropShadow(1, -2, 0xf0d54a, 0.9)
-        this.add.bitmapText(this.center_width, 500, "default", "SPACE: shoot", 30).setTint(0xE67A32).setOrigin(0.5).setDropShadow(1, -2, 0xf0d54a, 0.9)
-        this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "default", "By PELLO", 15).setTint(0xE67A32).setOrigin(0.5).setDropShadow(1, -2, 0xf0d54a, 0.9)
-        this.space = this.add.bitmapText(this.center_width, 670, "default", "Press SPACE to start", 30).setOrigin(0.5).setDropShadow(1, -2, 0xf0d54a, 0.9)
+        this.add.bitmapText(this.center_width, 390, "default", "WASD/Arrows: move", 30).setTint(0xE67A32).setOrigin(0.5).setDropShadow(1, -2, 0xf0d54a, 0.9)
+        this.add.bitmapText(this.center_width, 430, "default", "SPACE: shoot", 30).setTint(0xE67A32).setOrigin(0.5).setDropShadow(1, -2, 0xf0d54a, 0.9)
+        this.add.sprite(this.center_width - 40, 500, "pello_ok").setOrigin(0.5).setScale(0.3)
+        this.add.bitmapText(this.center_width + 40, 500, "default", "By PELLO", 15).setTint(0xE67A32).setOrigin(0.5).setDropShadow(1, -2, 0xf0d54a, 0.9)
+        this.space = this.add.bitmapText(this.center_width, 570, "default", "Press SPACE to start", 30).setOrigin(0.5).setDropShadow(1, -2, 0xf0d54a, 0.9)
         this.tweens.add({
             targets: this.space,
             duration: 300,
