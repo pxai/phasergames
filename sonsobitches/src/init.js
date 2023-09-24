@@ -1,12 +1,13 @@
 import Phaser from "phaser";
+import Bootloader from "./bootloader";
+import Outro from "./outro";
+import Splash from "./splash";
+import Transition from "./transition";
 import Game from "./game";
-import GameOver from "./gameover";
-/*
-This is the main configuration file for the game.
-*/
+
 const config = {
-    width: 600,
-    height: 300,
+    width: 800,
+    height: 600,
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
@@ -16,13 +17,16 @@ const config = {
     physics: {
         default: "arcade",
         arcade: {
-            gravity: { y: 350 },
+            gravity: { y: 300 },
             debug: false
         }
     },
     scene: [
+        Bootloader,
+        Splash,
+        Transition,
         Game,
-        GameOver
+        Outro,
     ]
 };
 

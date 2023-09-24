@@ -28,8 +28,8 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      this.cameras.main.setBackgroundColor(0x00b140)//(0x62a2bf)
-      // this.add.tileSprite(0, 1000, 1024 * 10, 512, "landscape").setOrigin(0.5);
+      this.cameras.main.setBackgroundColor(0x62a2bf) //(0x00b140)//(0x62a2bf)
+       this.add.tileSprite(0, 1000, 1024 * 10, 512, "landscape").setOrigin(0.5);
       this.createMap();
 
       this.cameras.main.setBounds(0, 0, 20920 * 2, 20080 * 2);
@@ -39,7 +39,7 @@ export default class Game extends Phaser.Scene {
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 240);
       this.physics.world.enable([ this.player ]);
       this.addScore();
-      this.loadAudios(); 
+      this.loadAudios();
       this.playMusic();
     }
 
@@ -58,7 +58,7 @@ export default class Game extends Phaser.Scene {
       this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 64, tileHeight: 64 });
       this.tileSetBg = this.tileMap.addTilesetImage("background");
       this.tileMap.createStaticLayer('background', this.tileSetBg)
-  
+
       this.tileSet = this.tileMap.addTilesetImage("softbricks");
       this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet);
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
@@ -152,7 +152,7 @@ export default class Game extends Phaser.Scene {
       this.physics.add.collider(this.player, this.platformGroup, this.hitFloor, ()=>{
         return true;
       }, this);
-  
+
       this.physics.add.collider(this.player, this.bricks, this.hitFloor, ()=>{
         return true;
       }, this);
@@ -164,8 +164,8 @@ export default class Game extends Phaser.Scene {
       this.physics.add.overlap(this.player, this.lunchBoxGroup, this.pickLunchBox, ()=>{
         return true;
       }, this);
-  
-      this.physics.add.overlap(this.player, this.exitGroup, () => { 
+
+      this.physics.add.overlap(this.player, this.exitGroup, () => {
         this.playAudio("stage");
         this.time.delayedCall(1000, () => this.finishScene(), null, this);
       }, ()=>{
@@ -248,7 +248,7 @@ export default class Game extends Phaser.Scene {
         this.platform.removeTileAt(tile.x, tile.y);
         this.spawnCoin(tile)
 
-      } 
+      }
     }
 
     spawnCoin(tile) {
