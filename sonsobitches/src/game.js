@@ -39,7 +39,7 @@ export default class Game extends Phaser.Scene {
       this.addScore();
       this.addShells();
       this.loadAudios();
-      // this.playMusic();
+      this.playMusic();
     }
 
     addScore() {
@@ -184,6 +184,7 @@ export default class Game extends Phaser.Scene {
 
     tntHitByShot (shot, tnt) {
       this.lights.removeLight(tnt.light);
+      this.lights.removeLight(shot.light);
       this.playAudio("explosion")
       this.cameras.main.shake(500);
       Array(Phaser.Math.Between(4, 8)).fill(0).forEach( i => { this.smokeLayer.add(new RockSmoke(this, tnt.x, tnt.y))});
@@ -246,7 +247,9 @@ export default class Game extends Phaser.Scene {
     }
 
     playAudio(key) {
-      this.audios[key].play();
+      this.audios[key].play({
+        volume: 0.5,
+    });
     }
 
     playRandom(key, volume = 1) {
@@ -254,16 +257,16 @@ export default class Game extends Phaser.Scene {
         rate: Phaser.Math.Between(1, 1.5),
         detune: Phaser.Math.Between(-1000, 1000),
         delay: 0,
-        volume
+        volume: Phaser.Math.Between(0.4, 0.9)
       });
     }
 
-      playMusic (theme="game") {
+      playMusic (theme="music") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,

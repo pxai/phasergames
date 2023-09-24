@@ -24,7 +24,7 @@ export default class Splash extends Phaser.Scene {
 
     startGame () {
         if (this.theme) this.theme.stop();
-        this.scene.start("game", {next: "game", name: "STAGE", number: 1, time: 30})
+        this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
     }
 
     showLogo() {
