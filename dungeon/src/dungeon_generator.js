@@ -192,18 +192,18 @@ export default class DungeonGenerator {
           })
         })
       } else if (where === "left") {
-        const keyY = room.top + Phaser.Math.Between(1 , 2);
-        const keyX = Phaser.Math.Between(1, 2);
+        const keyY = room.top + Phaser.Math.Between(3 , 4);
+        const keyX = room.left + Phaser.Math.Between(1, 2);
 
         Array(width).fill().forEach((x, i) => {
           Array(height).fill().forEach((y, j) => {
-            const worldPosition= this.groundLayer.tileToWorldXY(keyX + i, keyY + j);
+            const worldPosition= this.groundLayer.tileToWorldXY(keyX + i, keyY - j);
             new Coin(this.scene, worldPosition.x + 20, worldPosition.y + 20)
           })
         })
       } else if (where === "right") {
         const keyY = room.top + Phaser.Math.Between(1 , 2);
-        const keyX = room.left - Phaser.Math.Between(1, 2);
+        const keyX = room.right - Phaser.Math.Between(3, 4);
 
         Array(width).fill().forEach((x, i) => {
           Array(height).fill().forEach((y, j) => {

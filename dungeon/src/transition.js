@@ -26,6 +26,7 @@ export default class Transition extends Phaser.Scene {
         this.add.bitmapText(this.center_width, this.center_height + 40, "default", "from all rooms!", 25).setOrigin(0.5)
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
+        this.time.delayedCall(1000, () => this.loadNext(), null, this)
     }
 
     update () {
