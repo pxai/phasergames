@@ -8,7 +8,7 @@ import PhaserMatterCollisionPlugin from "phaser-matter-collision-plugin";
 import { MatterGravityFixPlugin } from './matter_gravity_fix';
 
 const config = {
-    width: 1000,
+    width: 800,
     height: 800,
     scale: {
         mode: Phaser.Scale.FIT,
@@ -19,7 +19,7 @@ const config = {
     physics: {
         default: "matter",
         matter: {
-            debug: true
+            debug: false
         }
     },
     plugins: {

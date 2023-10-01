@@ -45,6 +45,7 @@ export default class Ball {
         } else if (this.readyToFire && !this.scene.pointer.isDown) {
             this.readyToFire = false;
             this.firing = true;
+            this.scene.playAudio("fire")
             this.scene.matter.world.remove(this.body1)
             this.scene.time.delayedCall(100, () => {this.scene.matter.world.remove(this.spring)}, null, this)
             this.scene.time.delayedCall(3000, () => {this.scene.restartScene()}, null, this)

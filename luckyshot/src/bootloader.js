@@ -20,7 +20,7 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("outro");
+            this.scene.start("splash");
         },this);
 
        /* Array(7).fill(0).forEach((_,i) => {
@@ -28,7 +28,12 @@ export default class Bootloader extends Phaser.Scene {
         });*/
 
         this.load.image("fireball", "assets/images/fireball.png");
-        // this.load.audio("beam", "assets/sounds/beam.mp3");
+        this.load.audio("splash", "assets/sounds/splash.mp3");
+        this.load.audio("start", "assets/sounds/start.mp3");
+        this.load.audio("fire", "assets/sounds/fire.mp3");
+        this.load.audio("wall", "assets/sounds/wall.mp3");
+        this.load.audio("hit", "assets/sounds/hit.mp3");
+        this.load.audio("bell", "assets/sounds/bell.mp3");
 
         this.load.spritesheet("bell", "assets/images/bell.png", { frameWidth: 32, frameHeight: 32 });
         this.load.image("pello", "assets/images/pello_ok.png");
@@ -39,7 +44,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("bat", "assets/images/bat.png", { frameWidth: 32, frameHeight: 32 });
 
 
-        Array(3).fill(0).forEach((_,i) => {
+        Array(4).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`,`assets/maps/scene${i}.json`)
             console.log(`Loaded scene ${i}`)
         });

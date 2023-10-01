@@ -27,6 +27,7 @@ export default class Outro extends Phaser.Scene {
 
     startSplash () {
         if (this.theme) this.theme.stop();
+        this.sound.add("start").play();
         this.cameras.main.fade(250, 0, 0, 0);
         this.cameras.main.once("camerafadeoutcomplete", () => {
           this.scene.start("splash", { number: 0});

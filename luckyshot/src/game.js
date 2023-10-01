@@ -27,7 +27,7 @@ export default class Game extends Phaser.Scene {
       this.addPointer();
       this.addMap();
       this.addCollisions()
-      //this.loadAudios();
+      this.loadAudios();
       // this.playMusic();
     }
 
@@ -117,15 +117,16 @@ export default class Game extends Phaser.Scene {
         console.log("Ball collide: ", gameObjectA, gameObjectB)
         // Unsubscribe from collision events so that this logic is run only once
         this.unsubscribePlayerCollide();
-
         //this.player.freeze();
         this.restartScene();
+      } else {
+        this.playAudio("wall")
       }
     }
 
     playerHitsBell(bell) {
       bell.hit();
-      console.log("YEAH")
+      this.playAudio("bell")
       this.ball.dead = true;
       this.finishScene();
     }
@@ -144,7 +145,10 @@ export default class Game extends Phaser.Scene {
 
       loadAudios () {
         this.audios = {
-          "beam": this.sound.add("beam"),
+          "fire": this.sound.add("fire"),
+          "hit": this.sound.add("hit"),
+          "wall": this.sound.add("wall"),
+          "bell": this.sound.add("bell"),
         };
       }
 
@@ -171,6 +175,7 @@ export default class Game extends Phaser.Scene {
     }
 
     restartScene() {
+      this.playAudio("hit")
       this.cameras.main.shake(100);
       this.cameras.main.fade(250, 0, 0, 0);
       this.updateTries()
@@ -182,7 +187,7 @@ export default class Game extends Phaser.Scene {
       this.cameras.main.once("camerafadeoutcomplete", () => {
         this.number += 1;
         console.log("Number: ", this.number)
-        if (this.number === 3)
+        if (this.number === 4)
           this.scene.start("outro");
         else
           this.scene.start("game", { number: this.number});

@@ -18,12 +18,13 @@ export default class Splash extends Phaser.Scene {
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
-        //this.playMusic();
+        this.playMusic();
         //this.showPlayer();
     }
 
     startGame () {
         if (this.theme) this.theme.stop();
+        this.sound.add("start").play();
         this.cameras.main.fade(250, 0, 0, 0);
         this.cameras.main.once("camerafadeoutcomplete", () => {
           this.scene.start("game", { number: 0});
@@ -33,6 +34,7 @@ export default class Splash extends Phaser.Scene {
     showLogo() {
         let line1 = this.add.bitmapText(this.center_width, 100, "title", "LUCKY", 250).setOrigin(0.5).setAlpha(1);
         let line2 = this.add.bitmapText(this.center_width, 200, "title", "SHOT", 250).setOrigin(0.5).setAlpha(1);
+        this.add.sprite(this.center_width, 350, "bell").setOrigin(0.5).setScale(4)
         this.tweens.add({
             targets: this.line1,
             duration: 1000,
