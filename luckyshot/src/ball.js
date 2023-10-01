@@ -37,18 +37,23 @@ export default class Ball {
         if (this.scene.pointer.isDown) {
             if (this.scene.pointer.leftButtonDown()) {
                 console.log("Mouse down")
-                this.readyToFire = true;    
+                this.readyToFire = true;
             }
         } else if (this.readyToFire && !this.scene.pointer.isDown) {
             this.readyToFire = false;
             this.firing = true;
             this.scene.matter.world.remove(this.body1)
             this.scene.time.delayedCall(100, () => {this.scene.matter.world.remove(this.spring)}, null, this)
-            console.log("SHOOT!", this.fireball.y, this.limitY)
-        } 
-        if(this.firing && this.fireball.y - 10 <= this.limitY)  {
+
+        }
+        if(this.firing && this.fireball && this.fireball !== undefined && this.fireball.y - 10 <= this.limitY)  {
             //this.scene.matter.world.remove(this.spring)
         }
+    }
+
+    death () {
+        this.fireball.visible = false;
+        this.dead = true;
     }
 }
 
@@ -59,12 +64,12 @@ class Fireball extends Phaser.Physics.Matter.Sprite  {
         this.scene = scene;
         scene.add.existing(this)
         //scene.physics.add.existing(this);
-      
+
        // this.setIgnoreGravity(true)
         this.setBounce(1)
         this.init();
     }
-    
+
     init () {
         this.scene.events.on("update", this.update, this);
         this.tween = this.scene.tweens.add({
@@ -75,7 +80,7 @@ class Fireball extends Phaser.Physics.Matter.Sprite  {
         });
        // this.scene.time.delayedCall(3000, () => {this.destroy()}, null, this)
     }
-  
+
     update() {
         if (this.scene?.gameOver) return;
         //if (Phaser.Math.Between(0,5)> 4)
@@ -84,7 +89,7 @@ class Fireball extends Phaser.Physics.Matter.Sprite  {
 
     death () {
         this.destroy();
-    } 
+    }
 
     destroy () {
         this.tween.destroy();

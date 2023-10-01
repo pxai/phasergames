@@ -1,5 +1,7 @@
 import Ball from './ball';
 import Exit from './exit';
+import Bat from './bat';
+import Rotator from './rotator';
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -23,11 +25,9 @@ export default class Game extends Phaser.Scene {
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
       this.addPointer();
-      this.addBall();
       this.addMap();
-      this.addExit();
       this.addCollisions()
-      //this.loadAudios(); 
+      //this.loadAudios();
       // this.playMusic();
     }
 
@@ -36,42 +36,51 @@ export default class Game extends Phaser.Scene {
       this.input.mouse.disableContextMenu();
     }
 
-    addBall() {
-    //  const { x, y } = this.map.findObject("Spawn", obj => obj.name === "Spawn Point");
-      this.ball = new Ball(this, 200, 600);
+    addBall(x, y) {
+      this.ball = new Ball(this, x, y);
     }
 
-    addExit() {
-      this.exit = new Exit(this, 200, 200);
-    }
+    addMap() {
+      this.map = this.make.tilemap({ key: "scene0" });
+      const tileset = this.map.addTilesetImage("map", null, 32, 32, 0, 0); // 1px margin, 2px spacing
+      this.groundLayer = this.map.createLayer(`scene0`, tileset);
+      this.damage = this.map.createLayer("damage", tileset);
 
-    
-    addMap() {    
-      this.tileMap = this.make.tilemap({ key: "scene0" , tileWidth: 32, tileHeight: 32 });
-      this.tileSetBg = this.tileMap.addTilesetImage("map");
-      this.tileMap.createLayer('background', this.tileSetBg)
-  
-      this.tileSet = this.tileMap.addTilesetImage("map");
-      this.dangerousLayer = this.add.layer();
-      this.groundLayer = this.tileMap.createLayer('scene0', this.tileSet);
-      this.damageLayer = this.tileMap.createLayer('damage', this.tileSet);
+      this.groundLayer.setCollisionByExclusion([-1]);
+      this.damage.setCollisionByExclusion([-1]);
 
-      //this.groundLayer.setCollisionByExclusion([-1]);
-      //this.deadly.setCollisionByProperty({ collides: true });
       //this.damageLayer.setCollisionByExclusion([-1]);
       // this.platform.setCollisionByProperty({ collides: true });
-      //this.matter.world.convertTilemapLayer(this.groundLayer);
-      //this.matter.world.convertTilemapLayer(this.ddamageLayereadly);
+      this.matter.world.convertTilemapLayer(this.groundLayer);
+      this.matter.world.convertTilemapLayer(this.damage);
+      this.rotatorGroup = this.matter.world.nextGroup();
+      this.batGroup = this.matter.world.nextGroup();
 
-      //this.tileMap.getObjectLayer("objects").objects.forEach(crateObject => {
-       // const { x, y, width, height } = crateObject;
-  
+
+      this.map.getObjectLayer("objects").objects.forEach(crateObject => {
+        const { x, y, width, height, name } = crateObject;
+        console.log("Crate: ", crateObject)
+        if (name === "bat") {
+          new Bat(this, x, y)
+        }
+
+        if (name === "exit") {
+          this.exit = new Exit(this, x, y);
+        }
+
+        if (name === "rotator") {
+          this.exit = new Rotator(this, x, y);
+        }
+
+        if (name === "player") {
+          this.addBall(x, y);
+        }
         // Tiled origin for its coordinate system is (0, 1), but we want coordinates relative to an
         // origin of (0.5, 0.5)
        // new Block(this, x + width / 2, y - height / 2)
         //new Platform(this, x + Phaser.Math.Between(-128, 128), y)
         // this.matter.add.image(x + width / 2, y - height / 2, "block").setBody({ shape: "rectangle", density: 0.001 });
-      //});
+      });
   }
 
     addCollisions () {
@@ -80,7 +89,7 @@ export default class Game extends Phaser.Scene {
         callback: this.onPlayerCollide,
         context: this
       });
-  
+
       this.matter.world.on('collisionstart', (event) => {
         event.pairs.forEach((pair) => {
             const bodyA = pair.bodyA;
@@ -88,34 +97,48 @@ export default class Game extends Phaser.Scene {
         });
       });
     }
-  
+
     onPlayerCollide({ gameObjectA, gameObjectB }) {
-      console.log("Ball collide: ", gameObjectA, gameObjectB)
+      console.log("Object: ", gameObjectB)
       if (!gameObjectB) return;
-      if (gameObjectB.label === "exit") { this.playerHitsExit(gameObjectB); return;} 
-      if (gameObjectB.label === "keys") this.playerHitsExit(gameObjectB);
-      if (gameObjectB.label === "bat") this.playerHitsExit(gameObjectB);
-      if (gameObjectB.name === "block") this.playerHitsExit(gameObjectB);
+      if (gameObjectB.label === "bell") { this.playerHitsBell(gameObjectB); return;}
+      if (gameObjectB.label === "bat") { this.playerHitsBat(gameObjectB); return;}
+      if (gameObjectB.label === "rotator") { this.playerHitsRotator(gameObjectB); return;}
       //if (gameObjectB instanceof Platform) this.playerOnPlatform(gameObjectB);
       //if (!(gameObjectB instanceof Phaser.Tilemaps.Tile)) return;
-  
+
       const tile = gameObjectB;
-  
+
       // Check the tile property set in Tiled (you could also just check the index if you aren't using
       // Tiled in your game)
-      if (tile.properties.isLethal) {
+      console.log("Tile: ", tile.properties)
+      if (tile.properties.isDamage) {
+        console.log("Ball collide: ", gameObjectA, gameObjectB)
         // Unsubscribe from collision events so that this logic is run only once
         this.unsubscribePlayerCollide();
-  
+
         //this.player.freeze();
         this.restartScene();
       }
     }
 
-    playerHitsExit(exit) {
+    playerHitsBell(bell) {
+      bell.hit();
       console.log("YEAH")
       this.ball.dead = true;
       this.finishScene();
+    }
+
+    playerHitsRotator(rotator) {
+      console.log("rotator hit")
+      this.ball.dead = true;
+      this.restartScene();
+    }
+
+    playerHitsBat(bat) {
+      console.log("bat hit")
+      this.ball.dead = true;
+      this.restartScene();
     }
 
       loadAudios () {
@@ -147,7 +170,7 @@ export default class Game extends Phaser.Scene {
     }
 
     restartScene() {
-      this.ball.fireball.sprite.visible = false;
+      this.ball.death();
       this.cameras.main.shake(100);
       this.cameras.main.fade(250, 0, 0, 0);
       this.cameras.main.once("camerafadeoutcomplete", () => this.scene.restart());

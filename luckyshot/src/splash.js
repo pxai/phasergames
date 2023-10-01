@@ -14,7 +14,7 @@ export default class Splash extends Phaser.Scene {
 
 
         this.cameras.main.setBackgroundColor(0x000000);
-        //this.showLogo();        ;
+        this.showLogo();        ;
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
@@ -24,13 +24,17 @@ export default class Splash extends Phaser.Scene {
 
     startGame () {
         if (this.theme) this.theme.stop();
-        this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
+        this.cameras.main.fade(250, 0, 0, 0);
+        this.cameras.main.once("camerafadeoutcomplete", () => {
+          this.scene.start("game", { number: 0});
+        });
     }
 
     showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
+        let line1 = this.add.bitmapText(this.center_width, 100, "title", "LUCKY", 250).setOrigin(0.5).setAlpha(1);
+        let line2 = this.add.bitmapText(this.center_width, 200, "title", "SHOT", 250).setOrigin(0.5).setAlpha(1);
         this.tweens.add({
-            targets: this.gameLogo,
+            targets: this.line1,
             duration: 1000,
             x: {
               from: this.center_width * 2,
@@ -60,15 +64,13 @@ export default class Splash extends Phaser.Scene {
           delay: 0
       })
       }
-  
+
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: track beam", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "pixelFont", "B: shoot coins", 30).setOrigin(0.5);
-        this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Press SPACE to start", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 450, "title", "HIT THE BELL!", 130).setOrigin(0.5);
+        this.add.sprite(this.center_width - 160, 560, "pello").setOrigin(0.5).setScale(0.3)
+        this.add.bitmapText(this.center_width + 70, 560, "title", "BY PELLO", 115).setOrigin(0.5);
+        this.space = this.add.bitmapText(this.center_width, 670, "title", "CLICK TO START", 130).setOrigin(0.5);
         this.tweens.add({
             targets: this.space,
             duration: 300,
@@ -76,5 +78,6 @@ export default class Splash extends Phaser.Scene {
             repeat: -1,
             yoyo: true
         });
+        this.input.on('pointerdown', (pointer) => this.startGame(), this);
     }
 }
