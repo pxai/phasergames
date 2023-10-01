@@ -47,11 +47,23 @@ export default class Ball {
             this.firing = true;
             this.scene.playAudio("fire")
             this.scene.matter.world.remove(this.body1)
+            this.graphics.destroy()
             this.scene.time.delayedCall(100, () => {this.scene.matter.world.remove(this.spring)}, null, this)
             this.scene.time.delayedCall(3000, () => {this.scene.restartScene()}, null, this)
-
         }
+
+        this.renderDebug()
     }
+
+    renderDebug() {
+        if (!this.graphics) {
+          this.graphics = this.scene.add.graphics();
+        }
+
+        this.graphics.clear();
+
+        this.scene.matter.world.renderConstraint(this.spring, this.graphics, 0xffffff, 4, 4, 4, 4, 1);
+      }
 
     death () {
         this.fireball.visible = false;

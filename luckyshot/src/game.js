@@ -125,6 +125,7 @@ export default class Game extends Phaser.Scene {
     }
 
     playerHitsBell(bell) {
+      if (this.ball.readyToFire) return;
       bell.hit();
       this.playAudio("bell")
       this.ball.dead = true;
