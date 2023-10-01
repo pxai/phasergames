@@ -1,3 +1,5 @@
+import Spring from "./spring.js";
+
 export default class Ball {
     constructor (scene, x, y) {
         this.x = x;
@@ -12,6 +14,7 @@ export default class Ball {
        // this.add(this.body2);
                 //  A spring, because length > 0 and stiffness < 0.9
         this.spring = this.scene.matter.add.spring(this.body1, this.fireball, 40, 0.01);
+        this.springSprite = scene.add.sprite((this.body1.x + this.fireball.x) / 2, (this.body1.y + this.fireball.y) / 2, "rotator");
 
        // this.scene.physics.add.existing(this);
        this.scene.matter.add.mouseSpring();
@@ -33,7 +36,7 @@ export default class Ball {
     }
 
     update () {
-        if (this.dead) return;
+        if (this.dead || this.scene?.gameOver) return;
         if (this.scene.pointer.isDown) {
             if (this.scene.pointer.leftButtonDown()) {
                 console.log("Mouse down")
@@ -44,10 +47,8 @@ export default class Ball {
             this.firing = true;
             this.scene.matter.world.remove(this.body1)
             this.scene.time.delayedCall(100, () => {this.scene.matter.world.remove(this.spring)}, null, this)
+            this.scene.time.delayedCall(3000, () => {this.scene.restartScene()}, null, this)
 
-        }
-        if(this.firing && this.fireball && this.fireball !== undefined && this.fireball.y - 10 <= this.limitY)  {
-            //this.scene.matter.world.remove(this.spring)
         }
     }
 

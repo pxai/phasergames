@@ -20,7 +20,7 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("splash");
+            this.scene.start("outro");
         },this);
 
        /* Array(7).fill(0).forEach((_,i) => {
@@ -39,15 +39,13 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("bat", "assets/images/bat.png", { frameWidth: 32, frameHeight: 32 });
 
 
-        Array(1).fill(0).forEach((_,i) => {
+        Array(3).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`,`assets/maps/scene${i}.json`)
             console.log(`Loaded scene ${i}`)
         });
 
 
-        this.registry.set("score", 0);
-        this.registry.set("coins", 0);
-        this.registry.set("hull", 10);
+        this.registry.set("tries", 0);
     }
 
     create () {

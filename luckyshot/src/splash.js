@@ -68,7 +68,7 @@ export default class Splash extends Phaser.Scene {
 
     showInstructions() {
         this.add.bitmapText(this.center_width, 450, "title", "HIT THE BELL!", 130).setOrigin(0.5);
-        this.add.sprite(this.center_width - 160, 560, "pello").setOrigin(0.5).setScale(0.3)
+        this.add.sprite(this.center_width - 160, 560, "pello").setOrigin(0.5).setScale(0.2)
         this.add.bitmapText(this.center_width + 70, 560, "title", "BY PELLO", 115).setOrigin(0.5);
         this.space = this.add.bitmapText(this.center_width, 670, "title", "CLICK TO START", 130).setOrigin(0.5);
         this.tweens.add({
