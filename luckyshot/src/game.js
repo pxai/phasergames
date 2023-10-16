@@ -12,6 +12,7 @@ export default class Game extends Phaser.Scene {
     }
 
     init (data) {
+      console.log("Init again! ", data)
       this.name = data.name;
       this.number = data.number;
   }
@@ -28,7 +29,10 @@ export default class Game extends Phaser.Scene {
       this.addMap();
       this.addCollisions()
       this.loadAudios();
+      this.showLogo();
       // this.playMusic();
+        // REMOVE
+      // this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);
     }
 
     addPointer() {
@@ -37,6 +41,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addBall(x, y) {
+      console.log("Add ball!")
       this.ball = new Ball(this, x, y);
     }
 
@@ -59,7 +64,7 @@ export default class Game extends Phaser.Scene {
 
       this.map.getObjectLayer("objects").objects.forEach(crateObject => {
         const { x, y, width, height, name } = crateObject;
-        console.log("Crate: ", crateObject)
+
         if (name === "bat") {
           new Bat(this, x, y)
         }
@@ -100,7 +105,6 @@ export default class Game extends Phaser.Scene {
     }
 
     onPlayerCollide({ gameObjectA, gameObjectB }) {
-      console.log("Object: ", gameObjectB)
       if (!gameObjectB) return;
       if (gameObjectB.label === "bell") { this.playerHitsBell(gameObjectB); return;}
       if (gameObjectB.label === "bat") { this.playerHitsBat(gameObjectB); return;}
@@ -112,9 +116,7 @@ export default class Game extends Phaser.Scene {
 
       // Check the tile property set in Tiled (you could also just check the index if you aren't using
       // Tiled in your game)
-      console.log("Tile: ", tile.properties)
       if (tile.properties.isDamage) {
-        console.log("Ball collide: ", gameObjectA, gameObjectB)
         // Unsubscribe from collision events so that this logic is run only once
         this.unsubscribePlayerCollide();
         //this.player.freeze();
@@ -133,13 +135,11 @@ export default class Game extends Phaser.Scene {
     }
 
     playerHitsRotator(rotator) {
-      console.log("rotator hit")
       this.ball.dead = true;
       this.restartScene();
     }
 
     playerHitsBat(bat) {
-      console.log("bat hit")
       this.ball.dead = true;
       this.restartScene();
     }
@@ -188,7 +188,7 @@ export default class Game extends Phaser.Scene {
       this.cameras.main.once("camerafadeoutcomplete", () => {
         this.number += 1;
         console.log("Number: ", this.number)
-        if (this.number === 4)
+        if (this.number === 8)
           this.scene.start("outro");
         else
           this.scene.start("game", { number: this.number});
@@ -199,4 +199,9 @@ export default class Game extends Phaser.Scene {
         const tries = +this.registry.get("tries") + points;
         this.registry.set("tries", tries);
     }
+
+    showLogo() {
+      let line1 = this.add.bitmapText(this.center_width, 100, "title", "LUCKY", 250).setOrigin(0.5).setAlpha(0.2);
+      let line2 = this.add.bitmapText(this.center_width, 200, "title", "SHOT", 250).setOrigin(0.5).setAlpha(0.2);
+  }
 }

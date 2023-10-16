@@ -58,7 +58,7 @@ export default class Splash extends Phaser.Scene {
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,

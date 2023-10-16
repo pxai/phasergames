@@ -15,6 +15,9 @@ class LunchBox extends Phaser.GameObjects.Sprite {
         this.init();
     }
 
+    /*
+
+    */
     init () {
         this.scene.anims.create({
             key: this.name,
@@ -26,7 +29,7 @@ class LunchBox extends Phaser.GameObjects.Sprite {
             key: this.name + "opened",
             frames:  this.scene.anims.generateFrameNumbers(this.name, { start: 1, end: 1 }),
             frameRate: 1,
-        }); 
+        });
 
         this.anims.play(this.name, true);
         this.scene.tweens.add({
@@ -35,19 +38,25 @@ class LunchBox extends Phaser.GameObjects.Sprite {
             y: this.y - 20,
             repeat: -1,
             yoyo: true
-        })  
+        })
     }
 
+    /*
+
+    */
     pick () {
         this.anims.play(this.name + "opened", true);
         this.showPrize()
         this.disabled = true;
-        this.scene.time.delayedCall(1000, () => { 
+        this.scene.time.delayedCall(1000, () => {
             this.destroy()
             this.prizeSprite.destroy();
         }, null, this);
     }
 
+    /*
+
+    */
     showPrize () {
         const prize = ["boots", "hammer", "coin", "star", "speed"];
         const selectedPrize = Phaser.Math.RND.pick(prize);

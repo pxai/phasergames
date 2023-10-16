@@ -24,7 +24,6 @@ export default class Bootloader extends Phaser.Scene {
         },this);
 
        /* Array(7).fill(0).forEach((_,i) => {
-            this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
         });*/
 
         this.load.image("fireball", "assets/images/fireball.png");
@@ -44,9 +43,8 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("bat", "assets/images/bat.png", { frameWidth: 32, frameHeight: 32 });
 
 
-        Array(4).fill(0).forEach((_,i) => {
+        Array(8).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`,`assets/maps/scene${i}.json`)
-            console.log(`Loaded scene ${i}`)
         });
 
 

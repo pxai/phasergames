@@ -15,6 +15,10 @@ class Coin extends Phaser.GameObjects.Sprite {
         this.init();
     }
 
+
+    /*
+    * Inits the animation
+    */
     init () {
         this.scene.anims.create({
             key: this.name,
@@ -30,9 +34,13 @@ class Coin extends Phaser.GameObjects.Sprite {
             y: this.y - 20,
             repeat: -1,
             yoyo: true
-        })  
+        })
     }
 
+
+    /*
+    * This part adds tween effect to move the coin to the score and then it destroys it
+    */
     pick () {
         const {x, y} = this.scene.cameras.main.getWorldPoint(this.scene.scoreCoinsLogo.x, this.scene.scoreCoinsLogo.y);
 
@@ -44,7 +52,7 @@ class Coin extends Phaser.GameObjects.Sprite {
             y: {from: this.y, to: y},
             scale: {from: 0.7, to: 0.5},
             onComplete: () => { this.destroy()}
-        })  
+        })
     }
 }
 

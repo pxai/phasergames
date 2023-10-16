@@ -43,6 +43,9 @@ export default class Game extends Phaser.Scene {
       this.playMusic();
     }
 
+    /*
+
+    */
     addScore() {
       this.scoreCoins = this.add.bitmapText(75, 10, "pixelFont", "x0", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
       this.scoreCoinsLogo = this.add.sprite(50, 25, "coin").setScale(1).setOrigin(0.5).setScrollFactor(0)
@@ -54,6 +57,9 @@ export default class Game extends Phaser.Scene {
       this.scoreCoinsLogo.play({ key: "coinscore", repeat: -1 });
     }
 
+    /*
+
+    */
     createMap() {
       this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 64, tileHeight: 64 });
       this.tileSetBg = this.tileMap.addTilesetImage("background");
@@ -138,6 +144,9 @@ export default class Game extends Phaser.Scene {
 
     }
 
+    /*
+
+    */
     addPlayer() {
       this.elements = this.add.group();
       this.coins = this.add.group();
@@ -231,12 +240,18 @@ export default class Game extends Phaser.Scene {
       foe.death();
     }
 
+    /*
+
+    */
     foeBlowBrick(brick, foe) {
       foe.turn();
       Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, brick.x, brick.y))
       brick.destroy();
     }
 
+    /*
+
+    */
     blowPlatform (blow, platform) {
       const tile = this.getTile(platform)
       if (this.isBreakable(tile)) {
@@ -251,12 +266,18 @@ export default class Game extends Phaser.Scene {
       }
     }
 
+    /*
+
+    */
     spawnCoin(tile) {
       if (Phaser.Math.Between(0, 11) > 5) {
         this.time.delayedCall(500, () => { this.coins.add(new Coin(this, tile.pixelX, tile.pixelY))}, null, this);
       }
     }
 
+    /*
+
+    */
     blowBrick (blow, brick) {
       if (this.player.mjolnir) this.cameras.main.shake(30);
       this.playAudio("stone_fail");
@@ -275,6 +296,9 @@ export default class Game extends Phaser.Scene {
       return tile?.properties['element'] === "break"
     }
 
+    /*
+
+    */
     hitFloor(player, platform) {
       if (this.player.jumping && !this.player.falling && this.player.body.velocity.y === 0) {
         const tile = this.getTile(platform)
@@ -290,6 +314,9 @@ export default class Game extends Phaser.Scene {
       }
     }
 
+    /*
+
+    */
       loadAudios () {
         this.audios = {
           "build": this.sound.add("build"),
@@ -336,11 +363,17 @@ export default class Game extends Phaser.Scene {
       if (this.number === 3 && this.player.y > 1500) this.restartScene();
     }
 
+    /*
+
+    */
     finishScene () {
       if (this.theme) this.theme.stop();
       this.scene.start("transition", { name: "STAGE", number: this.number + 1});
     }
 
+    /*
+
+    */
     restartScene () {
       this.time.delayedCall(1000, () => {
           if (this.theme) this.theme.stop();
@@ -351,12 +384,18 @@ export default class Game extends Phaser.Scene {
       );
     }
 
+    /*
+
+    */
     updateScore (points = 0) {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
         this.scoreText.setText(Number(score).toLocaleString());
     }
 
+    /*
+
+    */
     updateCoins () {
       const coins = +this.registry.get("coins") + 1;
       this.registry.set("coins", coins);

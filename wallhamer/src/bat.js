@@ -11,7 +11,9 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
 
         this.init();
     }
-
+    /*
+    Inits the animation
+    */
     init () {
         this.scene.anims.create({
             key: this.name,
@@ -25,7 +27,7 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
             frames: this.scene.anims.generateFrameNumbers(this.name, { start: 2, end: 5 }),
             frameRate: 5,
           });
-  
+
           this.anims.play(this.name, true)
           this.body.setVelocityX(this.direction * 150);
           this.flipX = this.direction > 0;
@@ -36,12 +38,19 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
     update () {
     }
 
+    /*
+    Turns the bat around and changes the direction
+    */
     turn () {
         this.direction = -this.direction;
         this.flipX = this.direction > 0;
         this.body.setVelocityX(this.direction * 150);
     }
 
+
+    /*
+    This kills the bat "nicely" by playing the death animation.
+    */
     death () {
         this.dead = true;
         this.body.enable = false;
@@ -49,7 +58,11 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
         this.anims.play(this.name + "death")
       }
 
-      animationComplete(animation, frame) {
+
+    /*
+    This is called when the death animation is complete. It destroys the bat.
+    */
+    animationComplete(animation, frame) {
         if (animation.key === this.name +"death") {
           this.destroy()
         }

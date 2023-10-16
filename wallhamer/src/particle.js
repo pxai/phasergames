@@ -1,3 +1,7 @@
+
+    /*
+
+    */
 export class Smoke extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, width, height, color = 0xffffff, gravity = false ) {
         width = width || Phaser.Math.Between(10, 25)
@@ -25,6 +29,9 @@ export class Smoke extends Phaser.GameObjects.Rectangle {
 // 0xb06f00 golden brick
 // 0x4d4d4d grey brick
 
+    /*
+
+    */
 export class RockSmoke extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, width, height, color = 0xFFEAAB, gravity = false ) {
         width = width || Phaser.Math.Between(30, 55)
@@ -48,6 +55,9 @@ export class RockSmoke extends Phaser.GameObjects.Rectangle {
     }
 }
 
+    /*
+
+    */
 export class JumpSmoke extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, width, height, color = 0xFFEAAB, gravity = false ) {
         width = width || Phaser.Math.Between(10, 25)
@@ -71,6 +81,9 @@ export class JumpSmoke extends Phaser.GameObjects.Rectangle {
     }
 }
 
+    /*
+
+    */
 export class Debris extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, color = 0xb03e00,  width, height, gravity = false ) {
         width = width || Phaser.Math.Between(15, 30)

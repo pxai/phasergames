@@ -6,7 +6,7 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
         this.scene = scene;
         this.scene.add.existing(this)
         this.startX = x
-        this.direction = Phaser.Math.RND.pick([-1, 1]);
+        this.direction = -1 //Phaser.Math.RND.pick([-1, 1]);
         this.setFixedRotation()
         this.setIgnoreGravity(true)
         this.addCollisions();
@@ -32,7 +32,6 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
           //this.flipX = this.direction > 0;
           this.on('animationcomplete', this.animationComplete, this);
           this.setVelocityX(this.direction * 5)
-          console.log(this)
           this.scene.events.on("update", this.update, this);
 
     }

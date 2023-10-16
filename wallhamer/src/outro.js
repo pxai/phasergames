@@ -13,7 +13,7 @@ export default class Outro extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.introLayer = this.add.layer();
         this.splashLayer = this.add.layer();
-        this.text = [ 
+        this.text = [
             "You did it!!",
             "Thanks to your building skills",
             "and your mighty hammer,",
@@ -27,11 +27,14 @@ export default class Outro extends Phaser.Scene {
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
     }
 
+    /*
+
+    */
     showHistory () {
         this.text.forEach((line, i) => {
-                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this); 
+                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this);
         });
-        //this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
+        //this.time.delayedCall(4000, () => this.showPlayer(), null, this);
     }
 
     playMusic (theme="outro") {

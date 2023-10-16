@@ -21,27 +21,30 @@ export default class Platform extends Phaser.GameObjects.Container {
         this.init();
     }
 
+    /*
+
+    */
     init() {
         const type = Phaser.Math.Between(0, 7);
         let offsetX = this.x;
         let offsetY = this.y;
 
         switch (type) {
-            case 0: 
-                offsetX = Phaser.Math.Between(-50, 50); 
+            case 0:
+                offsetX = Phaser.Math.Between(-50, 50);
                 break;
             case 1:
-                offsetY = Phaser.Math.Between(-50, 50); 
+                offsetY = Phaser.Math.Between(-50, 50);
                 break;
             case 2:
-                offsetX = Phaser.Math.Between(-100, 100); 
-                offsetY = Phaser.Math.Between(-100, 100); 
+                offsetX = Phaser.Math.Between(-100, 100);
+                offsetY = Phaser.Math.Between(-100, 100);
                 break;
-            case 3: 
+            case 3:
             case 4:
             case 5:
-            case 6: 
-            case 6: 
+            case 6:
+            case 6:
             default: break;
         }
 
