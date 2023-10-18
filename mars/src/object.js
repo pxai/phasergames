@@ -16,6 +16,9 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         this.activated = false;
     }
 
+  /*
+
+  */
     showNote (note) {
         const objectText = this.scene.add.bitmapText(this.x, this.y, "pico", note, 15 )
         this.scene.tweens.add({
@@ -29,6 +32,9 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         })
     }
 
+  /*
+
+  */
     showExit (note) {
         const objectText = this.scene.add.bitmapText(this.x - 128, this.y - 64, "pico", note, 25 )
         this.scene.tweens.add({
@@ -39,6 +45,9 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         })
     }
 
+  /*
+
+  */
     useRadio() {
         this.officerAudio = this.scene.sound.add(this.description)
         this.officerAudio.play();
@@ -49,12 +58,18 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         }.bind(this))
     }
 
+  /*
+
+  */
     exitScene () {
         this.showExit(this.description)
         this.showNote(this.extra)
         this.scene.finishScene();
     }
 
+  /*
+
+  */
     useOxygen () {
         this.showNote("Oxygen supplies!")
         this.scene.player.oxygen = 100;
@@ -62,6 +77,9 @@ export default class Object extends Phaser.GameObjects.Rectangle {
         this.scene.playAudio("oxygen")
     }
 
+  /*
+
+  */
     revealEnding () {
         const ohmy = this.scene.sound.add("ohmygod")
         ohmy.play();
@@ -87,16 +105,25 @@ export default class Object extends Phaser.GameObjects.Rectangle {
 
     }
 
+  /*
+
+  */
     activateHole () {
         this.scene.holes.add(new Hole(this.scene, this.x + 64, this.y + 64))
     }
 
+  /*
+
+  */
     activateBraun () {
         this.showExit(this.description)
         this.scene.playAudio("shock")
         new Braun(this.scene, this.x + 128, this.y + 64)
     }
 
+  /*
+
+  */
     touch () {
         switch (this.type) {
             case "note":

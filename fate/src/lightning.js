@@ -3,6 +3,9 @@ export default class Lightning {
         this.scene = scene;
     }
 
+  /*
+
+  */
     lightning () {
         if (Phaser.Math.Between(1, 11) < 10) return;
         const timeline = this.scene.tweens.createTimeline();

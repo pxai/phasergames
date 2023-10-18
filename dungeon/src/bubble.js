@@ -18,6 +18,9 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
        // else this.moveHorizontally();
 	}
 
+  /*
+
+  */
     load(sprite) {
         this.scene.playAudio("trap")
         this.loaded = this.scene.add.sprite(this.x, this.y, sprite).setOrigin(0.5).setScale(0.6)
@@ -30,6 +33,9 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
         })
     }
 
+  /*
+
+  */
     moveHorizontally () {
         this.scene.tweens.add({
             targets: this,
@@ -55,6 +61,9 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
         })
     }
 
+  /*
+
+  */
     moveVertically () {
         this.blob = this.scene.tweens.add({
             targets: this,
@@ -81,6 +90,9 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
         })
     }
 
+  /*
+
+  */
     respawn () {
         this.loadedTween.destroy();
 
@@ -94,6 +106,9 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
         this.loaded = null;
     }
 
+  /*
+
+  */
     update () {
         if (!this.active) return;
         if (this.loaded ) {
@@ -102,11 +117,13 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
         }
     }
 
-    destroy() {        
-        if (!this.scene) return;       
+  /*
+
+  */
+    destroy() {
+        if (!this.scene) return;
         this.scene.playAudio("crash")
         if (this.loaded) this.respawn();
         super.destroy();
     }
-
 }

@@ -24,12 +24,18 @@ class PowerUp extends Phaser.GameObjects.Sprite {
         this.init();
    }
 
+  /*
+
+  */
    spawnShadow (x, y) {
     this.shadow = this.scene.add.image(x + 20, y + 20, "plenny0").setTint(0x000000).setAlpha(0.4)
     this.scene.physics.add.existing(this.shadow);
     this.shadow.body.setVelocityX(-100)
    }
 
+  /*
+
+  */
     init () {
         this.scene.anims.create({
             key: this.name,

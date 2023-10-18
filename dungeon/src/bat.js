@@ -7,12 +7,15 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
         this.scene.add.existing(this)
         this.startX = x
         this.direction = Phaser.Math.RND.pick([-1, 1]);
-        this.setFixedRotation() 
+        this.setFixedRotation()
         this.setIgnoreGravity(true)
         this.addCollisions();
         this.init();
     }
 
+  /*
+
+  */
     init () {
         this.scene.anims.create({
             key: this.label,
@@ -26,7 +29,7 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
             frames: this.scene.anims.generateFrameNumbers(this.label, { start: 2, end: 5 }),
             frameRate: 5,
           });
-  
+
           this.anims.play(this.label, true)
           //this.body.setVelocityX(this.direction * 150);
           //this.flipX = this.direction > 0;
@@ -37,6 +40,9 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
 
     }
 
+  /*
+
+  */
     addCollisions () {
       this.unsubscribeBatCollide = this.scene.matterCollision.addOnCollideStart({
         objectA: this,
@@ -45,6 +51,9 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
       });
     }
 
+  /*
+
+  */
     onBatCollide({ gameObjectA, gameObjectB }) {
       if (gameObjectB instanceof Bubble) {
         console.log("Bat collide: ", gameObjectA, gameObjectB)
@@ -54,11 +63,17 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
     }
 
 
+  /*
+
+  */
     update () {
       if (!this.active) return;
       if (Math.abs(this.body.velocity.x) <= 0.5) this.turn()
     }
 
+  /*
+
+  */
     turn () {
         this.direction = -this.direction;
         this.flipX = this.direction > 0;
@@ -67,11 +82,17 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
         //this.body.setVelocityX(this.direction * 150);
     }
 
+  /*
+
+  */
     death () {
         this.dead = true;
         this.anims.play(this.label + "death")
       }
 
+  /*
+
+  */
       animationComplete(animation, frame) {
         if (animation.key === this.label + "death") {
           this.destroy()

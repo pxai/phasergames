@@ -5,6 +5,9 @@ export default class BlockGeneric {
         this.init(x,y);
     }
 
+  /*
+
+  */
     init(x, y) {
         // this.scene.matter.world.on("beforeupdate", this.resetTouching, this);
 

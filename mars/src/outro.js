@@ -8,6 +8,9 @@ export default class Outro extends Phaser.Scene {
     preload () {
     }
 
+  /*
+
+  */
     create () {
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
@@ -30,6 +33,9 @@ export default class Outro extends Phaser.Scene {
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
     }
 
+  /*
+
+  */
     playMusic (theme="mars_background") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
@@ -44,6 +50,9 @@ export default class Outro extends Phaser.Scene {
       })
     }
 
+  /*
+
+  */
     startSplash () {
         this.sound.stopAll();
         //this.theme.stop();

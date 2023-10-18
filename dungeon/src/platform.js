@@ -1,11 +1,11 @@
 export default class Platform extends Phaser.Physics.Matter.Sprite {
 	/**
-	 * 
-	 * @param {Phaser.Scene} scene 
-	 * @param {number} x 
-	 * @param {number} y 
-	 * @param {string} texture 
-	 * @param {Phaser.Types.Physics.Matter.MatterBodyConfig} options 
+	 *
+	 * @param {Phaser.Scene} scene
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {string} texture
+	 * @param {Phaser.Types.Physics.Matter.MatterBodyConfig} options
 	 */
 	constructor(scene, x, y, texture = "platform", options = {isStatic: true}) {
 		super(scene.matter.world, x, y, texture, 0, options)
@@ -22,6 +22,9 @@ export default class Platform extends Phaser.Physics.Matter.Sprite {
         else this.moveHorizontally();
 	}
 
+  /*
+
+  */
     moveHorizontally () {
         this.scene.tweens.addCounter({
             from: 0,
@@ -39,6 +42,9 @@ export default class Platform extends Phaser.Physics.Matter.Sprite {
         })
     }
 
+  /*
+
+  */
     moveVertically () {
         // this.scene.tweens.add({
         //     targets: this,

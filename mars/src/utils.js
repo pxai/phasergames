@@ -5,6 +5,9 @@ export default class Utils {
         this.scene = scene;
     }
 
+  /*
+
+  */
 typeText(text, font, x, y = 150, tint = 0x06E18A, size = 40) {
         let characters = [];
         let jump = 0;
@@ -18,7 +21,7 @@ typeText(text, font, x, y = 150, tint = 0x06E18A, size = 40) {
         const ending = this.scene.add.rectangle(x - 335 + (line * 25), y + 25 + (jump * size), 25, 5, tint).setOrigin(0.5).setAlpha(0)
         const timeline = this.scene.tweens.createTimeline();
         this.typeAudio = this.scene.sound.add("type")
-        
+
         characters.forEach( (character, i) => {
             timeline.add({
                 targets: character,
@@ -50,6 +53,9 @@ typeText(text, font, x, y = 150, tint = 0x06E18A, size = 40) {
         return characters;
     }
 
+  /*
+
+  */
     removeTyped(texts) {
         texts.flat().forEach( char => char.destroy())
     }

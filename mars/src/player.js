@@ -25,20 +25,29 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.locked = false;
     }
 
+  /*
+
+  */
     init () {
         this.addControls();
         this.scene.events.on("update", this.update, this);
     }
 
+  /*
+
+  */
     addControls() {
         this.cursor = this.scene.input.keyboard.createCursorKeys();
         this.W = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-        this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D); 
+        this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
     }
 
+  /*
+
+  */
     update(time, delta) {
         if (this.dead) return;
         if (this.locked) return;
@@ -68,7 +77,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
             //this.x -= 64;
 
             this.step(x, y);
-        } else if ((Phaser.Input.Keyboard.JustDown(this.S) || Phaser.Input.Keyboard.JustDown(this.cursor.down)) && this.canMoveDown())  {            
+        } else if ((Phaser.Input.Keyboard.JustDown(this.S) || Phaser.Input.Keyboard.JustDown(this.cursor.down)) && this.canMoveDown())  {
             this.moveDelta = 0;
             const {x, y} = this;
             this.locked = true;
@@ -82,6 +91,9 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.scene.playerLight.y = this.y;*/
     }
 
+  /*
+
+  */
     canMoveUp() {
         return !this.scene.platform.getTileAtWorldXY(this.x, this.y - 1) && this.moveDelta > 200
     }
@@ -98,6 +110,9 @@ export default class Player extends Phaser.GameObjects.Sprite {
         return !this.scene.platform.getTileAtWorldXY(this.x - 1, this.y) && this.moveDelta > 200
     }
 
+  /*
+
+  */
     step (x, y) {
         this.steps++;
         this.scene.smokeLayer.add(new Step(this.scene, x , y))
@@ -113,6 +128,9 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.scene.smokeLayer.add(new JumpSmoke(this.scene, this.x + (20 * -x) , this.y + 32 + (20 * -y))) */
     }
 
+  /*
+
+  */
     adaptBreath() {
         if (this.stepDelta > 2000) {
             if (this.steps > 2) {
@@ -132,6 +150,9 @@ export default class Player extends Phaser.GameObjects.Sprite {
         }
     }
 
+  /*
+
+  */
     updateOxygen (waste) {
         if (waste >= this.oxygen) {
             this.oxygen = 0;
@@ -143,6 +164,9 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
 
+  /*
+
+  */
     death () {
         console.log("Player dead")
        // this.scene.playAudio("dead");

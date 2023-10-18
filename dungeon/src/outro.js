@@ -12,6 +12,9 @@ export default class Outro extends Phaser.Scene {
     preload () {
     }
 
+  /*
+
+  */
     create () {
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;

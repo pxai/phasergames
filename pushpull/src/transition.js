@@ -11,6 +11,9 @@ export default class Transition extends Phaser.Scene {
     preload () {
     }
 
+  /*
+
+  */
     create () {
         const messages = [
             "Tutorial",
@@ -42,9 +45,12 @@ export default class Transition extends Phaser.Scene {
     }
 
     update () {
-        
+
     }
 
+  /*
+
+  */
     addStartButton () {
         this.startButton = this.add.bitmapText(this.center_width, 500, "mario", "Click to start", 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x693600, 0.7);
         this.startButton.setInteractive();
@@ -52,11 +58,11 @@ export default class Transition extends Phaser.Scene {
             this.sound.add("move").play();
             this.loadNext();
         });
-    
+
         this.startButton.on('pointerover', () => {
             this.startButton.setTint(0x3E6875)
         });
-    
+
         this.startButton.on('pointerout', () => {
             this.startButton.setTint(0xffffff)
         });
@@ -69,6 +75,9 @@ export default class Transition extends Phaser.Scene {
         });
     }
 
+  /*
+
+  */
     loadNext () {
         this.scene.start("game", { name: this.name, number: this.number, limitedTime: 10 + (this.number * 3) });
     }

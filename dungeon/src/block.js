@@ -8,6 +8,9 @@ export default class Block extends Phaser.Physics.Matter.Sprite {
         this.init(x,y);
     }
 
+  /*
+
+  */
     init(x, y) {
         // this.scene.matter.world.on("beforeupdate", this.resetTouching, this);
 

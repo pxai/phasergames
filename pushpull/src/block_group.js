@@ -25,6 +25,9 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
         this.setListeners();
     }
 
+  /*
+
+  */
     createBlock () {
       this.body.setSize(this.w * 32, this.h * 32)
 
@@ -35,6 +38,9 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
       }
     }
 
+  /*
+
+  */
     setKeys() {
       this.cursor = this.scene.input.keyboard.createCursorKeys();
       this.W = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -44,6 +50,9 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
       this.scene.events.on("update", this.update, this);
   }
 
+  /*
+
+  */
   setListeners () {
     this.setInteractive(new Phaser.Geom.Rectangle(0,0,64, 96), Phaser.Geom.Rectangle.Contains);
     this.on("pointerdown", (pointer) => {
@@ -62,16 +71,25 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     });
   }
 
+  /*
+
+  */
   activate () {
     if (this.scene.activeBlock) this.scene.activeBlock.deactivate();
     this.active = true;
     this.scene.activeBlock = this;
   }
 
+  /*
+
+  */
   deactivate () {
     this.active = false;
   }
 
+  /*
+
+  */
     update() {
       if (!this.active) return;
       if ((Phaser.Input.Keyboard.JustUp(this.S) || Phaser.Input.Keyboard.JustUp(this.cursor.down)) && this.canMoveDown()) {
@@ -93,6 +111,9 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
       }
     }
 
+  /*
+
+  */
     leaveTrail(w, h, offsetX = 0, offsetY = 0) {
       this.scene.playAudio("move")
       const trail = this.scene.add.rectangle(this.x + offsetX, this.y + offsetY, w, h, 0xcccccc).setOrigin(0);
@@ -105,6 +126,10 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
         }
      })
     }
+
+  /*
+
+  */
     isOverlap (x = 0, y = 0) {
       const overlaps = this.scene.blocks.children.entries.map((block) => {
         if (block.id === this.id) return false;
@@ -123,6 +148,9 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
       return !overlaps.every(block => !block)
     }
 
+  /*
+
+  */
     canMoveDown(distance = 32) {
       if (this.isOverlap(0, 1)) {
         this.scene.playAudio("bump")
@@ -141,6 +169,9 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
       return canMove;
     }
 
+  /*
+
+  */
     canMoveUp(distance = 32) {
       if (this.isOverlap(0, -1)) {
         this.scene.playAudio("bump")
@@ -157,11 +188,14 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
       return canMove;
     }
 
-    canMoveLeft(distance = 32) {   
+  /*
+
+  */
+    canMoveLeft(distance = 32) {
       if (this.isOverlap(-1, 0)) {
         this.scene.playAudio("bump")
         return false;
-      }  
+      }
 
       const blocks = Array(this.h).fill(0).map( (_, i) => {
         return this.scene.platform.getTileAtWorldXY(this.x  - distance, this.y + (i*32))
@@ -173,6 +207,9 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
       return canMove;
     }
 
+  /*
+
+  */
     canMoveRight(distance = 32) {
       if (this.isOverlap(1, 0)) {
         this.scene.playAudio("bump")

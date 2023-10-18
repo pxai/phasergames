@@ -7,6 +7,9 @@ export default class Splash extends Phaser.Scene {
     preload () {
     }
 
+  /*
+
+  */
     create () {
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
@@ -31,6 +34,9 @@ export default class Splash extends Phaser.Scene {
     }
 
 
+  /*
+
+  */
     showTitle () {
         this.textShadow1 = this.add.bitmapText(this.center_width, 100, "default", "DUNGEON", 85).setTint(0xff787a).setOrigin(0.5);
         this.textShadow2 = this.add.bitmapText(this.center_width, 250, "default", "BOBBLE", 85).setTint(0xff787a).setOrigin(0.5);
@@ -47,6 +53,11 @@ export default class Splash extends Phaser.Scene {
             repeat: -1
           })
     }
+
+
+  /*
+
+  */
     showLogo() {
         this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
         this.tweens.add({
@@ -84,8 +95,11 @@ export default class Splash extends Phaser.Scene {
             new Bubble(this, Phaser.Math.Between(0, this.width), 400)
         }, callbackScope: this, loop: true });
     }
-  
 
+
+  /*
+
+  */
     showInstructions() {
         this.player = this.add.sprite(this.width - 100, 350, "player").setScale(2)
         this.anims.create({
@@ -123,7 +137,7 @@ export default class Splash extends Phaser.Scene {
             repeat: -1,
             onYoyo: () => {
                 this.player.flipX = !this.player.flipX;
-            }, 
+            },
             onRepeat: () => {
                 this.player.flipX = !this.player.flipX;
             }
@@ -137,7 +151,7 @@ export default class Splash extends Phaser.Scene {
             repeat: -1,
             onYoyo: () => {
                 this.foe.flipX = !this.foe.flipX;
-            }, 
+            },
             onRepeat: () => {
                 this.foe.flipX = !this.foe.flipX;
             }

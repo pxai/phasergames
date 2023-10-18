@@ -21,6 +21,9 @@ export default class Game extends Phaser.Scene {
     preload () {
     }
 
+  /*
+
+  */
     create () {
       this.width = this.sys.game.config.width;
       this.height = this.sys.game.config.height;
@@ -31,29 +34,38 @@ export default class Game extends Phaser.Scene {
       this.addPointer();
 
       this.addMap();
-      //this.setListeners();  
+      //this.setListeners();
       this.addMoves();
       this.addRetry();
 
-      this.loadAudios(); 
+      this.loadAudios();
       this.showTexts();
       this.solved = false;
     }
 
+  /*
+
+  */
     addRetry () {
       this.R = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     }
 
+  /*
+
+  */
     addMoves() {
       this.movesText = this.add.bitmapText(this.center_width, 32, "mario", "0", 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(3, 4, 0x75b947, 0.7);
       this.totalMoves = 0;
     }
 
+  /*
+
+  */
     addMap() {
       this.tileMap = this.make.tilemap({ key: `scene${this.number}` , tileWidth: 32, tileHeight: 32 });
       this.tileSetBg = this.tileMap.addTilesetImage("tileset_fg");
       this.tileMap.createStaticLayer('background', this.tileSetBg)
-  
+
       this.tileSet = this.tileMap.addTilesetImage("tileset_fg");
       this.platform = this.tileMap.createLayer(`scene${this.number}`, this.tileSet);
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
@@ -88,6 +100,9 @@ export default class Game extends Phaser.Scene {
       })
     }
 
+  /*
+
+  */
     showTexts() {
       if (this.number > 0) return;
       const texts = ["Select cubes", "Pull/push them with WASD/Arrows", "MOVE the red to exit"]
@@ -96,6 +111,9 @@ export default class Game extends Phaser.Scene {
      })
    }
 
+  /*
+
+  */
     setListeners () {
       this.activeBlock = null;
       this.blocks.setInteractive();
@@ -105,6 +123,9 @@ export default class Game extends Phaser.Scene {
       });
     }
 
+  /*
+
+  */
     addPlayer(block) {
       this.player = block;
       this.physics.add.overlap(this.player, this.exits, this.hitExit, ()=>{
@@ -112,6 +133,9 @@ export default class Game extends Phaser.Scene {
       }, this);
     }
 
+  /*
+
+  */
     hitPlatform(player, platform) {
 
       this.playRandom("platform")
@@ -119,6 +143,9 @@ export default class Game extends Phaser.Scene {
       player.directionChanged()
     }
 
+  /*
+
+  */
     hitBlock(player, block) {
       const {x, y} = block.getDirection();
       this.playRandom("block")
@@ -132,6 +159,9 @@ export default class Game extends Phaser.Scene {
     hitBlockBlock(block, platform) {
     }
 
+  /*
+
+  */
     hitExit(player, exit) {
       this.player.active = false;
       exit.destroy();
@@ -139,11 +169,17 @@ export default class Game extends Phaser.Scene {
       this.finishScene();
     }
 
+  /*
+
+  */
     addPointer() {
       this.pointer = this.input.activePointer;
       this.input.mouse.disableContextMenu();
     }
 
+  /*
+
+  */
       loadAudios () {
         this.audios = {
           "bump": this.sound.add("bump"),
@@ -154,10 +190,16 @@ export default class Game extends Phaser.Scene {
         };
       }
 
+  /*
+
+  */
       playAudio(key) {
         this.audios[key].play();
       }
 
+  /*
+
+  */
       playRandom(key, volume = 1) {
         this.audios[key].play({
           rate: Phaser.Math.Between(1, 1.5),
@@ -167,15 +209,21 @@ export default class Game extends Phaser.Scene {
         });
       }
 
+  /*
+
+  */
     update() {
       if (Phaser.Input.Keyboard.JustDown(this.R)) {
         this.restartScene();
       }
     }
 
+  /*
+
+  */
     finishScene () {
       if (this.solved) return;
-    
+
       this.playAudio("win")
       this.solved = true;
       const totalMoves = +this.registry.get("moves") + this.totalMoves;
@@ -199,11 +247,17 @@ export default class Game extends Phaser.Scene {
       }, null, this)
     }
 
+  /*
+
+  */
     restartScene () {
         this.scene.start("game", {next: "underwater", name: "STAGE", number: this.number });
     }
 
 
+  /*
+
+  */
     updateMoves () {
       this.totalMoves++;
       this.movesText.setText(this.totalMoves);

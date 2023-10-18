@@ -26,26 +26,32 @@ export default class Game extends Phaser.Scene {
       this.registry.set("keys", 0);
     }
 
+  /*
+
+  */
     create () {
       this.width = this.sys.game.config.width;
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      
+
       this.addMap();
       this.addPlayer();
       this.addCollisions();
       this.addCamera();
       this.addScores();
-      this.loadAudios(); 
+      this.loadAudios();
     }
 
+  /*
+
+  */
     addMap() {
       this.dungeon = new DungeonGenerator(this);
       this.input.keyboard.on("keydown-ENTER", () => this.finishScene(), this);
     }
 
-    addMap2() {    
+    addMap2() {
       this.map = this.make.tilemap({ key: "scene0" });
       const tileset = this.map.addTilesetImage("kenney-tileset-64px-extruded");
       const groundLayer = this.map.createLayer("Ground", tileset, 0, 0);
@@ -59,6 +65,9 @@ export default class Game extends Phaser.Scene {
       this.matter.world.convertTilemapLayer(lavaLayer);
   }
 
+  /*
+
+  */
   addScores () {
     this.add.sprite(62, 26, "coin", 0).setOrigin(0.5).setScrollFactor(0).setScale(.8)
     this.scoreCoins = this.add.bitmapText(100, 24, "default", "x0", 15).setOrigin(0.5).setScrollFactor(0)
@@ -68,14 +77,20 @@ export default class Game extends Phaser.Scene {
     this.timer = this.time.addEvent({ delay: 1000, callback: () => { this.updateSeconds()}, callbackScope: this, loop: true });
   }
 
+  /*
+
+  */
   addPlayer() {
       //const { x, y } = this.map.findObject("Spawn", obj => obj.name === "Spawn Point");
     this.trailLayer = this.add.layer();
-    this.player = new Player(this, 
+    this.player = new Player(this,
     this.dungeon.map.widthInPixels / 2,
     this.dungeon.map.heightInPixels / 2, 100);
   }
 
+  /*
+
+  */
   addCollisions () {
     this.unsubscribePlayerCollide = this.matterCollision.addOnCollideStart({
       objectA: this.player.sprite,
@@ -91,6 +106,9 @@ export default class Game extends Phaser.Scene {
     });
   }
 
+  /*
+
+  */
   onPlayerCollide({ gameObjectA, gameObjectB }) {
     //console.log("Player collide: ", gameObjectA, gameObjectB)
     if (!gameObjectB) return;
@@ -124,6 +142,9 @@ export default class Game extends Phaser.Scene {
 
   }
 
+  /*
+
+  */
   playerPicksCoin(coin) {
     this.showPoints(coin.x, coin.y, 1, this.scoreCoins);
     coin.destroy();
@@ -131,6 +152,9 @@ export default class Game extends Phaser.Scene {
     this.playAudio("coin")
   }
 
+  /*
+
+  */
   playerHitsBat (bat) {
     if (this.player.invincible) return;
     this.player.explosion()
@@ -139,6 +163,9 @@ export default class Game extends Phaser.Scene {
 
   }
 
+  /*
+
+  */
   playerPicksKey(key) {
     this.updateKeys();
     this.showPoints(key.x, key.y, this.registry.get("keys")+"/"+this.dungeon.dungeon.rooms.length, this.scoreKeys);
@@ -146,6 +173,9 @@ export default class Game extends Phaser.Scene {
 
   }
 
+  /*
+
+  */
   showPoints (x, y, score, textElement, color = 0xffffff) {
     let text = this.add.bitmapText(x + 20, y - 80, "default", "+"+score, 10).setDropShadow(2, 3, color, 0.7).setOrigin(0.5);
     this.tweens.add({
@@ -162,6 +192,9 @@ export default class Game extends Phaser.Scene {
     this.textUpdateEffect(textElement, color)
  }
 
+  /*
+
+  */
   addCamera() {
               // Phaser supports multiple cameras, but you can access the default camera like this:
     this.cameras.main.setBounds(0, 0, this.dungeon.map.widthInPixels, this.dungeon.map.heightInPixels);
@@ -169,6 +202,9 @@ export default class Game extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(0x25131a);
   }
 
+  /*
+
+  */
     loadAudios () {
       this.audios = {
         "jump": this.sound.add("jump"),
@@ -189,6 +225,9 @@ export default class Game extends Phaser.Scene {
 
     }
 
+  /*
+
+  */
     restartScene() {
       this.player.sprite.visible = false;
       this.cameras.main.shake(100);
@@ -196,26 +235,37 @@ export default class Game extends Phaser.Scene {
       this.cameras.main.once("camerafadeoutcomplete", () => this.scene.restart());
     }
 
-    finishScene () {
+  /*
 
+  */
+    finishScene () {
       this.cameras.main.fade(250, 0, 0, 0);
       this.cameras.main.once("camerafadeoutcomplete", () => {
         this.scene.start("outro", {next: "underwater", name: "STAGE", number: this.number + 1});
       });
     }
 
+  /*
+
+  */
     updateSeconds (points = 1) {
       const seconds = +this.registry.get("seconds") + points;
       this.registry.set("seconds", seconds);
       this.scoreSeconds.setText(seconds);
   }
 
+  /*
+
+  */
     updateCoins (points = 1) {
         const coins = +this.registry.get("coins") + points;
         this.registry.set("coins", coins);
         this.scoreCoins.setText("x"+coins);
     }
 
+  /*
+
+  */
     updateKeys (points = 1) {
       const keys = +this.registry.get("keys") + points;
       this.registry.set("keys", keys);
@@ -225,6 +275,9 @@ export default class Game extends Phaser.Scene {
       }
   }
 
+  /*
+
+  */
   textUpdateEffect (textElement, color) {
     textElement.setTint(color);
     const prev = textElement.y;

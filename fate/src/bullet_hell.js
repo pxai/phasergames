@@ -8,6 +8,9 @@ export default class BulletHell {
         return this._functions;
     }
 
+  /*
+
+  */
     sin (x, time) {
         return Math.sin(x);//Math.PI * (x + time));
     }

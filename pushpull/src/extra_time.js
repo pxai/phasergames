@@ -20,6 +20,9 @@ class ExtraTime extends Phaser.GameObjects.Sprite {
     this.play({ key: this.name, repeat: -1 });
    }
 
+  /*
+
+  */
   setTween () {
     this.scene.tweens.add({
       targets: this,
@@ -27,7 +30,7 @@ class ExtraTime extends Phaser.GameObjects.Sprite {
       y: this.y - 20,
       repeat: -1,
       yoyo: true
-    })  
+    })
   }
 
 }

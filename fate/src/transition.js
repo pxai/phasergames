@@ -1,4 +1,4 @@
-import { Scene3D } from '@enable3d/phaser-extension' 
+import { Scene3D } from '@enable3d/phaser-extension'
 import Utils from "./utils";
 
 export default class Transition extends Scene3D {
@@ -15,6 +15,9 @@ export default class Transition extends Scene3D {
     preload () {
     }
 
+  /*
+
+  */
     create () {
 
         this.width = this.sys.game.config.width;
@@ -42,7 +45,7 @@ export default class Transition extends Scene3D {
           delay: 0
       })
     }
-    
+
     showLogo () {
         this.logo = this.add.image(this.center_width, 170, "logo").setOrigin(0.5).setScale(0.7).setAlpha(0)
         this.tweens.add({
@@ -52,6 +55,9 @@ export default class Transition extends Scene3D {
         })
     }
 
+  /*
+
+  */
     showInstructions () {
         let text1, text2;
         text1 = this.utils.typeText("ARROWS + W + S\nMOUSE FOR POV\n", "computer", this.center_width + 190, this.center_height)

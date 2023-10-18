@@ -23,6 +23,9 @@ export default class Game extends Phaser.Scene {
     preload () {
     }
 
+  /*
+
+  */
     create () {
       this.backgroundColors = [
         0xae2012, 0x961C10, 0x50120A, 0x40120A,
@@ -32,7 +35,7 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      this.cameras.main.setBackgroundColor(this.backgroundColors[this.number ]); 
+      this.cameras.main.setBackgroundColor(this.backgroundColors[this.number ]);
 
       this.addLight();
       this.createMap();
@@ -45,24 +48,30 @@ export default class Game extends Phaser.Scene {
       //this.addPosition();
       //this.addDay();
       //this.addMineName();
-      this.loadAudios(); 
+      this.loadAudios();
       this.addEffects();
       this.playMusic();
       //this.playOfficer();
     //  this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);
     }
 
+  /*
+
+  */
     addOxygen () {
       //this.checkManaEvent = this.time.addEvent({ delay: 1000, callback: this.recoverMana, callbackScope: this, loop: true });
       this.oxygenBar = this.add.rectangle(this.center_width, 40, this.player.oxygen * 1.8, 20, 0x6b140b).setOrigin(0.5).setScrollFactor(0)
     }
 
+  /*
+
+  */
     addEffects() {
 
       this.cameras.main.setPostPipeline(HorrifiPostFx);
       /*const pipelineInstance = this.plugins.get('HorrifiPostFx').add(this.platform, {
         enable: false,
-    
+
         // Bloom
         bloomEnable: false,
         bloomRadius: 0, bloomIntensity: 0, bloomThreshold: 0,
@@ -70,11 +79,17 @@ export default class Game extends Phaser.Scene {
       });*/
     }
 
+  /*
+
+  */
     addPosition() {
       this.positionText = this.add.bitmapText(this.center_width, 20, "pico", "x x", 15).setTint(0x6b140b).setOrigin(0.5).setScrollFactor(0).setDropShadow(0, 2, 0x6b302a, 0.9)
       this.updatePosition(this.player.x/64, this.player.y/64)
     }
 
+  /*
+
+  */
     addHelp () {
       if (this.number > 3) return;
       const help = [
@@ -88,22 +103,31 @@ export default class Game extends Phaser.Scene {
 
     }
 
+  /*
+
+  */
     addDay() {
       this.dayText = this.add.bitmapText(20, 10, "pico", "Day " + (this.number + 1), 20).setTint(0x6b140b).setOrigin(0).setScrollFactor(0).setDropShadow(0, 2, 0x6b302a, 0.9)
       //this.dayLogo = this.add.sprite(850, 28, "shell").setScale(0.8).setOrigin(0.5).setScrollFactor(0)
     }
 
+  /*
+
+  */
     addLight() {
         this.lights.disable();
         this.lights.setAmbientColor(0xae2012); // 0x707070
         this.playerLight = this.lights.addLight(0, 100, 100).setColor(0xffffff).setIntensity(3.0);
     }
 
+  /*
+
+  */
     createMap() {
       this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 64, tileHeight: 64 });
       this.tileSetBg = this.tileMap.addTilesetImage("mars");
       //this.tileMap.createStaticLayer('background', this.tileSetBg)//.setPipeline('Light2D');
-  
+
       this.tileSet = this.tileMap.addTilesetImage("mars");
       this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet)//.setPipeline('Light2D');;
       this.border = this.tileMap.createLayer('border', this.tileSet)//.setPipeline('Light2D');;
@@ -118,7 +142,7 @@ export default class Game extends Phaser.Scene {
 
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("object")) {
-          const [name, type, description, extra] = object.name.split(":") 
+          const [name, type, description, extra] = object.name.split(":")
           this.objects.add(new Object(this, object.x, object.y, type, description, extra));
         }
 
@@ -129,6 +153,9 @@ export default class Game extends Phaser.Scene {
 
     }
 
+  /*
+
+  */
     createGrid () {
       this.grid = [];
 
@@ -142,6 +169,9 @@ export default class Game extends Phaser.Scene {
     });
     }
 
+  /*
+
+  */
     addPlayer () {
       this.trailLayer = this.add.layer();
       const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
@@ -167,6 +197,9 @@ export default class Game extends Phaser.Scene {
     hitFloor (player, platform) {
     }
 
+  /*
+
+  */
     touchObject (player, object) {
         if (object.type === "hole") this.playTracker()
         if (!object.activated) {
@@ -175,13 +208,19 @@ export default class Game extends Phaser.Scene {
         }
     }
 
+  /*
+
+  */
     playerHitByFoe (player, foe) {
       this.cameras.main.shake(100);
       this.playAudio("killed")
       player.death();
       this.restartScene();
-    } 
+    }
 
+  /*
+
+  */
     playerHitHole(player, hole) {
       if (!player.dead) {
         this.playAudio("holeshout")
@@ -193,6 +232,9 @@ export default class Game extends Phaser.Scene {
       }
     }
 
+  /*
+
+  */
     loadAudios () {
         this.audios = {
           "mars_background": this.sound.add("mars_background"),
@@ -207,7 +249,10 @@ export default class Game extends Phaser.Scene {
         };
         this.tracker = this.sound.add("tracker");
       }
-    
+
+  /*
+
+  */
     playRandomStatic () {
       const file = this.number < 6 ? "static" + Phaser.Math.Between(0,3) : "creepy_static"
       this.sound.add(file).play({
@@ -217,6 +262,9 @@ export default class Game extends Phaser.Scene {
       });
     }
 
+  /*
+
+  */
     playTracker () {
       if (!this.tracker.isPlaying) this.tracker.play();
     }
@@ -225,6 +273,9 @@ export default class Game extends Phaser.Scene {
         this.audios[key].play();
       }
 
+  /*
+
+  */
       playRandom(key, volume = 1) {
         this.audios[key].play({
           rate: Phaser.Math.Between(0.9, 1),
@@ -234,10 +285,16 @@ export default class Game extends Phaser.Scene {
         });
       }
 
+  /*
+
+  */
       playOfficer () {
         this.sound.add(`officer${this.number}`).play();
       }
 
+  /*
+
+  */
       playMusic () {
         const theme =  this.number < 6 ? "mars_background" : "cave";
         this.theme = this.sound.add(theme);
@@ -282,6 +339,9 @@ export default class Game extends Phaser.Scene {
 
     }
 
+  /*
+
+  */
     restartScene () {
       const x = this.cameras.main.worldView.centerX;
       const y = this.cameras.main.worldView.centerY;
@@ -300,6 +360,9 @@ export default class Game extends Phaser.Scene {
       }, null, this);
     }
 
+  /*
+
+  */
     skipThis () {
       if (this.number > 3) return;
       this.player.dead = true;
@@ -308,6 +371,9 @@ export default class Game extends Phaser.Scene {
       this.scene.start("transition", { number: this.number + 1});
     }
 
+  /*
+
+  */
     finishScene (mute = true) {
       const x = this.cameras.main.worldView.centerX;
       const y = this.cameras.main.worldView.centerY;
@@ -330,12 +396,18 @@ export default class Game extends Phaser.Scene {
       }, null, this);
     }
 
+  /*
+
+  */
     updateScore (points = 1) {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
         this.scoreText.setText("x" + score);
     }
 
+  /*
+
+  */
     showPoints (x, y, msg, color = 0xff0000) {
       let text = this.add.bitmapText(x + 20, y - 80, "pico", msg, 20).setDropShadow(2, 3, color, 0.7).setOrigin(0.5);
       this.tweens.add({
@@ -350,14 +422,23 @@ export default class Game extends Phaser.Scene {
       });
     }
 
+  /*
+
+  */
     isAllGoldTaken () {
       return this.golds.getChildren().map(gold => gold.active).every(gold => !gold);
     }
 
+  /*
+
+  */
     updatePosition (x, y , z = 0) {
       this.positionText.setText(`Lt: ${x*10} Lg: ${y*10}`);
     }
 
+  /*
+
+  */
     updateOxygen () {
       this.oxygenBar.width = this.player.oxygen * 1.8;
     }

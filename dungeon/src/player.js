@@ -11,8 +11,10 @@ export default class Player {
         this.invincible = true;
     }
 
-    init (x,y) {
+  /*
 
+  */
+    init (x,y) {
         this.isTouching = { left: false, right: false, ground: false };
 
         // Jumping is going to have a cooldown
@@ -97,6 +99,9 @@ export default class Player {
         })
     }
 
+  /*
+
+  */
     onSensorCollide({ bodyA, bodyB, pair }) {
         if (bodyB.isSensor) return; // We only care about collisions with physical objects
         if (bodyA === this.sensors.left) {
@@ -104,7 +109,7 @@ export default class Player {
             this.onWall = true;
           this.isTouching.left = true;
           if (pair.separation > 0.5) this.sprite.x += pair.separation - 0.5;
-        } else if (bodyA === this.sensors.right) {          
+        } else if (bodyA === this.sensors.right) {
           this.friction();
           this.onWall = true;
           this.isTouching.right = true;
@@ -114,21 +119,30 @@ export default class Player {
           this.isTouching.ground = true;
         }
       }
-    
+
+  /*
+
+  */
       resetTouching() {
         this.isTouching.left = false;
         this.isTouching.right = false;
         this.isTouching.ground = false;
       }
 
+  /*
+
+  */
     addControls() {
         this.cursor = this.scene.input.keyboard.createCursorKeys();
         this.W = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-        this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D); 
+        this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     }
 
+  /*
+
+  */
     update(time, delta) {
         const isOnGround = this.isTouching.ground;
         const isInAir = !isOnGround;
@@ -156,8 +170,8 @@ export default class Player {
         if (this.sprite.body.velocity.x > 7) this.sprite.setVelocityX(7);
         else if (this.sprite.body.velocity.x < -7) this.sprite.setVelocityX(-7);
 
-        if (((this.canJump && isOnGround) || this.onWall) && (this.W.isDown || this.cursor.up.isDown))  {            
-        //if (((this.canJump && isOnGround) || (this.isTouching.left) || (this.isTouching.right)) && (this.W.isDown || this.cursor.up.isDown))  {     
+        if (((this.canJump && isOnGround) || this.onWall) && (this.W.isDown || this.cursor.up.isDown))  {
+        //if (((this.canJump && isOnGround) || (this.isTouching.left) || (this.isTouching.right)) && (this.W.isDown || this.cursor.up.isDown))  {
             this.sprite.setVelocityY(-8);
             // Add a slight delay between jumps since the bottom sensor will still collide for a few
             // frames after a jump is initiated
@@ -180,14 +194,17 @@ export default class Player {
                 delay: 500,
                 callback: () => (this.canShoot = true)
               });
-        } 
+        }
 
     }
 
+  /*
+
+  */
     destroy() {
         this.scene.playAudio("death")
         this.destroyed = true;
-    
+
         // Event listeners
         this.scene.events.off("update", this.update, this);
         this.scene.events.off("shutdown", this.destroy, this);
@@ -195,24 +212,30 @@ export default class Player {
         if (this.scene.matter.world) {
           this.scene.matter.world.off("beforeupdate", this.resetTouching, this);
         }
-    
+
         // Matter collision plugin
         const sensors = [this.sensors.bottom, this.sensors.left, this.sensors.right];
         this.scene.matterCollision.removeOnCollideStart({ objectA: sensors });
         this.scene.matterCollision.removeOnCollideActive({ objectA: sensors });
-    
+
         // Don't want any timers triggering post-mortem
         if (this.jumpCooldownTimer) this.jumpCooldownTimer.destroy();
-    
+
         this.sprite.destroy();
       }
 
+  /*
+
+  */
     step () {
         if (Phaser.Math.Between(0, 5) > 4) {
             this.scene.trailLayer.add(new Dust(this.scene, this.sprite.x, this.sprite.y + Phaser.Math.Between(10, 16)))
         }
     }
 
+  /*
+
+  */
     friction () {
         console.log("Friction!!")
         Array(Phaser.Math.Between(2, 4)).fill(0).forEach(i => {
@@ -220,6 +243,9 @@ export default class Player {
         })
     }
 
+  /*
+
+  */
     land () {
        if (this.sprite.body.velocity.y < 1) return;
        console.log("LAND", this.sprite.body.velocity.y)
@@ -228,12 +254,18 @@ export default class Player {
        })
     }
 
+  /*
+
+  */
     explosion () {
         Array(Phaser.Math.Between(10, 15)).fill(0).forEach(i => {
              new Dust(this.scene, this.sprite.x + Phaser.Math.Between(-32, 32), this.sprite.y + Phaser.Math.Between(10, 16))
         })
      }
 
+  /*
+
+  */
     animationComplete (animation, frame) {
         if (animation.key === "playershot") {
             this.sprite.anims.play("playeridle", true)

@@ -12,6 +12,9 @@ export default class Transition extends Phaser.Scene {
     preload () {
     }
 
+  /*
+
+  */
     create () {
         const messages = [
             "DAY 0",
@@ -38,7 +41,7 @@ export default class Transition extends Phaser.Scene {
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
-        this.center_height = this.height / 2; 
+        this.center_height = this.height / 2;
         this.add.tileSprite(0, 0, 800, 600, "landscape").setOrigin(0);
 
         if (this.number === 7) {
@@ -78,6 +81,9 @@ export default class Transition extends Phaser.Scene {
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
     }
 
+  /*
+
+  */
     playIntro () {
         const text =
             "YOU JUST CRASHED ON MARS\n"+
@@ -90,6 +96,9 @@ export default class Transition extends Phaser.Scene {
         this.utils.typeText(text, "pico", this.center_width, 150, 0xffffff, 20)
     }
 
+  /*
+
+  */
     playBackground () {
         const theme =  "mars_background";
         this.theme = this.sound.add(theme);
@@ -105,6 +114,9 @@ export default class Transition extends Phaser.Scene {
         })
     }
 
+  /*
+
+  */
     playDiary () {
         this.wave = this.add.sprite(this.center_width, 200, "wave").setOrigin(0.5)
         this.anims.create({
@@ -123,7 +135,10 @@ export default class Transition extends Phaser.Scene {
         }.bind(this))
         this.recording.play();
       }
-    
+
+  /*
+
+  */
       playCreepy() {
         this.creepy = this.sound.add("creepy")
         this.creepy.play({
@@ -140,6 +155,9 @@ export default class Transition extends Phaser.Scene {
     update () {
     }
 
+  /*
+
+  */
     showMission () {
         this.text3 = this.add.bitmapText(this.center_width, 300, "pico", "MISSION OBJECTIVE:", 30).setOrigin(0.5)
         //this.text4 = this.add.bitmapText(this.center_width, 400, "pico", this.missions[this.number], 20).setOrigin(0.5)
@@ -147,9 +165,12 @@ export default class Transition extends Phaser.Scene {
         this.utils.typeText(this.missions[this.number], "pico", this.center_width, 400, 0xffffff, 20)
     }
 
+  /*
+
+  */
     loadNext () {
         this.sound.add("blip").play();
-        
+
         this.sound.stopAll();
         this.scene.start("game", {  number: this.number });
     }

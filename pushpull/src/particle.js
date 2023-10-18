@@ -17,6 +17,9 @@ export class Particle extends Phaser.GameObjects.Rectangle {
     }
 }
 
+  /*
+
+  */
 export class Line extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, width, height, color = 0xffffff) {
         super(scene, x, y, width, height, color)
@@ -43,6 +46,9 @@ export class Line extends Phaser.GameObjects.Rectangle {
     }
 }
 
+  /*
+
+  */
 export class WaterSplash extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, width, height, color = 0x00ffaf) {
         width = width || Phaser.Math.Between(10, 25)
@@ -58,7 +64,7 @@ export class WaterSplash extends Phaser.GameObjects.Rectangle {
         let offsetx, offsety = 0;
         offsetx = Phaser.Math.Between(-10, 10);
         offsety = Phaser.Math.Between(-10, 10);
-        
+
         this.scene.tweens.add({
             targets: this,
             duration: 800,
@@ -77,7 +83,7 @@ export class Light extends Phaser.GameObjects.PointLight {
         this.name = "fireball";
         scene.add.existing(this)
         scene.physics.add.existing(this);
-    
+
         this.body.setAllowGravity(gravity);
         this.body.setVelocityX(Phaser.Math.Between(-30, 30));
         this.body.setVelocityY(Phaser.Math.Between(-30, 30));
@@ -227,6 +233,9 @@ export class Rock extends Phaser.GameObjects.Sprite {
     }
 }
 
+  /*
+
+  */
 export class Wave extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, sprite ) {
         super(scene, x, y, "trail", sprite);

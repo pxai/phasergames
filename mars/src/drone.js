@@ -14,6 +14,9 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
        this.init();
     }
 
+  /*
+
+  */
     init () {
       this.easystar.setGrid(this.grid);
       this.easystar.setAcceptableTiles([0]);
@@ -32,7 +35,7 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
             frameRate: 5,
             repeat: -1
           });
-  
+
           this.anims.play(this.name, true)
           //this.body.setVelocityX(this.direction * 100);
           this.flipX = this.direction < 0;
@@ -45,6 +48,9 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
     }
 
 
+  /*
+
+  */
     launchMove() {
       if (!this.scene) return;
       this.delayedMove = this.scene.time.addEvent({
@@ -56,6 +62,9 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
       });
     }
 
+  /*
+
+  */
     move () {
       try {
           if (!this.scene.player) return;
@@ -71,6 +80,9 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
 
   }
 
+  /*
+
+  */
   moveIt (path) {
       if (path === null) {
         console.log("hello sneaky pete")
@@ -89,7 +101,7 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
                   y: ey
               });
           }
-      
+
           this.moveTimeline = this.scene.tweens.timeline({
               tweens: tweens,
               onComplete: () => {
@@ -105,12 +117,18 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
     update () {
     }
 
+  /*
+
+  */
     turn () {
         this.direction = -this.direction;
         this.flipX = this.direction < 0;
         this.body.setVelocityX(this.direction * 100);
     }
 
+  /*
+
+  */
     death () {
       //this.delayedMove.stop();
         this.moveTimeline.destroy();
@@ -127,6 +145,9 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
         }
     }
 
+  /*
+
+  */
     freeze () {
       this.setAlpha(0);
       this.delayedMove.remove();

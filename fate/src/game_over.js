@@ -6,6 +6,9 @@ export default class GameOver extends Phaser.Scene {
     preload () {
     }
 
+  /*
+
+  */
     create () {
         this.cameras.main.setBackgroundColor(0x000000);
         this.width = this.sys.game.config.width;
@@ -14,7 +17,7 @@ export default class GameOver extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.introLayer = this.add.layer();
         this.splashLayer = this.add.layer();
-        this.text = [ 
+        this.text = [
             "GAME OVER",
             "You failed to deliver the probes",
             "you survived but the mission failed!",
@@ -29,13 +32,19 @@ export default class GameOver extends Phaser.Scene {
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
     }
 
+  /*
+
+  */
     showHistory () {
         this.text.forEach((line, i) => {
-                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this); 
+                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this);
         });
-       // this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
+       // this.time.delayedCall(4000, () => this.showPlayer(), null, this);
     }
 
+  /*
+
+  */
     playMusic (theme="outro") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
@@ -50,6 +59,9 @@ export default class GameOver extends Phaser.Scene {
       })
       }
 
+  /*
+
+  */
     showLine(text, y) {
         let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "computer", text, 45).setTint(0x06E18A).setOrigin(0.5).setAlpha(0));
         this.tweens.add({
@@ -60,6 +72,9 @@ export default class GameOver extends Phaser.Scene {
     }
 
 
+  /*
+
+  */
     startSplash () {
         // this.theme.stop();
         location.reload();

@@ -12,6 +12,9 @@ export default class Transition extends Phaser.Scene {
     preload () {
     }
 
+  /*
+
+  */
     create () {
         this.sound.stopAll();
         this.width = this.sys.game.config.width;

@@ -1,5 +1,5 @@
 
-   
+
 import { Scene3D } from '@enable3d/phaser-extension'
 import Utils from "./utils";
 
@@ -11,6 +11,9 @@ export default class Splash extends Scene3D {
     preload () {
     }
 
+  /*
+
+  */
     create () {
         this.game.sound.stopAll();
         this.width = this.sys.game.config.width;
@@ -32,12 +35,18 @@ export default class Splash extends Scene3D {
         //this.showPlayer();
     }
 
+  /*
+
+  */
     startGame () {
         if (this.utils.typeAudio) this.utils.typeAudio.stop();
         if (this.theme) this.theme.stop();
         this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
     }
 
+  /*
+
+  */
     showLogo() {
         this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
         this.tweens.add({
@@ -58,6 +67,9 @@ export default class Splash extends Scene3D {
 
     }
 
+  /*
+
+  */
     playMusic (theme="hymn") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
@@ -82,6 +94,9 @@ export default class Splash extends Scene3D {
         this.audios[key].play();
       }
 
+  /*
+
+  */
     showIntro() {
         let text1, text2;
         text1 = this.utils.typeText(" IN 1968 YURI GAGARIN DIED\nDURING A ROUTINE FLIGHT", "computer", this.center_width, this.center_height)
@@ -96,6 +111,9 @@ export default class Splash extends Scene3D {
         }, null, this)
     }
 
+  /*
+
+  */
     aGameBy () {
         let text2;
         let text1 = this.utils.typeText(" A GAME BY\nPELLO", "computer", 1250, 10)
@@ -118,6 +136,9 @@ export default class Splash extends Scene3D {
         video.play(true);
     }
 
+  /*
+
+  */
     tools () {
         let text2;
         let text1 = this.utils.typeText(" TOOLS: PHASER AND ENABLE3D", "computer", 550, 10)
@@ -138,6 +159,9 @@ export default class Splash extends Scene3D {
         video.play(true);
     }
 
+  /*
+
+  */
     otherTools () {
         let text2;
         let text1 = this.utils.typeText(" VSCODE, GULP, BLENDER, FFMPEG,...", "computer", 550, 500)
@@ -158,6 +182,9 @@ export default class Splash extends Scene3D {
         video.play(true);
     }
 
+  /*
+
+  */
     lastVideo () {
         let text2;
         let text1 = this.utils.typeText(" MUSIC: SACRED WAR, BY THE RED ARMY CHOIR", "computer", 400, 50)
@@ -178,6 +205,9 @@ export default class Splash extends Scene3D {
         video.play(true);
     }
 
+  /*
+
+  */
     explanation () {
         this.tweens.add({
             targets: this.theme,
@@ -190,9 +220,9 @@ export default class Splash extends Scene3D {
             "A NEUTRINO STAR!\n\nHE HAS TO AVOID INCOMING DEBRIS\nAND GET AS CLOSE AS POSSIBLE TO THE STAR.\n" +
             "THAT WILL MEAN CERTAIN DEATH, BUT ALSO\nA MASSIVE ACHIEVEMENT " +
             "FOR SOVIET SCIENTISTS!\n\n" +
-            "THE FATAL FATE OF GAGARIN IS NOW TIED\nTO THE GLORIOUS FATE " + 
+            "THE FATAL FATE OF GAGARIN IS NOW TIED\nTO THE GLORIOUS FATE " +
             "OF MOTHER RUSSIA...\n\n\nSPACE TO CONTINUE";
         let text1 = this.utils.typeText(text, "computer", 450, 50)
-        
+
     }
 }

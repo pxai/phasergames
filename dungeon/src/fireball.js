@@ -8,14 +8,17 @@ export default class Fireball extends Phaser.Physics.Matter.Sprite  {
         this.direction = direction
         scene.add.existing(this)
         //scene.physics.add.existing(this);
-      
+
         this.setIgnoreGravity(true)
         this.setVelocityX(5 * this.direction);
         this.setVelocityY(Phaser.Math.Between(0, -8));
         this.setBounce(1)
         this.init();
     }
-    
+
+  /*
+
+  */
     init () {
         this.scene.events.on("update", this.update, this);
         this.tween = this.scene.tweens.add({
@@ -26,7 +29,10 @@ export default class Fireball extends Phaser.Physics.Matter.Sprite  {
         });
         this.scene.time.delayedCall(3000, () => {this.destroy()}, null, this)
     }
-  
+
+  /*
+
+  */
     update() {
         if (this.scene?.gameOver) return;
         //if (Phaser.Math.Between(0,5)> 4)
@@ -35,7 +41,7 @@ export default class Fireball extends Phaser.Physics.Matter.Sprite  {
 
     death () {
         this.destroy();
-    } 
+    }
 
     destroy () {
         this.tween.destroy();

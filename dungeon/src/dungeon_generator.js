@@ -10,6 +10,9 @@ export default class DungeonGenerator {
         this.generate();
     }
 
+  /*
+
+  */
     generate () {
         this.dungeon = new Dungeon({
             width: 50,
@@ -30,8 +33,8 @@ export default class DungeonGenerator {
           });
           const tileset = this.map.addTilesetImage("tiles", null, 48, 48, 0, 0); // 1px margin, 2px spacing
           this.groundLayer = this.map.createBlankLayer("Layer 1", tileset);
-          this.stuffLayer = this.map.createBlankLayer("Stuff", tileset); 
-      
+          this.stuffLayer = this.map.createBlankLayer("Stuff", tileset);
+
           // Get a 2D array of tile indices (using -1 to not render empty tiles) and place them into the
           // blank layer
           const mappedTiles = this.dungeon.getMappedTiles({
@@ -41,12 +44,12 @@ export default class DungeonGenerator {
             wall: 0
           });
           this.groundLayer.putTilesAt(mappedTiles, 0, 0);
-          this.groundLayer.setCollision(0); 
+          this.groundLayer.setCollision(0);
           this.groundLayer.setCollisionByProperty({ collides: true });
           this.scene.matter.world.convertTilemapLayer(this.groundLayer);
           //this.groundLayer.fill(7);
           // We only need one tile index (the walls) to be colliding for now
-      
+
           // Place the player in the center of the map. This works because the Dungeon generator places
           // the first room in the center of the map.
         //   this.player = new Player(
@@ -54,10 +57,10 @@ export default class DungeonGenerator {
         //     this.map.widthInPixels / 2,
         //     this.map.heightInPixels / 2
         //   );
-      
+
           // Watch the player and layer for collisions, for the duration of the scene:
           //this.physics.add.collider(this.player.sprite, layer);
-    
+
           this.dungeon.rooms.forEach(room => {
             // These room properties are all in grid units (not pixels units)
             const { x, y, width, height, left, right, top, bottom } = room;
@@ -68,13 +71,13 @@ export default class DungeonGenerator {
                { index: 17, weight: 9 },              // 9/10 times, use index 6
                { index: [7, 8, 9, 17, 18, 19], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
             ], x + 1, y + 1, width - 2, height - 2);
-      
+
             // Place the room corners tiles
             this.groundLayer.putTileAt(0, left, top);
             this.groundLayer.putTileAt(5, right, top);
             this.groundLayer.putTileAt(45, right, bottom);
             this.groundLayer.putTileAt(40, left, bottom);
-      
+
             // Place the non-corner wall tiles using fill with x, y, width, height parameters
 
             this.groundLayer.weightedRandomize(
@@ -146,6 +149,9 @@ export default class DungeonGenerator {
       });
     }
 
+  /*
+
+  */
     addKey(room) {
       const keyX = Phaser.Math.Between(room.left + 2, room.right - 2);
       const keyY = Phaser.Math.Between(room.top + 2, room.bottom - 2);
@@ -155,6 +161,9 @@ export default class DungeonGenerator {
       new Key(this.scene, worldPosition.x + 22, worldPosition.y + 22)
     }
 
+  /*
+
+  */
     addSeeSaw(room) {
       if (Phaser.Math.Between(0, 10) < 7) return;
 
@@ -165,6 +174,9 @@ export default class DungeonGenerator {
       new SeeSaw(this.scene, worldPosition.x + 22, worldPosition.y + 22, room.width)
     }
 
+  /*
+
+  */
     addCoins(room) {
       const where = Phaser.Math.RND.pick(["top", "bottom", "left", "right", "none"]);
       const width = parseInt(room.width/3) - Phaser.Math.Between(1, 2);
@@ -215,6 +227,9 @@ export default class DungeonGenerator {
 
     }
 
+  /*
+
+  */
     addFoes(room) {
       const keyX = Phaser.Math.Between(room.left + 2, room.right - 2);
       const keyY = Phaser.Math.Between(room.top + 2, room.bottom - 2);
@@ -229,6 +244,9 @@ export default class DungeonGenerator {
 
     }
 
+  /*
+
+  */
     addTopTraps (room) {
       const { x, y, width, height, left, right, top, bottom, tiles } = room;
 

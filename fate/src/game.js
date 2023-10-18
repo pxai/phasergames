@@ -1,4 +1,4 @@
-import { Scene3D, ExtendedObject3D, THREE  } from '@enable3d/phaser-extension' 
+import { Scene3D, ExtendedObject3D, THREE  } from '@enable3d/phaser-extension'
 import { ThreeGraphics } from '@enable3d/three-graphics';
 import { Euler } from 'three';
 import BulletHell from "./bullet_hell";
@@ -12,6 +12,9 @@ export default class Game extends Scene3D {
         this.scoreText = null;
     }
 
+  /*
+
+  */
     init (data) {
       this.accessThirdDimension({ gravity: { x: 0, y: 0, z: 0 } })
       this.third.load.preload('stars', 'assets/images/stars.png')
@@ -23,7 +26,10 @@ export default class Game extends Scene3D {
     preload () {
     }
 
-    create () {      
+  /*
+
+  */
+    create () {
       this.bulletHell = new BulletHell();
       this.x = -500;
 
@@ -41,11 +47,11 @@ export default class Game extends Scene3D {
       this.addClockEvent = this.time.addEvent({ delay: 50, callback: this.updateClock, callbackScope: this, loop: true });
       this.setCenters();
       //enable physics debugging
-      //this.third.physics.debug.enable()      
+      //this.third.physics.debug.enable()
       this.setLightning();
       this.setNeutrinoStar();
 
-      this.loadAudios(); 
+      this.loadAudios();
       // this.playMusic();
 
       // https://catlikecoding.com/unity/tutorials/basics/mathematical-surfaces/
@@ -59,6 +65,9 @@ export default class Game extends Scene3D {
       this.playAudio("voice_start")
     }
 
+  /*
+
+  */
     setLightning () {
       this.lightsOut = this.add.rectangle(0, 40, this.width, this.height + 100, 0x0).setOrigin(0)
       this.lightsOut.setAlpha(0);
@@ -67,6 +76,9 @@ export default class Game extends Scene3D {
       this.lightning = new Lightning(this);
     }
 
+  /*
+
+  */
     setLights() {
       this.spot = this.third.lights.spotLight({ color: 'blue', angle: Math.PI / 8 })
       // this.spotHelper = this.third.lights.helper.spotLightHelper(this.spot)
@@ -84,6 +96,9 @@ export default class Game extends Scene3D {
        this.directional.shadow.camera.right = d
     }
 
+  /*
+
+  */
     setNeutrinoStar() {
       // this.addRings();
       this.torus = this.addRing(0);
@@ -96,12 +111,18 @@ export default class Game extends Scene3D {
       this.starFront.body.setCollisionFlags(2)
     }
 
+  /*
+
+  */
     addRings() {
       this.rings = Array(20).fill(0).map((ring, i) => {
         this.addRing(i);
       })
     }
 
+  /*
+
+  */
     addRing(i) {
       let torus = this.third.add.cylinder({x: 0, y: 12, z: -120, height: 1, radiusSegments: 200, radiusBottom: 75 * (i+1), radiusTop: 75 * (i+1)}, { lambert: { color: 0xFFFFE0, transparent: true, opacity: 0.8 } })
       //let torus = this.third.add.torus({ x: 0, y: 12, z: -120, radius: 75 * (i+1), tubularSegments: 200, tube: 0.4 }, { lambert: { color: 0xFFFFE0, transparent: true, opacity: 1 } })
@@ -112,6 +133,9 @@ export default class Game extends Scene3D {
       return torus;
     }
 
+  /*
+
+  */
     setCenters () {
       this.width = this.cameras.main.width;
       this.height = this.cameras.main.height;
@@ -119,6 +143,9 @@ export default class Game extends Scene3D {
       this.center_height = this.height / 2;
     }
 
+  /*
+
+  */
     updateClock () {
       if (this.remaining < 0) {
         this.remaining = 20000;
@@ -129,6 +156,9 @@ export default class Game extends Scene3D {
       this.remaining -= 50;
     }
 
+  /*
+
+  */
     createBottom() {
       this.third.load.texture('stars').then(grass => {
         grass.wrapS = grass.wrapT = 1000 // RepeatWrapping
@@ -140,6 +170,9 @@ export default class Game extends Scene3D {
       })
     }
 
+  /*
+
+  */
     releaseProbe () {
       this.updateProbes(-1);
       this.tweens.add({
@@ -147,15 +180,21 @@ export default class Game extends Scene3D {
         duration: 400,
         alpha: {from: 0.5, to: 1},
         repeat: 5
-      })  
+      })
     }
 
+  /*
+
+  */
     setScores() {
       this.deviationText = this.add.bitmapText(175, 30, "computer", "DEVIATION: " + this.registry.get("deviation"), 30).setTint(0x03A062).setOrigin(0.5);
       this.nextDropText = this.add.bitmapText(this.center_width, 30, "computer", "NEXT DROP: " + this.remaining, 30).setTint(0x03A062).setOrigin(0.5);
       this.probesText = this.add.bitmapText(this.width - 150, 30, "computer", "PROBES: " + this.registry.get("probes"), 30).setTint(0x03A062).setOrigin(0.5);
     }
 
+  /*
+
+  */
     prepareShip() {
       this.third.load.gltf('./assets/objects/ship.glb').then(gltf => {
 
@@ -177,6 +216,9 @@ export default class Game extends Scene3D {
       })
     }
 
+  /*
+
+  */
     setShipColliderWithParticles () {
       this.ship.body.on.collision((otherObject, event) => {
         if (/particle/.test(otherObject.name)) {
@@ -190,6 +232,9 @@ export default class Game extends Scene3D {
       })
     }
 
+  /*
+
+  */
     createShip (shape, i, object3d) {
       this.left = false;
       const object = new ExtendedObject3D()
@@ -197,7 +242,7 @@ export default class Game extends Scene3D {
       object.add(object3d.clone())
       object.position.set(i, -2, 10)
       object.rotation.set(0, Math.PI, 0)
-    
+
       let options = { addChildren: false, shape }
 
       this.third.add.existing(object)
@@ -211,6 +256,9 @@ export default class Game extends Scene3D {
       return object;
     }
 
+  /*
+
+  */
       loadAudios () {
         this.audios = {
           "thunder0": this.sound.add("thunder0"),
@@ -234,6 +282,9 @@ export default class Game extends Scene3D {
         this.audios[key].play();
       }
 
+  /*
+
+  */
       playRandom(key) {
         this.audios[key].play({
           rate: Phaser.Math.Between(1, 1.5),
@@ -242,6 +293,9 @@ export default class Game extends Scene3D {
         });
       }
 
+  /*
+
+  */
       playMusic (theme="game") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
@@ -256,6 +310,9 @@ export default class Game extends Scene3D {
       })
       }
 
+  /*
+
+  */
     update(time, delta) {
       this.currentTime = time;
 
@@ -269,7 +326,7 @@ export default class Game extends Scene3D {
         }  else if (this.cursor.down.isDown && this.ship.position.y > -7/(z/5)) {
           y = y - 0.1;
           this.createWingTrails();
-        } 
+        }
 
         if (this.cursor.left.isDown && this.ship.position.x > -7/(z/6) ) {
           x = x - 0.1;
@@ -279,7 +336,7 @@ export default class Game extends Scene3D {
           x = x + 0.1;
           this.ship.rotation.set(0, Math.PI, 0.2);
           this.createWingTrails(false);
-        } 
+        }
 
         if (!this.cursor.right.isDown && !this.cursor.left.isDown) {
           this.ship.rotation.set(0, Math.PI, 0);
@@ -291,8 +348,8 @@ export default class Game extends Scene3D {
         } else if (this.S.isDown && this.ship.position.z < 15) {
           this.ship.position.set(x, y, z + 0.1)
           z = z + 0.1;
-        } 
-        
+        }
+
         this.ship.position.set(x, y, z)
         this.ship.body.needUpdate = true
         this.createTrail();
@@ -334,6 +391,9 @@ export default class Game extends Scene3D {
       }
     }
 
+  /*
+
+  */
     createTrail() {
       const color = Phaser.Math.Between(-1, 1) > 0 ? 0xADD8E6 : 0xffffff;
       const trail = this.third.add.box({ x: this.ship.position.x, y: this.ship.position.y + 0.3, z: this.ship.position.z + 1, width: 0.2, height: 0.2, depth: 0.2 },  { lambert: { color, transparent: true, opacity: 0.4 } })
@@ -347,9 +407,12 @@ export default class Game extends Scene3D {
         onComplete: () => {
           this.destroyParticle(trail)
         }
-      }) 
+      })
     }
 
+  /*
+
+  */
     createWingTrails(toTheLeft = null) {
       const color = Phaser.Math.Between(-1, 1) > 0 ? 0xADD8E6 : 0xffffff;
       const [m1, m2] = toTheLeft  === null ? [0, 0] : (toTheLeft ? [-0.3, 0.3] : [0.3, -0.3]);
@@ -370,9 +433,12 @@ export default class Game extends Scene3D {
           this.destroyParticle(trail1)
           this.destroyParticle(trail2)
         }
-      }) 
+      })
     }
 
+  /*
+
+  */
     addWave (start = -25, zed = false) {
       this.lightning.lightning();
       const {f1, f2, c} = this.applyFunctionsInterval();
@@ -384,7 +450,7 @@ export default class Game extends Scene3D {
         let wave = Array(50).fill(0).map((particle, i) => {
           let x = start + i;
           let y = waveFunction(x, 16 * i, randomHeight);
-  
+
           let box = this.third.add.sphere({ name: 'particle' + Math.random(), radius: 0.25, x, y, z: start - (zed ? x : 0 )  },  { lambert: { color } })
           //this.box.set
           this.third.physics.add.existing(box);
@@ -394,13 +460,16 @@ export default class Game extends Scene3D {
           return box
         })
         this.playAudio("shot")
-  
+
         this.waves.push(wave);
         this.time.delayedCall(4000, () => this.playRandom("passby" + Phaser.Math.Between(0, 1)), null, this)
         this.time.delayedCall(6000, () => this.removeWave(), null, this);
       }
     }
 
+  /*
+
+  */
     applyFunctionsInterval() {
       return {
         "20": {f1: 0, f2: 3, c: 3},
@@ -416,7 +485,7 @@ export default class Game extends Scene3D {
         "10": {f1: 0, f2: 4, c: 4},
         "9": {f1: 0, f2: 4, c: 5},
         "8": {f1: 0, f2: 4, c: 5},
-        "7": {f1: 0, f2: 5, c: 4},       
+        "7": {f1: 0, f2: 5, c: 4},
         "6": {f1: 0, f2: 5, c: 5},
         "5": {f1: 0, f2: 5, c: 5},
         "4": {f1: 0, f2: 5, c: 6},
@@ -428,11 +497,17 @@ export default class Game extends Scene3D {
     }
 
 
+  /*
+
+  */
     removeWave () {
       const wave = this.waves.shift();
       wave.forEach((particle) => this.destroyParticle(particle));
     }
 
+  /*
+
+  */
     destroyParticle(particle) {
       particle.userData.dead = true;
       particle.visible = false;
@@ -446,6 +521,9 @@ export default class Game extends Scene3D {
       this.scene.start(name, {next: "underwater", name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 
+  /*
+
+  */
     updateDeviation (points = 0) {
         const deviation = +this.registry.get("deviation") + points;
         this.registry.set("deviation", deviation);
@@ -456,6 +534,9 @@ export default class Game extends Scene3D {
         }
     }
 
+  /*
+
+  */
     updateProbes (points = 0) {
       const probes = +this.registry.get("probes") + points;
       this.registry.set("probes", probes);

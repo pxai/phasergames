@@ -38,22 +38,31 @@ export default class Game extends Phaser.Scene {
       this.addPowerUps();
 
       this.addShots();
-      //this.loadAudios(); 
+      //this.loadAudios();
 
       this.addColliders();
       this.time.delayedCall(6000, () => this.endScene(), null, this)
     }
 
+  /*
+
+  */
     addBackground () {
-      this.background = this.add.tileSprite(0, 0, this.width, this.height, "stage"+ this.number).setOrigin(0).setScrollFactor(0, 1); 
+      this.background = this.add.tileSprite(0, 0, this.width, this.height, "stage"+ this.number).setOrigin(0).setScrollFactor(0, 1);
     }
 
+  /*
+
+  */
     spawnShake() {
       const {x, y} = this.lastDestroyedWaveFoe;
       this.shake = new PowerUp(this, x, y);
       this.powerUps.add(this.shake)
     }
 
+  /*
+
+  */
     addScores () {
       this.scores = {
         "player1": {},
@@ -65,16 +74,25 @@ export default class Game extends Phaser.Scene {
       this.scores["player2"]["scoreText"] = this.add.bitmapText(this.width - 150, 16, "pixelFont", "0".padStart(6,"0"), 20).setOrigin(0.5).setScrollFactor(0)
     }
 
+  /*
+
+  */
     addPlayers () {
       this.players = this.add.group();
       this.players.add(new Player(this, this.center_width, this.center_height))
     }
 
+  /*
+
+  */
     addShots () {
       this.shotsLayer = this.add.layer();
       this.shots = this.add.group();
     }
 
+  /*
+
+  */
     addFoes () {
       this.foeGroup = this.add.group();
       this.foeWaveGroup = this.add.group();
@@ -82,10 +100,16 @@ export default class Game extends Phaser.Scene {
       this.foes = new FoeGenerator(this);
     }
 
+  /*
+
+  */
     addPowerUps () {
       this.powerUps = this.add.group();
     }
 
+  /*
+
+  */
     addColliders () {
       this.physics.add.collider(this.players, this.foeGroup, this.crashFoe, ()=>{
         return true;
@@ -117,6 +141,9 @@ export default class Game extends Phaser.Scene {
       this.physics.world.on('worldbounds', this.onWorldBounds);
     }
 
+  /*
+
+  */
     onWorldBounds (body) {
       const name = body.gameObject.constructor.name.toString();
       if (["Shot","FoeShot"].includes(name)) {
@@ -124,6 +151,9 @@ export default class Game extends Phaser.Scene {
       }
     }
 
+  /*
+
+  */
     destroyShot (shot, foeShot) {
       const point = this.lights.addPointLight(shot.x, shot.y, 0xffffff, 10, 0.7);
       this.tweens.add({ targets: point, duration: 400, scale: { from: 1, to: 0 } });
@@ -132,11 +162,17 @@ export default class Game extends Phaser.Scene {
       this.updateScore(shot.playerName, 50);
     }
 
+  /*
+
+  */
     destroyWaveFoe (shot, foe) {
       this.lastDestroyedWaveFoe = {x: foe.x, y: foe.y};
       this.destroyFoe(shot, foe)
     }
 
+  /*
+
+  */
     destroyFoe (shot, foe) {
       const point = this.lights.addPointLight(shot.x, shot.y, 0xffffff, 10, 0.7);
       this.tweens.add({ targets: point, duration: 400, scale: { from: 1, to: 0 } });
@@ -145,6 +181,9 @@ export default class Game extends Phaser.Scene {
       foe.dead()
     }
 
+  /*
+
+  */
     hitPlayer (player, shot) {
       if (player.blinking) return;
       player.dead();
@@ -153,6 +192,9 @@ export default class Game extends Phaser.Scene {
       this.time.delayedCall(1000, () => this.respwanPlayer(), null, this);
     }
 
+  /*
+
+  */
     crashFoe (player, foe) {
       if (player.blinking) return;
       player.dead();
@@ -161,6 +203,9 @@ export default class Game extends Phaser.Scene {
       this.time.delayedCall(1000, () => this.respwanPlayer(), null, this);
     }
 
+  /*
+
+  */
     pickPowerUp (player, powerUp) {
       this.updatePowerUp(player, powerUp);
       this.tweens.add({
@@ -173,6 +218,9 @@ export default class Game extends Phaser.Scene {
       powerUp.destroy();
     }
 
+  /*
+
+  */
     respwanPlayer () {
       const player = new Player(this, this.center_width, this.center_height)
       this.players.add(player)
@@ -180,7 +228,7 @@ export default class Game extends Phaser.Scene {
         targets: player,
         duration: 100,
         alpha: {from: 0, to: 1},
-        repeat: 20, 
+        repeat: 20,
         onComplete: () => { player.blinking = false; }
     });
     }
@@ -191,10 +239,16 @@ export default class Game extends Phaser.Scene {
       };
     }
 
+  /*
+
+  */
     playAudio(key) {
       this.audios[key].play();
     }
 
+  /*
+
+  */
     update() {
       this.players.children.entries.forEach( player => {
         player.update();
@@ -204,6 +258,9 @@ export default class Game extends Phaser.Scene {
       this.background.tilePositionY -= 10;
     }
 
+  /*
+
+  */
     endScene () {
       if (this.number === 4) {
         console.log("Final BOSS")
@@ -212,6 +269,9 @@ export default class Game extends Phaser.Scene {
       }
     }
 
+  /*
+
+  */
     finishScene () {
       this.game.sound.stopAll();
       console.log("This number: ", this.number)
@@ -219,11 +279,17 @@ export default class Game extends Phaser.Scene {
       this.scene.start(scene, {next: "game", name: "STAGE", number: this.number + 1});
     }
 
+  /*
+
+  */
     updatePowerUp (player, powerUp) {
       console.log("Picket power: ", player.name, powerUp.power)
       player.powerUp = powerUp.power;
     }
 
+  /*
+
+  */
     updateScore (playerName, points = 0) {
         const score = +this.registry.get("score_" + playerName) + points;
         this.registry.set("score_" + playerName, score);

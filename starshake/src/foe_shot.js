@@ -1,7 +1,7 @@
 import Particle from "./particle";
 
 const TYPES = {
-    "chocolate": { color: 0xAF8057, radius: 16, intensity: 0.4 }, 
+    "chocolate": { color: 0xAF8057, radius: 16, intensity: 0.4 },
     "vanila": { color: 0xfff6d5, radius: 16, intensity: 0.4 },
     "fruit": { color: 0x00ff00, radius: 16, intensity: 0.4 },
     "water": { color: 0x0000cc, radius: 16, intensity: 0.4 },
@@ -27,12 +27,18 @@ class FoeShot extends Phaser.GameObjects.PointLight {
         this.init();
    }
 
+  /*
+
+  */
    spawnShadow (x, y, velocityX, velocityY) {
     this.shadow = this.scene.add.circle(x + 20, y + 20, 10, 0x000000).setAlpha(0.4)
     this.scene.add.existing(this.shadow);
     this.scene.physics.add.existing(this.shadow);
    }
 
+  /*
+
+  */
     init () {
        this.scene.tweens.add({
             targets: this,

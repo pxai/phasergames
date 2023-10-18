@@ -10,11 +10,14 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
         this.startX = x
         this.direction = Phaser.Math.RND.pick([-1, 1]);
 
-        this.setFixedRotation() 
+        this.setFixedRotation()
         this.addCollisions();
         this.init();
     }
 
+  /*
+
+  */
     init () {
         this.scene.anims.create({
             key: this.label,
@@ -22,7 +25,7 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
             frameRate: 5,
             repeat: -1
           });
-  
+
           this.anims.play(this.label, true)
 
           //this.flipX = this.direction > 0;
@@ -34,6 +37,9 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
 
     }
 
+  /*
+
+  */
     addCollisions () {
       this.unsubscribeBatCollide = this.scene.matterCollision.addOnCollideStart({
         objectA: this,
@@ -42,6 +48,9 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
       });
     }
 
+  /*
+
+  */
     onWizardCollide({ gameObjectA, gameObjectB }) {
       if (gameObjectB instanceof Bubble) {
         console.log("Wizard collide: ", gameObjectA, gameObjectB)
@@ -50,6 +59,9 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
       }
     }
 
+  /*
+
+  */
     directShot() {
       this.scene.playAudio("fireball")
       const distance = Phaser.Math.Distance.BetweenPoints(this.scene.player, this);
@@ -61,6 +73,9 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
     }
 
 
+  /*
+
+  */
     update () {
       if (!this.active) return;
       //if (Math.abs(this.body.velocity.x) <= 0.2) this.turn()
@@ -77,12 +92,18 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
       this.destroy();
     }
 
+  /*
+
+  */
     animationComplete(animation, frame) {
         if (animation.key === this.label + "death") {
           this.destroy()
         }
     }
 
+  /*
+
+  */
     destroy () {
       if (this.timer) this.timer.destroy();
       if (this.delayedTurn) this.delayedTurn.destroy();

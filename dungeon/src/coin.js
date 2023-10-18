@@ -9,6 +9,9 @@ export default class Coin extends Phaser.Physics.Matter.Sprite {
         this.init();
 	}
 
+  /*
+
+  */
     init () {
         this.scene.anims.create({
             key: this.label,
@@ -26,6 +29,9 @@ export default class Coin extends Phaser.Physics.Matter.Sprite {
         })
     }
 
+  /*
+
+  */
     destroy() {
         this.tween.stop();
         super.destroy();
