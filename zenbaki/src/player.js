@@ -12,6 +12,9 @@ class Player {
 
     }
 
+  /*
+
+  */
     hasSpammed () {
         if (!this.lastMessage) return false;
 
@@ -20,6 +23,9 @@ class Player {
         return (timeDifferenceInMilliseconds / 1000) < this.scene.spamTimeWait;
     }
 
+  /*
+
+  */
     setPenalty () {
         this.penalties++;
         this.score = 0;
@@ -27,6 +33,9 @@ class Player {
         this.scene.time.delayedCall(10000 * this.penalties, () => { this.dead = false; }, null, this);
     }
 
+  /*
+
+  */
     die () {
         this.dead = true;
     }

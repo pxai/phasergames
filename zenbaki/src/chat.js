@@ -10,6 +10,9 @@ export default class Chat {
         this.init();
     }
 
+  /*
+
+  */
     init () {
         const urlParams = new URLSearchParams(window.location.search);
         const channel = urlParams.get('channel') || "devdiaries";
@@ -61,21 +64,33 @@ export default class Chat {
         });
     }
 
+  /*
+
+  */
     sendAction (channel, msg) {
         console.log("Sending action: ", this.feedback, channel, msg);
         if (!this.feedback) return;
         this.client.action(channel, msg);
     }
 
+  /*
+
+  */
     say (msg) {
         if (!this.feedback) return;
         this.client.say(this.channel, msg);
     }
 
+  /*
+
+  */
     isValidNumberWithMax(number, limit = 100) {
         return this.isValidNumber(number) && +number > 0 && +number <= limit;
     }
 
+  /*
+
+  */
     isValidNumber (number) {
         return !isNaN(number);
     }

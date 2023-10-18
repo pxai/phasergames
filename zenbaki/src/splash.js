@@ -8,6 +8,9 @@ export default class Splash extends Phaser.Scene {
     preload () {
     }
 
+  /*
+
+  */
     create () {
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
@@ -22,11 +25,17 @@ export default class Splash extends Phaser.Scene {
         // this.playMusic();
     }
 
+  /*
+
+  */
     startGame () {
         if (this.theme) this.theme.stop();
         this.scene.start("transition", { next: "game", name: "STAGE", number: 0, time: 30 });
     }
 
+  /*
+
+  */
     showLogo () {
         //this.gameLogo = this.add.bitmapText(this.center_width, 450, "mainFont", "WarChat", 120).setOrigin(0.5);
         this.gameLogo = this.add.bitmapText(this.center_width, 240, "mainFont", "Zenbaki", 120).setOrigin(0.5).setTint(0xFFD700).setDropShadow(2, 3, 0xbf2522, 0.7);;
@@ -54,6 +63,9 @@ export default class Splash extends Phaser.Scene {
         });
     }
 
+  /*
+
+  */
     showInstructions () {
         this.add.bitmapText(this.center_width, 450, "mainFont", "Zenbaki!", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);
         this.add.bitmapText(this.center_width, 500, "mainFont", "!help", 30).setOrigin(0.5).setTint(0xFFD700).setDropShadow(1, 2, 0xbf2522, 0.7);

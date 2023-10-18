@@ -17,6 +17,9 @@ export default class Game extends Phaser.Scene {
     init () {
     }
 
+  /*
+
+  */
     preload () {
         const urlParams = new URLSearchParams(window.location.search);
         let parambg = urlParams.get('background') || "#00b140";
@@ -31,6 +34,9 @@ export default class Game extends Phaser.Scene {
         this.result = Phaser.Math.Between(1, 9);
     }
 
+  /*
+
+  */
     create () {
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
@@ -44,14 +50,23 @@ export default class Game extends Phaser.Scene {
         this.addUI();
     }
 
+  /*
+
+  */
     loadGame() {
         this.generateNextOperation ()
     }
 
+  /*
+
+  */
     addChat () {
         this.chat = new Chat(this);
     }
 
+  /*
+
+  */
     addUI () {
         this.circle = this.add.circle(this.center_width, this.center_height - 50, 100, 0xf22c2e);
         this.numberText = this.add.bitmapText(this.center_width, this.center_height - 50, "mainFont", this.number, 120).setOrigin(0.5).setTint(0x000000)
@@ -61,6 +76,9 @@ export default class Game extends Phaser.Scene {
         this.byText = this.add.bitmapText(this.center_width, this.height -10, "mainFont", "by Pello", 10).setOrigin(0.5).setTint(0x000000);
     }
 
+  /*
+
+  */
     addClouds () {
         this.cloudLeft = this.add.image(this.center_width - 100, this.center_height - 120 + Phaser.Math.Between(-15, 15), "cloud" + Phaser.Math.Between(1, 14)).setScale(Phaser.Math.Between(5, 9) * 0.1);
         this.cloudRight = this.add.image(this.center_width + 100, this.center_height + 30 + Phaser.Math.Between(-15, 15), "cloud" + Phaser.Math.Between(1, 14)).setScale(Phaser.Math.Between(4, 6) * 0.1);
@@ -84,6 +102,9 @@ export default class Game extends Phaser.Scene {
         })
     }
 
+  /*
+
+  */
     addScore () {
         const scoreBoard = this.createScoreBoard()
         this.add.bitmapText(this.center_width, 25, "mainFont", "zenbaki", 25).setOrigin(0.5).setTint(0x000000);
@@ -97,6 +118,9 @@ export default class Game extends Phaser.Scene {
     }
 
 
+  /*
+
+  */
     addPlayer (name) {
         if (this.allPlayers[name]) return this.allPlayers[name];
         const player = new Player(this, name);
@@ -105,6 +129,9 @@ export default class Game extends Phaser.Scene {
         return player;
     }
 
+  /*
+
+  */
     guess (playerName, number) {
         if (this.failed) return;
         console.log("Game> guess: ", playerName, number)
@@ -138,16 +165,25 @@ export default class Game extends Phaser.Scene {
         console.log
     }
 
+  /*
+
+  */
     calculateScore () {
        const operatorPoints = {'+': 1, '-': 2, '*': 4, '/': 5};
         console.log("Game> calculateScore: ", this.counter,this.nextOperator, operatorPoints[this.nextOperator])
        return this.counter + operatorPoints[this.nextOperator];
     }
 
+  /*
+
+  */
     isValidNumber (number) {
         return !isNaN(number) && number >= 0 && number < this.width;
     }
 
+  /*
+
+  */
     loadAudios () {
         this.audios = {
             win: this.sound.add("win"),
@@ -162,6 +198,9 @@ export default class Game extends Phaser.Scene {
         });
     }
 
+  /*
+
+  */
     playRandom(key) {
         this.audios[key].play({
           rate: Phaser.Math.Between(1, 1.5),
@@ -188,6 +227,9 @@ export default class Game extends Phaser.Scene {
 
     }
 
+  /*
+
+  */
     showResult () {
         const scoreBoard = this.createScoreBoard()
         this.scoreRectangle = this.add.rectangle(0, 0, this.width, this.height, this.foregroundColor, 0.9).setOrigin(0, 0);
@@ -222,16 +264,25 @@ export default class Game extends Phaser.Scene {
         }, null, this)
     }
 
+  /*
+
+  */
     createScoreBoard () {
         return [...Object.values(this.allPlayers)].sort((player1, player2) => player2.score - player1.score);
     }
 
+  /*
+
+  */
     resetScore () {
         this.number = 0;
         this.counter = 0;
         this.failed = false;
     }
 
+  /*
+
+  */
     generateNextOperation () {
         this.counter++;
         this.number = this.result;
@@ -243,6 +294,9 @@ export default class Game extends Phaser.Scene {
         this.playAudio("drip");
     }
 
+  /*
+
+  */
     selectOperator () {
         if (this.number % this.nextOperand === 0 && this.nextOperand !== 1) {
             console.log("Choice 1", this.number, this.nextOperand, this.result)
@@ -269,6 +323,9 @@ export default class Game extends Phaser.Scene {
         })
     }
 
+  /*
+
+  */
     showShame (playerName) {
         const rants = ["You're a disgrace", "Shame on you", "You dishonor us all", "You're a disappointment", "You're a failure", "You dishonor this dojo"]
         this.scoreText1.setText(Phaser.Math.RND.pick(rants)).setAlpha(1);
@@ -284,6 +341,9 @@ export default class Game extends Phaser.Scene {
         })
     }
 
+  /*
+
+  */
     showNextOperation (operator, nextNumber) {
         this.numberText.setText(this.number)
         this.operatorText.setText(`${operator}${nextNumber}`)
