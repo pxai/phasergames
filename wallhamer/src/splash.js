@@ -5,15 +5,11 @@ export default class Splash extends Phaser.Scene {
         super({ key: "splash" });
     }
 
-    preload () {
-    }
-
     create () {
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-
 
         this.cameras.main.setBackgroundColor(0x000000);
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
@@ -21,11 +17,13 @@ export default class Splash extends Phaser.Scene {
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
         this.input.keyboard.on("keydown-ENTER", () => this.startGame(), this);
         this.playMusic();
-        //this.showPlayer();
         this.showTitle();
         this.playAudioRandomly("stone")
     }
 
+    /*
+
+    */
     showTitle () {
         "WALL".split("").forEach((letter, i) => {
             this.time.delayedCall(200 * (i+1),
@@ -54,6 +52,7 @@ export default class Splash extends Phaser.Scene {
             );
         })
     }
+
     playAudioRandomly(key) {
         const volume = Phaser.Math.Between(0.8, 1);
         const rate = 1; // Phaser.Math.Between(0.9, 1);
@@ -63,10 +62,6 @@ export default class Splash extends Phaser.Scene {
     startGame () {
         if (this.theme) this.theme.stop();
         this.scene.start("transition", {next: "game", name: "STAGE", number: 0, time: 30})
-    }
-
-    showPlayer () {
-
     }
 
     playMusic (theme="splash") {
@@ -81,9 +76,12 @@ export default class Splash extends Phaser.Scene {
           loop: true,
           delay: 0
       })
-      }
-  
+    }
 
+
+    /*
+
+    */
     showInstructions() {
         this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5);
         this.add.bitmapText(this.center_width, 500, "pixelFont", "S/DOWN: BUILD WALL", 30).setOrigin(0.5);

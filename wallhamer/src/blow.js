@@ -3,7 +3,6 @@ class Blow extends Phaser.GameObjects.Rectangle {
         super(scene, x, y, width, height, 0xffffff);
         this.scene = scene;
         this.type = type;
-        //this.setAlpha(0);
         this.y = y;
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -12,9 +11,9 @@ class Blow extends Phaser.GameObjects.Rectangle {
             targets: this,
             duration: 300,
             scale: {from: 1, to: 0},
-            onComplete: () => { this.destroy();} 
+            onComplete: () => { this.destroy();}
         })
      }
   }
-  
+
   export default Blow;

@@ -3,9 +3,6 @@ export default class Outro extends Phaser.Scene {
         super({ key: "outro" });
     }
 
-    preload () {
-    }
-
     create () {
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
@@ -21,8 +18,7 @@ export default class Outro extends Phaser.Scene {
             "Made in 3 days for Minijam\n by Pello\n\n Press SPACE"
         ];
         this.showHistory();
-        //this.showPlayer();
-        //this.playMusic();
+
         this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
     }
@@ -34,7 +30,6 @@ export default class Outro extends Phaser.Scene {
         this.text.forEach((line, i) => {
                 this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this);
         });
-        //this.time.delayedCall(4000, () => this.showPlayer(), null, this);
     }
 
     playMusic (theme="outro") {
@@ -49,7 +44,7 @@ export default class Outro extends Phaser.Scene {
           loop: true,
           delay: 0
       })
-      }
+    }
 
     showLine(text, y) {
         let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "pixelFont", text, 25).setOrigin(0.5).setAlpha(0));
@@ -60,9 +55,7 @@ export default class Outro extends Phaser.Scene {
         })
     }
 
-
     startSplash () {
-        // this.theme.stop();
         this.scene.start("splash");
     }
 }

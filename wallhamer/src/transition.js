@@ -9,9 +9,9 @@ export default class Transition extends Phaser.Scene {
         this.next = data.next;
     }
 
-    preload () {
-    }
+    /*
 
+    */
     create () {
         const messages = ["TUTORIAL", "STAGE 1", "STAGE 2", "STAGE 3", "STAGE 4" ];
         this.width = this.sys.game.config.width;
@@ -31,6 +31,9 @@ export default class Transition extends Phaser.Scene {
         this.time.delayedCall(3000, () => { this.loadNext() }, null, this)
     }
 
+    /*
+
+    */
     addScore() {
         this.scoreCoins = this.add.bitmapText(this.center_width + 32, this.center_height - 100, "pixelFont", "x" + this.registry.get("coins"), 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
         this.scoreCoinsLogo = this.add.sprite(this.center_width - 32, this.center_height - 100, "coin").setScale(0.7).setOrigin(0.5).setScrollFactor(0)
@@ -42,9 +45,9 @@ export default class Transition extends Phaser.Scene {
         this.scoreCoinsLogo.play({ key: "coinscore", repeat: -1 });
       }
 
-    update () {
-    }
+    /*
 
+    */
     loadNext () {
         this.scene.start("game", { name: this.name, number: this.number  });
     }

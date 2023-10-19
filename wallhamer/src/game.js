@@ -209,6 +209,9 @@ export default class Game extends Phaser.Scene {
 
     }
 
+    /*
+
+    */
     pickCoin (player, coin) {
       if (!coin.disabled) {
         coin.pick();

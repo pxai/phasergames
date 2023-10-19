@@ -1,7 +1,7 @@
 
 import Blow from "./blow";
 import Brick from "./brick";
-import { JumpSmoke, RockSmoke } from "./particle";
+import { JumpSmoke } from "./particle";
 
 class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, health = 10) {
@@ -36,8 +36,10 @@ class Player extends Phaser.GameObjects.Sprite {
       this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     }
 
-    init () {
+    /*
 
+    */
+    init () {
         this.scene.anims.create({
             key: "startidle",
             frames: this.scene.anims.generateFrameNumbers("walt", { start: 0, end: 1 }),
@@ -87,21 +89,22 @@ class Player extends Phaser.GameObjects.Sprite {
         this.anims.play("startidle", true);
 
         this.on('animationcomplete', this.animationComplete, this);
-    }    
-  
+    }
 
+
+    /*
+
+    */
     update () {
         if (this.dead) return;
         if (this.jumping ) {
-           // if (Phaser.Math.Between(1,101) > 100) new Star(this.scene, this.x, this.y + 5)
             if (this.body.velocity.y >= 0) {
                 this.body.setGravityY(700)
                 this.falling = true;
             }
         }
-        //if (Phaser.Input.Keyboard.JustDown(this.down)) {
+
         if ((Phaser.Input.Keyboard.JustDown(this.cursor.up) || Phaser.Input.Keyboard.JustDown(this.W)) && this.body.blocked.down) {
-            // new Dust(this.scene, this.x, this.y)
             this.building = false;
             this.body.setVelocityY(this.jumpVelocity);
             this.body.setGravityY(400)
@@ -122,28 +125,25 @@ class Player extends Phaser.GameObjects.Sprite {
             if (this.body.blocked.down) { this.anims.play("playerwalk", true); }
             this.right = false;
             this.flipX = true;
-            this.body.setVelocityX(-this.walkVelocity);  
+            this.body.setVelocityX(-this.walkVelocity);
 
         } else {
-            if (this.body.blocked.down) { 
+            if (this.body.blocked.down) {
                 if (this.jumping) {this.scene.playAudio("land");this.landSmoke();}
                 this.jumping = false;
                 this.falling = false;
 
-                if (!this.building)
-                    this.anims.play("playeridle", true); 
+                if (!this.building) this.anims.play("playeridle", true);
             }
 
             this.body.setVelocityX(0)
         }
 
-        if (Phaser.Input.Keyboard.JustDown(this.spaceBar)) {
+        if (Phaser.Input.Keyboard.JustDown(this.spaceBar))
             this.destroyBlock()
-        }
 
-        if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.S)) {
+        if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.S))
             this.buildBlock()
-        }
 
     }
 
@@ -165,7 +165,6 @@ class Player extends Phaser.GameObjects.Sprite {
             new JumpSmoke(this.scene, this.x + (offsetX + varX), this.y + offsetY)
         })
     }
-    
 
     buildBlock() {
         this.building = true;
@@ -179,7 +178,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
     destroyBlock() {
         this.building = true;
-        this.anims.play("playerhammer", true); 
+        this.anims.play("playerhammer", true);
         const offsetX = this.right ? 32 : -32;
         const size = this.mjolnir ? 128 : 32;
         this.scene.blows.add(new Blow(this.scene, this.x + offsetX, this.y, size, size))
@@ -202,22 +201,23 @@ class Player extends Phaser.GameObjects.Sprite {
 
     hitFloor() {
         if (this.jumping) {
-            ////this.scene.playAudio("ground")
-
             this.jumping = false;
         }
     }
 
+    /*
+
+    */
     hit () {
         this.health--;
         this.anims.play("playerdead", true);
         this.body.enable = false;
-        if (this.health === 0) {
-            this.die();
-        }
-
+        if (this.health === 0) { this.die(); }
     }
 
+    /*
+
+    */
     die () {
         this.dead = true;
         this.anims.play("playerdead", true);
@@ -226,7 +226,9 @@ class Player extends Phaser.GameObjects.Sprite {
         this.scene.restartScene();
     }
 
+    /*
 
+    */
     applyPrize (prize) {
         switch (prize) {
             case "speed":
@@ -265,8 +267,6 @@ class Player extends Phaser.GameObjects.Sprite {
             repeat: 10
         });
     }
-
 }
 
 export default Player;
-  
