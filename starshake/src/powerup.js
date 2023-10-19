@@ -1,10 +1,10 @@
-import Particle from "./particle";
+import { Particle } from "./particle";
 import Explosion from "./explosion";
 
 const TYPES = {
     "chocolate": 0xAF8057,
     "vanila": 0xfff6d5,
-    "fruit": 0x00ff00
+    "fruit": 0x00ff00,
 };
 
 class PowerUp extends Phaser.GameObjects.Sprite {
@@ -24,18 +24,12 @@ class PowerUp extends Phaser.GameObjects.Sprite {
         this.init();
    }
 
-  /*
-
-  */
    spawnShadow (x, y) {
     this.shadow = this.scene.add.image(x + 20, y + 20, "plenny0").setTint(0x000000).setAlpha(0.4)
     this.scene.physics.add.existing(this.shadow);
     this.shadow.body.setVelocityX(-100)
    }
 
-  /*
-
-  */
     init () {
         this.scene.anims.create({
             key: this.name,

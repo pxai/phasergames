@@ -15,11 +15,12 @@ export default class Splash extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.addBackground();
         this.showLogo();        ;
+        this.registry.set("currentPowerUp", 0)
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.transitionToChange(), this);
 
-        //this.playMusic();
+        this.playMusic();
         //this.showPlayer();
     }
 
@@ -72,16 +73,13 @@ export default class Splash extends Phaser.Scene {
           timeline.play();
     }
 
-    showPlayer () {
-
-    }
 
     playMusic (theme="splash") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 1,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,
@@ -92,12 +90,13 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 500, "pixelFont", "SPACE: track beam", 30).setOrigin(0.5);
-        this.add.bitmapText(this.center_width, 550, "pixelFont", "B: shoot coins", 30).setOrigin(0.5);
-        this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "Press SPACE to start", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 450, "wendy", "Arrows to move", 60).setOrigin(0.5).setDropShadow(3, 4, 0x222222, 0.7);
+        this.add.bitmapText(this.center_width, 500, "wendy", "SPACE to shoot", 60).setOrigin(0.5).setDropShadow(3, 4, 0x222222, 0.7);;
+        this.add.sprite(this.center_width - 95, 598, "pello_logo").setOrigin(0.5).setScale(0.3).setTint(0x000000).setAlpha(0.7)
+        this.add.sprite(this.center_width - 100, 590, "pello_logo").setOrigin(0.5).setScale(0.3)
+
+        this.add.bitmapText(this.center_width + 30, 590, "wendy", "PELLO", 50).setOrigin(0.5).setDropShadow(3, 4, 0x222222, 0.7)
+        this.space = this.add.bitmapText(this.center_width, 680, "wendy", "Press SPACE to start", 60).setOrigin(0.5).setDropShadow(3, 4, 0x222222, 0.7);;
         this.tweens.add({
             targets: this.space,
             duration: 300,

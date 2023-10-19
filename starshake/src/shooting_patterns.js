@@ -7,40 +7,37 @@ export default class ShootingPatterns {
         this.shootingMethods = {
             "water":  this.single.bind(this),
             "fruit":  this.tri.bind(this),
+            "vanila":  this.quintus.bind(this),
+            "chocolate":  this.massacre.bind(this),
         };
     }
 
-  /*
-
-  */
     shoot (x, y, powerUp) {
         this.shootingMethods[powerUp](x, y, powerUp);
     }
 
-  /*
-
-  */
     single (x, y, powerUp) {
         this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name));
     }
 
-  /*
-
-  */
     tri (x, y, powerUp) {
-        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, -20));
+        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, -60));
         this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name));
-        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, 20));
+        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, 60));
     }
 
-  /*
-
-  */
     quintus (x, y, powerUp) {
-        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, -40));
-        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, -20));
-        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name));
-        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, 20));
-        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, 40));
+        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, -300));
+        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, 300));
+        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, -300, 500));
+        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, 300, 500));
+    }
+
+    massacre (x, y, powerUp) {
+        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, 300, 0));
+        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, -300, 0));
+        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, 0, 500));
+        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, 30));
+        this.scene.shots.add(new Shot(this.scene, x, y, powerUp, this.name, 60));
     }
 }

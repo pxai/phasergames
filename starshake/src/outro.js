@@ -13,17 +13,19 @@ export default class Outro extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.introLayer = this.add.layer();
         this.splashLayer = this.add.layer();
-        this.text = [ 
-            "The U.F.I.S.H. recovered the engines.",
-            "After a terrible fishing day,",
-            "they decided to move to Europa moon,",
-            "to fish under the ice",
-            "But that is another story..."
+        this.text = [
+            "Score: " + this.registry.get("score_player1"),
+            "The evil forces among with",
+            "their tyrannical leader GUINXU",
+            "were finally wiped out.",
+            "Thanks to commander Alva",
+            "And the powah of the Plenny Shakes",
+            " - press enter - "
         ];
         this.showHistory();
-        //this.showPlayer();
+        this.showPlayer();
         //this.playMusic();
-        this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
+
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
     }
 
@@ -49,7 +51,7 @@ export default class Outro extends Phaser.Scene {
       }
 
     showLine(text, y) {
-        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "pixelFont", text, 25).setOrigin(0.5).setAlpha(0));
+        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "wendy", text, 50).setOrigin(0.5).setAlpha(0));
         this.tweens.add({
             targets: line,
             duration: 2000,
