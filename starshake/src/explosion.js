@@ -1,5 +1,5 @@
 class Explosion  {
-    constructor (scene, x, y, radius = 30, min = 5, max = 7) {
+    constructor (scene, x, y, radius = 5, min = 5, max = 7) {
         this.scene = scene;
         this.radius = radius;
         this.x = x;
@@ -15,9 +15,6 @@ class Explosion  {
         this.init();
     }
 
-    /*
-
-    */
     init () {
         this.scene.tweens.add({
             targets: this.lights,

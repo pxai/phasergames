@@ -1,18 +1,18 @@
-import Particle from "./particle";
+import { Particle } from "./particle";
 
 const TYPES = {
     "chocolate": { color: 0xAF8057, radius: 16, intensity: 0.4 }, 
     "vanila": { color: 0xfff6d5, radius: 16, intensity: 0.4 },
-    "fruit": { color: 0x00ff00, radius: 16, intensity: 0.4 },
-    "water": { color: 0x0000cc, radius: 16, intensity: 0.4 },
-    "foe": { color: 0xffffff, radius: 16, intensity: 0.4 }
+    "fruit": { color: 0xffffff, radius: 16, intensity: 0.4 },
+    "water": { color: 0xffffff, radius: 16, intensity: 0.4 },
+    "foe": { color: 0x00ff00, radius: 16, intensity: 0.4 }
 };
 
 class Shot extends Phaser.GameObjects.PointLight {
-    constructor (scene, x, y, type = "water", playerName, velocityX = 0, velocityY = -300) {
+    constructor (scene, x, y, type = "water", playerName, velocityX = 0, velocityY = -500) {
         const { color, radius, intensity } = TYPES[type];
         super(scene, x, y, color, radius, intensity)
-
+        this.name = "shot";
         this.scene = scene;
         this.playerName = playerName;
         scene.add.existing(this);
@@ -46,12 +46,6 @@ class Shot extends Phaser.GameObjects.PointLight {
     }
 
     update () {
-    }
-
-    explode() {
-        Array(5).fill(0).forEach(a => { new Particle(this.scene, this.x, this.y,  50, -1) });
-        
-        this.destroy();
     }
 }
 
