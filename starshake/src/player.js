@@ -39,19 +39,19 @@ class Player extends Phaser.GameObjects.Sprite {
             frameRate: 10,
             repeat: -1
           });
-          this.scene.anims.create({
+        this.scene.anims.create({
             key: this.name + "right",
             frames: this.scene.anims.generateFrameNumbers(this.name, { start: 1, end: 1 }),
             frameRate: 10,
             repeat: -1
           });
-          this.scene.anims.create({
+        this.scene.anims.create({
             key: this.name + "left",
             frames: this.scene.anims.generateFrameNumbers(this.name, { start: 2, end: 2 }),
             frameRate: 10,
             repeat: -1
           });
-          this.anims.play(this.name, true)
+        this.anims.play(this.name, true)
         this.SPACE = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.cursor = this.scene.input.keyboard.createCursorKeys();
         this.W = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);

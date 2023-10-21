@@ -9,9 +9,9 @@ export default class Transition extends Phaser.Scene {
         this.next = data.next;
     }
 
-    preload () {
-    }
+    /*
 
+    */
     create () {
         const messages = ["Fire at will", "Beware the tanks", "Shoot down the UFOs", "FINAL BOSS"];
 
@@ -39,9 +39,6 @@ export default class Transition extends Phaser.Scene {
           delay: 0
         })
       }
-    
-    update () {
-    }
 
     loadNext () {
         this.scene.start(this.next, { name: this.name, number: this.number, time: this.time });

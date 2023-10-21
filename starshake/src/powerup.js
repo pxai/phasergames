@@ -1,4 +1,3 @@
-import { Particle } from "./particle";
 import Explosion from "./explosion";
 
 const TYPES = {

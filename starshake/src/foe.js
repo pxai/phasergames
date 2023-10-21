@@ -16,19 +16,16 @@ class Foe extends Phaser.GameObjects.Sprite {
         this.lives = TYPES[name].lives;
         this.scene = scene;
         this.id = Math.random();
-        if (this.name !== "foe2")
-            this.spawnShadow(x, y)
+        if (this.name !== "foe2") { this.spawnShadow(x, y) }
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
-
         this.body.setCircle(19);
         this.body.setOffset(12, 12);
         this.body.setVelocityX(velocityX);
         this.body.setVelocityY(velocityY);
         this.setData('vector', new Phaser.Math.Vector2());
-        if (this.name === "guinxu")
-            this.setGuinxuShot();
+        if (this.name === "guinxu") { this.setGuinxuShot(); }
         this.init();
    }
 
@@ -70,26 +67,22 @@ class Foe extends Phaser.GameObjects.Sprite {
             frames: this.scene.anims.generateFrameNumbers(this.name),
             frameRate: 10,
             repeat: -1
-          });
-
-          this.anims.play(this.name, true)
-
-          this.direction = -1;
+        });
+        this.anims.play(this.name, true)
+        this.direction = -1;
     }
 
     /*
 
     */
     update () {
-
         if (this.y > this.scene.height + 64) {
             if (this.name !== "foe2") this.shadow.destroy();
             this.destroy();
         }
 
-        if (this.name === "guinxu") {
-            if (Phaser.Math.Between(1, 6) > 5)
-                this.guinxuShot();
+        if (this.name === "guinxu" && Phaser.Math.Between(1, 6) > 5) {
+            this.guinxuShot();
         } else if (Phaser.Math.Between(1, 101) > 100) {
             if (!this.scene || !this.scene.player) return;
             this.scene.playAudio("foeshot")
@@ -99,8 +92,7 @@ class Foe extends Phaser.GameObjects.Sprite {
             this.scene.physics.moveTo(shot.shadow, this.scene.player.x, this.scene.player.y, 300);
         }
 
-        if (this.name !== "foe2")
-            this.updateShadow();
+        if (this.name !== "foe2") { this.updateShadow(); }
     }
 
     /*
@@ -110,10 +102,8 @@ class Foe extends Phaser.GameObjects.Sprite {
         if (!this.scene || !this.scene.player) return;
 
         this.scene.playAudio("foeshot")
-
         let shot = new FoeShot(this.scene, this.x, this.y, "foe", this.name, this.pattern[this.patternIndex], 300)
         this.scene.foeShots.add(shot);
-
         this.patternIndex = this.patternIndex + 1 === this.pattern.length ? 0 : ++this.patternIndex;
     }
 

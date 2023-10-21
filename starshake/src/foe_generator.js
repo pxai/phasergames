@@ -190,7 +190,6 @@ export default class FoeGenerator {
         if (foe === null || !foe.active) return;
         let t = foe.z;
         let vec = foe.getData('vector');
-
         this.path.getPoint(t, vec);
         foe.setPosition(vec.x, vec.y);
         foe.shadow.setPosition(vec.x + 20, vec.y + 20);

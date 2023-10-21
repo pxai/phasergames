@@ -39,10 +39,8 @@ export default class Game extends Phaser.Scene {
       this.addFoes();
       this.addPlayers();
       this.addPowerUps();
-
       this.addShots();
       this.loadAudios();
-
       this.addColliders();
     }
 
@@ -71,8 +69,10 @@ export default class Game extends Phaser.Scene {
         "player2": {},
       };
 
-      this.scores["player1"]["scoreText"] = this.add.bitmapText(150, 16, "wendy", String(this.registry.get("score_player1")).padStart(6, '0'), 50).setOrigin(0.5).setScrollFactor(0)
-      this.scores["player2"]["scoreText"] = this.add.bitmapText(this.width - 150, 16, "wendy", "0".padStart(6,"0"), 50).setOrigin(0.5).setScrollFactor(0)
+      this.scores["player1"]["scoreText"] = this.add.bitmapText(150, 16, "wendy", String(this.registry.get("score_player1"))
+        .padStart(6, '0'), 50).setOrigin(0.5).setScrollFactor(0)
+      this.scores["player2"]["scoreText"] = this.add.bitmapText(this.width - 150, 16, "wendy", "0".padStart(6,"0"), 50)
+        .setOrigin(0.5).setScrollFactor(0)
     }
 
     /*
@@ -141,7 +141,6 @@ export default class Game extends Phaser.Scene {
     */
     onWorldBounds (body, t) {
       const name = body.gameObject.name.toString();
-
       if (["foeshot","shot"].includes(name)) {
         body.gameObject.shadow.destroy();
         body.gameObject.destroy();
@@ -190,7 +189,6 @@ export default class Game extends Phaser.Scene {
         this.updateScore(shot.playerName, foe.points);
         foe.dead()
       }
-
     }
 
     /*
@@ -230,7 +228,7 @@ export default class Game extends Phaser.Scene {
         alpha: {from: 0.5, to: 1},
         scale: { from: 1.4, to: 1},
         repeat: 3
-    });
+      });
       powerUp.destroy();
     }
 
@@ -276,7 +274,6 @@ export default class Game extends Phaser.Scene {
     update() {
       if (this.player)
       this.player.update();
-
       this.foes.update();
       this.background.tilePositionY -= 10;
     }
@@ -289,7 +286,6 @@ export default class Game extends Phaser.Scene {
       this.foeGroup.children.entries.forEach(foe => foe.shadow.destroy());
       this.shots.children.entries.forEach(shot => shot.shadow.destroy());
       this.foeShots.children.entries.forEach(shot => shot.shadow.destroy());
-
       this.time.delayedCall(2000, () => {this.finishScene();}, null, this)
     }
 
@@ -298,11 +294,8 @@ export default class Game extends Phaser.Scene {
     */
     finishScene () {
       this.game.sound.stopAll();
-
       this.scene.stop("game");
-
       const scene = this.number < 5 ? "transition" : "outro"
-
       this.scene.start(scene, {next: "game", name: "STAGE", number: this.number + 1});
     }
 
