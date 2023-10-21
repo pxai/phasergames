@@ -516,8 +516,6 @@ export default class Game extends Scene3D {
     }
 
     finishScene (name = "outro") {
-      //this.sky.stop();
-      //this.theme.stop();
       this.scene.start(name, {next: "underwater", name: "STAGE", number: this.number + 1, time: this.time * 2});
     }
 

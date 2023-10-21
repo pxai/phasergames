@@ -8,9 +8,6 @@ export default class Splash extends Scene3D {
         super({ key: "splash" });
     }
 
-    preload () {
-    }
-
   /*
 
   */
@@ -21,18 +18,10 @@ export default class Splash extends Scene3D {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
         this.utils = new Utils(this);
-
         this.loadAudios()
-
         this.showIntro();
         this.cameras.main.setBackgroundColor(0x000000);
-
-        // this.time.delayedCall(1000, () => this.showInstructions(), null, this);
-
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
-
-        //this.playMusic();
-        //this.showPlayer();
     }
 
   /*
@@ -61,10 +50,6 @@ export default class Splash extends Scene3D {
                 to: 130
               },
           })
-    }
-
-    showPlayer () {
-
     }
 
   /*

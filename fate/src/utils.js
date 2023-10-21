@@ -5,7 +5,6 @@ export default class Utils {
         this.scene = scene;
     }
 
-
   /*
 
   */

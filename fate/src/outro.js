@@ -25,8 +25,6 @@ export default class Outro extends Phaser.Scene {
             "I see no god inside here."
         ];
         this.showHistory();
-        //this.showPlayer();
-        //this.playMusic();
         this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
     }
@@ -38,7 +36,6 @@ export default class Outro extends Phaser.Scene {
         this.text.forEach((line, i) => {
                 this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this);
         });
-       // this.time.delayedCall(4000, () => this.showPlayer(), null, this);
     }
 
     playMusic (theme="outro") {
@@ -69,8 +66,6 @@ export default class Outro extends Phaser.Scene {
 
 
     startSplash () {
-        // this.theme.stop();
-        //location.reload();
        this.scene.start("bootstrap");
     }
 }

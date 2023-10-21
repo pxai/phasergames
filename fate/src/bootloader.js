@@ -6,8 +6,23 @@ export default class Bootloader extends Scene3D {
         super({ key: "bootloader" });
     }
 
+    /*
+
+    */
     preload () {
         this.createBars();
+        this.setLoadEvents();
+        this.loadFonts();
+        this.loadImages();
+        this.loadAudios();
+        this.loadVideos();
+        this.setRegistry()
+    }
+
+    /*
+
+    */
+    setLoadEvents () {
         this.load.on(
             "progress",
             function (value) {
@@ -25,13 +40,40 @@ export default class Bootloader extends Scene3D {
         this.load.on("complete", () => {
             this.scene.start("splash");
         },this);
+    }
 
+    /*
+
+    */
+    loadFonts () {
+        this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
+        this.load.bitmapFont("computer", "assets/fonts/computer.png", "assets/fonts/computer.xml");
+    }
+
+    /*
+
+    */
+    loadImages () {
+        this.load.image("pello_logo_old", "assets/images/pello_logo_old.png");
+    }
+
+    /*
+
+    */
+    setRegistry () {
+        this.registry.set("deviation", "0")
+        this.registry.set("probes", "20")
+    }
+
+    /*
+
+    */
+    loadAudios () {
         Array(4).fill(0).forEach((e, i) => { this.load.audio(`thunder${i}`, `./assets/sounds/thunder${i}.mp3`);})
         Array(2).fill(0).forEach((e, i) => { this.load.audio(`passby${i}`, `./assets/sounds/passby${i}.mp3`);})
         Array(4).fill(0).forEach((_,i) => {
             this.load.audio(`hit${i+1}`,`assets/sounds/hit${i+1}.mp3`)
         });
-        this.load.image("pello_logo_old", "assets/images/pello_logo_old.png");
         this.load.image("logo", "assets/images/logo.png");
         this.load.audio("hymn", "assets/sounds/hymn.mp3");
         this.load.audio("music", "assets/sounds/music.mp3");
@@ -40,17 +82,15 @@ export default class Bootloader extends Scene3D {
         this.load.audio("voice_start", "assets/sounds/voice_start.mp3");
         this.load.audio("voice_drop", "assets/sounds/voice_drop.mp3");
         this.load.audio("voice_hit", "assets/sounds/voice_hit.mp3");
-        Array(4).fill(0).forEach((e, i) => {this.load.video(`video${i}`, `./assets/videos/video${i}.mp4`, 'loadeddata', false, true); });
-        this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
-        this.load.bitmapFont("computer", "assets/fonts/computer.png", "assets/fonts/computer.xml");
-
-
-        this.registry.set("deviation", "0")
-        this.registry.set("probes", "20")
     }
 
-    create () {
-      }
+
+    /*
+
+    */
+    loadVideos () {
+        Array(4).fill(0).forEach((e, i) => {this.load.video(`video${i}`, `./assets/videos/video${i}.mp4`, 'loadeddata', false, true); });
+    }
 
     createBars () {
         this.loadBar = this.add.graphics();

@@ -3,9 +3,6 @@ export default class GameOver extends Phaser.Scene {
         super({ key: "game_over" });
     }
 
-    preload () {
-    }
-
   /*
 
   */
@@ -26,8 +23,7 @@ export default class GameOver extends Phaser.Scene {
             "awaits for reeducation..."
         ];
         this.showHistory();
-        //this.showPlayer();
-        //this.playMusic();
+
         this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
     }
@@ -39,7 +35,6 @@ export default class GameOver extends Phaser.Scene {
         this.text.forEach((line, i) => {
                 this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this);
         });
-       // this.time.delayedCall(4000, () => this.showPlayer(), null, this);
     }
 
   /*

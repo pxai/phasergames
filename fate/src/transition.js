@@ -12,14 +12,10 @@ export default class Transition extends Scene3D {
         this.next = data.next;
     }
 
-    preload () {
-    }
-
   /*
 
   */
     create () {
-
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
@@ -29,7 +25,6 @@ export default class Transition extends Scene3D {
         this.showInstructions();
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
         this.playMusic();
-        //setTimeout(() => this.loadNext(), 300);
     }
 
     playMusic (theme="music") {
@@ -65,14 +60,12 @@ export default class Transition extends Scene3D {
             text2 = this.utils.typeText(" PRESS SPACE", "computer", this.center_width + 190,  this.center_height + 100)
         }, null, this);
 
-        //this.time.delayedCall(7000, () => this.playMusic(), null, this)
         this.time.delayedCall(4000, () => {
             let text3 = this.utils.typeText(" A GAME BY PELLO", "computer", this.center_width + 140, this.center_height + 200)
             let pelloLogo = this.add.image(this.center_width, this.center_height + 300, "pello_logo_old").setScale(0.2).setOrigin(0.5)
         }, null, this)
     }
-    update () {
-    }
+
 
     loadNext () {
         if (this.utils.typeAudio) this.utils.typeAudio.stop();

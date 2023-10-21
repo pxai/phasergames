@@ -1,5 +1,4 @@
 export default class BulletHell {
-
     constructor () {
         this._functions = [ this.flat, this.tlaf, this.horizontal, this.multiWave, this.cos, this.tan, this.ripple]
     }
@@ -12,7 +11,7 @@ export default class BulletHell {
 
   */
     sin (x, time) {
-        return Math.sin(x);//Math.PI * (x + time));
+        return Math.sin(x);
     }
 
     flat (x, y, z) {
