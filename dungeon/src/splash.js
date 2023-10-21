@@ -91,7 +91,6 @@ export default class Splash extends Phaser.Scene {
 
     generateBubbles () {
         this.timer = this.time.addEvent({ delay: 1000, callback: () => {
-            console.log("Generating layer bubble")
             new Bubble(this, Phaser.Math.Between(0, this.width), 400)
         }, callbackScope: this, loop: true });
     }

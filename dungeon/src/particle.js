@@ -4,9 +4,7 @@ export default class Dust extends Phaser.GameObjects.Sprite {
         this.scene = scene;
         this.name = name;
         this.setScale(.5)
-
 		this.scene.add.existing(this)
-
         this.init(tween);
     }
 
@@ -15,14 +13,12 @@ export default class Dust extends Phaser.GameObjects.Sprite {
 
   */
     init (tween) {
-
         if (tween) {
             this.scene.tweens.add({
                 targets: this,
                 duration: Phaser.Math.Between(500, 1000),
                 alpha: { from: 1, to: 0 },
                 onComplete: () => {
-                    console.log("Destroyed!");
                     this.destroy();
                 },
             });

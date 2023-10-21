@@ -92,9 +92,7 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
   */
     respawn () {
         this.loadedTween.destroy();
-
         if (this.loaded.name === "wizard") {
-            console.log("RESPAWN!! ", this.loaded.name, this.x, this.y)
             new Wizard(this.scene, this.x, this.y);
         } else if (this.loaded.name === "bat") {
             new Bat(this.scene, this.x, this.y)

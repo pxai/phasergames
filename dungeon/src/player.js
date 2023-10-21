@@ -261,7 +261,6 @@ export default class Player {
 
   */
     friction () {
-        console.log("Friction!!")
         Array(Phaser.Math.Between(2, 4)).fill(0).forEach(i => {
             new Dust(this.scene, this.sprite.x + Phaser.Math.Between(-8, 8), this.sprite.y + Phaser.Math.Between(-32, 32))
         })
@@ -272,7 +271,6 @@ export default class Player {
   */
     land () {
        if (this.sprite.body.velocity.y < 1) return;
-       console.log("LAND", this.sprite.body.velocity.y)
        Array(Phaser.Math.Between(3, 6)).fill(0).forEach(i => {
             new Dust(this.scene, this.sprite.x + Phaser.Math.Between(-32, 32), this.sprite.y + Phaser.Math.Between(10, 16))
        })

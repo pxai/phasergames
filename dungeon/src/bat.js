@@ -54,7 +54,6 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
   */
     onBatCollide({ gameObjectA, gameObjectB }) {
       if (gameObjectB instanceof Bubble) {
-        console.log("Bat collide: ", gameObjectA, gameObjectB)
         gameObjectB.load("bat")
         this.destroy();
       }

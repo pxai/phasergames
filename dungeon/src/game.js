@@ -104,7 +104,6 @@ export default class Game extends Phaser.Scene {
 
   */
   onPlayerCollide({ gameObjectA, gameObjectB }) {
-    //console.log("Player collide: ", gameObjectA, gameObjectB)
     if (!gameObjectB) return;
     if (gameObjectB.label === "coin") this.playerPicksCoin(gameObjectB);
     if (gameObjectB.label === "keys") this.playerPicksKey(gameObjectB);

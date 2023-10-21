@@ -49,7 +49,6 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
   */
     onWizardCollide({ gameObjectA, gameObjectB }) {
       if (gameObjectB instanceof Bubble) {
-        console.log("Wizard collide: ", gameObjectA, gameObjectB)
         gameObjectB.load("wizard")
         this.destroy();
       }
