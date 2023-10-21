@@ -3,13 +3,29 @@ export default class Bootloader extends Phaser.Scene {
         super({ key: "bootloader" });
     }
 
+    /*
+
+    */
     preload () {
         this.createBars();
+        this.setLoadEvents();
+        this.loadFonts();
+        this.loadImages();
+        this.loadMaps();
+        this.loadAudios();
+        this.loadSpritesheets();
+        this.setRegistry();
+    }
+
+    /*
+
+    */
+    setLoadEvents () {
         this.load.on(
             "progress",
             function (value) {
                 this.progressBar.clear();
-                this.progressBar.fillStyle(0x25131a, 1);
+                this.progressBar.fillStyle(0x0088aa, 1);
                 this.progressBar.fillRect(
                     this.cameras.main.width / 4,
                     this.cameras.main.height / 2 - 16,
@@ -19,18 +35,49 @@ export default class Bootloader extends Phaser.Scene {
             },
             this
         );
+
         this.load.on("complete", () => {
             this.scene.start("splash");
         },this);
+    }
 
+    /*
+
+    */
+    loadFonts () {
+        this.load.bitmapFont("default", "assets/fonts/pico.png", "assets/fonts/pico.xml");
+    }
+
+    /*
+
+    */
+    loadImages () {
+        this.load.image("pello", "assets/images/pello_ok.png");
+        this.load.image("fireball", "assets/images/fireball.png");
+        this.load.image("tiles", "assets/maps/pixel-poem-tiles.png");
+        this.load.image("block", "assets/images/block.png");
+        this.load.image("seesaw", "assets/images/seesaw.png");
+        this.load.image("bubble", "assets/images/bubble.png");
+        this.load.image("platform", "assets/images/platform.png");
+    }
+
+    /*
+
+    */
+    loadMaps () {
+        this.load.tilemapTiledJSON("scene0", "assets/maps/level.json");
+    }
+
+    /*
+
+    */
+    loadAudios () {
         Array(5).fill(0).forEach((_,i) => {
             this.load.audio(`climb${i}`,`assets/sounds/climb${i}.mp3`)
         });
 
         this.load.audio("splash", "assets/sounds/splash.mp3");
         this.load.audio("music", "assets/sounds/music.mp3");
-
-
         this.load.audio("jump", "assets/sounds/jump.mp3");
         this.load.audio("bubble", "assets/sounds/bubble.mp3");
         this.load.audio("trap", "assets/sounds/trap.mp3");
@@ -39,29 +86,26 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("win", "assets/sounds/win.mp3");
         this.load.audio("start", "assets/sounds/start.mp3");
         this.load.audio("death", "assets/sounds/death.mp3");
+    }
 
-        this.load.image("pello", "assets/images/pello_ok.png");
-        this.load.bitmapFont("default", "assets/fonts/pico.png", "assets/fonts/pico.xml");
+    /*
+
+    */
+    loadSpritesheets () {
         this.load.spritesheet("player", "assets/images/player.png", { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet("dust", "assets/images/dust.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("coin", "assets/images/coin.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("keys", "assets/images/keys.png", { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet("bat", "assets/images/bat.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("wizard", "assets/images/wizard.png", { frameWidth: 48, frameHeight: 48 });
-
-        //this.load.image("tiles", "assets/maps/buch-tileset-48px-extruded.png");
-        this.load.image("fireball", "assets/images/fireball.png");
-        this.load.image("tiles", "assets/maps/pixel-poem-tiles.png");
-        this.load.image("block", "assets/images/block.png");
-        this.load.image("seesaw", "assets/images/seesaw.png");
-        this.load.image("bubble", "assets/images/bubble.png");
-        this.load.image("platform", "assets/images/platform.png");
-        this.load.tilemapTiledJSON("scene0", "assets/maps/level.json");
-
     }
 
-    create () {
-      }
+    /*
+
+    */
+    setRegistry () {
+
+    }
 
     createBars () {
         this.loadBar = this.add.graphics();

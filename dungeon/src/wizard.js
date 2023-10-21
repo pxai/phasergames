@@ -1,12 +1,12 @@
 import Fireball from "./fireball";
 import Bubble from "./bubble";
+
 export default class Wizard extends Phaser.Physics.Matter.Sprite {
 	constructor(scene, x, y, texture = "wizard", ground) {
 		super(scene.matter.world, x, y, texture, 0)
         this.label = "wizard";
         this.scene = scene;
         this.scene.add.existing(this)
-        //this.body.position.y -= 10;
         this.startX = x
         this.direction = Phaser.Math.RND.pick([-1, 1]);
 
@@ -28,13 +28,9 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
 
           this.anims.play(this.label, true)
 
-          //this.flipX = this.direction > 0;
-          this.on('animationcomplete', this.animationComplete, this);
           this.setVelocityX(this.direction * 2)
-          console.log(this)
           this.scene.events.on("update", this.update, this);
           this.timer = this.scene.time.addEvent({ delay: 3000, callback: this.directShot, callbackScope: this, loop: true });
-
     }
 
   /*
@@ -68,8 +64,6 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
       this.anims.play("wizardshot", true)
       const fireball = new Fireball(this.scene, this.x, this.y, this.direction)
       this.delayedTurn = this.scene.time.delayedCall(1000, () => { this.turn();}, null, this);
-      //this.scene.arrows.add(fireball)
-      //this.scene.physics.moveTo(fireball, this.scene.player.x, this.scene.player.y, 100);
     }
 
 
@@ -78,7 +72,6 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
   */
     update () {
       if (!this.active) return;
-      //if (Math.abs(this.body.velocity.x) <= 0.2) this.turn()
     }
 
     turn () {
@@ -92,14 +85,6 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
       this.destroy();
     }
 
-  /*
-
-  */
-    animationComplete(animation, frame) {
-        if (animation.key === this.label + "death") {
-          this.destroy()
-        }
-    }
 
   /*
 

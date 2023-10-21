@@ -1,11 +1,5 @@
 import Player from "./player";
-import Block from "./block";
-import Platform from "./platform";
-import SeeSaw from "./seesaw";
-import Swing from "./swing";
 import DungeonGenerator from "./dungeon_generator";
-import Dungeon from "@mikewesthad/dungeon";
-import { Particle } from "./particle";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -117,29 +111,14 @@ export default class Game extends Phaser.Scene {
     if (gameObjectB.label === "bat") this.playerHitsBat(gameObjectB);
     if (gameObjectB.label === "wizard") this.playerHitsBat(gameObjectB);
     if (gameObjectB.label === "fireball") this.playerHitsBat(gameObjectB);
-    if (gameObjectB.name === "block") this.playerHitsBlock(gameObjectB);
-    if (gameObjectB instanceof Platform) this.playerOnPlatform(gameObjectB);
     if (!(gameObjectB instanceof Phaser.Tilemaps.Tile)) return;
 
     const tile = gameObjectB;
 
-    // Check the tile property set in Tiled (you could also just check the index if you aren't using
-    // Tiled in your game)
     if (tile.properties.isLethal) {
-      // Unsubscribe from collision events so that this logic is run only once
       this.unsubscribePlayerCollide();
-
-      //this.player.freeze();
       this.restartScene();
     }
-  }
-
-  playerHitsBlock(block) {
-
-  }
-
-  playerOnPlatform(block) {
-
   }
 
   /*

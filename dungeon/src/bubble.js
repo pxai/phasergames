@@ -6,7 +6,6 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
 		super(scene.matter.world, x + offset, y, "bubble", 0, options)
         this.offset = offset;
         this.setFriction(1, 0, Infinity)
-        this.name = Phaser.Math.RND.pick(["verticalPlatform", "horizontalPlatform"]);
         this.startX = x
         this.startY = y
         this.scene = scene;
@@ -14,8 +13,6 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
         //this.setVelocityX(-5)
         this.moveVertically()
         this.scene.events.on("update", this.update, this);
-       // if (this.name.startsWith("vertical")) this.moveVertically();
-       // else this.moveHorizontally();
 	}
 
   /*

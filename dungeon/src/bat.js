@@ -1,4 +1,5 @@
 import Bubble from "./bubble";
+
 export default class Bat extends Phaser.Physics.Matter.Sprite {
 	constructor(scene, x, y, texture = "bat", ground) {
 		super(scene.matter.world, x, y, texture, 0)
@@ -31,11 +32,8 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
           });
 
           this.anims.play(this.label, true)
-          //this.body.setVelocityX(this.direction * 150);
-          //this.flipX = this.direction > 0;
           this.on('animationcomplete', this.animationComplete, this);
           this.setVelocityX(this.direction * 5)
-          console.log(this)
           this.scene.events.on("update", this.update, this);
 
     }
@@ -79,7 +77,6 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
         this.flipX = this.direction > 0;
         this.setFlipX(this.direction > 0);
         this.setVelocityX(this.direction * 5)
-        //this.body.setVelocityX(this.direction * 150);
     }
 
   /*
@@ -93,10 +90,10 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
   /*
 
   */
-      animationComplete(animation, frame) {
-        if (animation.key === this.label + "death") {
-          this.destroy()
-        }
-    }
+    animationComplete(animation, frame) {
+      if (animation.key === this.label + "death") {
+        this.destroy()
+      }
+  }
 }
 

@@ -7,6 +7,15 @@ export default class Dust extends Phaser.GameObjects.Sprite {
 
 		this.scene.add.existing(this)
 
+        this.init(tween);
+    }
+
+
+  /*
+
+  */
+    init (tween) {
+
         if (tween) {
             this.scene.tweens.add({
                 targets: this,
@@ -17,16 +26,15 @@ export default class Dust extends Phaser.GameObjects.Sprite {
                     this.destroy();
                 },
             });
-    
         }
 
         this.scene.anims.create({
             key: this.name,
             frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 10 }),
             frameRate: 10,
-          });
-          this.on('animationcomplete', this.animationComplete, this);
-          this.anims.play(this.name, true)
+        });
+        this.on('animationcomplete', this.animationComplete, this);
+        this.anims.play(this.name, true)
 	}
 
     animationComplete() {

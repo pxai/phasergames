@@ -9,9 +9,6 @@ export default class Transition extends Phaser.Scene {
         this.next = data.next;
     }
 
-    preload () {
-    }
-
   /*
 
   */
@@ -30,9 +27,6 @@ export default class Transition extends Phaser.Scene {
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
         this.time.delayedCall(1000, () => this.loadNext(), null, this)
-    }
-
-    update () {
     }
 
     playMusic (theme="music") {

@@ -101,6 +101,26 @@ export default class Splash extends Phaser.Scene {
 
   */
     showInstructions() {
+        this.add.bitmapText(this.center_width, 430, "default", "WASD/Arrows: move", 30).setDropShadow(1, 1, 0xff787a, 0.7).setOrigin(0.5);
+        this.add.sprite(this.center_width - 60, 490, "pello").setOrigin(0.5).setScale(0.3)
+        this.add.bitmapText(this.center_width + 40, 490, "default", "By PELLO", 15).setDropShadow(1, 1, 0xff787a, 0.7).setOrigin(0.5);
+        this.space = this.add.bitmapText(this.center_width, 550, "default", "Press SPACE to start", 25).setDropShadow(1, 1, 0x3d253b, 0.7).setOrigin(0.5);
+        this.tweens.add({
+            targets: this.space,
+            duration: 300,
+            alpha: {from: 0, to: 1},
+            repeat: -1,
+            yoyo: true
+        });
+        this.addPlayerAndFoe();
+        this.addAnimationTweens();
+    }
+
+
+  /*
+
+  */
+    addPlayerAndFoe () {
         this.player = this.add.sprite(this.width - 100, 350, "player").setScale(2)
         this.anims.create({
             key: "playeridle",
@@ -117,18 +137,12 @@ export default class Splash extends Phaser.Scene {
             repeat: -1
           });
           this.foe.anims.play("foe")
-        this.add.bitmapText(this.center_width, 430, "default", "WASD/Arrows: move", 30).setDropShadow(1, 1, 0xff787a, 0.7).setOrigin(0.5);
-        this.add.sprite(this.center_width - 60, 490, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 490, "default", "By PELLO", 15).setDropShadow(1, 1, 0xff787a, 0.7).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 550, "default", "Press SPACE to start", 25).setDropShadow(1, 1, 0x3d253b, 0.7).setOrigin(0.5);
-        this.tweens.add({
-            targets: this.space,
-            duration: 300,
-            alpha: {from: 0, to: 1},
-            repeat: -1,
-            yoyo: true
-        });
+    }
 
+  /*
+
+  */
+    addAnimationTweens () {
         this.tweens.add({
             targets: [this.player],
             x: {from: this.player.x, to: 0},

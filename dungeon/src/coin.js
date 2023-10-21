@@ -4,8 +4,6 @@ export default class Coin extends Phaser.Physics.Matter.Sprite {
         this.scene = scene;
         this.label = "coin"
 		scene.add.existing(this)
-
-
         this.init();
 	}
 
