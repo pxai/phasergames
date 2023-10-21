@@ -1,7 +1,5 @@
-import { Particle } from "./particle";
-
 const TYPES = {
-    "chocolate": { color: 0xAF8057, radius: 16, intensity: 0.4 }, 
+    "chocolate": { color: 0xAF8057, radius: 16, intensity: 0.4 },
     "vanila": { color: 0xfff6d5, radius: 16, intensity: 0.4 },
     "fruit": { color: 0x00ff00, radius: 16, intensity: 0.4 },
     "water": { color: 0x0000cc, radius: 16, intensity: 0.4 },
@@ -29,6 +27,9 @@ class FoeShot extends Phaser.GameObjects.PointLight {
         this.init();
    }
 
+    /*
+
+    */
    spawnShadow (x, y, velocityX, velocityY) {
     this.shadow = this.scene.add.circle(x + 20, y + 20, 10, 0x000000).setAlpha(0.4)
     this.scene.add.existing(this.shadow);
@@ -37,6 +38,9 @@ class FoeShot extends Phaser.GameObjects.PointLight {
         this.shadow.body.setVelocity(velocityX, velocityY)
    }
 
+    /*
+
+    */
     init () {
         this.scene.tweens.add({
             targets: this,
@@ -46,6 +50,9 @@ class FoeShot extends Phaser.GameObjects.PointLight {
         });
     }
 
+    /*
+
+    */
     shot() {
         const explosion = this.scene.add.circle(this.x, this.y, 5).setStrokeStyle(10, 0xffffff);
         this.showPoints(50)
@@ -59,6 +66,9 @@ class FoeShot extends Phaser.GameObjects.PointLight {
         this.destroy();
     }
 
+    /*
+
+    */
     showPoints (score, color = 0xff0000) {
         let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "wendy", "+"+score, 40, color).setOrigin(0.5);
         this.scene.tweens.add({

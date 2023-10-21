@@ -15,6 +15,9 @@ class Explosion  {
         this.init();
     }
 
+    /*
+
+    */
     init () {
         this.scene.tweens.add({
             targets: this.lights,

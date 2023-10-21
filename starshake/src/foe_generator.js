@@ -9,6 +9,9 @@ export default class FoeGenerator {
     this.waves = 0;
 }
 
+    /*
+
+    */
   generate () {
     if (this.scene.number === 4) {
       this.scene.time.delayedCall(2000, ()=> this.releaseGuinxu(), null, this);
@@ -19,11 +22,12 @@ export default class FoeGenerator {
         this.generateEvent3 = this.scene.time.addEvent({ delay: 3000, callback: () => this.tank(), callbackScope: this, loop: true });
       if (this.scene.number > 2)
         this.generateEvent4 = this.scene.time.addEvent({ delay: 5000, callback: () => this.slider(), callbackScope: this, loop: true });
-  
     }
- 
   }
 
+    /*
+
+    */
   releaseGuinxu () {
     const guinxu = new Foe(this.scene, Phaser.Math.Between(200, 600) , 200, "guinxu", 0, 20);
     this.scene.playAudio("boss");
@@ -37,6 +41,9 @@ export default class FoeGenerator {
     this.scene.foeGroup.add(guinxu);
   }
 
+    /*
+
+    */
   stop () {
     clearInterval(this.generationIntervalId);
     this.scene.foeGroup.children.entries.forEach(foe => {
@@ -45,6 +52,9 @@ export default class FoeGenerator {
     });
   }
 
+    /*
+
+    */
   finishScene () {
     this.generateEvent1.destroy();
     this.generateEvent2.destroy();
@@ -55,8 +65,11 @@ export default class FoeGenerator {
     this.scene.endScene()
   }
 
+    /*
+
+    */
   createPath() {
-    this.waves++; 
+    this.waves++;
     if (this.waves === 3) this.finishScene();
     const start = Phaser.Math.Between(100, 600);
     this.path = new Phaser.Curves.Path(start, 0);
@@ -79,6 +92,9 @@ export default class FoeGenerator {
     this.graphics.lineStyle(0, 0xffffff, 0); // debug
   }
 
+    /*
+
+    */
   orderedWave (difficulty = 5) {
     const x = Phaser.Math.Between(64, this.scene.width - 200);
     const y = Phaser.Math.Between(-100, 0)
@@ -87,6 +103,9 @@ export default class FoeGenerator {
     Array(difficulty).fill().forEach((_, i) => this.addOrder(i,x, y, minus));
   }
 
+    /*
+
+    */
   wave (difficulty = 5) {
     this.createPath();
     const x = Phaser.Math.Between(64, this.scene.width - 200);
@@ -97,10 +116,16 @@ export default class FoeGenerator {
     this.activeWave = true;
   }
 
+    /*
+
+    */
   tank () {
     this.scene.foeGroup.add(new Foe(this.scene, Phaser.Math.Between(100, 600) , -100, "foe2", 0, 620));
   }
 
+    /*
+
+    */
   slider () {
     let velocity = -200;
     let x = 0;
@@ -120,17 +145,26 @@ export default class FoeGenerator {
     this.scene.foeGroup.add(foe);
   }
 
+    /*
+
+    */
   addOrder (i, x, y, minus) {
     const offset = minus * 70;
 
     this.scene.foeGroup.add(new Foe(this.scene, x + (i * 70) , (i * y) + offset, "foe0", 0, 300));
   }
 
+    /*
+
+    */
   add () {
     const foe = new Foe(this.scene, Phaser.Math.Between(32, this.scene.width - 32), 0);
     this.scene.foeGroup.add(foe);
   }
 
+    /*
+
+    */
   addToWave (i) {
     const foe = new Foe(this.scene, Phaser.Math.Between(32, this.scene.width - 32), 0, "foe0")
     this.scene.tweens.add({
@@ -140,13 +174,16 @@ export default class FoeGenerator {
       duration: 12000,
       repeat: -1,
       delay: i * 100
-    }); 
+    });
     this
     this.scene.foeWaveGroup.add(foe);
   }
 
+    /*
+
+    */
   update () {
-   if (this.path) { 
+   if (this.path) {
       this.path.draw(this.graphics);
 
       this.scene.foeWaveGroup.children.entries.forEach(foe => {
@@ -173,6 +210,9 @@ export default class FoeGenerator {
     })
   }
 
+    /*
+
+    */
   checkIfWaveDestroyed() {
     const foes = this.scene.foeWaveGroup.children.entries;
 

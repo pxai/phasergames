@@ -12,6 +12,9 @@ export default class ShootingPatterns {
         };
     }
 
+    /*
+
+    */
     shoot (x, y, powerUp) {
         this.shootingMethods[powerUp](x, y, powerUp);
     }

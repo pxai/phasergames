@@ -25,7 +25,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     addBackground () {
-        this.background = this.add.tileSprite(0, 0, this.width, this.height, "background").setOrigin(0).setScrollFactor(0, 1); 
+        this.background = this.add.tileSprite(0, 0, this.width, this.height, "background").setOrigin(0).setScrollFactor(0, 1);
       }
 
     transitionToChange() {
@@ -50,27 +50,25 @@ export default class Splash extends Phaser.Scene {
         this.gameLogo = this.add.image(this.center_width, 250, "logo").setScale(0.7).setOrigin(0.5)
 
 
-        const timeline = this.tweens.createTimeline();
-        timeline.add({
+        this.tweens.add({
             targets: [this.gameLogo, this.gameLogoShadow],
             duration: 500,
             y: {
                 from: -200,
                 to: 250
-              },
-          });
+                },
+        });
 
-          timeline.add({
+        this.tweens.add({
             targets: [this.gameLogo, this.gameLogoShadow],
             duration: 1500,
             y: {
                 from: 250,
                 to: 200,
-              },
+                },
             repeat: -1,
             yoyo: true,
-          })
-          timeline.play();
+        });
     }
 
 
@@ -87,7 +85,7 @@ export default class Splash extends Phaser.Scene {
           delay: 0
       })
       }
-  
+
 
     showInstructions() {
         this.add.bitmapText(this.center_width, 450, "wendy", "Arrows to move", 60).setOrigin(0.5).setDropShadow(3, 4, 0x222222, 0.7);

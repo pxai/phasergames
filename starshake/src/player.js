@@ -22,10 +22,16 @@ class Player extends Phaser.GameObjects.Sprite {
         this.init();
     }
 
+    /*
+
+    */
     spawnShadow (x, y) {
         this.shadow = this.scene.add.image(x + 20, y + 20, "player1").setTint(0x000000).setAlpha(0.4)
     }
 
+    /*
+
+    */
     init () {
         this.scene.anims.create({
             key: this.name,
@@ -52,21 +58,30 @@ class Player extends Phaser.GameObjects.Sprite {
         this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        
+
         this.upDelta = 0;
     }
 
+    /*
+
+    */
     shoot () {
         this.scene.playAudio("shot")
       this.shootingPatterns.shoot(this.x, this.y, this.powerUp)
     }
 
+    /*
+
+    */
     release(pointer) {
         if (pointer.leftButtonReleased()) {
             this.shooting = false;
         }
     }
 
+    /*
+
+    */
     update (timestep, delta) {
         if (this.death) return;
         if (this.cursor.left.isDown) {
@@ -81,7 +96,7 @@ class Player extends Phaser.GameObjects.Sprite {
             this.anims.play(this.name , true)
             this.shadow.setScale(1, 1)
         }
-    
+
         if (this.cursor.up.isDown) {
             this.y -= 5;
         } else if (this.cursor.down.isDown) {
@@ -95,11 +110,17 @@ class Player extends Phaser.GameObjects.Sprite {
         this.updateShadow();
     }
 
+    /*
+
+    */
     updateShadow() {
         this.shadow.x = this.x + 20;
         this.shadow.y = this.y + 20;
     }
 
+    /*
+
+    */
     showPoints (score, color = 0xff0000) {
         let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "starshipped", score, 20, 0xfffd37).setOrigin(0.5);
         this.scene.tweens.add({
@@ -110,6 +131,9 @@ class Player extends Phaser.GameObjects.Sprite {
         });
     }
 
+    /*
+
+    */
     dead () {
         const explosion = this.scene.add.circle(this.x, this.y, 10).setStrokeStyle(40, 0xffffff);
         this.scene.tweens.add({
@@ -124,7 +148,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.shadow.destroy();
         new Explosion(this.scene, this.x, this.y, 40)
         super.destroy();
-    }     
+    }
 }
 
 

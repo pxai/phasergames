@@ -23,10 +23,6 @@ export default class Bootloader extends Phaser.Scene {
             this.scene.start("splash");
         },this);
 
-       /* Array(7).fill(0).forEach((_,i) => {
-            this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
-        });*/
-
         this.load.image("logo", "assets/images/logo.png");
         this.load.image("pello_logo", "assets/images/pello_logo.png");
         this.load.audio("shot", "assets/sounds/shot.mp3");
@@ -54,8 +50,6 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("guinxu", "assets/images/guinxu.png", { frameWidth: 128, frameHeight: 144 });
         this.load.spritesheet("plenny0", "assets/images/plenny0.png", { frameWidth: 64, frameHeight: 64 });
 
-        //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
-
         this.registry.set("score_player1", 0);
         this.registry.set("power_player1", "water");
         this.registry.set("lives_player1", 0);
@@ -64,9 +58,6 @@ export default class Bootloader extends Phaser.Scene {
         this.registry.set("power_player2", "water");
         this.registry.set("lives_player2", 0);
     }
-
-    create () {
-      }
 
     createBars () {
         this.loadBar = this.add.graphics();

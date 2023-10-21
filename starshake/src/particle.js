@@ -1,3 +1,7 @@
+
+    /*
+
+    */
 export class Particle extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y, color = 0xffffff, size = 4, alpha = 1) {
         super(scene, x, y, size, size, color, alpha);
@@ -15,7 +19,6 @@ export class Particle extends Phaser.GameObjects.Rectangle {
         this.scene.tweens.add({
             targets: this,
             duration: Phaser.Math.Between(600, 1000),
-           // y: {from: this.y, to: this.y + (this.direction * Phaser.Math.Between(20, 40))},
             scale: { from: 1, to: 3 },
             alpha: { from: this.alpha, to: 0 },
             onComplete: () => { this.destroy() }
@@ -23,6 +26,9 @@ export class Particle extends Phaser.GameObjects.Rectangle {
     }
 }
 
+    /*
+
+    */
 export class LightParticle extends Phaser.GameObjects.PointLight {
     constructor (scene, x, y, color = 0xffffff, radius = 5, intensity = 0.5) {
         super(scene, x, y, color, radius, intensity)

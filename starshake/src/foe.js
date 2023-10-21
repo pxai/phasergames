@@ -32,6 +32,9 @@ class Foe extends Phaser.GameObjects.Sprite {
         this.init();
    }
 
+    /*
+
+    */
    setGuinxuShot () {
     this.patternIndex = 0;
     this.pattern = Phaser.Utils.Array.NumberArrayStep(-300, 300, 50);
@@ -46,6 +49,9 @@ class Foe extends Phaser.GameObjects.Sprite {
     })
    }
 
+    /*
+
+    */
    spawnShadow (x, y) {
     this.shadow = this.scene.add.image(x + 20, y + 20, this.name).setScale(0.7).setTint(0x000000).setAlpha(0.4)
    }
@@ -55,6 +61,9 @@ class Foe extends Phaser.GameObjects.Sprite {
         this.shadow.y = this.y + 20;
    }
 
+    /*
+
+    */
     init () {
         this.scene.anims.create({
             key: this.name,
@@ -62,17 +71,20 @@ class Foe extends Phaser.GameObjects.Sprite {
             frameRate: 10,
             repeat: -1
           });
-          
+
           this.anims.play(this.name, true)
 
           this.direction = -1;
     }
 
+    /*
+
+    */
     update () {
 
-        if (this.y > this.scene.height + 64) { 
-            if (this.name !== "foe2") this.shadow.destroy(); 
-            this.destroy(); 
+        if (this.y > this.scene.height + 64) {
+            if (this.name !== "foe2") this.shadow.destroy();
+            this.destroy();
         }
 
         if (this.name === "guinxu") {
@@ -91,6 +103,9 @@ class Foe extends Phaser.GameObjects.Sprite {
             this.updateShadow();
     }
 
+    /*
+
+    */
     guinxuShot () {
         if (!this.scene || !this.scene.player) return;
 
@@ -102,6 +117,9 @@ class Foe extends Phaser.GameObjects.Sprite {
         this.patternIndex = this.patternIndex + 1 === this.pattern.length ? 0 : ++this.patternIndex;
     }
 
+    /*
+
+    */
     dead() {
         let radius = 60;
         let explosionRad = 20;
@@ -109,7 +127,7 @@ class Foe extends Phaser.GameObjects.Sprite {
             radius = 220;
             explosionRad = 220;
             this.scene.cameras.main.shake(500);
-        } 
+        }
 
         const explosion = this.scene.add.circle(this.x, this.y, 5).setStrokeStyle(20, 0xffffff);
         this.showPoints(this.points)
@@ -121,18 +139,21 @@ class Foe extends Phaser.GameObjects.Sprite {
             onComplete: () => {  explosion.destroy()}
         })
 
-        new Explosion(this.scene, this.x, this.y, explosionRad) 
-        if (this.name !== "foe2" && this.scene && this.scene.scene.isActive() && this.shadow && this.shadow.active ) 
+        new Explosion(this.scene, this.x, this.y, explosionRad)
+        if (this.name !== "foe2" && this.scene && this.scene.scene.isActive() && this.shadow && this.shadow.active )
             this.shadow.destroy();
-     
+
         if (this.name === "guinxu") {
             this.scene.number = 5;
             this.scene.playAudio("explosion")
             this.scene.endScene();
         }
-        this.destroy(); 
+        this.destroy();
     }
 
+    /*
+
+    */
     showPoints (score, color = 0xff0000) {
         let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "wendy", "+"+score, 40, color).setOrigin(0.5);
         this.scene.tweens.add({

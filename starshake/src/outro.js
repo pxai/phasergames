@@ -3,9 +3,6 @@ export default class Outro extends Phaser.Scene {
         super({ key: "outro" });
     }
 
-    preload () {
-    }
-
     create () {
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
@@ -24,16 +21,18 @@ export default class Outro extends Phaser.Scene {
         ];
         this.showHistory();
         this.showPlayer();
-        //this.playMusic();
 
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
     }
 
+    /*
+
+    */
     showHistory () {
         this.text.forEach((line, i) => {
-                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this); 
+                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this);
         });
-        this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
+        this.time.delayedCall(4000, () => this.showPlayer(), null, this);
     }
 
     playMusic (theme="outro") {
@@ -50,6 +49,9 @@ export default class Outro extends Phaser.Scene {
       })
       }
 
+    /*
+
+    */
     showLine(text, y) {
         let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "wendy", text, 50).setOrigin(0.5).setAlpha(0));
         this.tweens.add({
@@ -59,12 +61,17 @@ export default class Outro extends Phaser.Scene {
         })
     }
 
+    /*
+
+    */
     showPlayer() {
         this.player1 = this.add.sprite(this.center_width, this.height - 200, "player1").setOrigin(0.5);
-
     }
+
+    /*
+
+    */
     startSplash () {
-        // this.theme.stop();
         this.scene.start("splash");
     }
 }
