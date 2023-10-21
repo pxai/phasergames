@@ -22,24 +22,6 @@ export default class Outro extends Phaser.Scene {
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
     }
 
-    playMusic (theme="outro") {
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
-        this.theme.play({
-          mute: false,
-          volume: 1,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-      })
-    }
-
-    showPlayer () {
-        this.add.sprite(this.center_width, 570, "block_blue").setOrigin(0.5).setScale(1.2);
-    }
-
   /*
 
   */

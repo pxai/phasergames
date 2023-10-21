@@ -20,15 +20,10 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("splash");
+            this.scene.start("outro");
         },this);
 
-       /* Array(7).fill(0).forEach((_,i) => {
-            this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
-        });*/
-
         this.load.image("pello", "assets/images/pello.png");
-        // this.load.audio("beam", "assets/sounds/beam.mp3");
         this.load.spritesheet("spider", "assets/images/spider.png", { frameWidth: 32, frameHeight: 32 });
 
         this.load.bitmapFont("mario", "assets/fonts/mario.png", "assets/fonts/mario.xml");

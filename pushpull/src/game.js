@@ -1,8 +1,6 @@
 
 import BlockGroup from "./block_group";
 import Exit from "./exit";
-import { WaterSplash } from "./particle";
-import ExtraTime from "./extra_time";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -34,7 +32,6 @@ export default class Game extends Phaser.Scene {
       this.addPointer();
 
       this.addMap();
-      //this.setListeners();
       this.addMoves();
       this.addRetry();
 
@@ -73,7 +70,6 @@ export default class Game extends Phaser.Scene {
       this.physics.world.setBounds(0, 0, this.width, this.height);
       this.exits = this.add.group();
       this.blocks = this.add.group();
-      this.hearts = this.add.group();
       this.texts = [];
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("block")){
@@ -88,11 +84,6 @@ export default class Game extends Phaser.Scene {
         if (object.name.startsWith("exit")){
           this.exits.add(new Exit(this, object.x - 16, object.y))
         }
-
-        if (object.name.startsWith("extra_time")){
-          this.hearts.add(new ExtraTime(this, object.x, object.y))
-        }
-
 
         if (object.name.startsWith("exit")) {
           this.texts.push(object);
@@ -131,29 +122,6 @@ export default class Game extends Phaser.Scene {
       this.physics.add.overlap(this.player, this.exits, this.hitExit, ()=>{
         return true;
       }, this);
-    }
-
-  /*
-
-  */
-    hitPlatform(player, platform) {
-
-      this.playRandom("platform")
-      Array(Phaser.Math.Between(2, 4)).fill().forEach( p => this.trailLayer.add(new WaterSplash(this, player.x, player.y)));
-      player.directionChanged()
-    }
-
-  /*
-
-  */
-    hitBlock(player, block) {
-      const {x, y} = block.getDirection();
-      this.playRandom("block")
-      Array(Phaser.Math.Between(3, 6)).fill().forEach( p => this.trailLayer.add(new WaterSplash(this, player.x, player.y)));
-
-      if (block.allowChangeDirection)
-        player.changeDirection(x, y, block)
-      //else player.reverseDirection()
     }
 
     hitBlockBlock(block, platform) {

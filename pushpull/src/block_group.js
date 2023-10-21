@@ -1,4 +1,3 @@
-import { Particle } from "./particle";
 import Block from "./block";
 
 export default class BlockGroup extends Phaser.GameObjects.Container {
@@ -12,14 +11,10 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.body.immovable = true;
-
-        //this.body.setSize(32, 32)
-        //this.body.moves = false;
         this.active = false;
-          this.setKeys();
+        this.setKeys();
         this.defaultVelocity = defaultVelocity;
         this.createBlock()
-
         this.allowChangeDirection = true;
         this.scene.events.on("update", this.update, this);
         this.setListeners();
@@ -163,9 +158,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
       })
 
       const canMove =  blocks.every(block => !block)
-      if (!canMove)  {
-        this.scene.playAudio("bump")
-      }
+      if (!canMove)  { this.scene.playAudio("bump") }
       return canMove;
     }
 
@@ -177,14 +170,12 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
         this.scene.playAudio("bump")
         return false;
       }
-
       const blocks = Array(this.w).fill(0).map( (_, i) => {
         return this.scene.platform.getTileAtWorldXY(this.x + (i*32), this.y - 1)
       })
+
       const canMove =  blocks.every(block => !block)
-      if (!canMove)  {
-        this.scene.playAudio("bump")
-      }
+      if (!canMove)  { this.scene.playAudio("bump") }
       return canMove;
     }
 
@@ -200,10 +191,9 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
       const blocks = Array(this.h).fill(0).map( (_, i) => {
         return this.scene.platform.getTileAtWorldXY(this.x  - distance, this.y + (i*32))
       })
+
       const canMove =  blocks.every(block => !block)
-      if (!canMove)  {
-        this.scene.playAudio("bump")
-      }
+      if (!canMove)  { this.scene.playAudio("bump") }
       return canMove;
     }
 
@@ -220,9 +210,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
         return this.scene.platform.getTileAtWorldXY(this.x  + distance, this.y + (i*32))
       })
       const canMove =  blocks.every(block => !block)
-      if (!canMove)  {
-        this.scene.playAudio("bump")
-      }
+      if (!canMove)  { this.scene.playAudio("bump")}
       return canMove;
     }
 }
