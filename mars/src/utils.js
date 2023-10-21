@@ -8,7 +8,7 @@ export default class Utils {
   /*
 
   */
-typeText(text, font, x, y = 150, tint = 0x06E18A, size = 40) {
+    typeText(text, font, x, y = 150, tint = 0x06E18A, size = 40) {
         let characters = [];
         let jump = 0;
         let line = 0;
@@ -16,9 +16,11 @@ typeText(text, font, x, y = 150, tint = 0x06E18A, size = 40) {
         text.split("").forEach( (character, i) => {
             if (character === "\n") { jump +=2; line = 0 }
             last = i;
-            characters.push(this.scene.add.bitmapText(x - 350 + (line++ * 25), y + (jump * size), font, character, size).setTint(tint).setAlpha(0))
+            characters.push(this.scene.add.bitmapText(x - 350 + (line++ * 25), y + (jump * size), font, character, size)
+                .setTint(tint).setAlpha(0))
         })
-        const ending = this.scene.add.rectangle(x - 335 + (line * 25), y + 25 + (jump * size), 25, 5, tint).setOrigin(0.5).setAlpha(0)
+        const ending = this.scene.add.rectangle(x - 335 + (line * 25), y + 25 + (jump * size), 25, 5, tint)
+            .setOrigin(0.5).setAlpha(0)
         const timeline = this.scene.tweens.createTimeline();
         this.typeAudio = this.scene.sound.add("type")
 

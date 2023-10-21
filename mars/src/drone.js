@@ -2,16 +2,16 @@ import EasyStar from "easystarjs";
 
 export default class Drone extends Phaser.GameObjects.Sprite  {
     constructor (scene, x, y, grid) {
-        super(scene, x, y, "drone");
-        this.name = "drone";
-        this.setScale(1)
-        this.grid = grid;
-        this.scene = scene;
-        scene.add.existing(this);
-        scene.physics.add.existing(this);
-        this.body.setAllowGravity(false);
-        this.easystar = new EasyStar.js();
-       this.init();
+      super(scene, x, y, "drone");
+      this.name = "drone";
+      this.setScale(1)
+      this.grid = grid;
+      this.scene = scene;
+      scene.add.existing(this);
+      scene.physics.add.existing(this);
+      this.body.setAllowGravity(false);
+      this.easystar = new EasyStar.js();
+      this.init();
     }
 
   /*
@@ -21,32 +21,29 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
       this.easystar.setGrid(this.grid);
       this.easystar.setAcceptableTiles([0]);
       this.scene.events.on("update", this.update, this);
-        this.scene.tweens.add({
-            targets: this,
-            duration: 500,
-            repeat: -1,
-            scale: {from: 0.95, to: 1},
-            yoyo: true
-        })
+      this.scene.tweens.add({
+          targets: this,
+          duration: 500,
+          repeat: -1,
+          scale: {from: 0.95, to: 1},
+          yoyo: true
+      })
 
-        this.scene.anims.create({
-            key: this.name,
-            frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 3 }),
-            frameRate: 5,
-            repeat: -1
-          });
+      this.scene.anims.create({
+          key: this.name,
+          frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 3 }),
+          frameRate: 5,
+          repeat: -1
+        });
 
-          this.anims.play(this.name, true)
-          //this.body.setVelocityX(this.direction * 100);
-          this.flipX = this.direction < 0;
-          this.on('animationcomplete', this.animationComplete, this);
+      this.anims.play(this.name, true)
+      this.flipX = this.direction < 0;
 
-          this.scene.time.delayedCall(Phaser.Math.Between(3000, 5000), () => {
-            this.scene.playAudio("kill");
-            this.launchMove()
-          }, null, this);
+      this.scene.time.delayedCall(Phaser.Math.Between(3000, 5000), () => {
+        this.scene.playAudio("kill");
+        this.launchMove()
+      }, null, this);
     }
-
 
   /*
 
@@ -70,7 +67,10 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
           if (!this.scene.player) return;
           if (this.moveTimeline) this.moveTimeline.destroy();
 
-          this.easystar.findPath(Math.floor(this.x/64), Math.floor(this.y/64), Math.floor(this.scene.player.x/64), Math.floor(this.scene.player.y/64), this.moveIt.bind(this));
+          this.easystar.findPath(
+            Math.floor(this.x/64), Math.floor(this.y/64),
+            Math.floor(this.scene.player.x/64), Math.floor(this.scene.player.y/64),
+            this.moveIt.bind(this));
           this.easystar.setIterationsPerCalculation(10000);
           this.easystar.enableSync();
           this.easystar.calculate();
@@ -138,12 +138,6 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
         //this.anims.play(this.name + "death")
         this.destroy();
       }
-
-      animationComplete(animation, frame) {
-        if (animation.key === this.name +"death") {
-          //this.destroy()
-        }
-    }
 
   /*
 

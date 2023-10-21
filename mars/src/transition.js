@@ -9,31 +9,13 @@ export default class Transition extends Phaser.Scene {
         this.number = data.number;
     }
 
-    preload () {
-    }
-
   /*
 
   */
     create () {
-        const messages = [
-            "DAY 0",
-            "DAY 1",
-            "DAY 2",
-            "DAY 3",
-            "DAY 4",
-            "DAY 5",
-            "DAY 6",
-            "DAY 7"
-        ];
-
-        this.missions = [
-            "",
-            "Go north, locate containers.",
-            "Find landing zone. North East.",
-            "Locate landing, South East.",
-            "Go East, locate containers.",
-            "Other landings: North East",
+        this.missions = [ "", "Go north, locate containers.",
+            "Find landing zone. North East.", "Locate landing, South East.",
+            "Go East, locate containers.", "Other landings: North East",
             "Find out ship origin...",
         ];
 
@@ -50,35 +32,56 @@ export default class Transition extends Phaser.Scene {
             this.sound.stopAll();
         }
 
-        this.text1 = this.add.bitmapText(this.center_width, 20, "pico", messages[this.number], 30).setOrigin(0.5).setAlpha(0)
-        this.text2 = this.add.bitmapText(this.center_width, 70, "pico", "AUDIO RECORD OF CAPTAIN BRAUN", 20).setOrigin(0.5).setAlpha(0)
-
-        if (this.number > 0) {
-            //this.play = this.add.sprite(this.center_width, 170, "record").setOrigin(0.5).setAlpha(0)
-            this.tweens.add({
-                targets: [this.text1, this.text2, this.play],
-                duration: 1000,
-                alpha: {from: 0, to: 1},
-                onComplete: () => {
-                    this.playDiary();
-                }
-            })
-        } else {
-            this.playBackground();
-            this.text2 = this.add.bitmapText(this.center_width, 70, "pico", "THE CRASH", 20).setOrigin(0.5).setAlpha(0)
-            this.playCreepy();
-            this.tweens.add({
-                targets: [this.text1],
-                duration: 2000,
-                alpha: {from: 0, to: 1},
-                onComplete: () => {
-                    this.playIntro();
-                }
-            })
-        }
+        this.showInstructions();
 
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
+    }
+
+  /*
+
+  */
+    showInstructions () {
+        const listOfDays = Array(8).fill(0).map((_, i) => `DAY ${i}`)
+        this.text1 = this.add.bitmapText(this.center_width, 20, "pico", listOfDays[this.number], 30)
+            .setOrigin(0.5).setAlpha(0)
+        this.text2 = this.add.bitmapText(this.center_width, 70, "pico", "AUDIO RECORD OF CAPTAIN BRAUN", 20)
+            .setOrigin(0.5).setAlpha(0)
+
+        if (this.number > 0) {
+            this.showSceneInstructions();
+        } else {
+            this.showFirstInstructions();
+        }
+    }
+
+  /*
+
+  */
+    showSceneInstructions () {
+        this.tweens.add({
+            targets: [this.text1, this.text2, this.play],
+            duration: 1000,
+            alpha: {from: 0, to: 1},
+            onComplete: () => {
+                this.playDiary();
+            }
+        })
+    }
+
+    showFirstInstructions () {
+        this.playBackground();
+        this.text2 = this.add.bitmapText(this.center_width, 70, "pico", "THE CRASH", 20)
+            .setOrigin(0.5).setAlpha(0)
+        this.playCreepy();
+        this.tweens.add({
+            targets: [this.text1],
+            duration: 2000,
+            alpha: {from: 0, to: 1},
+            onComplete: () => {
+                this.playIntro();
+            }
+        })
     }
 
   /*
@@ -128,7 +131,6 @@ export default class Transition extends Phaser.Scene {
         this.wave.anims.play("wave", true)
         this.recording = this.sound.add(`diary${this.number}`)
         this.recording.on('complete', function () {
-            //log("Dale fin")
             this.wave.destroy();
             this.showMission();
             this.playCreepy();
@@ -152,16 +154,11 @@ export default class Transition extends Phaser.Scene {
           })
       }
 
-    update () {
-    }
-
   /*
 
   */
     showMission () {
         this.text3 = this.add.bitmapText(this.center_width, 300, "pico", "MISSION OBJECTIVE:", 30).setOrigin(0.5)
-        //this.text4 = this.add.bitmapText(this.center_width, 400, "pico", this.missions[this.number], 20).setOrigin(0.5)
-
         this.utils.typeText(this.missions[this.number], "pico", this.center_width, 400, 0xffffff, 20)
     }
 
@@ -170,7 +167,6 @@ export default class Transition extends Phaser.Scene {
   */
     loadNext () {
         this.sound.add("blip").play();
-
         this.sound.stopAll();
         this.scene.start("game", {  number: this.number });
     }

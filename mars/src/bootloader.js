@@ -3,8 +3,24 @@ export default class Bootloader extends Phaser.Scene {
         super({ key: "bootloader" });
     }
 
+    /*
+
+    */
     preload () {
         this.createBars();
+        this.setLoadEvents();
+        this.loadFonts();
+        this.loadImages();
+        this.loadMaps();
+        this.loadAudios();
+        this.loadSpritesheets();
+        this.setRegistry();
+    }
+
+    /*
+
+    */
+    setLoadEvents () {
         this.load.on(
             "progress",
             function (value) {
@@ -22,8 +38,41 @@ export default class Bootloader extends Phaser.Scene {
         this.load.on("complete", () => {
             this.scene.start("splash");
         },this);
+    }
 
+    /*
+
+    */
+    loadFonts () {
+        this.load.bitmapFont("pico", "assets/fonts/pico.png", "assets/fonts/pico.xml");
+    }
+
+    /*
+
+    */
+    loadImages () {
         this.load.image("body", "assets/images/body.png");
+        this.load.image("landscape", "assets/images/landscape.png");
+        this.load.image("record", "assets/images/record.png");
+        this.load.image("hole", "assets/images/hole.png");
+        this.load.image("pello", "assets/images/pello_ok.png");
+        this.load.image('mars', 'assets/maps/mars64.png');
+        this.load.image('background', 'assets/maps/mars.png');
+    }
+
+    /*
+
+    */
+    loadMaps () {
+        Array(7).fill(0).forEach((_,i) => {
+            this.load.tilemapTiledJSON(`scene${i}`,`assets/maps/scene${i}.json`)
+        });
+    }
+
+    /*
+
+    */
+    loadAudios () {
         this.load.audio("mars_background", "assets/sounds/mars_background.mp3");
         this.load.audio("step", "assets/sounds/step.mp3");
         this.load.audio("creepy", "assets/sounds/creepy.mp3");
@@ -39,51 +88,40 @@ export default class Bootloader extends Phaser.Scene {
         this.load.audio("killed", "assets/sounds/killed.mp3");
         this.load.audio("creepy_static", "assets/sounds/creepy_static.mp3");
         this.load.audio("shock", "assets/sounds/shock.mp3");
-
-        //this.load.audio("splash", "assets/sounds/splash.mp3"); 
         this.load.audio("cave", "assets/sounds/cave.mp3");
         this.load.audio("type", "assets/sounds/type.mp3");
-
-
 
         Array(4).fill(0).forEach((_,i) => {
             this.load.audio(`static${i}`, `assets/sounds/static${i}.mp3`);
         });
 
-
-        Array(7).fill(0).forEach((_,i) => {
+        Array(6).fill(0).forEach((_,i) => {
             this.load.audio(`diary${i+1}`, `assets/sounds/diary/diary${i+1}.mp3`);
         });
 
         Array(6).fill(0).forEach((_,i) => {
             this.load.audio(`officer${i+1}`, `assets/sounds/officer/officer${i+1}.mp3`);
         });
+    }
 
-        this.load.bitmapFont("pico", "assets/fonts/pico.png", "assets/fonts/pico.xml");
+    /*
+
+    */
+    loadSpritesheets () {
         this.load.spritesheet("player", "assets/images/player.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("debris", "assets/images/debris.png", { frameWidth:64, frameHeight: 64 });
         this.load.spritesheet("step", "assets/images/step.png", { frameWidth:64, frameHeight: 64 });
         this.load.spritesheet("wave", "assets/images/wave.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("drone", "assets/images/drone.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("monster", "assets/images/monster.png", { frameWidth: 128, frameHeight: 64 });
-        this.load.image("landscape", "assets/images/landscape.png");
-        this.load.image("record", "assets/images/record.png");
-        this.load.image("hole", "assets/images/hole.png");
-        this.load.image("pello", "assets/images/pello_ok.png");
-
-        this.load.image('mars', 'assets/maps/mars64.png');
-        this.load.image('background', 'assets/maps/mars.png');
-
-        Array(7).fill(0).forEach((_,i) => {
-            this.load.tilemapTiledJSON(`scene${i}`,`assets/maps/scene${i}.json`)
-        });
-        //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
-
-        this.registry.set("score", 0);
     }
 
-    create () {
-      }
+    /*
+
+    */
+    setRegistry () {
+        this.registry.set("score", 0);
+    }
 
     createBars () {
         this.loadBar = this.add.graphics();

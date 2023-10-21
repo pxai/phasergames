@@ -1,4 +1,3 @@
-import { JumpSmoke, ShotSmoke } from "./particle";
 import Step from "./step";
 
 export default class Player extends Phaser.GameObjects.Sprite {

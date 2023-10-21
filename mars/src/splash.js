@@ -5,9 +5,6 @@ export default class Splash extends Phaser.Scene {
         super({ key: "splash" });
     }
 
-    preload () {
-    }
-
   /*
 
   */
@@ -16,35 +13,33 @@ export default class Splash extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-
-
         this.cameras.main.setBackgroundColor(0x000000);
-        //this.showLogo();        ;
         this.smokeLayer = this.add.layer();
         this.showTitle();
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
         this.playMusic();
-        //this.showPlayer();
     }
 
   /*
 
   */
     showTitle () {
-        this.step = this.sound.add("step")
-        "MARSTRANDED".split("").forEach((letter, i) => {
-            this.time.delayedCall(600 * (i+1),
-                () => {
-                    let text = this.add.bitmapText((70 * i) + 50, 200, "pico", letter, 70).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 4, 0x6b302a, 0.9)
-                    Array(Phaser.Math.Between(2, 4)).fill(0).forEach( j => { this.smokeLayer.add(new ShotSmoke(this, (70 * i) + 80 + Phaser.Math.Between(-30, 30), 200 + Phaser.Math.Between(-30, 30), 0, -1, 0x6b302a))});
-                    this.step.play({rate: 0.8 });this.step.resume();
-                },
-                null,
-                this
-            );
-        })
+      this.step = this.sound.add("step")
+      "MARSTRANDED".split("").forEach((letter, i) => {
+        this.time.delayedCall(600 * (i+1),
+            () => {
+                let text = this.add.bitmapText((70 * i) + 50, 200, "pico", letter, 70)
+                  .setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 4, 0x6b302a, 0.9)
+                Array(Phaser.Math.Between(2, 4)).fill(0).forEach( j => {
+                  this.smokeLayer.add(new ShotSmoke(this, (70 * i) + 80 + Phaser.Math.Between(-30, 30), 200 + Phaser.Math.Between(-30, 30), 0, -1, 0x6b302a))});
+                this.step.play({rate: 0.8 });this.step.resume();
+            },
+            null,
+            this
+        );
+      })
     }
 
 
@@ -76,10 +71,6 @@ export default class Splash extends Phaser.Scene {
           })
     }
 
-    showPlayer () {
-
-    }
-
   /*
 
   */
@@ -102,10 +93,13 @@ export default class Splash extends Phaser.Scene {
 
   */
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pico", "WASD/Arrows", 40).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 3, 0x6b302a, 0.9)
+        this.add.bitmapText(this.center_width, 450, "pico", "WASD/Arrows", 40)
+          .setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 3, 0x6b302a, 0.9)
         this.add.sprite(this.center_width - 140, 355, "pello").setOrigin(0.5).setScale(0.5)
-        this.add.bitmapText(this.center_width + 60, 350, "pico", "By PELLO", 35).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 3, 0x6b302a, 0.9);
-        this.space = this.add.bitmapText(this.center_width, 520, "pico", "SPACE start", 30).setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 2, 0x6b302a, 0.9);
+        this.add.bitmapText(this.center_width + 60, 350, "pico", "By PELLO", 35)
+          .setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 3, 0x6b302a, 0.9);
+        this.space = this.add.bitmapText(this.center_width, 520, "pico", "SPACE start", 30)
+          .setTint(0x6b140b).setOrigin(0.5).setDropShadow(0, 2, 0x6b302a, 0.9);
         this.tweens.add({
             targets: this.space,
             duration: 300,

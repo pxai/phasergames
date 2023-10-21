@@ -1,4 +1,3 @@
-import Utils from "./utils";
 import Hole from "./hole";
 import Braun from "./braun";
 
@@ -94,7 +93,6 @@ export default class Object extends Phaser.GameObjects.Rectangle {
           });
           monster.anims.play("monster", true)
         ohmy.on('complete', function () {
-            //log("Dale fin")
             this.scene.breathing.pause();
             this.scene.playAudio("holeshout")
             this.scene.finishScene(false);
