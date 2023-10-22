@@ -1,9 +1,6 @@
 import Phaser from "phaser";
 import Bootloader from "./bootloader";
-import Outro from "./outro";
-import Splash from "./splash";
 import Game from "./game";
-
 
 const config = {
     width: 260,
@@ -22,9 +19,7 @@ const config = {
     },
     scene: [
         Bootloader,
-        Splash,
-        Game,
-        Outro
+        Game
     ]
 };
 

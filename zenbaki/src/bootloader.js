@@ -3,8 +3,31 @@ export default class Bootloader extends Phaser.Scene {
         super({ key: "bootloader" });
     }
 
+   /*
+
+    */
     preload () {
         this.createBars();
+        this.setLoadEvents();
+
+        Array(15).fill(0).forEach((_,i) => {
+            this.load.image(`cloud${i}`,`assets/images/cloud${i}.png`)
+        });
+        this.load.image("pello", "assets/images/pello.png");
+        this.load.image("sensei", "assets/images/sensei.png");
+
+        this.load.audio("win", "assets/sounds/win.mp3");
+        this.load.audio("drip", "assets/sounds/drip.mp3");
+        this.load.audio("fail", "assets/sounds/fail.mp3");
+        this.load.bitmapFont("mainFont", "assets/fonts/hiro.png", "assets/fonts/hiro.xml");
+
+        this.registry.set("score", 0);
+    }
+
+    /*
+
+    */
+    setLoadEvents () {
         this.load.on(
             "progress",
             function (value) {
@@ -20,26 +43,8 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("game", { next: "game", name: "STAGE", number: 0, time: 30 });
+            this.scene.start("game");
         }, this);
-
-        Array(15).fill(0).forEach((_,i) => {
-            this.load.image(`cloud${i}`,`assets/images/cloud${i}.png`)
-        });
-
-        this.load.image("pello", "assets/images/pello.png");
-        this.load.image("sensei", "assets/images/sensei.png");
-
-        this.load.audio("win", "assets/sounds/win.mp3");
-        this.load.audio("drip", "assets/sounds/drip.mp3");
-        this.load.audio("fail", "assets/sounds/fail.mp3");
-        this.load.bitmapFont("mainFont", "assets/fonts/hiro.png", "assets/fonts/hiro.xml");
-
-
-        this.registry.set("score", 0);
-    }
-
-    create () {
     }
 
     createBars () {

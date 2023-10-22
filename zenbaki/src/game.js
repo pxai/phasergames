@@ -14,9 +14,6 @@ export default class Game extends Phaser.Scene {
         this.failed = false;
     }
 
-    init () {
-    }
-
   /*
 
   */
@@ -80,8 +77,10 @@ export default class Game extends Phaser.Scene {
 
   */
     addClouds () {
-        this.cloudLeft = this.add.image(this.center_width - 100, this.center_height - 120 + Phaser.Math.Between(-15, 15), "cloud" + Phaser.Math.Between(1, 14)).setScale(Phaser.Math.Between(5, 9) * 0.1);
-        this.cloudRight = this.add.image(this.center_width + 100, this.center_height + 30 + Phaser.Math.Between(-15, 15), "cloud" + Phaser.Math.Between(1, 14)).setScale(Phaser.Math.Between(4, 6) * 0.1);
+        this.cloudLeft = this.add.image(this.center_width - 100, this.center_height - 120 + Phaser.Math.Between(-15, 15), "cloud" + Phaser.Math.Between(1, 14))
+            .setScale(Phaser.Math.Between(5, 9) * 0.1);
+        this.cloudRight = this.add.image(this.center_width + 100, this.center_height + 30 + Phaser.Math.Between(-15, 15), "cloud" + Phaser.Math.Between(1, 14))
+            .setScale(Phaser.Math.Between(4, 6) * 0.1);
         this.tweens.add({
             targets: [this.cloudLeft],
             x: {from: -156, to: this.width + 156},
@@ -107,14 +106,18 @@ export default class Game extends Phaser.Scene {
   */
     addScore () {
         const scoreBoard = this.createScoreBoard()
-        this.add.bitmapText(this.center_width, 25, "mainFont", "zenbaki", 25).setOrigin(0.5).setTint(0x000000);
+        this.add.bitmapText(this.center_width, 25, "mainFont", "zenbaki", 25)
+            .setOrigin(0.5).setTint(0x000000);
         scoreBoard.slice(0, 3).forEach((player, i) => {
             const winnerText = `${i+1}.  ${player.name}: ${player.score}`;
-            this.add.bitmapText(this.center_width, 100 + (i * 50), "mainFont", winnerText, 30).setOrigin(0.5).setTint(this.foregroundColor).setDropShadow(1, 2, 0xbf2522, 0.7);
+            this.add.bitmapText(this.center_width, 100 + (i * 50), "mainFont", winnerText, 30)
+                .setOrigin(0.5).setTint(this.foregroundColor).setDropShadow(1, 2, 0xbf2522, 0.7);
         })
 
-        this.scoreText1 = this.add.bitmapText(this.center_width, this.center_height + 130, "mainFont", "", 20).setOrigin(0.5).setTint(0x000000);
-        this.scoreText2 = this.add.bitmapText(this.center_width, this.center_height + 160, "mainFont", "", 25).setOrigin(0.5).setTint(0x000000);
+        this.scoreText1 = this.add.bitmapText(this.center_width, this.center_height + 130, "mainFont", "", 20)
+            .setOrigin(0.5).setTint(0x000000);
+        this.scoreText2 = this.add.bitmapText(this.center_width, this.center_height + 160, "mainFont", "", 25)
+            .setOrigin(0.5).setTint(0x000000);
     }
 
 
@@ -161,16 +164,11 @@ export default class Game extends Phaser.Scene {
         }
     }
 
-    showScores () {
-        console.log
-    }
-
   /*
 
   */
     calculateScore () {
        const operatorPoints = {'+': 1, '-': 2, '*': 4, '/': 5};
-        console.log("Game> calculateScore: ", this.counter,this.nextOperator, operatorPoints[this.nextOperator])
        return this.counter + operatorPoints[this.nextOperator];
     }
 
@@ -223,28 +221,33 @@ export default class Game extends Phaser.Scene {
         });
     }
 
-    update () {
-
-    }
 
   /*
 
   */
     showResult () {
         const scoreBoard = this.createScoreBoard()
-        this.scoreRectangle = this.add.rectangle(0, 0, this.width, this.height, this.foregroundColor, 0.9).setOrigin(0, 0);
+        this.scoreRectangle = this.add.rectangle(0, 0, this.width, this.height, this.foregroundColor, 0.9)
+            .setOrigin(0, 0);
         this.scores = this.add.group();
-        this.sensei = this.add.image(this.center_width, this.height - 60, "sensei", ).setOrigin(0.5).setScale(0.4)
+        this.sensei = this.add.image(this.center_width, this.height - 60, "sensei", )
+            .setOrigin(0.5).setScale(0.4)
         this.scores.add(this.sensei);
-        this.scores.add(this.add.bitmapText(this.center_width, 60, "mainFont", "Senseis:", 30).setOrigin(0.5).setTint(0x000000));
+        this.scores.add(this.add.bitmapText(this.center_width, 60, "mainFont", "Senseis:", 30)
+            .setOrigin(0.5).setTint(0x000000));
         scoreBoard.slice(0, 5).forEach((player, i) => {
              const winnerText = `${i+1}.  ${player.name}, ${player.score}`;
-             this.scores.add(this.add.bitmapText(this.center_width, 100 + (i * 20), "mainFont", winnerText, 15).setOrigin(0.5).setTint(0x000000));
+             this.scores.add(this.add.bitmapText(this.center_width, 100 + (i * 20), "mainFont", winnerText, 15)
+                .setOrigin(0.5).setTint(0x000000));
         })
 
+        this.removeResult();
+    }
 
-       console.log("ScoreBoard: ", scoreBoard)
+    /*
 
+    */
+    removeResult () {
         this.time.delayedCall(5000, () => {
             this.tweens.add({
                 targets: [this.scoreRectangle, this.scores, this.sensei],
@@ -255,7 +258,6 @@ export default class Game extends Phaser.Scene {
                     this.scores.getChildren().forEach(function(child) {
                         child.destroy();
                     }, this);
-
                     this.scores.clear(true, true);
                 }
             })
@@ -289,7 +291,10 @@ export default class Game extends Phaser.Scene {
         this.nextOperand = Phaser.Math.Between(1, 9);
         this.nextOperator = this.selectOperator();
         this.result = parseInt(eval(this.number + this.nextOperator + this.nextOperand));
-        console.log("Current: ", this.number, " operator: ", this.nextOperator," nextNumber: ", this.nextOperand,",Result: ", this.result);
+        console.log("Current: ", this.number,
+            " operator: ", this.nextOperator,
+            " nextNumber: ", this.nextOperand,
+            ", Result: ", this.result);
         this.showNextOperation(this.nextOperator, this.nextOperand);
         this.playAudio("drip");
     }
@@ -327,7 +332,8 @@ export default class Game extends Phaser.Scene {
 
   */
     showShame (playerName) {
-        const rants = ["You're a disgrace", "Shame on you", "You dishonor us all", "You're a disappointment", "You're a failure", "You dishonor this dojo"]
+        const rants = ["You're a disgrace", "Shame on you", "You dishonor us all",
+            "You're a disappointment", "You're a failure", "You dishonor this dojo"]
         this.scoreText1.setText(Phaser.Math.RND.pick(rants)).setAlpha(1);
         this.scoreText2.setText(`${playerName}`).setAlpha(1);
         this.tweens.add({

@@ -103,10 +103,6 @@ export default class Bootloader extends Phaser.Scene {
     /*
 
     */
-    setRegistry () {
-
-    }
-
     createBars () {
         this.loadBar = this.add.graphics();
         this.loadBar.fillStyle(0x00aafb, 1);
