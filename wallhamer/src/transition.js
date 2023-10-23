@@ -10,7 +10,7 @@ export default class Transition extends Phaser.Scene {
     }
 
     /*
-
+    This creates the elements of the transition screen.
     */
     create () {
         const messages = ["TUTORIAL", "STAGE 1", "STAGE 2", "STAGE 3", "STAGE 4" ];
@@ -32,7 +32,18 @@ export default class Transition extends Phaser.Scene {
     }
 
     /*
+    These functions are used to load the next scene
+    */
+    loadNext () {
+        this.scene.start("game", { name: this.name, number: this.number  });
+    }
 
+    loadOutro () {
+        this.scene.start("outro", { name: this.name, number: this.number });
+    }
+
+    /*
+    Helper function to show the score and coins
     */
     addScore() {
         this.scoreCoins = this.add.bitmapText(this.center_width + 32, this.center_height - 100, "pixelFont", "x" + this.registry.get("coins"), 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0.5).setScrollFactor(0)
@@ -45,14 +56,5 @@ export default class Transition extends Phaser.Scene {
         this.scoreCoinsLogo.play({ key: "coinscore", repeat: -1 });
       }
 
-    /*
 
-    */
-    loadNext () {
-        this.scene.start("game", { name: this.name, number: this.number  });
-    }
-
-    loadOutro () {
-        this.scene.start("outro", { name: this.name, number: this.number });
-    }
 }

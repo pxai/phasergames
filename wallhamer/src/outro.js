@@ -3,6 +3,9 @@ export default class Outro extends Phaser.Scene {
         super({ key: "outro" });
     }
 
+    /*
+    This scene will show some text
+    */
     create () {
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
@@ -23,27 +26,17 @@ export default class Outro extends Phaser.Scene {
         this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
     }
 
-    /*
+    startSplash () {
+        this.scene.start("splash");
+    }
 
+    /*
+    Helper function to show the text line by line
     */
     showHistory () {
         this.text.forEach((line, i) => {
                 this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this);
         });
-    }
-
-    playMusic (theme="outro") {
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
-        this.theme.play({
-          mute: false,
-          volume: 1,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-      })
     }
 
     showLine(text, y) {
@@ -53,9 +46,5 @@ export default class Outro extends Phaser.Scene {
             duration: 2000,
             alpha: 1
         })
-    }
-
-    startSplash () {
-        this.scene.start("splash");
     }
 }

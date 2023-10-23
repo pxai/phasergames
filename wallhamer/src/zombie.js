@@ -13,7 +13,7 @@ export default class Zombie extends Phaser.Physics.Arcade.Sprite {
   }
 
   /*
-
+  As we did with the Bat. Inits the animations for the zombies and starts the movement. We also add a listener for the animationcomplete event.
   */
   init () {
     this.scene.anims.create({
@@ -37,7 +37,7 @@ export default class Zombie extends Phaser.Physics.Arcade.Sprite {
 
 
   /*
-
+  Turns the zombie around and changes the direction
   */
   turn () {
     this.direction = -this.direction;
@@ -46,7 +46,7 @@ export default class Zombie extends Phaser.Physics.Arcade.Sprite {
   }
 
   /*
-
+  This kills the zombie "nicely" by playing the death animation.
   */
 death () {
   this.dead = true;
@@ -55,7 +55,10 @@ death () {
   this.anims.play(this.name + "death")
 }
 
-    animationComplete(animation, frame) {
+    /*
+    Again, when the death animation is completed, then it destroys the zombie.
+    */
+  animationComplete(animation, frame) {
     if (animation.key === this.name +"death") {
       this.destroy()
     }

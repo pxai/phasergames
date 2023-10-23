@@ -21,8 +21,13 @@ export default class Splash extends Phaser.Scene {
         this.playAudioRandomly("stone")
     }
 
-    /*
+    startGame () {
+        if (this.theme) this.theme.stop();
+        this.scene.start("transition", {next: "game", name: "STAGE", number: 0, time: 30})
+    }
 
+    /*
+    Helper function to show the title letter by letter
     */
     showTitle () {
         "WALL".split("").forEach((letter, i) => {
@@ -53,15 +58,13 @@ export default class Splash extends Phaser.Scene {
         })
     }
 
+    /*
+    Helper function to play audio randomly to add variety.
+    */
     playAudioRandomly(key) {
         const volume = Phaser.Math.Between(0.8, 1);
         const rate = 1; // Phaser.Math.Between(0.9, 1);
         this.sound.add(key).play({volume, rate});
-      }
-
-    startGame () {
-        if (this.theme) this.theme.stop();
-        this.scene.start("transition", {next: "game", name: "STAGE", number: 0, time: 30})
     }
 
     playMusic (theme="splash") {
@@ -78,9 +81,8 @@ export default class Splash extends Phaser.Scene {
       })
     }
 
-
     /*
-
+    Generates the instructions text for the player.
     */
     showInstructions() {
         this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/Arrows: move", 30).setOrigin(0.5);
@@ -97,4 +99,5 @@ export default class Splash extends Phaser.Scene {
             yoyo: true
         });
     }
+
 }

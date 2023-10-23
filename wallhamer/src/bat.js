@@ -12,7 +12,7 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
         this.init();
     }
     /*
-    Inits the animation
+    Inits the animations for the bat and starts the movement. We also add a listener for the animationcomplete event.
     */
     init () {
         this.scene.anims.create({
@@ -60,7 +60,7 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
 
 
     /*
-    This is called when the death animation is complete. It destroys the bat.
+    This is called when any animation is completed. If the death animation is completed, then it destroys the bat.
     */
     animationComplete(animation, frame) {
         if (animation.key === this.name +"death") {

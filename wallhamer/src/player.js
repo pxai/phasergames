@@ -37,7 +37,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     /*
-
+    Inits the animations for the player: init, idle, walk, jump, death, etc... and it adds a listener for the animationcomplete event.
     */
     init () {
         this.scene.anims.create({
@@ -93,7 +93,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
 
     /*
-
+    In the update is where we set the player movement according to the controls. We check if the player is jumping, falling, walking, etc...
     */
     update () {
         if (this.dead) return;
@@ -140,13 +140,17 @@ class Player extends Phaser.GameObjects.Sprite {
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.spaceBar))
-            this.destroyBlock()
+            this.hammerBlow()
 
         if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.S))
             this.buildBlock()
 
     }
 
+
+    /*
+    This is called when the player hits the floor. It creates the smoke particles. It reuses the jumpSmoke method.
+    */
     landSmoke () {
         this.jumpSmoke(20);
     }
@@ -159,13 +163,9 @@ class Player extends Phaser.GameObjects.Sprite {
         })
     }
 
-    buildSmoke (offsetY = 10, offsetX) {
-        Array(Phaser.Math.Between(8, 14)).fill(0).forEach(i => {
-            const varX = Phaser.Math.Between(-20, 20);
-            new JumpSmoke(this.scene, this.x + (offsetX + varX), this.y + offsetY)
-        })
-    }
-
+    /*
+    This is called when the player generates a block. It creates the smoke particles.
+    */
     buildBlock() {
         this.building = true;
         this.anims.play("playerbuild", true);
@@ -176,7 +176,20 @@ class Player extends Phaser.GameObjects.Sprite {
         this.scene.bricks.add(new Brick(this.scene, this.x + offsetX, this.y + offsetY))
     }
 
-    destroyBlock() {
+    /*
+    This generates the smoke particles when the player builds a block.
+    */
+    buildSmoke (offsetY = 10, offsetX) {
+        Array(Phaser.Math.Between(8, 14)).fill(0).forEach(i => {
+            const varX = Phaser.Math.Between(-20, 20);
+            new JumpSmoke(this.scene, this.x + (offsetX + varX), this.y + offsetY)
+        })
+    }
+
+    /*
+    This is called when the player creates a blow to destroy something.
+    */
+    hammerBlow() {
         this.building = true;
         this.anims.play("playerhammer", true);
         const offsetX = this.right ? 32 : -32;
@@ -184,10 +197,16 @@ class Player extends Phaser.GameObjects.Sprite {
         this.scene.blows.add(new Blow(this.scene, this.x + offsetX, this.y, size, size))
     }
 
+    /*
+    This just turns the player to the opposite direction.
+    */
     turn () {
         this.right = !this.right;
     }
 
+    /*
+    This is called when the player finishes an animation. It checks if the animation is the playerground, playerhammer or playerbuild and it plays the idle animation.
+    */
     animationComplete (animation, frame) {
         if (animation.key === "playerground") {
             this.anims.play("playeridle", true)
@@ -199,14 +218,8 @@ class Player extends Phaser.GameObjects.Sprite {
         }
     }
 
-    hitFloor() {
-        if (this.jumping) {
-            this.jumping = false;
-        }
-    }
-
     /*
-
+    This is called when the player is hit by an enemy. It reduces the health and checks if the player is dead.
     */
     hit () {
         this.health--;
@@ -216,7 +229,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     /*
-
+    This is called when the player is dead. It plays the death animation and restarts the scene.
     */
     die () {
         this.dead = true;
@@ -227,7 +240,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     /*
-
+    This is called when the player picks a prize. It checks the prize and calls the corresponding method.
     */
     applyPrize (prize) {
         switch (prize) {
@@ -259,6 +272,9 @@ class Player extends Phaser.GameObjects.Sprite {
         }
     }
 
+    /*
+    This is called when the player picks a prize. It flashes the player to show the player that he got a prize.
+    */
     flashPlayer () {
         this.scene.tweens.add({
             targets: this,

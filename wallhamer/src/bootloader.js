@@ -19,6 +19,7 @@ export default class Bootloader extends Phaser.Scene {
             },
             this
         );
+
         this.load.on("complete", () => {
             this.scene.start("splash");
         },this);
@@ -29,7 +30,7 @@ export default class Bootloader extends Phaser.Scene {
 
         this.load.image("pello", "assets/images/pello.png");
         this.load.image("landscape", "assets/images/landscape.png");
-        
+
         this.load.audio("build", "assets/sounds/build.mp3");
         this.load.audio("coin", "assets/sounds/coin.mp3");
         this.load.audio("death", "assets/sounds/death.mp3");
@@ -78,9 +79,6 @@ export default class Bootloader extends Phaser.Scene {
         this.registry.set("coins", 0);
         this.registry.set("hull", 10);
     }
-
-    create () {
-      }
 
     createBars () {
         this.loadBar = this.add.graphics();

@@ -22,7 +22,7 @@ export default class Platform extends Phaser.GameObjects.Container {
     }
 
     /*
-
+    This method generates a random platform. Depending on the result, the platform will move vertically or horizontally or both.
     */
     init() {
         const type = Phaser.Math.Between(0, 7);
