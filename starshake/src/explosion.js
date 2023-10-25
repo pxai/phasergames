@@ -16,7 +16,7 @@ class Explosion  {
     }
 
     /*
-
+    This adds a simple effect to the explosion to shrink the lights.
     */
     init () {
         this.scene.tweens.add({

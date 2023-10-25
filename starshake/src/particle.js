@@ -10,6 +10,9 @@ export class LightParticle extends Phaser.GameObjects.PointLight {
         this.init();
     }
 
+    /*
+    We add a tween to the particle to make it grow and fade out.
+    */
     init () {
         this.scene.tweens.add({
             targets: this,

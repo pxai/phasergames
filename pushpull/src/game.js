@@ -20,7 +20,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+  This method is called when the scene starts. We set the width and height of the scene, the center width and height, the background color, and we disable the context menu of the mouse. And then we add the elements we need: maps with blocks, audios, texts, and the pointer.
   */
     create () {
       this.width = this.sys.game.config.width;
@@ -41,14 +41,14 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+    We add the retry key to restart the scene.
   */
     addRetry () {
       this.R = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     }
 
   /*
-
+  This method adds the moves text and the total moves.
   */
     addMoves() {
       this.movesText = this.add.bitmapText(this.center_width, 32, "mario", "0", 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(3, 4, 0x75b947, 0.7);
@@ -56,7 +56,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+    It generates the map with the blocks and the exits. Depending on the number of the scene, it loads a different map.
   */
     addMap() {
       this.tileMap = this.make.tilemap({ key: `scene${this.number}` , tileWidth: 32, tileHeight: 32 });
@@ -71,6 +71,15 @@ export default class Game extends Phaser.Scene {
       this.exits = this.add.group();
       this.blocks = this.add.group();
       this.texts = [];
+
+      this.addObjects();
+
+    }
+
+  /*
+    Adds objects to the game: e
+  */
+    addObjects() {
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("block")){
           const [name, width, height, color] = object.name.split("_");
@@ -84,38 +93,23 @@ export default class Game extends Phaser.Scene {
         if (object.name.startsWith("exit")){
           this.exits.add(new Exit(this, object.x - 16, object.y))
         }
-
-        if (object.name.startsWith("exit")) {
-          this.texts.push(object);
-        }
       })
     }
 
   /*
-
+    If the scene has some texts, we show them. This is really helpful to explain the player what to do in a tutorial scene
   */
     showTexts() {
       if (this.number > 0) return;
       const texts = ["Select cubes", "Pull/push them with WASD/Arrows", "MOVE the red to exit"]
       texts.forEach((text, i) => {
-       let help = this.add.bitmapText(this.center_width, 425 + (35 * i), "mario", text, 15).setOrigin(0.5).setTint(0xffe066).setDropShadow(1, 2, 0xbf2522, 0.7);
+        this.add.bitmapText(this.center_width, 425 + (35 * i), "mario", text, 15).setOrigin(0.5).setTint(0xffe066).setDropShadow(1, 2, 0xbf2522, 0.7);
      })
    }
 
-  /*
-
-  */
-    setListeners () {
-      this.activeBlock = null;
-      this.blocks.setInteractive();
-      this.blocks.on("pointerdown", (pointer) => {
-        if (this.activeBlock)
-          this.activeBlock.deactivate()
-      });
-    }
 
   /*
-
+   This method adds the player -which is just another block- to the game. It also adds an overlap between the player and the exits. If the player overlaps with an exit, the method hitExit is called.
   */
     addPlayer(block) {
       this.player = block;
@@ -128,7 +122,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+    This is called when the player touches the exit of the scene. It destroys the exit and calls the finishScene method.
   */
     hitExit(player, exit) {
       this.player.active = false;
@@ -138,7 +132,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+    This method sets the pointer (the mouse in a computer) to this.pointer and disables the context menu of the mouse.
   */
     addPointer() {
       this.pointer = this.input.activePointer;
@@ -146,7 +140,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+    The next methods loads the audios, plays them normally and the last plays audios with a random rate and detune.
   */
       loadAudios () {
         this.audios = {
@@ -158,16 +152,10 @@ export default class Game extends Phaser.Scene {
         };
       }
 
-  /*
-
-  */
       playAudio(key) {
         this.audios[key].play();
       }
 
-  /*
-
-  */
       playRandom(key, volume = 1) {
         this.audios[key].play({
           rate: Phaser.Math.Between(1, 1.5),
@@ -178,7 +166,7 @@ export default class Game extends Phaser.Scene {
       }
 
   /*
-
+      The game loop just detects if R was pressed to restart the scene.
   */
     update() {
       if (Phaser.Input.Keyboard.JustDown(this.R)) {
@@ -187,7 +175,8 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+    This method is called when the player touches the exit of the scene. It destroys the exit and calls the finishScene method.
+    It also adds a text with the number of moves and the time it took to finish the scene.
   */
     finishScene () {
       if (this.solved) return;
@@ -216,7 +205,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+    This method restarts the scene.
   */
     restartScene () {
         this.scene.start("game", {next: "underwater", name: "STAGE", number: this.number });
@@ -224,7 +213,7 @@ export default class Game extends Phaser.Scene {
 
 
   /*
-
+    This method updates the number of moves. It is called when the player moves the block group. It is the score of the game after all.
   */
     updateMoves () {
       this.totalMoves++;

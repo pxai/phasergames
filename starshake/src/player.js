@@ -20,17 +20,18 @@ class Player extends Phaser.GameObjects.Sprite {
         this.blinking = false;
         this.shootingPatterns = new ShootingPatterns(this.scene, this.name);
         this.init();
+        this.setControls();
     }
 
     /*
-
+    We add a shadow to the player, and we'll have to update its position with the player. Alternatively, we could have defined a Container with the player and the shadow
     */
     spawnShadow (x, y) {
         this.shadow = this.scene.add.image(x + 20, y + 20, "player1").setTint(0x000000).setAlpha(0.4)
     }
 
     /*
-
+    We set the animations for the player. We'll have 3 animations: one for the idle state, one for moving right, and one for moving left.
     */
     init () {
         this.scene.anims.create({
@@ -52,35 +53,34 @@ class Player extends Phaser.GameObjects.Sprite {
             repeat: -1
           });
         this.anims.play(this.name, true)
+
+
+        this.upDelta = 0;
+    }
+
+
+    /*
+    We set the controls for the player. We'll use the cursor keys and WASD keys to move the player, and the space bar to shoot.
+    */
+    setControls () {
         this.SPACE = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.cursor = this.scene.input.keyboard.createCursorKeys();
         this.W = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-
-        this.upDelta = 0;
     }
 
     /*
-
+    This will be called when the player shoots. We'll play a sound, and then call the shoot method of the current shooting pattern.
     */
     shoot () {
-        this.scene.playAudio("shot")
+    this.scene.playAudio("shot")
       this.shootingPatterns.shoot(this.x, this.y, this.powerUp)
     }
 
     /*
-
-    */
-    release(pointer) {
-        if (pointer.leftButtonReleased()) {
-            this.shooting = false;
-        }
-    }
-
-    /*
-
+    This is the game loop for the player. We'll check if the player is moving, and if so, we'll play the corresponding animation. We'll also check if the player is shooting, and if so, we'll call the shoot method.
     */
     update (timestep, delta) {
         if (this.death) return;
@@ -111,7 +111,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     /*
-
+    We update the shadow position to follow the player.
     */
     updateShadow() {
         this.shadow.x = this.x + 20;
@@ -119,7 +119,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     /*
-
+    Everytime the player destroys a foe or a shot we show the points. We'll use a bitmap text for that.
     */
     showPoints (score, color = 0xff0000) {
         let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "starshipped", score, 20, 0xfffd37).setOrigin(0.5);
@@ -132,7 +132,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     /*
-
+    This will be called when the player dies: we'll show an explosion, shake the camera, and destroy the player.
     */
     dead () {
         const explosion = this.scene.add.circle(this.x, this.y, 10).setStrokeStyle(40, 0xffffff);

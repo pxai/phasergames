@@ -27,7 +27,7 @@ class Shot extends Phaser.GameObjects.PointLight {
    }
 
     /*
-
+   Each shot will have a shadow, which will be a circle with a lower alpha value.
     */
    spawnShadow (x, y, velocityX, velocityY) {
     this.shadow = this.scene.add.circle(x + 20, y + 20, 10, 0x000000).setAlpha(0.4)
@@ -38,7 +38,7 @@ class Shot extends Phaser.GameObjects.PointLight {
    }
 
     /*
-
+    We add a tween to the shot to make it grow and fade out, repeatedly.
     */
     init () {
        this.scene.tweens.add({

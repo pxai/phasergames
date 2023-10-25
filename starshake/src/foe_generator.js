@@ -10,7 +10,7 @@ export default class FoeGenerator {
 }
 
     /*
-
+    This is the main function to generate foes. Depending on the scene number, it will generate different foes.
     */
   generate () {
     if (this.scene.number === 4) {
@@ -25,9 +25,9 @@ export default class FoeGenerator {
     }
   }
 
-    /*
-
-    */
+  /*
+  This is the function that generates the boss.
+  */
   releaseGuinxu () {
     const guinxu = new Foe(this.scene, Phaser.Math.Between(200, 600) , 200, "guinxu", 0, 20);
     this.scene.playAudio("boss");
@@ -41,9 +41,9 @@ export default class FoeGenerator {
     this.scene.foeGroup.add(guinxu);
   }
 
-    /*
-
-    */
+  /*
+  This is the function that stops the generation of foes.
+  */
   stop () {
     clearInterval(this.generationIntervalId);
     this.scene.foeGroup.children.entries.forEach(foe => {
@@ -52,9 +52,9 @@ export default class FoeGenerator {
     });
   }
 
-    /*
-
-    */
+  /*
+  This is called when the scene is finished and it takes care of destroying the generation events.
+  */
   finishScene () {
     this.generateEvent1.destroy();
     this.generateEvent2.destroy();
@@ -65,9 +65,9 @@ export default class FoeGenerator {
     this.scene.endScene()
   }
 
-    /*
-
-    */
+  /*
+  This is the function that creates the path for the foes to follow in formation.
+  */
   createPath() {
     this.waves++;
     if (this.waves === 3) this.finishScene();
@@ -92,9 +92,9 @@ export default class FoeGenerator {
     this.graphics.lineStyle(0, 0xffffff, 0); // debug
   }
 
-    /*
-
-    */
+  /*
+  This is the function that generates a wave of foes in amd ordered formation.
+  */
   orderedWave (difficulty = 5) {
     const x = Phaser.Math.Between(64, this.scene.width - 200);
     const y = Phaser.Math.Between(-100, 0)
@@ -103,9 +103,9 @@ export default class FoeGenerator {
     Array(difficulty).fill().forEach((_, i) => this.addOrder(i,x, y, minus));
   }
 
-    /*
-
-    */
+  /*
+  This functins just creates a simple wave of foes.
+  */
   wave (difficulty = 5) {
     this.createPath();
     const x = Phaser.Math.Between(64, this.scene.width - 200);
@@ -116,16 +116,16 @@ export default class FoeGenerator {
     this.activeWave = true;
   }
 
-    /*
-
-    */
+  /*
+  This function generates a tank foe.
+  */
   tank () {
     this.scene.foeGroup.add(new Foe(this.scene, Phaser.Math.Between(100, 600) , -100, "foe2", 0, 620));
   }
 
-    /*
-
-    */
+  /*
+  This generates a slider foe and adds a rotation tween to it.
+  */
   slider () {
     let velocity = -200;
     let x = 0;
@@ -145,9 +145,9 @@ export default class FoeGenerator {
     this.scene.foeGroup.add(foe);
   }
 
-    /*
-
-    */
+  /*
+  This function generates and ordered group of foes.
+  */
   addOrder (i, x, y, minus) {
     const offset = minus * 70;
 
@@ -162,9 +162,9 @@ export default class FoeGenerator {
     this.scene.foeGroup.add(foe);
   }
 
-    /*
-
-    */
+  /*
+  This function adds a foe to the wave.
+  */
   addToWave (i) {
     const foe = new Foe(this.scene, Phaser.Math.Between(32, this.scene.width - 32), 0, "foe0")
     this.scene.tweens.add({
@@ -180,7 +180,7 @@ export default class FoeGenerator {
   }
 
     /*
-
+  This function updates all foes in the scene. This could be done independently in each foe as we will see in other projects.
     */
   update () {
    if (this.path) {
@@ -209,9 +209,9 @@ export default class FoeGenerator {
     })
   }
 
-    /*
-
-    */
+  /*
+  This function checks if the wave of foes has been destroyed so we can generate a power-up.
+  */
   checkIfWaveDestroyed() {
     const foes = this.scene.foeWaveGroup.children.entries;
 

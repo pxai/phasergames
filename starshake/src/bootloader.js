@@ -4,7 +4,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    Here we split the loading of the assets into different functions.
     */
     preload () {
         this.createBars();
@@ -17,7 +17,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    These are the events we need to control the loading bar and change to splash scene when complete.
     */
     setLoadEvents () {
         this.load.on(
@@ -41,14 +41,14 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    Load the fonts we use in the game.
     */
     loadFonts () {
         this.load.bitmapFont("wendy", "assets/fonts/wendy.png", "assets/fonts/wendy.xml");
     }
 
     /*
-
+    Load the images we use in the game.
     */
     loadImages () {
         this.load.image("logo", "assets/images/logo.png");
@@ -60,7 +60,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    Load the audio (sound effects and music) we use in the game.
     */
     loadAudios () {
         this.load.audio("shot", "assets/sounds/shot.mp3");
@@ -78,7 +78,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    Load the spritesheets (animated images) we use in the game.
     */
     loadSpritesheets () {
         this.load.spritesheet("player1", "assets/images/player1.png", { frameWidth: 64, frameHeight: 64 });
@@ -90,7 +90,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    Set the initial values of the registry. The game was designed to be played by two players, but it can be played by one.
     */
     setRegistry () {
         this.registry.set("score_player1", 0);
@@ -103,7 +103,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    Create the bars we use to show the loading progress.
     */
     createBars () {
         this.loadBar = this.add.graphics();

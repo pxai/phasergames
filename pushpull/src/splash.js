@@ -3,11 +3,8 @@ export default class Splash extends Phaser.Scene {
         super({ key: "splash" });
     }
 
-    preload () {
-    }
-
   /*
-
+    We create the elements of the splash scene: the background, the title, the start button, and the instructions.
   */
     create () {
         this.width = this.sys.game.config.width;
@@ -28,7 +25,7 @@ export default class Splash extends Phaser.Scene {
     }
 
   /*
-
+    We use the game loops to animate the background.
   */
     update () {
         this.background.tilePositionX += 1;
@@ -36,7 +33,7 @@ export default class Splash extends Phaser.Scene {
     }
 
   /*
-
+    When the game starts, we stop the music and start the transition scene with a new music.
   */
     startGame () {
         if (this.theme) this.theme.stop();
@@ -44,46 +41,65 @@ export default class Splash extends Phaser.Scene {
         this.scene.start("transition", {name: "STAGE", number: 0})
     }
 
-    /*
+    playGameMusic (theme="music") {
+      this.theme = this.sound.add(theme);
+      this.theme.stop();
+      this.theme.play({
+        mute: false,
+        volume: 0.2,
+        rate: 1,
+        detune: 0,
+        seek: 0,
+        loop: true,
+        delay: 0
+      })
+    }
 
+    /*
+    These functions shows game title that consists in a couple of bitmap texts that are tweened.
     */
     showTitle() {
-        this.gameLogo1 = this.add.bitmapText(this.center_width - 1000, 100, "mario", "Push", 120).setOrigin(0.5).setTint(0xffffff).setDropShadow(3, 4, 0x75b947, 0.7);//.setTint(0xa6f316).setDropShadow(3, 4, 0x75b947, 0.7);
-        this.gameLogo2 = this.add.bitmapText(this.center_width + 1000, 220, "mario", "Pull", 120).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x693600, 0.7);
+      this.gameLogo1 = this.add.bitmapText(this.center_width - 1000, 100, "mario", "Push", 120)
+        .setOrigin(0.5).setTint(0xffffff).setDropShadow(3, 4, 0x75b947, 0.7);
+      this.gameLogo2 = this.add.bitmapText(this.center_width + 1000, 220, "mario", "Pull", 120)
+        .setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x693600, 0.7);
 
-        this.tweens.add({
-            targets: [this.gameLogo2],
-            duration: 1000,
-            x: {from: this.gameLogo2.x, to: this.center_width},
-            onComplete: () => {
-                this.tweens.add({
-                    targets: [this.gameLogo2],
-                    duration: 1000,
-                    x: "-=20",
-                    repeat: -1,
-                    ease: 'Linear'
-                 })
-            }
-         })
-         this.tweens.add({
-            targets: [this.gameLogo1],
-            duration: 1000,
-            x: {from: this.gameLogo1.x, to: this.center_width},
-            onComplete: () => {
-                this.tweens.add({
-                    targets: [this.gameLogo1],
-                    duration: 1000,
-                    x: "+=20",
-                    repeat: -1 ,
-                    ease: 'Linear'
-                 })
-            }
-         })
+      this.titleTweens();
+    }
 
+    titleTweens () {
+      this.tweens.add({
+        targets: [this.gameLogo2],
+        duration: 1000,
+        x: {from: this.gameLogo2.x, to: this.center_width},
+        onComplete: () => {
+            this.tweens.add({
+                targets: [this.gameLogo2],
+                duration: 1000,
+                x: "-=20",
+                repeat: -1,
+                ease: 'Linear'
+             })
+        }
+     })
+     this.tweens.add({
+        targets: [this.gameLogo1],
+        duration: 1000,
+        x: {from: this.gameLogo1.x, to: this.center_width},
+        onComplete: () => {
+            this.tweens.add({
+                targets: [this.gameLogo1],
+                duration: 1000,
+                x: "+=20",
+                repeat: -1 ,
+                ease: 'Linear'
+             })
+        }
+     })
     }
 
   /*
-
+    This plays the music of the splash scene in a loop.
   */
     playMusic (theme="splash") {
         this.theme = this.sound.add(theme);
@@ -97,31 +113,10 @@ export default class Splash extends Phaser.Scene {
           loop: true,
           delay: 0
       })
-      }
-
-  /*
-
-  */
-      playGameMusic (theme="music") {
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
-        this.theme.play({
-          mute: false,
-          volume: 0.2,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-        })
-      }
-
-      showPlayer () {
-        this.frog = this.add.sprite(this.center_width, 350, "block_blue").setOrigin(0.5).setScale(1.5);
     }
 
   /*
-
+    This adds a start button that can be clicked with the mouse or touched with the finger.
   */
     addStartButton () {
         this.startButton = this.add.bitmapText(this.center_width, 500, "mario", "start", 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x693600, 0.7);
@@ -148,7 +143,7 @@ export default class Splash extends Phaser.Scene {
     }
 
   /*
-
+    This just show author's information and a space key that blinks.
   */
     showInstructions() {
         this.add.sprite(this.center_width - 80, 400, "pello").setOrigin(0.5).setScale(0.5)

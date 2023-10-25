@@ -21,7 +21,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     }
 
   /*
-
+  This method creates the block group based on the size.
   */
     createBlock () {
       this.body.setSize(this.w * 32, this.h * 32)
@@ -34,7 +34,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     }
 
   /*
-
+  This method sets the keys to move the block group.
   */
     setKeys() {
       this.cursor = this.scene.input.keyboard.createCursorKeys();
@@ -46,7 +46,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
   }
 
   /*
-
+  This method sets the listeners for the mouse to select blocks. When a block is selected, it becomes the active block. We add some color to it with `setTint`so the player knows which block is active.
   */
   setListeners () {
     this.setInteractive(new Phaser.Geom.Rectangle(0,0,64, 96), Phaser.Geom.Rectangle.Contains);
@@ -67,7 +67,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
   }
 
   /*
-
+  These method activates the block group. It also deactivates the previous active block. The next method does the opposite.
   */
   activate () {
     if (this.scene.activeBlock) this.scene.activeBlock.deactivate();
@@ -75,15 +75,12 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     this.scene.activeBlock = this;
   }
 
-  /*
-
-  */
   deactivate () {
     this.active = false;
   }
 
   /*
-
+  This method is the game loop for the block group. It detects what key was pressed AND it checks if the block group can move in the direction of the key pressed. If it can, it moves the block group and updates the number of moves.
   */
     update() {
       if (!this.active) return;
@@ -107,7 +104,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     }
 
   /*
-
+  This method leaves a trail behind the block group. It is used when the block group moves.
   */
     leaveTrail(w, h, offsetX = 0, offsetY = 0) {
       this.scene.playAudio("move")
@@ -123,7 +120,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     }
 
   /*
-
+    This method checks if the block group overlaps with another block group. It is used to check if the block group can move in a certain direction.
   */
     isOverlap (x = 0, y = 0) {
       const overlaps = this.scene.blocks.children.entries.map((block) => {
@@ -144,7 +141,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     }
 
   /*
-
+    This specific method checks if the block group can move down. It is used by the `update` method.
   */
     canMoveDown(distance = 32) {
       if (this.isOverlap(0, 1)) {
@@ -163,7 +160,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     }
 
   /*
-
+    Same as before, but for this time it checks if the block group can move up.
   */
     canMoveUp(distance = 32) {
       if (this.isOverlap(0, -1)) {
@@ -180,7 +177,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     }
 
   /*
-
+    Same as before, but for this time it checks if the block group can move left.
   */
     canMoveLeft(distance = 32) {
       if (this.isOverlap(-1, 0)) {
@@ -198,7 +195,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     }
 
   /*
-
+    ... and right.
   */
     canMoveRight(distance = 32) {
       if (this.isOverlap(1, 0)) {

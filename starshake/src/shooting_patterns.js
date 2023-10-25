@@ -13,7 +13,8 @@ export default class ShootingPatterns {
     }
 
     /*
-
+    These are the different functions we will use to shoot. Each one will shoot a different number of shots, with different angles and speeds.
+    The patterns are applied depending on the current powerUp.
     */
     shoot (x, y, powerUp) {
         this.shootingMethods[powerUp](x, y, powerUp);

@@ -26,7 +26,7 @@ export default class Outro extends Phaser.Scene {
     }
 
     /*
-
+    These are the functions to show the dramatic story of the game, line by line.
     */
     showHistory () {
         this.text.forEach((line, i) => {
@@ -35,23 +35,6 @@ export default class Outro extends Phaser.Scene {
         this.time.delayedCall(4000, () => this.showPlayer(), null, this);
     }
 
-    playMusic (theme="outro") {
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
-        this.theme.play({
-          mute: false,
-          volume: 1,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-      })
-      }
-
-    /*
-
-    */
     showLine(text, y) {
         let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "wendy", text, 50)
             .setOrigin(0.5).setAlpha(0));
@@ -62,15 +45,16 @@ export default class Outro extends Phaser.Scene {
         })
     }
 
-    /*
 
+    /*
+    This will just show the player sprite.
     */
     showPlayer() {
         this.player1 = this.add.sprite(this.center_width, this.height - 200, "player1").setOrigin(0.5);
     }
 
     /*
-
+    This will start the splash screen.
     */
     startSplash () {
         this.scene.start("splash");

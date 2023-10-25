@@ -28,7 +28,7 @@ class FoeShot extends Phaser.GameObjects.PointLight {
    }
 
     /*
-
+    This function spawns a shadow for each shot. We'll have to update it with the shot itself.
     */
    spawnShadow (x, y, velocityX, velocityY) {
     this.shadow = this.scene.add.circle(x + 20, y + 20, 10, 0x000000).setAlpha(0.4)
@@ -39,7 +39,7 @@ class FoeShot extends Phaser.GameObjects.PointLight {
    }
 
     /*
-
+    This function adds a simple effect to the shot to make it flicker.
     */
     init () {
         this.scene.tweens.add({
@@ -51,7 +51,7 @@ class FoeShot extends Phaser.GameObjects.PointLight {
     }
 
     /*
-
+    This function is called when the shot is destroyed, adding a explosion effect along with a tween and showing the points.
     */
     shot() {
         const explosion = this.scene.add.circle(this.x, this.y, 5).setStrokeStyle(10, 0xffffff);
@@ -67,7 +67,7 @@ class FoeShot extends Phaser.GameObjects.PointLight {
     }
 
     /*
-
+    This function shows the points when the shot is destroyed. The points are shown in a bitmap text and they are tweened to make them move up and fade out.
     */
     showPoints (score, color = 0xff0000) {
         let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "wendy", "+"+score, 40, color).setOrigin(0.5);

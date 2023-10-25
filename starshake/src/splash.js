@@ -21,7 +21,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     /*
-
+    The background, as the game, is a tileSprite, so we can scroll it to make it look like it's moving.
     */
     addBackground () {
         this.background = this.add.tileSprite(0, 0, this.width, this.height, "background")
@@ -34,7 +34,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     /*
-
+    We add this effect to change to another screen
     */
     transitionToChange() {
         new SceneEffect(this).simpleClose(this.startGame.bind(this));
@@ -46,7 +46,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     /*
-
+    We add the logo, and then we tween it to make it move up and down.
     */
     showLogo() {
         this.gameLogoShadow = this.add.image(this.center_width, 250, "logo")
@@ -78,7 +78,9 @@ export default class Splash extends Phaser.Scene {
         });
     }
 
-
+    /*
+    This is the music for the splash scene. We'll play it in a loop.
+    */
     playMusic (theme="splash") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
@@ -94,7 +96,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     /*
-
+    Here we add the instructions to the scene.
     */
     showInstructions() {
         this.add.bitmapText(this.center_width, 450, "wendy", "Arrows to move", 60)

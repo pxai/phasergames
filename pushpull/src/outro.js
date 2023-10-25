@@ -3,9 +3,6 @@ export default class Outro extends Phaser.Scene {
         super({ key: "outro" });
     }
 
-    preload () {
-    }
-
     create () {
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
@@ -23,7 +20,7 @@ export default class Outro extends Phaser.Scene {
     }
 
   /*
-
+    This will show the total moves during the game.
   */
     showCount () {
         this.winText = this.add.bitmapText(this.center_width, -100, "mario", "TOTAL MOVES: " + this.registry.get("moves"), 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x75b947, 0.7);
@@ -42,7 +39,7 @@ export default class Outro extends Phaser.Scene {
     }
 
   /*
-
+    This adds a start button that can be clicked with the mouse or touched with the finger.
   */
     addStartButton () {
         this.startButton = this.add.bitmapText(this.center_width, 500, "mario", "Click to start", 30).setOrigin(0.5).setTint(0x9A5000).setDropShadow(2, 3, 0x693600, 0.7);
@@ -69,7 +66,7 @@ export default class Outro extends Phaser.Scene {
 
 
   /*
-
+    This starts the splash scene.
   */
     startSplash () {
         this.sound.stopAll();

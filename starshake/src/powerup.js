@@ -1,11 +1,3 @@
-import Explosion from "./explosion";
-
-const TYPES = {
-    "chocolate": 0xAF8057,
-    "vanila": 0xfff6d5,
-    "fruit": 0x00ff00,
-};
-
 class PowerUp extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, name = "plenny0", power= "fruit") {
         super(scene, x, y, name);
@@ -24,7 +16,7 @@ class PowerUp extends Phaser.GameObjects.Sprite {
    }
 
     /*
-
+   The power up also spawns a shadow.
     */
    spawnShadow (x, y) {
     this.shadow = this.scene.add.image(x + 20, y + 20, "plenny0").setTint(0x000000).setAlpha(0.4)
@@ -33,7 +25,7 @@ class PowerUp extends Phaser.GameObjects.Sprite {
    }
 
     /*
-
+    This sets the animation and movement of the power up.
     */
     init () {
         this.scene.anims.create({
@@ -69,6 +61,9 @@ class PowerUp extends Phaser.GameObjects.Sprite {
           this.direction = -1;
     }
 
+    /*
+    When this element is destroyed, it will also destroy the shadow.
+    */
     destroy() {
         this.shadow.destroy();
         super.destroy();

@@ -4,7 +4,7 @@ export default class SceneEffect {
    }
 
     /*
-
+   This adds a rectangle to the scene, and then we tween it to make it move from the left to the right.
     */
    simpleClose (callback) {
     const rectangleWidth = this.scene.width/2;
@@ -21,7 +21,7 @@ export default class SceneEffect {
     }
 
     /*
-
+    This adds a rectangle to the scene, and then we tween it to make it move from the right to the left.
     */
     simpleOpen (callback) {
         const rectangleWidth = this.scene.width/2;
@@ -38,7 +38,7 @@ export default class SceneEffect {
     }
 
     /*
-
+    This adds two rectangles to the scene, and then we tween them to make them move from the center to the left and right.
     */
    close (callback) {
        const rectangleWidth = this.scene.width / 2;
