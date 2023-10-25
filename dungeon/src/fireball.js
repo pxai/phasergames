@@ -13,7 +13,7 @@ export default class Fireball extends Phaser.Physics.Matter.Sprite  {
     }
 
   /*
-
+    We create the animation for the fireball and add the update event to the scene so it will update in this class.
   */
     init () {
         this.scene.events.on("update", this.update, this);
@@ -26,15 +26,8 @@ export default class Fireball extends Phaser.Physics.Matter.Sprite  {
         this.scene.time.delayedCall(3000, () => {this.destroy()}, null, this)
     }
 
-  /*
-
-  */
     update() {
         if (this.scene?.gameOver) return;
-    }
-
-    death () {
-        this.destroy();
     }
 
     destroy () {

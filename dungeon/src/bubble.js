@@ -16,7 +16,7 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
 	}
 
   /*
-
+    This method loads the sprite that will be inside the bubble. It also creates a tween to make it rotate.
   */
     load(sprite) {
         this.scene.playAudio("trap")
@@ -31,7 +31,7 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
     }
 
   /*
-
+    This method moves the bubble horizontally. It happens when the bubble is launched.
   */
     moveHorizontally () {
         this.scene.tweens.add({
@@ -59,7 +59,7 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
     }
 
   /*
-
+    This one moves the bubble vertically. It moves the bubble with a tween and then it destroys it.
   */
     moveVertically () {
         this.blob = this.scene.tweens.add({
@@ -88,7 +88,7 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
     }
 
   /*
-
+    When a bubble is destroyed, we respawn the sprite that was inside it, setting it free.
   */
     respawn () {
         this.loadedTween.destroy();
@@ -102,7 +102,7 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
     }
 
   /*
-
+    We update the position of the sprite that was inside the bubble.
   */
     update () {
         if (!this.active) return;
@@ -113,7 +113,7 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
     }
 
   /*
-
+    This is called when the bubble is destroyed. We play the crash sound and respawn the sprite that was inside it and finally we actually destroy the bubble game object.
   */
     destroy() {
         if (!this.scene) return;

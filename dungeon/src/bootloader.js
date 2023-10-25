@@ -18,7 +18,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    As we showed before, this method takes care of the loading bar and the progress bar using load events.
     */
     setLoadEvents () {
         this.load.on(
@@ -42,14 +42,14 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    The fonts are loaded in this method. We'll call them default. Later we could add other fonts but with the same "default" name in case we want to try different fonts.
     */
     loadFonts () {
         this.load.bitmapFont("default", "assets/fonts/pico.png", "assets/fonts/pico.xml");
     }
 
     /*
-
+    This one loads the static images.
     */
     loadImages () {
         this.load.image("pello", "assets/images/pello_ok.png");
@@ -62,14 +62,14 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    This loads the level map. In this game we just use one empty map that we'll fill with the different elements of the game using a dungeon generator class.
     */
     loadMaps () {
         this.load.tilemapTiledJSON("scene0", "assets/maps/level.json");
     }
 
     /*
-
+    This loads the audio files: music and sound effects.
     */
     loadAudios () {
         Array(5).fill(0).forEach((_,i) => {
@@ -89,7 +89,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    This loads spritesheets for game objects that need animations or variations.
     */
     loadSpritesheets () {
         this.load.spritesheet("player", "assets/images/player.png", { frameWidth: 48, frameHeight: 48 });
@@ -101,7 +101,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    This one adds the load bar to the scene.
     */
     createBars () {
         this.loadBar = this.add.graphics();

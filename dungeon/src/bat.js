@@ -15,7 +15,7 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
     }
 
   /*
-
+    Initiate the bat animation and movement. Also add the update event to the scene so it will update in this class.
   */
     init () {
         this.scene.anims.create({
@@ -39,7 +39,7 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
     }
 
   /*
-
+    We add the collision event to the scene so we can handle the collision with the bat and the bubble.
   */
     addCollisions () {
       this.unsubscribeBatCollide = this.scene.matterCollision.addOnCollideStart({
@@ -49,9 +49,6 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
       });
     }
 
-  /*
-
-  */
     onBatCollide({ gameObjectA, gameObjectB }) {
       if (gameObjectB instanceof Bubble) {
         gameObjectB.load("bat")
@@ -61,7 +58,7 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
 
 
   /*
-
+    Update the bat movement. If the bat is not moving anymore, we turn it around.
   */
     update () {
       if (!this.active) return;
@@ -69,7 +66,7 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
     }
 
   /*
-
+    This function turns the bat around and set the velocity to the new direction.
   */
     turn () {
         this.direction = -this.direction;
@@ -79,7 +76,7 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
     }
 
   /*
-
+    We don't destroy the bat directly, we kill the bat and play the death animation.
   */
     death () {
         this.dead = true;
@@ -87,7 +84,7 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
       }
 
   /*
-
+    This destroys the bat after the death animation is complete.
   */
     animationComplete(animation, frame) {
       if (animation.key === this.label + "death") {

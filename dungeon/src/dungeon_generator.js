@@ -12,7 +12,7 @@ export default class DungeonGenerator {
     }
 
   /*
-
+    This is the method that generates the whole dungeon. It's divided in different methods to make it more readable but basically it generates the dungeon, the map and then it places the different elements in the map.
   */
     generate () {
       this.generateDungeon();
@@ -43,7 +43,7 @@ export default class DungeonGenerator {
     }
 
   /*
-
+    This method generates the dungeon using the dungeon generator library. We just need to pass the width and height of the dungeon and some options. You can check the documentation of the library to see all the options available.
   */
     generateDungeon() {
       this.dungeon = new Dungeon({
@@ -59,7 +59,7 @@ export default class DungeonGenerator {
     }
 
   /*
-
+    This method add specific tilemap to our dungeon, with its layers and collisions.
   */
   generateMap () {
     this.map = this.scene.make.tilemap({
@@ -87,7 +87,7 @@ export default class DungeonGenerator {
   }
 
   /*
-
+    This method places the corners of the room. We use the tile index to place the corner tiles.
   */
   placeCorners (room) {
     const { left, right, top, bottom } = room;
@@ -98,7 +98,7 @@ export default class DungeonGenerator {
   }
 
   /*
-
+    This method places the walls of the room. We use the tile index to place the wall tiles. It uses a weighted randomize method to place the tiles which means that we can give more weight (frequency) to some tiles than others.
   */
     placeWalls (room) {
       const { width, height, left, right, top, bottom } = room;
@@ -121,7 +121,7 @@ export default class DungeonGenerator {
     }
 
   /*
-
+    As the name implies, this one adds the doors to the room. We use the tile index to place the door tiles.
   */
     addDoors(room, doors, x, y) {
       for (let i = 0; i < doors.length; i++) {
@@ -140,7 +140,7 @@ export default class DungeonGenerator {
     }
 
   /*
-
+    Each room must have a key that the player has to collect. This method adds the key to the room.
   */
     addKey(room) {
       const keyX = Phaser.Math.Between(room.left + 2, room.right - 2);
@@ -150,7 +150,7 @@ export default class DungeonGenerator {
     }
 
   /*
-
+    Randomly, some rooms may have a seesaw. This method adds the seesaw to the center of the room.
   */
     addSeeSaw(room) {
       if (Phaser.Math.Between(0, 10) < 7) return;
@@ -159,7 +159,7 @@ export default class DungeonGenerator {
     }
 
   /*
-
+    Coins are randomly placed in the room. We use a random method to decide where to place the coins. It uses other helper methods to place the coins in the different positions.
   */
     addCoins(room) {
       const where = Phaser.Math.RND.pick(["top", "bottom", "left", "right", "none"]);
@@ -174,9 +174,6 @@ export default class DungeonGenerator {
       }
     }
 
-  /*
-
-  */
   addCoinsTop(room, width, height) {
     const keyY = room.top + Phaser.Math.Between(1 , 2);
     const keyX = room.left + Phaser.Math.Between(1, 2);
@@ -189,9 +186,6 @@ export default class DungeonGenerator {
     })
   }
 
-  /*
-
-  */
   addCoinsdBottom(room, width, height) {
     const keyY = room.bottom - Phaser.Math.Between(1 , 2);
     const keyX = room.left + Phaser.Math.Between(1, 2);
@@ -204,9 +198,6 @@ export default class DungeonGenerator {
     })
   }
 
-  /*
-
-  */
     addCoinsdLeft(room, width, height) {
       const keyY = room.top + Phaser.Math.Between(3 , 4);
       const keyX = room.left + Phaser.Math.Between(1, 2);
@@ -219,9 +210,6 @@ export default class DungeonGenerator {
       })
     }
 
-  /*
-
-  */
     addCoinsdRight(room, width, height) {
       const keyY = room.top + Phaser.Math.Between(1 , 2);
       const keyX = room.right - Phaser.Math.Between(3, 4);
@@ -252,7 +240,7 @@ export default class DungeonGenerator {
     }
 
   /*
-
+    This one adds the top traps or spikes to the room. Finally is not used in the game but it's a good example of how to add more elements to the dungeon.
   */
     addTopTraps (room) {
       const { x, y, width, height, left, right, top, bottom, tiles } = room;

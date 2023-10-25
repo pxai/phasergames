@@ -3,6 +3,9 @@ export default class Bootloader extends Phaser.Scene {
         super({ key: "bootloader" });
     }
 
+    /*
+    This method loads all the assets of the game organized in different methods.
+    */
     preload () {
         this.createBars();
         this.setLoadEvents();
