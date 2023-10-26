@@ -14,7 +14,6 @@ export default class Bootloader extends Phaser.Scene {
         this.loadMaps();
         this.loadAudios();
         this.loadSpritesheets();
-        this.setRegistry();
     }
 
     /*

@@ -9,7 +9,7 @@ export default class key extends Phaser.Physics.Matter.Sprite {
 	}
 
     /*
-
+    As we did with the coin, we create the animation and add a tween to make it move up and down. We could possible do something different here, like make it rotate. Or just reuse the same class as the coin.
     */
     init () {
         this.tween = this.scene.tweens.add({

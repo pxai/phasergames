@@ -16,7 +16,7 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
     }
 
   /*
-
+These function inits the wizard. It creates the animations and the update event. Also we create a timer that will be used to shoot the fireballs.
   */
     init () {
         this.scene.anims.create({
@@ -27,14 +27,12 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
           });
 
           this.anims.play(this.label, true)
-
-          this.setVelocityX(this.direction * 2)
           this.scene.events.on("update", this.update, this);
           this.timer = this.scene.time.addEvent({ delay: 3000, callback: this.directShot, callbackScope: this, loop: true });
     }
 
   /*
-
+As we did with the player and the bat, we create this callback to handle the collision with the bubble.
   */
     addCollisions () {
       this.unsubscribeBatCollide = this.scene.matterCollision.addOnCollideStart({
@@ -45,7 +43,7 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
     }
 
   /*
-
+This will be called when the bubble hits the wizard. We "load" the wizard inside the bubble and destroy the wizard.
   */
     onWizardCollide({ gameObjectA, gameObjectB }) {
       if (gameObjectB instanceof Bubble) {
@@ -55,7 +53,7 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
     }
 
   /*
-
+The wizard will try a direct shot to the player. It will shoot a fireball and then turn around.
   */
     directShot() {
       this.scene.playAudio("fireball")
@@ -65,14 +63,9 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
       this.delayedTurn = this.scene.time.delayedCall(1000, () => { this.turn();}, null, this);
     }
 
-
   /*
-
+  This method takes care of turning the wizard around.
   */
-    update () {
-      if (!this.active) return;
-    }
-
     turn () {
         this.direction = -this.direction;
         this.flipX = this.direction > 0;
@@ -80,13 +73,8 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
         this.setVelocityX(this.direction * 5)
     }
 
-    death () {
-      this.destroy();
-    }
-
-
   /*
-
+This will be called when the wizard is destroyed. We destroy the timer and the delayed turn before destroying the wizard.
   */
     destroy () {
       if (this.timer) this.timer.destroy();

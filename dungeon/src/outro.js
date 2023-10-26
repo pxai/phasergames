@@ -10,7 +10,7 @@ export default class Outro extends Phaser.Scene {
     }
 
   /*
-
+First we add all elements to the scene: player image, score, text and the input to restart the game.
   */
     create () {
         this.width = this.sys.game.config.width;
@@ -29,8 +29,12 @@ export default class Outro extends Phaser.Scene {
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
     }
 
-  /*
+    loadNext () {
+        this.scene.start("splash");
+    }
 
+  /*
+    We show the player image and play the idle animation.
   */
     showPlayer () {
         this.player = this.add.sprite(this.center_width, this.center_height - 120, "player")
@@ -43,9 +47,5 @@ export default class Outro extends Phaser.Scene {
         });
 
         this.player.anims.play("playeridle")
-    }
-
-    loadNext () {
-        this.scene.start("splash");
     }
 }

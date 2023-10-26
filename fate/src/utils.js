@@ -54,7 +54,7 @@ export default class Utils {
     }
 
   /*
-
+    This simple method will detroy all the characters of the text.
   */
     removeTyped(texts) {
         texts.flat().forEach( char => char.destroy())

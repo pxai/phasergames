@@ -18,7 +18,7 @@ export default class Player {
     }
 
   /*
-
+    The init method is called from the constructor and in this case it has several jobs. This is just a conventional class that contains a compound body: it consists in different bodies for the player, and we need to add them to the Matter world. We also need to add the player sprite to the scene, and set up the animations. Finally, we need to add the colliders and events that will be used to control the player. If you set the debug to true you'll see the different bodies that make up the player. The ones of the sides it's used to detect collisions with walls and be able to climb up.
   */
     init (x,y) {
         // Before matter's update, reset our record of what surfaces the player is touching.
@@ -52,7 +52,7 @@ export default class Player {
     }
 
   /*
-
+    We attach this class to the scene events, so we can update the player on every frame. We also add the destroy method to the scene events, so we can clean up the player when the scene is destroyed.
   */
     addEvents () {
       this.scene.events.on("update", this.update, this);
@@ -61,7 +61,7 @@ export default class Player {
     }
 
   /*
-
+    These are the collider events that will be used to control the player. We use the MatterCollision plugin to detect collisions between the player and the walls. We also use the onSensorCollide method to detect collisions with the sensors that we added to the player. This is used to detect collisions with the walls and the ground.
   */
     addColliders () {
       this.scene.matterCollision.addOnCollideStart({
@@ -77,7 +77,7 @@ export default class Player {
     }
 
   /*
-
+    Theses defines the different animation states to the player: idle, walking, shooting, etc.
   */
     addAnimations () {
       this.scene.anims.create({
@@ -103,7 +103,7 @@ export default class Player {
     }
 
   /*
-
+    When the player is just created, it's invincible for a short period of time. This is done by a flag and changing the alpha of the sprite, so it blinks.
   */
     initInvincible () {
       this.scene.tweens.add({
@@ -118,7 +118,7 @@ export default class Player {
     }
 
   /*
-
+    This is the method that is called when the player collides with something. We use it to detect collisions with the walls and the ground. We also use it to detect collisions with the sensors that we added to the player. This is used to detect collisions with the walls and the ground.
   */
     onSensorCollide({ bodyA, bodyB, pair }) {
         if (bodyB.isSensor) return; // We only care about collisions with physical objects
@@ -139,7 +139,7 @@ export default class Player {
       }
 
   /*
-
+    This is used to reset the isTouching flags so we can determine if the player is on the ground or not.
   */
     resetTouching() {
       this.isTouching.left = false;
@@ -148,7 +148,7 @@ export default class Player {
     }
 
   /*
-
+    This is used to add the controls to the player: WASD and arrows. We use the cursor keys to move the player and shoot bubbles.
   */
     addControls() {
         this.cursor = this.scene.input.keyboard.createCursorKeys();
@@ -159,7 +159,7 @@ export default class Player {
     }
 
   /*
-
+    The game looop for the player. This is called on every frame. We check the input and move the player accordingly. We also check if the player is on the ground or not, and if it is, we allow it to jump. We also check if the player is in the air and touching a wall, so we can allow it to climb up.
   */
     update() {
         this.isOnGround = this.isTouching.ground;
@@ -193,7 +193,7 @@ export default class Player {
     }
 
   /*
-
+    Of the player is jumping, we add a cooldown timer so it can't jump again until it touches the ground.
   */
     checkJump () {
       if (((this.canJump && this.isOnGround) || this.onWall) && (this.W.isDown || this.cursor.up.isDown))  {
@@ -209,7 +209,7 @@ export default class Player {
     }
 
   /*
-
+    Same as we did with the jump, we add a cooldown timer to the shooting so the player can't shoot again until the cooldown is over.
   */
     checkShoot () {
       if (this.canShoot && (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.W))) {
@@ -226,7 +226,7 @@ export default class Player {
     }
 
   /*
-
+    When the player is killed, apart from destroying the sprite, we also remove the events and colliders that we added to it.
   */
     destroy() {
         this.scene.playAudio("death")
@@ -249,7 +249,7 @@ export default class Player {
       }
 
   /*
-
+Every time the player moves, we add a few dust particles to the scene. This is done by creating a new Dust object. The same happens when the player is on the wall or landing after a jump. Probably there's a good chance to refactor this but in this particular case, for a couple of lines maybe it's not worth it.
   */
     step () {
         if (Phaser.Math.Between(0, 5) > 4) {
@@ -257,18 +257,12 @@ export default class Player {
         }
     }
 
-  /*
-
-  */
     friction () {
         Array(Phaser.Math.Between(2, 4)).fill(0).forEach(i => {
             new Dust(this.scene, this.sprite.x + Phaser.Math.Between(-8, 8), this.sprite.y + Phaser.Math.Between(-32, 32))
         })
     }
 
-  /*
-
-  */
     land () {
        if (this.sprite.body.velocity.y < 1) return;
        Array(Phaser.Math.Between(3, 6)).fill(0).forEach(i => {
@@ -276,17 +270,17 @@ export default class Player {
        })
     }
 
-  /*
-
-  */
+    /*
+    This is called when the player dies, creating an explosion of dust particles.
+    */
     explosion () {
-        Array(Phaser.Math.Between(10, 15)).fill(0).forEach(i => {
-             new Dust(this.scene, this.sprite.x + Phaser.Math.Between(-32, 32), this.sprite.y + Phaser.Math.Between(10, 16))
-        })
-     }
+      Array(Phaser.Math.Between(10, 15)).fill(0).forEach(i => {
+           new Dust(this.scene, this.sprite.x + Phaser.Math.Between(-32, 32), this.sprite.y + Phaser.Math.Between(20, 36))
+      })
+   }
 
   /*
-
+    This is called when the player finishes the shooting animation. We use it to play the idle animation again.
   */
     animationComplete (animation, frame) {
         if (animation.key === "playershot") {

@@ -1,5 +1,3 @@
-
-
 import { Scene3D } from '@enable3d/phaser-extension'
 import Utils from "./utils";
 
@@ -9,205 +7,71 @@ export default class Splash extends Scene3D {
     }
 
   /*
-
+This will create the elements of the Splash screen. This screen is a normal scene that is shown before the game starts. It shows the logo and the basic instructions.
   */
     create () {
-        this.game.sound.stopAll();
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
         this.utils = new Utils(this);
-        this.loadAudios()
-        this.showIntro();
-        this.cameras.main.setBackgroundColor(0x000000);
-        this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
+        this.showLogo();
+        this.showInstructions();
+        this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
+        this.playMusic();
     }
 
-  /*
-
-  */
-    startGame () {
-        if (this.utils.typeAudio) this.utils.typeAudio.stop();
-        if (this.theme) this.theme.stop();
-        this.scene.start("transition", {next: "game", name: "STAGE", number: 1, time: 30})
-    }
-
-  /*
-
-  */
-    showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
-        this.tweens.add({
-            targets: this.gameLogo,
-            duration: 1000,
-            x: {
-              from: this.center_width * 2,
-              to: this.center_width
-            },
-            y: {
-                from: -200,
-                to: 130
-              },
-          })
-    }
-
-  /*
-
-  */
-    playMusic (theme="hymn") {
+    /*
+    We use this method to play the music. In this game the music theme starts in the Splash screen and it is played during the game.
+    */
+    playMusic (theme="music") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
           mute: false,
-          volume: 0.7,
+          volume: 0.5,
           rate: 1,
           detune: 0,
           seek: 0,
           loop: true,
           delay: 0
       })
-      }
-
-      loadAudios () {
-        this.audios = {
-          "type": this.sound.add("type"),
-        };
-      }
-
-      playAudio(key) {
-        this.audios[key].play();
-      }
+    }
 
   /*
-
+This is just the "logo" of the game, which is just a text.
   */
-    showIntro() {
+    showLogo () {
+        this.logo = this.add.image(this.center_width, 170, "logo").setOrigin(0.5).setScale(0.7).setAlpha(0)
+        this.tweens.add({
+            targets: this.logo,
+            duration: 3000,
+            alpha: {from: 0, to: 1}
+        })
+    }
+
+  /*
+This are the instructions of the game. We use again the Utils class to show the text letter by letter.
+  */
+    showInstructions () {
         let text1, text2;
-        text1 = this.utils.typeText(" IN 1968 YURI GAGARIN DIED\nDURING A ROUTINE FLIGHT", "computer", this.center_width, this.center_height)
-        this.time.delayedCall(5500, () => {
-            text2 = this.utils.typeText(" OR SO THEY MADE US BELIEVE...", "computer", this.center_width,  this.center_height + 100)
+        text1 = this.utils.typeText("ARROWS + W + S\nMOUSE FOR POV\n", "computer", this.center_width + 190, this.center_height)
+        this.time.delayedCall(2000, () => {
+            text2 = this.utils.typeText(" PRESS SPACE", "computer", this.center_width + 190,  this.center_height + 100)
         }, null, this);
 
-        this.time.delayedCall(7000, () => this.playMusic(), null, this)
-        this.time.delayedCall(10000, () => {
-            this.utils.removeTyped([text1, text2]);
-            this.aGameBy();
+        this.time.delayedCall(4000, () => {
+            let text3 = this.utils.typeText(" A GAME BY PELLO", "computer", this.center_width + 140, this.center_height + 200)
+            let pelloLogo = this.add.image(this.center_width, this.center_height + 300, "pello_logo_old").setScale(0.2).setOrigin(0.5)
         }, null, this)
     }
 
-  /*
 
-  */
-    aGameBy () {
-        let text2;
-        let text1 = this.utils.typeText(" A GAME BY\nPELLO", "computer", 1250, 10)
-        let pelloLogo = this.add.image(990, 120, "pello_logo_old").setScale(0.2).setOrigin(0.5)
-        let video = this.add.video(400, 300, 'video0');
-
-        this.time.delayedCall(5000, () => {
-            this.utils.removeTyped([text1]);
-            pelloLogo.destroy();
-            text2 = this.utils.typeText(" MINIJAM #96\nFATE", "computer", 1250, 400)
-        }, null, this)
-
-        this.time.delayedCall(9000, () => {
-            this.utils.removeTyped([text2]);
-            video.stop();
-            video.destroy();
-            this.tools();
-        })
-
-        video.play(true);
-    }
-
-  /*
-
-  */
-    tools () {
-        let text2;
-        let text1 = this.utils.typeText(" TOOLS: PHASER AND ENABLE3D", "computer", 550, 10)
-        let video = this.add.video(this.center_width, 500, 'video1').setOrigin(0.5);
-
-        this.time.delayedCall(5000, () => {
-            this.utils.removeTyped([text1]);
-            text2 = this.utils.typeText(" MY FIRST 3D GAME!", "computer", 550, 50)
-        }, null, this)
-
-        this.time.delayedCall(9000, () => {
-            this.utils.removeTyped([text2]);
-            video.stop();
-            video.destroy()
-            this.otherTools();
-        })
-
-        video.play(true);
-    }
-
-  /*
-
-  */
-    otherTools () {
-        let text2;
-        let text1 = this.utils.typeText(" VSCODE, GULP, BLENDER, FFMPEG,...", "computer", 550, 500)
-        let video = this.add.video(this.center_width, 100, 'video2').setOrigin(0.5);
-
-        this.time.delayedCall(5000, () => {
-            this.utils.removeTyped([text1]);
-            text2 = this.utils.typeText(" GAZILLIONS OF COFFEE WERE CONSUMED", "computer", 550, 600)
-        }, null, this)
-
-        this.time.delayedCall(10000, () => {
-            this.utils.removeTyped([text2]);
-            video.stop();
-            video.destroy();
-            this.lastVideo();
-        })
-
-        video.play(true);
-    }
-
-  /*
-
-  */
-    lastVideo () {
-        let text2;
-        let text1 = this.utils.typeText(" MUSIC: SACRED WAR, BY THE RED ARMY CHOIR", "computer", 400, 50)
-        let video = this.add.video(this.center_width, 400, 'video3').setOrigin(0.5);
-
-        this.time.delayedCall(5000, () => {
-            this.utils.removeTyped([text1]);
-            text2 = this.utils.typeText(" EVOLUTION, BY BENSOUND", "computer", 550, 100)
-        }, null, this)
-
-        this.time.delayedCall(10000, () => {
-            this.utils.removeTyped([text2]);
-            video.stop();
-            video.destroy();
-            this.explanation()
-        })
-
-        video.play(true);
-    }
-
-  /*
-
-  */
-    explanation () {
-        this.tweens.add({
-            targets: this.theme,
-            volume: {from: 1, to: 0},
-            duration: 16000
-        })
-        const text = " GAGARIN WAS SENT ON A SECRET MISSION\nBEYOND THE OORT CLOUD, "+
-            "PROPELLED BY\nNUCLEAR DETONATIONS.\n\nHE HAS NOW PASSED THE FRONTIER OF\nOUR SOLAR SYSTEM\n"+
-            "HIS MISSION:\nTO SET 20 PROBES AND RECOLLECT DATA\nFROM THE DEADLIEST STELLAR OBJECT:\n" +
-            "A NEUTRINO STAR!\n\nHE HAS TO AVOID INCOMING DEBRIS\nAND GET AS CLOSE AS POSSIBLE TO THE STAR.\n" +
-            "THAT WILL MEAN CERTAIN DEATH, BUT ALSO\nA MASSIVE ACHIEVEMENT " +
-            "FOR SOVIET SCIENTISTS!\n\n" +
-            "THE FATAL FATE OF GAGARIN IS NOW TIED\nTO THE GLORIOUS FATE " +
-            "OF MOTHER RUSSIA...\n\n\nSPACE TO CONTINUE";
-        let text1 = this.utils.typeText(text, "computer", 450, 50)
-
+    /*
+    This is the method that will start the game.
+    */
+    loadNext () {
+        if (this.utils.typeAudio) this.utils.typeAudio.stop();
+        this.scene.start("game");
     }
 }

@@ -7,7 +7,7 @@ export default class Bootloader extends Scene3D {
     }
 
     /*
-
+    We use the preload method to call the methods to load all our assets.
     */
     preload () {
         this.createBars();
@@ -20,7 +20,7 @@ export default class Bootloader extends Scene3D {
     }
 
     /*
-
+    This is a method to set the events that will be triggered when the loading is progressing and when it is complete.
     */
     setLoadEvents () {
         this.load.on(
@@ -38,12 +38,12 @@ export default class Bootloader extends Scene3D {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("splash");
+            this.scene.start("story");
         },this);
     }
 
     /*
-
+    This is a method to load the fonts.
     */
     loadFonts () {
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
@@ -51,14 +51,14 @@ export default class Bootloader extends Scene3D {
     }
 
     /*
-
+    We load this logo that looks old to match the style of the splash.
     */
     loadImages () {
         this.load.image("pello_logo_old", "assets/images/pello_logo_old.png");
     }
 
     /*
-
+    We need to keep track of the deviation -hits- and the number of probes.
     */
     setRegistry () {
         this.registry.set("deviation", "0")
@@ -66,7 +66,7 @@ export default class Bootloader extends Scene3D {
     }
 
     /*
-
+    We load the sounds and the music.
     */
     loadAudios () {
         Array(4).fill(0).forEach((e, i) => { this.load.audio(`thunder${i}`, `./assets/sounds/thunder${i}.mp3`);})
@@ -86,12 +86,15 @@ export default class Bootloader extends Scene3D {
 
 
     /*
-
+    In this game we are using videos! They will be player in the presentation scene that comes before the Splash.
     */
     loadVideos () {
         Array(4).fill(0).forEach((e, i) => {this.load.video(`video${i}`, `./assets/videos/video${i}.mp4`, 'loadeddata', false, true); });
     }
 
+    /*
+    As you may already now, this is a method to create the loading bars.
+    */
     createBars () {
         this.loadBar = this.add.graphics();
         this.loadBar.fillStyle(0x06E18A, 1);

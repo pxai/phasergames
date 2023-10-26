@@ -14,13 +14,11 @@ export default class SeeSaw {
 
         const { Constraint } = Phaser.Physics.Matter.Matter;
 
-
         const constraint = Constraint.create({
             pointA: { x: platform.x, y: platform.y },
             bodyB: platform.body,
             length: 0
         });
-
 
         scene.matter.world.add(constraint);
         const sign = Math.random() < 0.5 ? -1 : 1;

@@ -8,7 +8,8 @@ export default class BulletHell {
     }
 
   /*
-
+    These are different functions that we will use to generate the path of the bullets. They're quite simple, but you can create your own functions to generate more complex paths.
+    We will use the x, y, z and time parameters to generate different patterns.
   */
     sin (x, time) {
         return Math.sin(x);

@@ -21,7 +21,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+    From this we create the whole thing. We call the methods to add the map, the player, the collisions, the camera and the scores.
   */
     create () {
       this.width = this.sys.game.config.width;
@@ -38,7 +38,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+    This method creates the map using the DungeonGenerator class.
   */
     addMap() {
       this.dungeon = new DungeonGenerator(this);
@@ -60,7 +60,7 @@ export default class Game extends Phaser.Scene {
   }
 
   /*
-
+    This method adds the scores to the scene. We add the coins, the seconds, the keys and the timer. We'll update them in other methods.
   */
   addScores () {
     this.add.sprite(62, 26, "coin", 0).setOrigin(0.5).setScrollFactor(0).setScale(.8)
@@ -72,18 +72,17 @@ export default class Game extends Phaser.Scene {
   }
 
   /*
-
+    This method adds the player to the scene. It creates a new Player object along with a trail layer that will be used to draw the trail of the player.
   */
   addPlayer() {
-      //const { x, y } = this.map.findObject("Spawn", obj => obj.name === "Spawn Point");
     this.trailLayer = this.add.layer();
     this.player = new Player(this,
-    this.dungeon.map.widthInPixels / 2,
-    this.dungeon.map.heightInPixels / 2, 100);
+      this.dungeon.map.widthInPixels / 2,
+      this.dungeon.map.heightInPixels / 2, 100);
   }
 
   /*
-
+  This method sets up the collisions between the player and anything else. Basically it sets a callback function that will be called when the player collides with something.
   */
   addCollisions () {
     this.unsubscribePlayerCollide = this.matterCollision.addOnCollideStart({
@@ -101,7 +100,7 @@ export default class Game extends Phaser.Scene {
   }
 
   /*
-
+  This is the callback that we call when the player collides with something. We check the label of the object that the player collides with and call the corresponding method.
   */
   onPlayerCollide({ gameObjectA, gameObjectB }) {
     if (!gameObjectB) return;
@@ -121,7 +120,7 @@ export default class Game extends Phaser.Scene {
   }
 
   /*
-
+  This is called when a player picks a coin. It destroys the coin and updates the score.
   */
   playerPicksCoin(coin) {
     this.showPoints(coin.x, coin.y, 1, this.scoreCoins);
@@ -130,8 +129,19 @@ export default class Game extends Phaser.Scene {
     this.playAudio("coin")
   }
 
-  /*
 
+  /*
+  Same as the previous one but with the key.
+  */
+  playerPicksKey(key) {
+    this.updateKeys();
+    this.showPoints(key.x, key.y, this.registry.get("keys")+"/"+this.dungeon.dungeon.rooms.length, this.scoreKeys);
+    key.destroy();
+
+  }
+
+  /*
+  Unless the player is invincible (blinking at the beginning), this is called when the player hits a bat. It kills the player, destroys the bat and restarts the scene.
   */
   playerHitsBat (bat) {
     if (this.player.invincible) return;
@@ -142,17 +152,7 @@ export default class Game extends Phaser.Scene {
   }
 
   /*
-
-  */
-  playerPicksKey(key) {
-    this.updateKeys();
-    this.showPoints(key.x, key.y, this.registry.get("keys")+"/"+this.dungeon.dungeon.rooms.length, this.scoreKeys);
-    key.destroy();
-
-  }
-
-  /*
-
+  Everytime we need to show points, we call this method. It creates a text element, adds a tween to it and destroys it when the tween is finished.
   */
   showPoints (x, y, score, textElement, color = 0xffffff) {
     let text = this.add.bitmapText(x + 20, y - 80, "default", "+"+score, 10).setDropShadow(2, 3, color, 0.7).setOrigin(0.5);
@@ -171,17 +171,16 @@ export default class Game extends Phaser.Scene {
  }
 
   /*
-
+  This method adds the camera to the scene and the background color. It sets the bounds of the camera to the size of the map and makes it follow the player.
   */
   addCamera() {
-              // Phaser supports multiple cameras, but you can access the default camera like this:
     this.cameras.main.setBounds(0, 0, this.dungeon.map.widthInPixels, this.dungeon.map.heightInPixels);
     this.cameras.main.startFollow(this.player.sprite, false, 0.5, 0.5);
     this.cameras.main.setBackgroundColor(0x25131a);
   }
 
   /*
-
+  As we did in other games, we add the audios to the scene along with a method to play them.
   */
     loadAudios () {
       this.audios = {
@@ -199,12 +198,8 @@ export default class Game extends Phaser.Scene {
       this.audios[key].play();
     }
 
-    update() {
-
-    }
-
   /*
-
+  This method is called when the player dies. It makes the camera shake and fade out and then restarts the scene.
   */
     restartScene() {
       this.player.sprite.visible = false;
@@ -214,7 +209,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+  If a player finishes the stage, we fade out the camera and start the outro scene.
   */
     finishScene () {
       this.cameras.main.fade(250, 0, 0, 0);
@@ -224,7 +219,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+    This method is called every second. It updates the seconds and the timer, because for any competitive player, time is the most important thing. We could add a scoreboard at the end ordered by time.
   */
     updateSeconds (points = 1) {
       const seconds = +this.registry.get("seconds") + points;
@@ -233,7 +228,7 @@ export default class Game extends Phaser.Scene {
   }
 
   /*
-
+  The nexst two functions update the coins and keys scores. In the case of the keys, if the player has collected all the keys, we finish the scene.
   */
     updateCoins (points = 1) {
         const coins = +this.registry.get("coins") + points;
@@ -241,9 +236,6 @@ export default class Game extends Phaser.Scene {
         this.scoreCoins.setText("x"+coins);
     }
 
-  /*
-
-  */
     updateKeys (points = 1) {
       const keys = +this.registry.get("keys") + points;
       this.registry.set("keys", keys);
@@ -254,7 +246,7 @@ export default class Game extends Phaser.Scene {
   }
 
   /*
-
+  We have this method to update the text elements when we add points to the score. In this class is not used currently but we could use it later or in other classes.
   */
   textUpdateEffect (textElement, color) {
     textElement.setTint(color);

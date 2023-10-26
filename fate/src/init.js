@@ -4,7 +4,7 @@ import Bootloader from "./bootloader";
 import Outro from "./outro";
 import GameOver from "./game_over";
 import Splash from "./splash";
-import Transition from "./transition";
+import Story from "./story";
 import Game from "./game";
 
 const config = {
@@ -18,8 +18,8 @@ const config = {
     },
     scene: [
         Bootloader,
+        Story,
         Splash,
-        Transition,
         Game,
         Outro,
         GameOver
@@ -28,7 +28,7 @@ const config = {
 };
 
   /*
-
+We need this specific way to load the game because we are using the 3D extension.
   */
 window.addEventListener('load', () => {
     enable3d(() => new Phaser.Game(config)).withPhysics('./assets/ammo')

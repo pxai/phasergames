@@ -1,14 +1,10 @@
-import Bubble from "./bubble";
 export default class Splash extends Phaser.Scene {
     constructor () {
         super({ key: "splash" });
     }
 
-    preload () {
-    }
-
   /*
-
+  As always, we create everything we need on the scene from the create method.
   */
     create () {
         this.width = this.sys.game.config.width;
@@ -17,9 +13,10 @@ export default class Splash extends Phaser.Scene {
         this.center_height = this.height / 2;
 
         this.backLayer = this.add.layer();
-        //this.generateBubbles ()
         this.cameras.main.setBackgroundColor(0x000000);
         this.showTitle();        ;
+        this.addPlayerAndFoe();
+        this.addAnimationTweens();
 
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
 
@@ -35,7 +32,7 @@ export default class Splash extends Phaser.Scene {
 
 
   /*
-
+    This shows the title of the game. It's a bitmap text with a shadow and a tween to make it move.
   */
     showTitle () {
         this.textShadow1 = this.add.bitmapText(this.center_width, 100, "default", "DUNGEON", 85).setTint(0xff787a).setOrigin(0.5);
@@ -54,27 +51,9 @@ export default class Splash extends Phaser.Scene {
           })
     }
 
-
   /*
-
+    This method plays the music of the game. It's a looped music with a volume of 0.3.
   */
-    showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
-        this.tweens.add({
-            targets: this.gameLogo,
-            duration: 500,
-            x: {
-              from: this.center_width * 2,
-              to: this.center_width
-            },
-            y: {
-                from: -200,
-                to: 130
-              },
-          })
-    }
-
-
     playMusic (theme="splash") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
@@ -89,15 +68,8 @@ export default class Splash extends Phaser.Scene {
       })
     }
 
-    generateBubbles () {
-        this.timer = this.time.addEvent({ delay: 1000, callback: () => {
-            new Bubble(this, Phaser.Math.Between(0, this.width), 400)
-        }, callbackScope: this, loop: true });
-    }
-
-
   /*
-
+    This method shows the instructions of the game, the classic controls, author and a blinking text to start the game.
   */
     showInstructions() {
         this.add.bitmapText(this.center_width, 430, "default", "WASD/Arrows: move", 30).setDropShadow(1, 1, 0xff787a, 0.7).setOrigin(0.5);
@@ -111,13 +83,11 @@ export default class Splash extends Phaser.Scene {
             repeat: -1,
             yoyo: true
         });
-        this.addPlayerAndFoe();
-        this.addAnimationTweens();
     }
 
 
   /*
-
+    This method adds the player and the foe to the scene and creates the animations for both.
   */
     addPlayerAndFoe () {
         this.player = this.add.sprite(this.width - 100, 350, "player").setScale(2)
@@ -138,8 +108,9 @@ export default class Splash extends Phaser.Scene {
           this.foe.anims.play("foe")
     }
 
-  /*
 
+  /*
+    We also add some tweens to the player and the foe to make them move. The interesting part is how we can use the tweens to simulate a walk cycle. We just need to change the x value of the target and flip the sprite.
   */
     addAnimationTweens () {
         this.tweens.add({

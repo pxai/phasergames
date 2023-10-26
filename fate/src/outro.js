@@ -3,11 +3,8 @@ export default class Outro extends Phaser.Scene {
         super({ key: "outro" });
     }
 
-    preload () {
-    }
-
   /*
-
+This outro is shown when the player wins the game. It just shows a few lines of text and then it starts the game again.
   */
     create () {
         this.cameras.main.setBackgroundColor(0x000000);
@@ -25,12 +22,16 @@ export default class Outro extends Phaser.Scene {
             "I see no god inside here."
         ];
         this.showHistory();
-        this.input.keyboard.on("keydown-SPACE", this.startSplash, this);
-        this.input.keyboard.on("keydown-ENTER", this.startSplash, this);
+        this.input.keyboard.on("keydown-SPACE", this.startAgain, this);
+        this.input.keyboard.on("keydown-ENTER", this.startAgain, this);
     }
 
-  /*
+    startAgain () {
+        this.scene.start("bootstrap");
+     }
 
+  /*
+    We use again this function to show the text line by line.
   */
     showHistory () {
         this.text.forEach((line, i) => {
@@ -38,23 +39,6 @@ export default class Outro extends Phaser.Scene {
         });
     }
 
-    playMusic (theme="outro") {
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
-        this.theme.play({
-          mute: false,
-          volume: 1,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-      })
-      }
-
-  /*
-
-  */
     showLine(text, y) {
         let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "computer", text, 35).setOrigin(0.5).setAlpha(0));
         this.tweens.add({
@@ -62,10 +46,5 @@ export default class Outro extends Phaser.Scene {
             duration: 2000,
             alpha: 1
         })
-    }
-
-
-    startSplash () {
-       this.scene.start("bootstrap");
     }
 }

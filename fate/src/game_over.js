@@ -4,7 +4,7 @@ export default class GameOver extends Phaser.Scene {
     }
 
   /*
-
+    This creates the elements that we will show when the player loses the game.
   */
     create () {
         this.cameras.main.setBackgroundColor(0x000000);
@@ -29,7 +29,7 @@ export default class GameOver extends Phaser.Scene {
     }
 
   /*
-
+    We show the history of the mission.
   */
     showHistory () {
         this.text.forEach((line, i) => {
@@ -37,41 +37,19 @@ export default class GameOver extends Phaser.Scene {
         });
     }
 
-  /*
-
-  */
-    playMusic (theme="outro") {
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
-        this.theme.play({
-          mute: false,
-          volume: 1,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-      })
-      }
-
-  /*
-
-  */
     showLine(text, y) {
-        let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "computer", text, 45).setTint(0x06E18A).setOrigin(0.5).setAlpha(0));
-        this.tweens.add({
-            targets: line,
-            duration: 2000,
-            alpha: 1
-        })
+      let line = this.introLayer.add(this.add.bitmapText(this.center_width, y, "computer", text, 45).setTint(0x06E18A).setOrigin(0.5).setAlpha(0));
+      this.tweens.add({
+          targets: line,
+          duration: 2000,
+          alpha: 1
+      })
     }
 
-
   /*
-
+    This is the method that will start the Splash scene.
   */
     startSplash () {
-        // this.theme.stop();
         location.reload();
         this.scene.start("bootstrap");
     }

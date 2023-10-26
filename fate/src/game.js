@@ -13,21 +13,17 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+    This is where we set the scene to become a 3D scene. We also load other assets that we will use in the game.
   */
     init (data) {
       this.accessThirdDimension({ gravity: { x: 0, y: 0, z: 0 } })
       this.third.load.preload('stars', 'assets/images/stars.png')
       this.third.load.preload('nebulaset', 'assets/images/nebulaset.png')
-      this.name = data.name;
-      this.elapsedTime = data.elapsedTime;
   }
 
-    preload () {
-    }
-
   /*
-
+  This will be called when the scene starts. We create the player, the enemies, the bullets, the score and the controls.ç
+  Everything related with 3d is accessed through this.third.
   */
     create () {
       this.bulletHell = new BulletHell();
@@ -52,7 +48,7 @@ export default class Game extends Scene3D {
       this.setNeutrinoStar();
 
       this.loadAudios();
-      // this.playMusic();
+
 
       // https://catlikecoding.com/unity/tutorials/basics/mathematical-surfaces/
       // https://github.com/enable3d/enable3d-website/blob/master/src/examples/first-phaser-game-3d-version.html
@@ -66,7 +62,7 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+    This will set up the lightning effect with a rectangle that will be shown when the lightning is triggered.
   */
     setLightning () {
       this.lightsOut = this.add.rectangle(0, 40, this.width, this.height + 100, 0x0).setOrigin(0)
@@ -77,7 +73,7 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+    This adds the lights to the scene. This is 3D so we have infinite posibilities to set light sources and types wherever we want. We are using a spotlight and a directional light.
   */
     setLights() {
       this.spot = this.third.lights.spotLight({ color: 'blue', angle: Math.PI / 8 })
@@ -97,7 +93,7 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+    The neutrino star is the main element of the game. It is a sphere that is in the center of the scene. It has a front and a back part. The back part is the one that is used to detect collisions. It tries to imitate a black hole.
   */
     setNeutrinoStar() {
       // this.addRings();
@@ -112,7 +108,7 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+    This adds the rings that are around the neutrino star. They are just cylinders with a texture.
   */
     addRings() {
       this.rings = Array(20).fill(0).map((ring, i) => {
@@ -120,9 +116,6 @@ export default class Game extends Scene3D {
       })
     }
 
-  /*
-
-  */
     addRing(i) {
       let torus = this.third.add.cylinder({x: 0, y: 12, z: -120, height: 1, radiusSegments: 200, radiusBottom: 75 * (i+1), radiusTop: 75 * (i+1)}, { lambert: { color: 0xFFFFE0, transparent: true, opacity: 0.8 } })
       //let torus = this.third.add.torus({ x: 0, y: 12, z: -120, radius: 75 * (i+1), tubularSegments: 200, tube: 0.4 }, { lambert: { color: 0xFFFFE0, transparent: true, opacity: 1 } })
@@ -134,7 +127,7 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+  We use this helper method to set the "center" of the screen.
   */
     setCenters () {
       this.width = this.cameras.main.width;
@@ -144,7 +137,7 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+    We use this method to update the deviation. The deviation is the number of times that the player has been hit by a particle.
   */
     updateClock () {
       if (this.remaining < 0) {
@@ -157,7 +150,7 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+This creates a background that is a texture that is repeated. It is a simple way to create a background.
   */
     createBottom() {
       this.third.load.texture('stars').then(grass => {
@@ -171,7 +164,7 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+The probes are like the elements we use to measure the progress of the ship. We use a registry variable to keep track of the number of probes When the ship reaches the star, it should release the last probe and the game will end with victory!
   */
     releaseProbe () {
       this.updateProbes(-1);
@@ -184,7 +177,7 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+The scores are just some text that we show on the screen. We use the registry to keep track of the deviation and the probes.
   */
     setScores() {
       this.deviationText = this.add.bitmapText(175, 30, "computer", "DEVIATION: " + this.registry.get("deviation"), 30).setTint(0x03A062).setOrigin(0.5);
@@ -193,7 +186,7 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+Before we actualy add the ship object to the scene, we need to load it. We use the GLTF loader to load the ship model.
   */
     prepareShip() {
       this.third.load.gltf('./assets/objects/ship.glb').then(gltf => {
@@ -215,26 +208,9 @@ export default class Game extends Scene3D {
         this.setShipColliderWithParticles();
       })
     }
-
-  /*
-
-  */
-    setShipColliderWithParticles () {
-      this.ship.body.on.collision((otherObject, event) => {
-        if (/particle/.test(otherObject.name)) {
-          this.updateDeviation(1);
-          this.cameras.main.shake(500);
-          this.playAudio(`hit${Phaser.Math.Between(1, 4)}`);
-          this.third.destroy(this.ship)
-          this.ship = this.createShip("convexMesh", 0, this.object)
-          this.setShipColliderWithParticles();
-        }
-      })
-    }
-
-  /*
-
-  */
+      /*
+    This is the function that adds the ship object to the scene.
+      */
     createShip (shape, i, object3d) {
       this.left = false;
       const object = new ExtendedObject3D()
@@ -257,7 +233,23 @@ export default class Game extends Scene3D {
     }
 
   /*
+This will detect the collision between the ship and the particles. If the ship collides with a particle it will take hits.
+  */
+    setShipColliderWithParticles () {
+      this.ship.body.on.collision((otherObject, event) => {
+        if (/particle/.test(otherObject.name)) {
+          this.updateDeviation(1);
+          this.cameras.main.shake(500);
+          this.playAudio(`hit${Phaser.Math.Between(1, 4)}`);
+          this.third.destroy(this.ship)
+          this.ship = this.createShip("convexMesh", 0, this.object)
+          this.setShipColliderWithParticles();
+        }
+      })
+    }
 
+  /*
+Here we load the audios used in the game. Same as usual, we will use playAudio y playRandom to play them.
   */
       loadAudios () {
         this.audios = {
@@ -282,9 +274,6 @@ export default class Game extends Scene3D {
         this.audios[key].play();
       }
 
-  /*
-
-  */
       playRandom(key) {
         this.audios[key].play({
           rate: Phaser.Math.Between(1, 1.5),
@@ -293,25 +282,10 @@ export default class Game extends Scene3D {
         });
       }
 
-  /*
-
-  */
-      playMusic (theme="game") {
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
-        this.theme.play({
-          mute: false,
-          volume: 1,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-      })
-      }
 
   /*
-
+This is the game loop and it is quite simple. It will move the ship in the direction of the keys pressed.
+It will also move the neutrino star and the rings, because guess what... the ship is not really moving forward: we move the star towards the ship.
   */
     update(time, delta) {
       this.currentTime = time;
@@ -392,7 +366,7 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+We will create a trail as we did in other games. Generating boxes in the ship position that will be destroyed after a while.
   */
     createTrail() {
       const color = Phaser.Math.Between(-1, 1) > 0 ? 0xADD8E6 : 0xffffff;
@@ -411,7 +385,7 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+    This adds some trails to the ship wins. The trails are just boxes that will be destroyed after a while.
   */
     createWingTrails(toTheLeft = null) {
       const color = Phaser.Math.Between(-1, 1) > 0 ? 0xADD8E6 : 0xffffff;
@@ -437,7 +411,7 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+This is the function that creates a wave to the scene. It will create a wave of particles that will move from the left to the right of the screen. At the end, it will remove the wave and play a sound.
   */
     addWave (start = -25, zed = false) {
       this.lightning.lightning();
@@ -468,46 +442,29 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+    Depending on the number of probes, we will apply a different function to the wave. This is to make the game more difficult as the player progresses.
   */
     applyFunctionsInterval() {
       return {
-        "20": {f1: 0, f2: 3, c: 3},
-        "19": {f1: 0, f2: 4, c: 3},
-        "18": {f1: 0, f2: 3, c: 4},
-        "17": {f1: 0, f2: 3, c: 5},
-        "16": {f1: 0, f2: 3, c: 6},
-        "15": {f1: 0, f2: 3, c: 6},
-        "14": {f1: 0, f2: 3, c: 6},
-        "13": {f1: 0, f2: 3, c: 6},
-        "12": {f1: 0, f2: 4, c: 4},
-        "11": {f1: 0, f2: 4, c: 4},
-        "10": {f1: 0, f2: 4, c: 4},
-        "9": {f1: 0, f2: 4, c: 5},
-        "8": {f1: 0, f2: 4, c: 5},
-        "7": {f1: 0, f2: 5, c: 4},
-        "6": {f1: 0, f2: 5, c: 5},
-        "5": {f1: 0, f2: 5, c: 5},
-        "4": {f1: 0, f2: 5, c: 6},
-        "3": {f1: 0, f2: 6, c: 5},
-        "2": {f1: 0, f2: 6, c: 5},
-        "1": {f1: 0, f2: 6, c: 6},
-        "0": {f1: 0, f2: 6, c: 6},
+        "20": {f1: 0, f2: 3, c: 3}, "19": {f1: 0, f2: 4, c: 3}, "18": {f1: 0, f2: 3, c: 4},
+        "17": {f1: 0, f2: 3, c: 5}, "16": {f1: 0, f2: 3, c: 6}, "15": {f1: 0, f2: 3, c: 6},
+        "14": {f1: 0, f2: 3, c: 6}, "13": {f1: 0, f2: 3, c: 6}, "12": {f1: 0, f2: 4, c: 4},
+        "11": {f1: 0, f2: 4, c: 4}, "10": {f1: 0, f2: 4, c: 4}, "9": {f1: 0, f2: 4, c: 5},
+        "8": {f1: 0, f2: 4, c: 5}, "7": {f1: 0, f2: 5, c: 4}, "6": {f1: 0, f2: 5, c: 5},
+        "5": {f1: 0, f2: 5, c: 5}, "4": {f1: 0, f2: 5, c: 6}, "3": {f1: 0, f2: 6, c: 5},
+        "2": {f1: 0, f2: 6, c: 5}, "1": {f1: 0, f2: 6, c: 6}, "0": {f1: 0, f2: 6, c: 6},
       }[this.registry.get("probes")]
     }
 
 
   /*
-
+    When a wave passes, we need to remove the particles from the scene and destroy them.
   */
     removeWave () {
       const wave = this.waves.shift();
       wave.forEach((particle) => this.destroyParticle(particle));
     }
 
-  /*
-
-  */
     destroyParticle(particle) {
       particle.userData.dead = true;
       particle.visible = false;
@@ -515,12 +472,16 @@ export default class Game extends Scene3D {
       particle = null;
     }
 
+    /*
+    We use this method to finish the scene and change to another one. Depending on the result, it can be the outro or the game over.
+  */
     finishScene (name = "outro") {
-      this.scene.start(name, {next: "underwater", name: "STAGE", number: this.number + 1, time: this.time * 2});
+      this.scene.start(name);
     }
 
-  /*
 
+  /*
+    We use this method to update the deviation. The deviation is the number of times that the player has been hit by a particle.
   */
     updateDeviation (points = 0) {
         const deviation = +this.registry.get("deviation") + points;
@@ -533,7 +494,7 @@ export default class Game extends Scene3D {
     }
 
   /*
-
+    This is the same as the previous one but for the probes. It will also play a sound of a radio transmision.
   */
     updateProbes (points = 0) {
       const probes = +this.registry.get("probes") + points;

@@ -3,14 +3,8 @@ export default class Transition extends Phaser.Scene {
         super({ key: "transition" });
     }
 
-    init (data) {
-        this.name = data.name;
-        this.number = data.number;
-        this.next = data.next;
-    }
-
   /*
-
+In this short transition before the game, we show the instructions and the keys to press to start the game. This scene becomes the prelude right before the game to make the player ready.
   */
     create () {
         this.sound.stopAll();
@@ -29,6 +23,14 @@ export default class Transition extends Phaser.Scene {
         this.time.delayedCall(1000, () => this.loadNext(), null, this)
     }
 
+
+    loadNext () {
+      this.scene.start("game");
+  }
+
+  /*
+We play the music in a loop from the transition. This way the music doesn't stop when the player goes to the game and it dies. Once the player is in the game scene, if it dies he will be respawned in that scene and this music should continue playing, so it will not stop and start all the time.
+  */
     playMusic (theme="music") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
@@ -43,7 +45,4 @@ export default class Transition extends Phaser.Scene {
         })
       }
 
-    loadNext () {
-        this.scene.start("game");
-    }
 }
