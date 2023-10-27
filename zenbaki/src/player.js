@@ -9,7 +9,7 @@ class Player {
   }
 
   /*
-
+We can use this function to check if the player has spammed the chat. We will use it to avoid players spamming the game with chat messages.
   */
     hasSpammed () {
         if (!this.lastMessage) return false;
@@ -20,20 +20,13 @@ class Player {
     }
 
   /*
-
+We could optionally penalize the user for spamming or whatever we want to do. With this mechanism we just ignore the messages for 10 seconds.
   */
     setPenalty () {
         this.penalties++;
         this.score = 0;
         this.dead = true;
         this.scene.time.delayedCall(10000 * this.penalties, () => { this.dead = false; }, null, this);
-    }
-
-  /*
-
-  */
-    die () {
-        this.dead = true;
     }
 }
 

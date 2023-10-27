@@ -4,7 +4,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
    /*
-
+    We don't have much to preload so we load all assets here.
     */
     preload () {
         this.createBars();
@@ -25,7 +25,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    Again we move load events to this method to avoid cluttering the preload method.
     */
     setLoadEvents () {
         this.load.on(
@@ -47,6 +47,9 @@ export default class Bootloader extends Phaser.Scene {
         }, this);
     }
 
+    /*
+    We add the load bar and the progress bar to the scene.
+    */
     createBars () {
         this.loadBar = this.add.graphics();
         this.loadBar.fillStyle(0x008483, 1);

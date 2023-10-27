@@ -15,7 +15,7 @@ export default class Chat {
     }
 
   /*
-
+    This is where we create the connection to the chat. We just specify the channel, but we could add and identity to log in with a user and send messages to the channel or do actions during the game. With just the channel connection, we will be able to read the chat and act accordingly, which could be enough for some games.
   */
     init () {
         console.log("Chat channel: ", this.channel, "feedback: ", this.feedback, "maxPlayers: ", this.maxPlayers);
@@ -39,7 +39,7 @@ export default class Chat {
     }
 
   /*
-
+    We add a listener to the join event, so we can add the player to the game when they join the chat.
   */
     setOnJoinListener () {
         this.client.on("join", (channel, username, self) => {
@@ -49,7 +49,7 @@ export default class Chat {
     }
 
   /*
-
+Messages to the chat can come with two different events: message or chat. We will process them both in the same way, but we need different event callbacks because the data comes in different formats.
   */
     setOnMessageListener () {
         this.client.on("message", (channel, tags, message, self) => {
@@ -58,9 +58,6 @@ export default class Chat {
         });
     }
 
-  /*
-
-  */
     setOnChatListener () {
         this.client.on("chat", async (channel, user, message, self) => {
             if (user.mod) {
@@ -74,6 +71,9 @@ export default class Chat {
         });
     }
 
+  /*
+Once we isolate the username and the message, we can process the message. In this case, we will check if the message is a number and if it is, we will send it to the game to check if it is the correct answer.
+  */
     processMessage (username, message) {
         if (this.isValidNumber(message)) {
             this.scene.guess(username, +message);
@@ -81,7 +81,7 @@ export default class Chat {
     }
 
   /*
-
+We are not using this function but I leave it here: in case you want to send actions to the chat, like /me does.
   */
     sendAction (channel, msg) {
         console.log("Sending action: ", this.feedback, channel, msg);
@@ -90,7 +90,7 @@ export default class Chat {
     }
 
   /*
-
+We are not using this function either, but this is how you do it in case you want to send messages to the chat.
   */
     say (msg) {
         if (!this.feedback) return;
@@ -98,15 +98,12 @@ export default class Chat {
     }
 
   /*
-
+We use these  two functions to validate the number sent by the user. It must be a number within a limit.
   */
     isValidNumberWithMax(number, limit = 100) {
         return this.isValidNumber(number) && +number > 0 && +number <= limit;
     }
 
-  /*
-
-  */
     isValidNumber (number) {
         return !isNaN(number);
     }

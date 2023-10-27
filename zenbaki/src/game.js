@@ -15,7 +15,8 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+We use preload in this case only to get the background color from the URL parameters. We could also get the foreground color, but we will use the default one if it's not specified.
+We also calculate the first result.
   */
     preload () {
         const urlParams = new URLSearchParams(window.location.search);
@@ -32,7 +33,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+We create the elements of the game. This one is quite simple. We just create the chat, the UI and load the audios.
   */
     create () {
         this.width = this.sys.game.config.width;
@@ -48,21 +49,21 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
-  */
-    loadGame() {
-        this.generateNextOperation ()
-    }
-
-  /*
-
+    This creates and instance of the chat client and allows us to receive messages from the chat.
   */
     addChat () {
         this.chat = new Chat(this);
     }
 
-  /*
+/*
+This is called from the chat when the connection is ready. We will create the next operation when the game is connected to the chat channel.
+*/
+    loadGame() {
+        this.generateNextOperation ()
+    }
 
+  /*
+The game has a very simple interface. We just show the current number, the next operation and the score. Also we add some clouds to make it look nicer.
   */
     addUI () {
         this.circle = this.add.circle(this.center_width, this.center_height - 50, 100, 0xf22c2e);
@@ -74,7 +75,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+This is the function that will generate random clouds and move them across the screen. We use tweens to move them and destroy them when they are out of the screen. Then we call the function again to generate new clouds.
   */
     addClouds () {
         this.cloudLeft = this.add.image(this.center_width - 100, this.center_height - 120 + Phaser.Math.Between(-15, 15), "cloud" + Phaser.Math.Between(1, 14))
@@ -102,7 +103,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+This is the function that will show the score. We will show the top 3 players and the score of the current player.
   */
     addScore () {
         const scoreBoard = this.createScoreBoard()
@@ -122,7 +123,7 @@ export default class Game extends Phaser.Scene {
 
 
   /*
-
+When a new player tries to guess or joins the channel, we'll add it to players array. If the player already exists, we'll return the existing player.
   */
     addPlayer (name) {
         if (this.allPlayers[name]) return this.allPlayers[name];
@@ -133,7 +134,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+This is the function that will be called when a player tries to guess the number. We will check if the player exists and if it does, we will check if the player has spammed the chat. If it hasn't, we will check if the number is correct. If it is, we will add the score to the player and generate a new operation. If it's not, we will penalize the player and show a message.
   */
     guess (playerName, number) {
         if (this.failed) return;
@@ -165,7 +166,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+These are the points that we will add to the player score depending on the operator. We will add 1 point for +, 2 for -, 4 for * and 5 for /.
   */
     calculateScore () {
        const operatorPoints = {'+': 1, '-': 2, '*': 4, '/': 5};
@@ -173,14 +174,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
-  */
-    isValidNumber (number) {
-        return !isNaN(number) && number >= 0 && number < this.width;
-    }
-
-  /*
-
+We use the loadAudio/playAudios mechanism again
   */
     loadAudios () {
         this.audios = {
@@ -197,33 +191,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
-  */
-    playRandom(key) {
-        this.audios[key].play({
-          rate: Phaser.Math.Between(1, 1.5),
-          detune: Phaser.Math.Between(-1000, 1000),
-          delay: 0
-        });
-      }
-
-    playMusic (theme = "game") {
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
-        this.theme.play({
-            mute: false,
-            volume: 1,
-            rate: 1,
-            detune: 0,
-            seek: 0,
-            loop: true,
-            delay: 0
-        });
-    }
-
-
-  /*
-
+This will show the result of the game. We will show the top 5 players and the score of the current player.
   */
     showResult () {
         const scoreBoard = this.createScoreBoard()
@@ -245,7 +213,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-
+Once we show the result, we will remove it after 5 seconds.
     */
     removeResult () {
         this.time.delayedCall(5000, () => {
@@ -267,14 +235,14 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+This will order the players by score.
   */
     createScoreBoard () {
         return [...Object.values(this.allPlayers)].sort((player1, player2) => player2.score - player1.score);
     }
 
   /*
-
+This will reset the score and the counter and will set the failed flag to false.
   */
     resetScore () {
         this.number = 0;
@@ -283,7 +251,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+We'll call this function to generate the next operation. We will increase the counter, set the number to the result, generate a new operand and a new operator and calculate the result.
   */
     generateNextOperation () {
         this.counter++;
@@ -300,11 +268,10 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+To select the next operator to use, we take into account the number, the next operand and the result. We will try to avoid big negative numbers and numbers bigger than 100, and also divisions that don't result in an integer.
   */
     selectOperator () {
         if (this.number % this.nextOperand === 0 && this.nextOperand !== 1) {
-            console.log("Choice 1", this.number, this.nextOperand, this.result)
             return Phaser.Math.RND.pick(['+', '-', '+', '-', '/']);
         } else if (this.number + this.nextOperand >= 100) {
             return Phaser.Math.RND.pick(['-']);
@@ -317,6 +284,9 @@ export default class Game extends Phaser.Scene {
         }
     }
 
+/*
+If a player guesses correctly the result, we will show a message with the player name and the score.
+  */
     showScore (playerName, score) {
         this.scoreText1.setText(`Great!`).setAlpha(1);
         this.scoreText2.setText(`${playerName} +${score}`).setAlpha(1);
@@ -329,7 +299,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+If a player fails, we will show a message to the player and then we reveal the current scoreboard.
   */
     showShame (playerName) {
         const rants = ["You're a disgrace", "Shame on you", "You dishonor us all",
@@ -348,7 +318,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+This shows the current number and the next operation.
   */
     showNextOperation (operator, nextNumber) {
         this.numberText.setText(this.number)
