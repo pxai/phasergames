@@ -1,0 +1,11 @@
+{
+  "name": "phaser_parcel_template",
+  "version": "1.0.0",
+  "description": "Project template for phaser using parcel",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pello Xabier Altadill Izura",
+  "license": "ISC"
+}
