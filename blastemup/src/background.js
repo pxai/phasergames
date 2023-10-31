@@ -6,5 +6,4 @@ export default class Background {
 
    // generate (gridSize) {
    // }
-
 }
