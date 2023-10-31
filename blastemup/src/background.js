@@ -5,5 +5,5 @@ export default class Background {
     }
 
    // generate (gridSize) {
-   // }
+   //     this.gridSize = gridSize; }
 }
