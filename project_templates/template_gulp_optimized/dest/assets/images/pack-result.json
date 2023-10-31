@@ -1,0 +1,87 @@
+{
+  "frames": {
+    "coin.png": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 498,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 5,
+        "y": 0,
+        "w": 498,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 512,
+        "h": 64
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "pello.png": {
+      "frame": {
+        "x": 498,
+        "y": 0,
+        "w": 150,
+        "h": 173
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 150,
+        "h": 173
+      },
+      "sourceSize": {
+        "w": 150,
+        "h": 173
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "logo.png": {
+      "frame": {
+        "x": 0,
+        "y": 64,
+        "w": 73,
+        "h": 78
+      },
+      "rotated": true,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 9,
+        "w": 73,
+        "h": 78
+      },
+      "sourceSize": {
+        "w": 100,
+        "h": 100
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  },
+  "meta": {
+    "app": "https://github.com/odrick/gulp-free-tex-packer",
+    "version": "0.5.4",
+    "image": "pack-result.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 671,
+      "h": 150
+    },
+    "scale": 1
+  }
+}

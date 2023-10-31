@@ -1,0 +1,61 @@
+{
+  "name": "phaser-template",
+  "version": "0.0.1",
+  "description": "Phaser template project",
+  "scripts": {
+    "start": "gulp",
+    "build": "gulp production",
+    "test": "npm run lint && npm run unit",
+    "lint": "npx eslint src/**/*.js test/**/*.js --fix",
+    "unit": "npx mocha test --recursive --require @babel/register -r jsdom-global/register --file test/test_setup.js"
+  },
+  "dependencies": {
+    "phaser": "^3.52.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/register": "^7.12.10",
+    "babelify": "^10.0.0",
+    "browser-sync": "^2.26.13",
+    "browserify": "^17.0.0",
+    "canvas": "^2.6.1",
+    "chai": "^4.2.0",
+    "del": "^6.0.0",
+    "eslint": "^7.18.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-connect": "^5.7.0",
+    "gulp-free-tex-packer": "^0.5.4",
+    "gulp-live-server": "0.0.31",
+    "gulp-livereload": "^4.0.2",
+    "gulp-open": "^3.0.1",
+    "gulp-rename": "^2.0.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-terser-js": "^5.2.2",
+    "gulp-uglify": "^3.0.2",
+    "jsdom": "^16.4.0",
+    "jsdom-global": "^3.0.2",
+    "mocha": "^8.2.1",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
+  },
+  "engines": {
+    "node": "6.10.x"
+  },
+  "repository": {
+    "url": "https://github.com/pxai/phaserbook"
+  },
+  "license": "MIT",
+  "keywords": [
+    "phaser",
+    "games",
+    "book",
+    "pello"
+  ]
+}

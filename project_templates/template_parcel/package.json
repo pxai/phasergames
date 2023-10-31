@@ -4,8 +4,29 @@
   "description": "Project template for phaser using parcel",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "parcel src/index.html -p 8000",
+		"build": "parcel build src/index.html --out-dir dist",
+		"test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "parcelCleanPaths": [
+		"dist"
+	],
+	"staticFiles": {
+		"staticPath": "assets",
+		"watcherGlob": "**"
+	},
+  "devDependencies": {
+    "@babel/core": "^7.10.5",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.8.0",
+    "minimist": ">=1.2.2",
+    "parcel-plugin-clean-easy": "^1.0.2",
+    "parcel-plugin-static-files-copy": "^2.4.3"
   },
   "author": "Pello Xabier Altadill Izura",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "phaser": "^3.60.0"
+  }
 }
