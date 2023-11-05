@@ -1,5 +1,7 @@
 
-
+import color from "./color.js"
+import { Dust } from "./dust.js";
+const FLAG = 13;
 export default class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, number = 1) {
         super(scene, x, y, "die", number)
@@ -19,12 +21,15 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.locked = false;
 
         this.currentDie = number;
+        this.sorrounding = [];
         this.init();
     }
 
     init () {
         this.addControls();
         this.scene.events.on("update", this.update, this);
+        this.setTint(color(this.currentDie))
+        this.setSorrounds()
     }
 
     addControls() {
@@ -33,11 +38,11 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-
+        this.SPACE = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
 
     update(time, delta) {
-        if (this.dead) return;
+        if (this.scene && this.scene.stageCompleted) return;
         if (this.locked) return;
         this.stepDelta += delta;
         this.moveDelta += delta;
@@ -90,51 +95,118 @@ export default class Player extends Phaser.GameObjects.Sprite {
                 this.locked= false;
                 this.step(2);
             }})
-            //this.y += 64;
-
+        } else if (Phaser.Input.Keyboard.JustDown(this.SPACE)) {
+            this.scene.finishScene()
+            //this.scene.help.rotate(this.currentDie);
+            //this.scene.playAudio("blip")
+            //this.scene.updateSteps(2);
         }
     }
 
     canMoveUp() {
         const nextTile = this.scene.platform.getTileAtWorldXY(this.x, this.y - 1);
         if (nextTile) console.log(nextTile, nextTile?.index, this.currentDie >= nextTile.index - 1 )
-        return nextTile && nextTile.index > 0 && this.currentDie >= nextTile.index - 1 && this.moveDelta > 200;
-        //return !this.scene.platform.getTileAtWorldXY(this.x, this.y - 1) && this.moveDelta > 200
+        const result = nextTile && nextTile.index > 0 && (this.currentDie >= nextTile.index - 1 || nextTile.index === FLAG) && this.moveDelta > 200;
+        if (!result) { this.scene.playAudioRandomly("fail"); return }
+        this.pointsWon = nextTile.index;
+        return result;
     }
 
     canMoveRight() {
         const nextTile = this.scene.platform.getTileAtWorldXY(this.x + 64, this.y);
         console.log(nextTile, nextTile?.index, this.currentDie >= nextTile)
-        return nextTile && nextTile.index > 0 && this.currentDie >= nextTile.index - 1 && this.moveDelta > 200;
-       // return !this.scene.platform.getTileAtWorldXY(this.x + 64, this.y) && this.moveDelta > 200
+        const result = nextTile && nextTile.index > 0 && (this.currentDie >= nextTile.index - 1 || nextTile.index === FLAG) && this.moveDelta > 200;
+        if (!result) { this.scene.playAudioRandomly("fail"); return }
+        this.pointsWon = nextTile.index;
+       return result;
     }
 
     canMoveDown() {
         const nextTile = this.scene.platform.getTileAtWorldXY(this.x, this.y + 64);
         console.log(nextTile, nextTile?.index, this.currentDie >= nextTile)
-        return nextTile && nextTile.index > 0 && this.currentDie >= nextTile.index - 1 && this.moveDelta > 200;
-        //return !this.scene.platform.getTileAtWorldXY(this.x, this.y + 64) && this.moveDelta > 200
+        const result = nextTile && nextTile.index > 0 && (this.currentDie >= nextTile.index - 1 || nextTile.index === FLAG) && this.moveDelta > 200;
+        if (!result) { this.scene.playAudioRandomly("fail"); return }
+        this.pointsWon = nextTile.index;
+        return result;
     }
 
     canMoveLeft() {
         const nextTile = this.scene.platform.getTileAtWorldXY(this.x - 1, this.y);
         console.log(nextTile, nextTile?.index, this.currentDie >= nextTile)
-        return nextTile && nextTile.index > 0 && this.currentDie >= nextTile.index - 1 && this.moveDelta > 200;
-       // return !this.scene.platform.getTileAtWorldXY(this.x - 1, this.y) && this.moveDelta > 200
+        const result = nextTile && nextTile.index > 0 && (this.currentDie >= nextTile.index - 1 || nextTile.index === FLAG) && this.moveDelta > 200;
+        if (!result) { this.scene.playAudioRandomly("fail"); return }
+        this.pointsWon = nextTile.index;
+        return result;
     }
 
     step (direction) {
         this.previousTile.setAlpha(0.5);
         this.previousTile.index = 1;
         this.currentDie = this.scene.help.positions[this.currentDie][direction]
+
         this.setFrame(this.currentDie);
         this.scene.help.setCurrent(this.currentDie);
+        this.setTint(this.scene.help.color(this.currentDie))
         //this.steps++;
         //this.scene.smokeLayer.add(new Step(this.scene, x , y))
-        this.scene.playAudio("blip")//Phaser.Math.Between(8, 12) / 10);
-        this.scene.updateSteps();
 
+        this.scene.playStep(this.pointsWon - 1)
+        this.scene.updateSteps();
+        this.scene.updatePoints(this.pointsWon - 1);
+        if (this.pointsWon - 1 > 0)  {
+            this.scene.playAudioRandomly("step")
+            this.showPoints(`+${this.pointsWon - 1}`, this.scene.help.color(this.pointsWon - 1))
+            this.land()
+        } else {
+            this.scene.playAudio("blip")
+        }
+        this.setSorrounds()
         //this.scene.smokeLayer.add(new JumpSmoke(this.scene, this.x + (20 * -x) , this.y + 32 + (20 * -y)))
+    }
+
+    land () {
+        let x = Phaser.Math.Between(-10, 10);
+        let y = Phaser.Math.Between(-10, 10);
+        new Dust(this.scene, this.x +  y, this.y - 16 + y);
+        x = Phaser.Math.Between(-10, 10);
+        y = Phaser.Math.Between(-10, 10);
+        new Dust(this.scene, this.x + 32 +y, this.y + y);
+        x = Phaser.Math.Between(-10, 10);
+        y = Phaser.Math.Between(-10, 10);
+        new Dust(this.scene, this.x + y, this.y + 32 + y);
+        x = Phaser.Math.Between(-10, 10);
+        y = Phaser.Math.Between(-10, 10);
+        new Dust(this.scene, this.x - 32 +y, this.y + y);
+      }
+
+    setSorrounds () {
+        this.clearSorrounds();
+        this.trySetColor(this.scene.platform.getTileAtWorldXY(this.x, this.y - 1)); // up
+        this.trySetColor(this.scene.platform.getTileAtWorldXY(this.x + 64, this.y)); // right
+        this.trySetColor(this.scene.platform.getTileAtWorldXY(this.x, this.y + 64)); // down
+        this.trySetColor(this.scene.platform.getTileAtWorldXY(this.x - 1, this.y)); // left
+    }
+
+    clearSorrounds () {
+        this.sorrounding.forEach(tile => { tile.tint = 0xffffff })
+    }
+
+    trySetColor (tile) {
+        if (!tile) return;
+        if (tile.index > 0 && tile.index < 7) {
+            tile.tint = color(tile.index);
+            this.sorrounding.push(tile);
+        }
+    }
+
+    showPoints (score, color = 0xff0000) {
+        let text = this.scene.add.bitmapText(this.x + 20, this.y, "wendy", score, 40, 0xfffd37).setOrigin(0.5);
+        this.scene.tweens.add({
+            targets: text,
+            duration: 1000,
+            alpha: {from: 1, to: 0},
+            y: {from: text.y - 10, to: text.y - 100}
+        });
     }
 
     death () {

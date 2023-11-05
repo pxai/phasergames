@@ -4,11 +4,11 @@ export default class Help {
     this.y = y;
     this.scene = scene;
     this.current = current;
-    this.init();
+    this.init(current);
     this.setCurrent(current);
   }
 
-  init () {
+  init (current) {
     this.positions = [
       [],
       [3, 2, 4, 5], // 1
@@ -33,6 +33,17 @@ export default class Help {
     this.rightSprite.setFrame(this.positions[this.current][1]);
     this.bottomSprite.setFrame(this.positions[this.current][2]);
     this.leftSprite.setFrame(this.positions[this.current][3]);
+  }
+
+  rotate (current) {
+    this.arrayRotate(this.positions[current], true);
+    this.setCurrent(current);
+  }
+
+  arrayRotate(arr, reverse) {
+    if (reverse) arr.unshift(arr.pop());
+    else arr.push(arr.shift());
+    return arr;
   }
 
   color (current) {
