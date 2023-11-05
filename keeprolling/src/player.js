@@ -93,40 +93,39 @@ export default class Player extends Phaser.GameObjects.Sprite {
             //this.y += 64;
 
         }
-       /* this.scene.playerLight.x = this.x;
-        this.scene.playerLight.y = this.y;*/
     }
 
     canMoveUp() {
         const nextTile = this.scene.platform.getTileAtWorldXY(this.x, this.y - 1);
-        console.log(nextTile, nextTile.index, this.currentDie >= nextTile)
-        return nextTile && extTile.index - 1 > 0 && this.currentDie >= nextTile && this.moveDelta > 200;
+        if (nextTile) console.log(nextTile, nextTile?.index, this.currentDie >= nextTile.index - 1 )
+        return nextTile && nextTile.index > 0 && this.currentDie >= nextTile.index - 1 && this.moveDelta > 200;
         //return !this.scene.platform.getTileAtWorldXY(this.x, this.y - 1) && this.moveDelta > 200
     }
 
     canMoveRight() {
         const nextTile = this.scene.platform.getTileAtWorldXY(this.x + 64, this.y);
-        console.log(nextTile, nextTile.index, this.currentDie >= nextTile)
-        return nextTile && nextTile.index - 1 > 0 && this.currentDie >= nextTile.index - 1 && this.moveDelta > 200;
+        console.log(nextTile, nextTile?.index, this.currentDie >= nextTile)
+        return nextTile && nextTile.index > 0 && this.currentDie >= nextTile.index - 1 && this.moveDelta > 200;
        // return !this.scene.platform.getTileAtWorldXY(this.x + 64, this.y) && this.moveDelta > 200
     }
 
     canMoveDown() {
         const nextTile = this.scene.platform.getTileAtWorldXY(this.x, this.y + 64);
-        console.log(nextTile, nextTile.index, this.currentDie >= nextTile)
-        return nextTile && nextTile.index - 1 > 0 && this.currentDie >= nextTile.index - 1 && this.moveDelta > 200;
+        console.log(nextTile, nextTile?.index, this.currentDie >= nextTile)
+        return nextTile && nextTile.index > 0 && this.currentDie >= nextTile.index - 1 && this.moveDelta > 200;
         //return !this.scene.platform.getTileAtWorldXY(this.x, this.y + 64) && this.moveDelta > 200
     }
 
     canMoveLeft() {
         const nextTile = this.scene.platform.getTileAtWorldXY(this.x - 1, this.y);
-        console.log(nextTile, nextTile.index, this.currentDie >= nextTile)
-        return nextTile && nextTile.index - 1 > 0 && this.currentDie >= nextTile.index - 1 && this.moveDelta > 200;
+        console.log(nextTile, nextTile?.index, this.currentDie >= nextTile)
+        return nextTile && nextTile.index > 0 && this.currentDie >= nextTile.index - 1 && this.moveDelta > 200;
        // return !this.scene.platform.getTileAtWorldXY(this.x - 1, this.y) && this.moveDelta > 200
     }
 
     step (direction) {
         this.previousTile.setAlpha(0.5);
+        this.previousTile.index = 1;
         this.currentDie = this.scene.help.positions[this.currentDie][direction]
         this.setFrame(this.currentDie);
         this.scene.help.setCurrent(this.currentDie);
