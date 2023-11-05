@@ -52,7 +52,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.moveDelta = 0;
             const {x, y} = this;
             this.locked = true;
-            this.setFrame(7)
+            this.setFrame(8)
             this.scene.tweens.add({ targets: this, y: "-=64", duration: 200, onComplete: () => {
                 this.locked= false;
                 this.step(0);
@@ -64,7 +64,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.moveDelta = 0;
             const {x, y} = this;
             this.locked = true;
-            this.setFrame(8)
+            this.setFrame(9)
             this.scene.tweens.add({ targets: this, x: "+=64", duration: 200, onComplete: () => {
                 this.locked= false;
                 this.step(1);
@@ -77,7 +77,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.moveDelta = 0;
             const {x, y} = this;
             this.locked = true;
-            this.setFrame(9)
+            this.setFrame(10)
             this.scene.tweens.add({ targets: this, x: "-=64", duration: 200, onComplete: () => {
                 this.locked= false;
                 this.step(3);
@@ -90,7 +90,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.moveDelta = 0;
             const {x, y} = this;
             this.locked = true;
-            this.setFrame(6)
+            this.setFrame(7)
             this.scene.tweens.add({ targets: this, y: "+=64", duration: 200, onComplete: () => {
                 this.locked= false;
                 this.step(2);

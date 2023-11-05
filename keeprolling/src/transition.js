@@ -22,6 +22,7 @@ export default class Transition extends Phaser.Scene {
     }
 
     loadNext () {
+        this.sound.add("blip").play()
         if (this.number < 1)
             this.scene.start("game", {  number: this.number });
         else
