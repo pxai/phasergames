@@ -96,10 +96,10 @@ export default class Player extends Phaser.GameObjects.Sprite {
                 this.step(2);
             }})
         } else if (Phaser.Input.Keyboard.JustDown(this.SPACE)) {
-            this.scene.finishScene()
-            //this.scene.help.rotate(this.currentDie);
-            //this.scene.playAudio("blip")
-            //this.scene.updateSteps(2);
+            //this.scene.finishScene()
+            this.scene.help.rotate(this.currentDie);
+            this.scene.playAudio("blip")
+            this.scene.updateSteps(2);
         }
     }
 

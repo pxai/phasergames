@@ -59,11 +59,17 @@ export default class Game extends Phaser.Scene {
     addPlayer () {
         this.trailLayer = this.add.layer();
         const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
-        this.player = new Player(this, playerPosition.x, playerPosition.y, Phaser.Math.Between(1, 6));
+        this.player = new Player(this, playerPosition.x, playerPosition.y, Phaser.Math.Between(3, 6));
 
         this.physics.add.collider(this.player, this.exit, this.hitExit, ()=>{
           return true;
         }, this);
+        this.tweens.add({
+          targets: this.player,
+          duration: 200,
+          repeat: 5,
+          tint: {from: 0x00ff00, to: 0xffffff},
+        })
     }
 
     addTitle () {
