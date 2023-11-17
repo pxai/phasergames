@@ -90,9 +90,22 @@ export default class Game extends Phaser.Scene {
          targets: help,
          duration: 10000,
          alpha: { from: 1, to: 0},
-         ease: 'Linear'
+         ease: 'Linear',
+         onComplete: () => {
+          if (this.spaceText)
+            this.spaceText.destroy();
+         }
        })
      })
+     if (this.number < 2) {
+        this.spaceText = this.add.bitmapText(100, 500, "default", "Use SPACE to flip", 32).setOrigin(0);
+        this.tweens.add({
+          targets: this.spaceText,
+          duration: 200,
+          alpha: { from: 0, to: 1},
+          repeat: -1,
+        })
+     }
    }
 
     addHelp () {

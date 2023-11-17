@@ -25,9 +25,9 @@ export default class Outro extends Phaser.Scene {
 
     showHistory () {
         this.text.forEach((line, i) => {
-                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this); 
+                this.time.delayedCall((i + 1) * 2000, () => this.showLine(line, (i + 1) * 60), null, this);
         });
-        this.time.delayedCall(4000, () => this.showPlayer(), null, this); 
+        this.time.delayedCall(4000, () => this.showPlayer(), null, this);
     }
 
     playMusic (theme="outro") {
@@ -93,17 +93,17 @@ export default class Outro extends Phaser.Scene {
         alphabet.split("").forEach((letter, i) => {
           const isDash = letter === "-";
           x = stepX ;
-          stepY += isDash ? 64 : 0 
+          stepY += isDash ? 64 : 0
           stepX = isDash ? 64 : stepX + 64;
           y = 440 + stepY;
-  
+
           if (isDash) return;
-  
+
           const key = new Key(this, x, y, letter, this.clickedLetter.bind(this))
           this.prompt.add(key)
           this.keyboard[letter] = key;
         })
-  
+
         this.keyboard["ok"] = new Key(this, x + 96, y, "ok", this.saveScoreWithName.bind(this));
         this.prompt.add(this.keyboard["ok"])
         this.keyboard["--"] = new Key(this, x + 192, y, "--", this.deleteName.bind(this));
@@ -142,10 +142,10 @@ export default class Outro extends Phaser.Scene {
         let amongFirst10 = false;
 
         makeWayScores.splice(0, 10).forEach( (score, i) => {
-            const text0 = this.add.bitmapText(this.center_width - 350, 170 + (i * 60), "default", `${i+1}`, 60).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
-            const text1 = this.add.bitmapText(this.center_width - 150, 170 + (i * 60), "default", `${score.player.substring(0, 10).padEnd(11, ' ')}`, 60).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
-            const text2 = this.add.bitmapText(this.center_width + 200, 170 + (i * 60), "default", `${String(score.score).padStart(10, '0')}`, 60).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
-            
+            const text0 = this.add.bitmapText(this.center_width - 350, 170 + (i * 60), "default", `${i+1}`, 50).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
+            const text1 = this.add.bitmapText(this.center_width - 150, 170 + (i * 60), "default", `${score.player.substring(0, 10).padEnd(11, ' ')}`, 50).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
+            const text2 = this.add.bitmapText(this.center_width + 200, 170 + (i * 60), "default", `${String(score.score).padStart(10, '0')}`, 50).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
+
             if (score.id === this.currentId) {
 
                 amongFirst10 = true;
