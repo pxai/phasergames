@@ -1,9 +1,14 @@
 import Phaser from "phaser";
 import Player from "./player";
-import Foe from "./foe";
-import Background from "./background";
-import Items from "./items";
 import Explosion from "./explosion";
+
+import {
+    NEW_PLAYER,
+    CURRENT_PLAYERS,
+    PLAYER_DISCONNECTED,
+    PLAYER_MOVED,
+    PLAYER_IS_MOVING
+} from "./status";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -18,19 +23,70 @@ export default class Game extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
+        this.id = null;
+
+        this.startSockets();
+        //this.addPlayer();
         this.shots = this.add.group();
         this.checkWorld = false;
-        //this.addBackground();
-        this.addItems();
-        this.addPlayer()
-        this.addColliders();
-        // this.cameras.main.setBackgroundColor(0x494d7e);
 
         this.loadAudios();
-        this.setCamera();
 
-        //this.playMusic();
+        this.addColliders();
+
        // this.cameras.main.startFollow(this.player, true);
+    }
+
+    startSockets () {
+        this.socket = io()
+        this.playerId = this.socket.id;
+        this.addPlayer()
+        this.enemies = {}
+        this.enemyPlayers = this.physics.add.group()
+
+        this.socket.on(NEW_PLAYER, function (playerInfo) {
+            console.log("Game> Player added", playerInfo)
+            this.addEnemyPlayers(playerInfo)
+        }.bind(this))
+
+        this.socket.on(CURRENT_PLAYERS, function (players) {
+            console.log("Current players > ", Object.keys(players))
+            Object.keys(players).forEach(playerId => {
+                if (!this.enemies[playerId] && playerId !== this.player.key)
+                    this.addEnemyPlayers(players[playerId])
+            })
+        }.bind(this))
+
+        this.socket.on(PLAYER_MOVED, function (playerInfo) {
+            console.log("Game> Player moved", playerInfo)
+            this.enemyPlayers.getChildren().forEach(function (otherPlayer) {
+                if (playerInfo.playerId === otherPlayer.playerId) {
+                    otherPlayer.setRotation(playerInfo.rotation)
+                    otherPlayer.setPosition(playerInfo.x, playerInfo.y)
+                }
+            })
+        }.bind(this))
+
+        this.socket.on(PLAYER_DISCONNECTED, function (playerId) {
+            this.enemyPlayers.getChildren().forEach(function (otherPlayer) {
+                if (playerId === otherPlayer.key) {
+                    otherPlayer.destroy()
+                }
+            })
+        }.bind(this))
+    }
+
+    destroy() {
+        console.log("Destroyed!!")
+        this.socket.emit(PLAYER_DISCONNECTED, this.player)
+        super.destroy();
+    }
+
+    addEnemyPlayers (player) {
+        console.log("Adding enemy player! ", player.name, " Against ", player.key)
+        const enemy = new Player(this, player.x, player.y, "My enemy")
+        this.enemies[enemy.key] = enemy;
+        this.enemyPlayers.add(enemy)
     }
 
     setCamera () {
@@ -39,141 +95,51 @@ export default class Game extends Phaser.Scene {
 
 
     addPlayer() {
+
         this.thrust = this.add.layer();
-        const x = 600//64 * 20;
-        const y = 500//64 * 20;
-        this.player = new Player(this, x, y)
+        const x = 600 + Phaser.Math.Between(-100, 100)
+        const y = 500+ Phaser.Math.Between(-100, 100)
+        this.player = new Player(this, x, y, "My Name")
+        console.log("Creating player! ", this.player.key)
+        this.socket.emit(NEW_PLAYER, this.player)
+        this.setCamera();
         //this.foe = new Foe(this, x + 300, y + 300, this.items.grid)
     }
 
-    addBackground () {
-
-    }
-
-    addItems () {
-        this.asteroids = this.add.group()
-        this.boxes = this.add.group();
-        this.energies = this.add.group();
-        this.items = new Items(this)
-    }
-
     addColliders () {
-        this.physics.add.overlap(this.player, this.asteroids, this.crashAsteroid.bind(this));
-        this.physics.add.overlap(this.player, this.energies, this.pickEnergy.bind(this));
-        //this.physics.add.overlap(this.foe, this.energies, this.foeEnergy.bind(this));
-        this.physics.add.overlap(this.shots, this.asteroids, this.destroyAsteroid.bind(this));
-        this.physics.add.overlap(this.shots, this.player, this.shotShip.bind(this));
-        //this.physics.add.overlap(this.shots, this.foe, this.shotFoe.bind(this));
-        this.physics.add.overlap(this.shots, this.energies, this.destroyEnergy.bind(this));
-        this.physics.add.collider(this.player, this.foe, this.foeCollision.bind(this));
+        this.physics.add.overlap(this.player, this.enemyPlayers , this.playerCollision.bind(this));
     }
 
-    foeCollision(player, foe) {
+    playerCollision(player, foe) {
+        console.log("Collision! ")
+        this.socket.emit(PLAYER_DISCONNECTED, player.key)
+        player.destroy();
+        foe.destroy();
     }
 
-    foeEnergy(foe, energy) {
-        this.playAudio("asteroid")
-        energy.destroy();
-    }
-
-    destroyEnergy(shot, energy) {
-        this.playAudio("asteroid")
-        shot.destroy();
-        energy.destroy();
-    }
-
-    pickEnergy(ship, energy) {
-        this.playAudio("pick")
-        ship.addEnergy(energy.power);
-        energy.destroy();
-    }
-
-    shotShip(shot, ship) {
-        if (shot.id === ship.id) return;
-        if (this.foe.death) return;
-        this.playAudio("explosion")
-        shot.destroy();
-        this.destroyPlayer()
-    }
-
-    shotFoe(shot, foe) {
-        if (shot.id === foe.id) return;
-        if (this.player.death) return;
-        this.playAudio("explosion")
-        shot.destroy();
-        this.destroyFoe();
-    }
-
-    destroyAsteroid(shot, asteroid) {
-        this.playAudio("asteroid")
-        shot.destroy();
-        new Explosion(this, asteroid.x, asteroid.y, "0xcccccc", 15)
-        asteroid.destroy();
-    }
-
-    crashAsteroid (player, asteroid) {
-        this.playAudio("asteroid")
-        new Explosion(this, asteroid.x, asteroid.y, "0xcccccc", 15)
-        this.destroyPlayer()
-    }
-
-    destroyPlayer () {
-        this.playAudio("explosion")
-        this.cameras.main.shake(500);
-        new Explosion(this, this.player.x, this.player.y, "0xffffff", 10)
-        this.player.destroy();
-
-        this.updateScore(false)
-        this.time.delayedCall(3000, () => this.startGame());
-    }
-
-    destroyFoe() {
-        this.playAudio("explosion")
-        this.cameras.main.shake(500);
-        new Explosion(this, this.foe.x, this.foe.y, "0xffffff", 10)
-        this.foe.destroy();
-
-        this.updateScore(true)
-        this.time.delayedCall(3000, () => this.startGame());
-    }
 
     update (timestep, delta) {
-        if (!this.player.death) { //&& !this.foe.death) { 
+        if (this.player && !this.player.death) {
             this.player.update(timestep, delta);
-           // this.foe.update();QWsad
-            this.checkPlayerInside();
         }
-        this.shots.children.entries.forEach(shot => { 
-            shot.update();
-        });
+
+        if (this.player) {
+            const currPosition = {
+                x: this.player.x,
+                y: this.player.y,
+                rotation: this.player.rotation
+              }
+              if (this.player.oldPosition && (
+                    currPosition.x !== this.player.oldPosition.x ||
+                    currPosition.y !== this.player.oldPosition.y ||
+                    currPosition.rotation !== this.player.oldPosition.rotation)) {
+                this.socket.emit(PLAYER_IS_MOVING, {key: this.player.key, ...currPosition})
+              }
+
+              this.player.oldPosition = currPosition
+        }
     }
 
-    checkPlayerInside () {
-        if (!this.checkWorld) return;
-
-        const worldView = this.cameras.main.worldView;
-        if (!worldView.contains(this.player.x, this.player.y)) { this.destroyPlayer(); }
-        // if (!worldView.contains(this.foe.x, this.foe.y)) { this.destroyFoe(); }
-    }
-
-    playMusic () {
-        if (this.theme) this.theme.stop()
-        const themes = Array(6).fill(0).map((_,i)=> {
-            return this.sound.add(`muzik${i}`, {
-                mute: false,
-                volume: 1,
-                rate: 1,
-                detune: 0,
-                seek: 0,
-                loop: true,
-                delay: 0
-            });
-        })
-
-        this.theme = themes[Phaser.Math.Between(0, 5)];
-
-        this.theme.play( {volume: 0.5})
-    }
 
     loadAudios () {
         this.audios = {
@@ -192,36 +158,5 @@ export default class Game extends Phaser.Scene {
     startGame () {
         if (this.theme) this.theme.stop();
         this.scene.start("game");
-    }
-
-    updateScore (playerWin) {
-        this.zoomIn = false;
-        this.cameras.main.zoomTo(1, 500);
-        let playerScore = +this.registry.get("playerScore");
-        let foeScore = +this.registry.get("foeScore");
-        let outcome = "";
-        if (playerWin) {
-            outcome = ["You won!!", "YAY!!", "Awesome!!", "Amazing!!", "Yeah!", "You rule!!"][Phaser.Math.Between(0, 5)];
-            playerScore++;
-            this.registry.set("playerScore",`${playerScore}`)
-        } else {
-            outcome = ["You lost!!", "You suck!!", "Loser!!", "Still live with mom?", "Boo!!", "Yikes!!", "LOL!!"][Phaser.Math.Between(0, 6)];
-            foeScore++;
-            this.registry.set("foeScore",`${foeScore}`)
-        }
-
-        if (playerScore === 5 || foeScore === 5) {
-            this.time.delayedCall(2000, () => this.gameOver());
-        }
-
-        const x = this.cameras.main.worldView.centerX;
-        const y = this.cameras.main.worldView.centerY;
-        this.score1 = this.add.bitmapText(x, y - 100, "starshipped", outcome, 80).setOrigin(0.5);
-        this.score2 = this.add.bitmapText(x, y + 100, "starshipped", `You: ${playerScore} - Foe: ${foeScore}`, 60).setOrigin(0.5);
-    }
-
-    gameOver () {
-        if (this.theme) this.theme.stop();
-        this.scene.start("game-over");
     }
 }

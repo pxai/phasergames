@@ -23,15 +23,10 @@ export default class Bootloader extends Phaser.Scene {
             this.scene.start("game");
         },this);
 
-       /* Array(7).fill(0).forEach((_,i) => {
-            this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)
-        });*/
-
        Array(6).fill(0).forEach((_,i) => {
             this.load.audio(`muzik${i}`, `assets/sounds/muzik${i}.mp3`);
         });
 
-       // this.load.audio("muzik", "assets/sounds/muzik.mp3");
         this.load.image("ship1_1", "assets/images/starship.png");
         this.load.image("foeship", "assets/images/foeship.png");
         this.load.image("pello", "assets/images/pello.png");
