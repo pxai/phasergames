@@ -4,7 +4,7 @@ class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, name) {
         super(scene, x, y, "ship1_1");
         this.scene = scene;
-        this.name = name + ":" + crypto.randomUUID();
+        this.name = name;
         this.tint = Math.random() * 0xffffff;
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -19,22 +19,27 @@ class Player extends Phaser.GameObjects.Sprite {
         this.init();
     }
 
+/*
+Sets the controls for both cursor keys. Also sets default prooperties for body.
+*/
     init () {
         this.cursor = this.scene.input.keyboard.createCursorKeys();
-        this.W = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-        this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-        this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-        this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.body.setDrag(300);
         this.body.setAngularDrag(400);
         this.body.setMaxVelocity(600);
         this.upDelta = 0;
     }
 
+/*
+This is a getter so we can get the unique identifier from the name of the player.
+*/
     get key () {
         return this.name.split(":")[1];
     }
 
+/*
+The update loop is used to move the spaceship according to the user input. When the player moves to right/left the body of the ship will rotate, when moving up it will gain velocity. Randomly, a trailing particle will be added.
+*/
     update (timestep, delta) {
         if (this.death) return;
         if (this.cursor.left.isDown) {

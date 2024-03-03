@@ -1,7 +1,7 @@
-const express = require('express'); // Express contains some boilerplate to for routing and such
+const express = require('express');
 const app = express();
 const http = require('http').Server(app);
-const io = require('socket.io')(http); // Here's where we include socket.io as a node module
+const io = require('socket.io')(http);
 
 
 app.get("/", function (request, response) {
@@ -10,40 +10,38 @@ app.get("/", function (request, response) {
 
 app.use('/',express.static('dist'))
 
-app.set('port', 5000);
-http.listen(app.get('port'), function(){
-  console.log('listening on port',app.get('port'));
+http.listen(5000, function(){
+  console.log('Server ready, listening on port ', 5000);
 });
 
 const players = {};
 
 io.on('connection', function(socket){
 
-	socket.on('newPlayer',function(state){
-		console.log("New player joined with state:", socket.id, Object.keys(players), state);
-    const [name, key] = state.name.split(":");
-		players[key] = state;
+	socket.on('newPlayer',function(newPlayer){
+		console.log("New player joined with state:", newPlayer);
+    const [name, key] = newPlayer.name.split(":");
+		players[key] = newPlayer;
 
     socket.emit('currentPlayers', players);
-    socket.broadcast.emit('newPlayer', state);
+    socket.broadcast.emit('newPlayer', newPlayer);
 	})
 
   socket.on('playerDisconnected',function(key){
     delete players[key];
-    console.log("Serve > player destroyed ", key)
+    console.log("Serve > player destroyed: ", key)
     socket.broadcast.emit('playerDisconnected', key);
   })
 
   socket.on('playerIsMoving',function(position_data){
+    console.log("Server> playerMoved> Player moved to ", position_data);
+    const key = position_data?.key;
+    if(players[key] == undefined) return;
+    players[key].x = position_data.x;
+    players[key].y = position_data.y;
+    players[key].rotation = position_data.rotation;
 
-    console.log("Server> playerMoved> Player moved to ", socket.id, Object.keys(players), position_data);
-    const playerId = position_data?.key;
-    if(players[playerId] == undefined) return;
-    players[playerId].x = position_data.x;
-    players[playerId].y = position_data.y;
-    players[playerId].rotation = position_data.rotation;
-
-    socket.broadcast.emit('playerMoved',players[playerId]);
+    socket.broadcast.emit('playerMoved', players[key]);
   })
 
 })
