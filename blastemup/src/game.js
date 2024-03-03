@@ -1,6 +1,5 @@
 import Phaser from "phaser";
 import Player from "./player";
-import Explosion from "./explosion";
 
 import {
     NEW_PLAYER,
@@ -15,26 +14,12 @@ export default class Game extends Phaser.Scene {
         super({ key: "game" });
     }
 
-    preload () {
-    }
-
     create () {
-        this.width = this.sys.game.config.width;
-        this.height = this.sys.game.config.height;
-        this.center_width = this.width / 2;
-        this.center_height = this.height / 2;
         this.id = null;
 
         this.startSockets();
-        //this.addPlayer();
-        this.shots = this.add.group();
-        this.checkWorld = false;
-
         this.loadAudios();
-
         this.addColliders();
-
-       // this.cameras.main.startFollow(this.player, true);
     }
 
     startSockets () {
@@ -76,12 +61,6 @@ export default class Game extends Phaser.Scene {
         }.bind(this))
     }
 
-    destroy() {
-        console.log("Destroyed!!")
-        this.socket.emit(PLAYER_DISCONNECTED, this.player)
-        super.destroy();
-    }
-
     addEnemyPlayers (player) {
         console.log("Adding enemy player! ", player.name, " Against ", player.key)
         const enemy = new Player(this, player.x, player.y, "My enemy")
@@ -90,12 +69,12 @@ export default class Game extends Phaser.Scene {
     }
 
     setCamera () {
+        this.cameras.main.setBackgroundColor(0xcccccc)
         this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 100);
     }
 
 
     addPlayer() {
-
         this.thrust = this.add.layer();
         const x = 600 + Phaser.Math.Between(-100, 100)
         const y = 500+ Phaser.Math.Between(-100, 100)
@@ -103,7 +82,6 @@ export default class Game extends Phaser.Scene {
         console.log("Creating player! ", this.player.key)
         this.socket.emit(NEW_PLAYER, this.player)
         this.setCamera();
-        //this.foe = new Foe(this, x + 300, y + 300, this.items.grid)
     }
 
     addColliders () {
@@ -158,5 +136,12 @@ export default class Game extends Phaser.Scene {
     startGame () {
         if (this.theme) this.theme.stop();
         this.scene.start("game");
+    }
+
+    destroy() {
+        console.log("Scene Destroyed!!")
+        if (this.player)
+            this.socket.emit(PLAYER_DISCONNECTED, this.player)
+        super.destroy();
     }
 }

@@ -11,12 +11,9 @@ class Player extends Phaser.GameObjects.Sprite {
         this.body.setAllowGravity(false);
         this.body.setCircle(26);
         this.body.setOffset(6, 9)
-        this.power = 0;
         this.body.setBounce(0.8)
-        this.speed_x = 0;// This is the speed it's currently moving at
-        this.speed_y = 0;
         this.angle = 0;
-        this.speed = 0; // This is the parameter for how fast it should move
+        this.speed = 0;
         this.friction = .95;
         this.death = false;
         this.init();
@@ -61,23 +58,6 @@ class Player extends Phaser.GameObjects.Sprite {
         if (Phaser.Math.Between(1, 4) > 1) {
             this.scene.thrust.add(new Particle(this.scene, this.x , this.y , 0xffffff, 10))
         }
-    }
-
-    getSpeeds () {
-        let dx = (this.scene.input.mousePointer.x + this.scene.cameras.main.worldView.x) - this.x;
-        let dy = (this.scene.input.mousePointer.y + this.scene.cameras.main.worldView.y) - this.y;
-        let angle = Math.atan2(dy, dx) - Math.PI/2;
-        let dir = (angle - this.rotation) / (Math.PI * 2);
-        dir -= Math.round(dir);
-        dir = dir * Math.PI * 2;
-
-        this.newSpeed = (Math.abs(dx) + Math.abs(dy)/2)/100
-        this.body.rotation += dir * 100
-    }
-
-    addEnergy(power) {
-        this.power = this.power + power;
-        this.showPoints("+" + power)
     }
 
     destroy () {
