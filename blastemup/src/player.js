@@ -24,6 +24,7 @@ Sets the controls for both cursor keys. Also sets default prooperties for body.
 */
     init () {
         this.cursor = this.scene.input.keyboard.createCursorKeys();
+        this.scene.events.on("update", this.update, this);
         this.body.setDrag(300);
         this.body.setAngularDrag(400);
         this.body.setMaxVelocity(600);

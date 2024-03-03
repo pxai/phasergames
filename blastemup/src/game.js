@@ -102,11 +102,7 @@ This is the only collider in this simplified game. If the player hits any other 
         foe.destroy();
     }
 
-    update (timestep, delta) {
-        if (this.player && !this.player.death) {
-            this.player.update(timestep, delta);
-        }
-
+    update () {
         if (this.player) {
             const currPosition = {
                 x: this.player.x,
