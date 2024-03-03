@@ -15,7 +15,6 @@ class Particle extends Phaser.GameObjects.Rectangle {
         this.scene.tweens.add({
             targets: this,
             duration: Phaser.Math.Between(600, 1000),
-           // y: {from: this.y, to: this.y + (this.direction * Phaser.Math.Between(20, 40))},
             scale: { from: 1, to: 3 },
             alpha: { from: this.alpha, to: 0 },
             onComplete: () => { this.destroy() }
