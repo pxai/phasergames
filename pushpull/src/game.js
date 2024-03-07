@@ -20,7 +20,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-  This method is called when the scene starts. We set the width and height of the scene, the center width and height, the background color, and we disable the context menu of the mouse. And then we add the elements we need: maps with blocks, audios, texts, and the pointer.
+  This method is called when the scene starts. We set the width and height of the scene, the center width and height, and the background color, and we disable the context menu of the mouse. And then we add the elements we need: maps with blocks, audio files, texts, and the pointer.
   */
     create () {
       this.width = this.sys.game.config.width;
@@ -77,7 +77,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-    Adds objects to the game: e
+    Adds objects to the game: blocks and exits. The blocks are added to the group blocks and the exits to the group exits. The `block_1_1` block is the player.
   */
     addObjects() {
       this.objectsLayer.objects.forEach( object => {
@@ -97,7 +97,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-    If the scene has some texts, we show them. This is really helpful to explain the player what to do in a tutorial scene
+    If the scene has some texts, we show them. This is really helpful to explain to the player what to do in a tutorial scene
   */
     showTexts() {
       if (this.number > 0) return;
@@ -122,7 +122,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-    This is called when the player touches the exit of the scene. It destroys the exit and calls the finishScene method.
+    This is called when the player touches the exit of the scene. It destroys the exit and calls the `finishScene` method.
   */
     hitExit(player, exit) {
       this.player.active = false;
@@ -132,7 +132,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-    This method sets the pointer (the mouse in a computer) to this.pointer and disables the context menu of the mouse.
+    This method sets the pointer (the mouse in a computer) to `this.pointer` and disables the context menu of the mouse.
   */
     addPointer() {
       this.pointer = this.input.activePointer;
@@ -140,7 +140,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-    The next methods loads the audios, plays them normally and the last plays audios with a random rate and detune.
+    The next method loads the audio, it plays them normally and the last plays audio with a random rate and detune.
   */
       loadAudios () {
         this.audios = {
@@ -166,7 +166,7 @@ export default class Game extends Phaser.Scene {
       }
 
   /*
-      The game loop just detects if R was pressed to restart the scene.
+      The game loop just detects if `R` was pressed to restart the scene.
   */
     update() {
       if (Phaser.Input.Keyboard.JustDown(this.R)) {

@@ -4,7 +4,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    Once again we use the Scene `preload` method to call the different methods that will load the game assets.
     */
     preload () {
         this.createBars();
@@ -61,7 +61,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-    This loads the level map. In this game we just use one empty map that we'll fill with the different elements of the game using a dungeon generator class.
+    This loads the level map. In this game, we just use one empty map that we'll fill with the different elements of the game using a dungeon generator class.
     */
     loadMaps () {
         this.load.tilemapTiledJSON("scene0", "assets/maps/level.json");
@@ -88,7 +88,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-    This loads spritesheets for game objects that need animations or variations.
+    This part loads spritesheets for game objects that need animations or variations.
     */
     loadSpritesheets () {
         this.load.spritesheet("player", "assets/images/player.png", { frameWidth: 48, frameHeight: 48 });

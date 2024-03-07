@@ -12,8 +12,7 @@ class Player extends Phaser.GameObjects.Rectangle {
       this.health = 10;
       this.body.mass = 10;
       this.body.setDragY = 10;
-    }  
+    }
   }
 
 export default Player;
-  

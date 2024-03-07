@@ -54,7 +54,5 @@ export default class Transition extends Phaser.Scene {
           frameRate: 8,
         });
         this.scoreCoinsLogo.play({ key: "coinscore", repeat: -1 });
-      }
-
-
+    }
 }

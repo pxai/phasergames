@@ -8,7 +8,7 @@ export class MatterGravityFixPlugin extends Phaser.Plugins.ScenePlugin {
     }
 
   /*
-    This does the trick to fix the gravity issue. It overrides the _bodiesApplyGravity function in the Matter.Engine class.
+    This does the trick to fix the gravity issue. It overrides the _bodiesApplyGravity function in the `Matter.Engine` class.
   */
     applyGravityFix(Matter) {
         Matter.Engine._bodiesApplyGravity = function (bodies, gravity) {

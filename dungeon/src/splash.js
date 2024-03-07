@@ -69,7 +69,7 @@ export default class Splash extends Phaser.Scene {
     }
 
   /*
-    This method shows the instructions of the game, the classic controls, author and a blinking text to start the game.
+    This method shows the instructions of the game, the classic controls, the author, and a blinking text to start the game.
   */
     showInstructions() {
         this.add.bitmapText(this.center_width, 430, "default", "WASD/Arrows: move", 30).setDropShadow(1, 1, 0xff787a, 0.7).setOrigin(0.5);

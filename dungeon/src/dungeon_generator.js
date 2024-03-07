@@ -12,7 +12,7 @@ export default class DungeonGenerator {
     }
 
   /*
-    This is the method that generates the whole dungeon. It's divided in different methods to make it more readable but basically it generates the dungeon, the map and then it places the different elements in the map.
+    This is the method that generates the whole dungeon. It's divided into different methods to make it more readable but basically, it generates the dungeon, and the map and then it places the different elements on the map.
   */
     generate () {
       this.generateDungeon();
@@ -33,7 +33,7 @@ export default class DungeonGenerator {
         this.placeCorners(room);
         this.placeWalls(room);
 
-        const doors = room.getDoorLocations(); // → Returns an array of {x, y} objects
+        const doors = room.getDoorLocations(); // Returns an array of {x, y} objects
         this.addDoors(room, doors, x, y);
         this.addKey(room)
         this.addFoes(room)
@@ -59,7 +59,7 @@ export default class DungeonGenerator {
     }
 
   /*
-    This method add specific tilemap to our dungeon, with its layers and collisions.
+    This method adds a specific tilemap to our dungeon, with its layers and collisions.
   */
   generateMap () {
     this.map = this.scene.make.tilemap({
@@ -159,7 +159,7 @@ export default class DungeonGenerator {
     }
 
   /*
-    Coins are randomly placed in the room. We use a random method to decide where to place the coins. It uses other helper methods to place the coins in the different positions.
+    Coins are randomly placed in the room. We use a random method to decide where to place the coins. It uses other helper methods to place the coins in different positions.
   */
     addCoins(room) {
       const where = Phaser.Math.RND.pick(["top", "bottom", "left", "right", "none"]);
@@ -222,9 +222,6 @@ export default class DungeonGenerator {
       })
     }
 
-  /*
-
-  */
     addFoes(room) {
       const keyX = Phaser.Math.Between(room.left + 2, room.right - 2);
       const keyY = Phaser.Math.Between(room.top + 2, room.bottom - 2);

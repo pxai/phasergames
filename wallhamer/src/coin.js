@@ -17,7 +17,7 @@ class Coin extends Phaser.GameObjects.Sprite {
 
 
     /*
-    * Inits the animation and it adds a little tween effect to make the coin move up and down.
+    Inits the animation and it adds a little tween effect to make the coin move up and down.
     */
     init () {
         this.scene.anims.create({
@@ -39,7 +39,7 @@ class Coin extends Phaser.GameObjects.Sprite {
 
 
     /*
-    * This part adds tween effect to move the coin towards the score text and then it destroys it
+    This part adds tween effect to move the coin towards the score text and then it destroys it
     */
     pick () {
         const {x, y} = this.scene.cameras.main.getWorldPoint(this.scene.scoreCoinsLogo.x, this.scene.scoreCoinsLogo.y);

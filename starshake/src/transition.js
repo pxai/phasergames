@@ -46,5 +46,5 @@ export default class Transition extends Phaser.Scene {
           loop: true,
           delay: 0
         })
-      }
+    }
 }

@@ -10,7 +10,7 @@ export default class Outro extends Phaser.Scene {
     }
 
   /*
-First we add all elements to the scene: player image, score, text and the input to restart the game.
+First, we add all elements to the scene: player image, score, text, and the input to restart the game.
   */
     create () {
         this.width = this.sys.game.config.width;

@@ -15,7 +15,7 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
     }
 
   /*
-    Initiate the bat animation and movement. Also add the update event to the scene so it will update in this class.
+    Initiate the bat animation and movement. Also, add the update event to the scene so it will update in this class.
   */
     init () {
         this.scene.anims.create({
@@ -66,7 +66,7 @@ export default class Bat extends Phaser.Physics.Matter.Sprite {
     }
 
   /*
-    This function turns the bat around and set the velocity to the new direction.
+    This function turns the bat around and sets the velocity to the new direction.
   */
     turn () {
         this.direction = -this.direction;

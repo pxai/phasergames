@@ -55,9 +55,9 @@ death () {
   this.anims.play(this.name + "death")
 }
 
-    /*
-    Again, when the death animation is completed, then it destroys the zombie.
-    */
+  /*
+  Again, when the death animation is completed, then it destroys the zombie.
+  */
   animationComplete(animation, frame) {
     if (animation.key === this.name +"death") {
       this.destroy()

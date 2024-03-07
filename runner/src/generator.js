@@ -12,7 +12,7 @@ export default class Generator {
     }
 /*
 This is the function that generates the clouds. It creates a new cloud, and then calls itself again after a random amount of time.
-This is done using the Phaser time.delayedCall function.
+This is done using the Phaser `time.delayedCall` function.
 */
     generateCloud () {
         new Cloud(this.scene)
@@ -30,6 +30,9 @@ This is done using the Phaser time.delayedCall function.
     }
 }
 
+/*
+This is a game object that represents a cloud. It's a simple rectangle with a random size and position. We use a tween to move it from right to left, and then destroy it when it's out of the screen.
+*/
 class Cloud extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y) {
         const finalY = y || Phaser.Math.Between(0, 100);
@@ -37,8 +40,7 @@ class Cloud extends Phaser.GameObjects.Rectangle {
         scene.add.existing(this)
         const alpha = 1/Phaser.Math.Between(1, 3)
 
-        // this.setAlpha(alpha)
-        this.setScale(alpha)
+       this.setScale(alpha)
        this.init();
     }
 
@@ -52,6 +54,9 @@ class Cloud extends Phaser.GameObjects.Rectangle {
     }
 }
 
+/*
+This is a game object that represents an obstacle. It works exactly like the cloud, but it's a red rectangle that is part of the obstacles group that we created in the `game` scene. It can kill the player if it touches it.
+*/
 class Obstacle extends Phaser.GameObjects.Rectangle {
     constructor (scene, x, y) {
         super(scene, x, y, 32, 32, 0xff0000);
@@ -62,7 +67,7 @@ class Obstacle extends Phaser.GameObjects.Rectangle {
 
         this.init();
     }
-    
+
     init(){
         this.scene.tweens.add({
             targets: this,
@@ -73,7 +78,10 @@ class Obstacle extends Phaser.GameObjects.Rectangle {
     }
 }
 
-
+/*
+This is a game object that represents a coin. It's an animated sprite that is part of the coins group that we created in the `game` scene. It moves like the cloud and the obstacle.
+It can increase the player's score if it touches it.
+*/
 class Coin extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y) {
         super(scene, x, y, "coin")
@@ -84,7 +92,7 @@ class Coin extends Phaser.GameObjects.Sprite {
 
         this.init();
     }
-    
+
     init(){
         this.scene.tweens.add({
             targets: this,

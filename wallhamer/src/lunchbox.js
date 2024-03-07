@@ -16,7 +16,7 @@ class LunchBox extends Phaser.GameObjects.Sprite {
     }
 
     /*
-    * Inits the animations and it adds a little tween effect to make the lunchbox move up and down.
+    Inits the animations and it adds a little tween effect to make the lunchbox move up and down.
     */
     init () {
         this.scene.anims.create({
@@ -42,7 +42,7 @@ class LunchBox extends Phaser.GameObjects.Sprite {
     }
 
     /*
-    This is called when the player picks the lunchbox. It plays the opened animation and calls the showPrize method.
+    This is called when the player picks the lunchbox. It plays the opened animation and calls the `showPrize` method.
     */
     pick () {
         this.anims.play(this.name + "opened", true);
@@ -55,7 +55,7 @@ class LunchBox extends Phaser.GameObjects.Sprite {
     }
 
     /*
-    This method picks a random prize and it shows it to the player when picking the lunchbox. It plays a tween animation and calls the applyPrize method from the player.
+    This method picks a random prize and it shows it to the player when picking the lunchbox. It plays a tween animation and calls the `applyPrize` method from the player.
     */
     showPrize () {
         const prize = ["boots", "hammer", "coin", "star", "speed"];

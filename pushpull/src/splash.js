@@ -33,7 +33,7 @@ export default class Splash extends Phaser.Scene {
     }
 
   /*
-    When the game starts, we stop the music and start the transition scene with a new music.
+    When the game starts, we stop the music and start the transition scene with a new music file.
   */
     startGame () {
         if (this.theme) this.theme.stop();
@@ -56,7 +56,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     /*
-    These functions shows game title that consists in a couple of bitmap texts that are tweened.
+    These functions show the game title that consists of a couple of bitmap texts that are tweened.
     */
     showTitle() {
       this.gameLogo1 = this.add.bitmapText(this.center_width - 1000, 100, "mario", "Push", 120)
@@ -116,7 +116,7 @@ export default class Splash extends Phaser.Scene {
     }
 
   /*
-    This adds a start button that can be clicked with the mouse or touched with the finger.
+    This adds a start button that can be clicked with the mouse or touched with a finger.
   */
     addStartButton () {
         this.startButton = this.add.bitmapText(this.center_width, 500, "mario", "start", 30).setOrigin(0.5).setTint(0xffe066).setDropShadow(2, 3, 0x693600, 0.7);

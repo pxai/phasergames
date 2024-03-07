@@ -10,7 +10,7 @@ export default class Dust extends Phaser.GameObjects.Sprite {
 
 
   /*
-    This dust is a simple sprite that plays an animation and then destroys itself. It's used when the player lands, slides on a wall or jumps. We can optionally add a tween to make it fade out.
+    This dust is a simple sprite that plays an animation and then destroys itself. It's used when the player lands, slides on a wall, or jumps. We can optionally add a tween to make it fade out.
   */
     init (tween) {
         if (tween) {

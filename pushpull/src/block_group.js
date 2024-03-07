@@ -67,7 +67,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
   }
 
   /*
-  These method activates the block group. It also deactivates the previous active block. The next method does the opposite.
+  This method activates the block group. It also deactivates the previous active block. The next method does the opposite.
   */
   activate () {
     if (this.scene.activeBlock) this.scene.activeBlock.deactivate();
@@ -80,7 +80,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
   }
 
   /*
-  This method is the game loop for the block group. It detects what key was pressed AND it checks if the block group can move in the direction of the key pressed. If it can, it moves the block group and updates the number of moves.
+  This method is the game loop for the block group. It detects what key was pressed and it checks if the block group can move in the direction of the key pressed. If it can, it moves the block group and updates the number of moves.
   */
     update() {
       if (!this.active) return;
@@ -160,7 +160,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     }
 
   /*
-    Same as before, but for this time it checks if the block group can move up.
+    Same as before, but this time it checks if the block group can move up.
   */
     canMoveUp(distance = 32) {
       if (this.isOverlap(0, -1)) {
@@ -177,7 +177,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
     }
 
   /*
-    Same as before, but for this time it checks if the block group can move left.
+    Same as before, but here it checks if the block group can move left.
   */
     canMoveLeft(distance = 32) {
       if (this.isOverlap(-1, 0)) {

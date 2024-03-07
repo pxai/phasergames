@@ -32,17 +32,16 @@ In this short transition before the game, we show the instructions and the keys 
 We play the music in a loop from the transition. This way the music doesn't stop when the player goes to the game and it dies. Once the player is in the game scene, if it dies he will be respawned in that scene and this music should continue playing, so it will not stop and start all the time.
   */
     playMusic (theme="music") {
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
-        this.theme.play({
-          mute: false,
-          volume: 0.2,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-        })
-      }
-
+      this.theme = this.sound.add(theme);
+      this.theme.stop();
+      this.theme.play({
+        mute: false,
+        volume: 0.2,
+        rate: 1,
+        detune: 0,
+        seek: 0,
+        loop: true,
+        delay: 0
+      })
+    }
 }

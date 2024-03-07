@@ -18,10 +18,10 @@ export default class Player {
     }
 
   /*
-    The init method is called from the constructor and in this case it has several jobs. This is just a conventional class that contains a compound body: it consists in different bodies for the player, and we need to add them to the Matter world. We also need to add the player sprite to the scene, and set up the animations. Finally, we need to add the colliders and events that will be used to control the player. If you set the debug to true you'll see the different bodies that make up the player. The ones of the sides it's used to detect collisions with walls and be able to climb up.
+    The init method is called from the constructor and in this case, it has several jobs. This is just a conventional class that contains a compound body: it consists of different bodies for the player, and we need to add them to the Matter world. We also need to add the player sprite to the scene and set up the animations. Finally, we need to add the colliders and events that will be used to control the player. If you set the debug to true you'll see the different bodies that make up the player. The ones on the sides it's used to detect collisions with walls and be able to climb up.
   */
     init (x,y) {
-        // Before matter's update, reset our record of what surfaces the player is touching.
+        // Before Matter's update, reset our record of what surfaces the player is touching.
         this.scene.matter.world.on("beforeupdate", this.resetTouching, this);
         this.sprite = this.scene.matter.add.sprite(0, 0, "player", 0);
 
@@ -77,7 +77,7 @@ export default class Player {
     }
 
   /*
-    Theses defines the different animation states to the player: idle, walking, shooting, etc.
+    These define the different animation states to the player: idle, walking, shooting, etc.
   */
     addAnimations () {
       this.scene.anims.create({
@@ -159,7 +159,7 @@ export default class Player {
     }
 
   /*
-    The game looop for the player. This is called on every frame. We check the input and move the player accordingly. We also check if the player is on the ground or not, and if it is, we allow it to jump. We also check if the player is in the air and touching a wall, so we can allow it to climb up.
+    The game loop for the player. This is called on every frame. We check the input and move the player accordingly. We also check if the player is on the ground or not, and if it is, we allow it to jump. We also check if the player is in the air and touching a wall, so we can allow it to climb up.
   */
     update() {
         this.isOnGround = this.isTouching.ground;

@@ -44,7 +44,6 @@ export default class Platform extends Phaser.GameObjects.Container {
             case 4:
             case 5:
             case 6:
-            case 6:
             default: break;
         }
 

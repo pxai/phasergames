@@ -23,6 +23,9 @@ export default class Game extends Phaser.Scene {
     preload () {
     }
 
+    /*
+    This function creates the game. It sets the width and height of the game, the center of the width and height, and the background color. Then it calls the functions to create the rest of the elements of the game.
+    */
     create () {
       this.width = this.sys.game.config.width;
       this.height = this.sys.game.config.height;
@@ -44,7 +47,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-
+    This function adds the score to the game. It creates the text and the coin icon. It will be updated when the player picks a coin.
     */
     addScore() {
       this.scoreCoins = this.add.bitmapText(75, 10, "pixelFont", "x0", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
@@ -58,7 +61,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-
+    This function creates the map of the game. It loads the tilemap and the tilesets and it creates the layers and the objects defined on the tilemap. It also creates the groups for the foes, the platforms, the turns, the exits, the lunchboxes, and the bricks. Finally it calls the function to create the colliders.
     */
     createMap() {
       this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 64, tileHeight: 64 });
@@ -150,12 +153,16 @@ export default class Game extends Phaser.Scene {
       }, this);
     }
 
-
+      /*
+    This function is called when a foe touches a turn object. It turns the foe.
+      */
     turnFoe (foe, platform) {
       foe.turn();
     }
 
-
+    /*
+    This callback is empty but here we could add some effects. It is called when a foe hits the floor.
+    */
     hitFloor() {
 
     }
@@ -370,7 +377,7 @@ export default class Game extends Phaser.Scene {
       }
 
       /*
-      This plays the music of the game. It is called from the create function, and so we can use this.theme to play the music.
+      This plays the music of the game. It is called from the create function, and so we can use `this.theme` to play the music.
       */
       playMusic (theme="game") {
         this.theme = this.sound.add("music" + this.number);

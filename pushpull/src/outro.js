@@ -39,7 +39,7 @@ export default class Outro extends Phaser.Scene {
     }
 
   /*
-    This adds a start button that can be clicked with the mouse or touched with the finger.
+    This adds a start button that can be clicked with the mouse or touched with a finger.
   */
     addStartButton () {
         this.startButton = this.add.bitmapText(this.center_width, 500, "mario", "Click to start", 30).setOrigin(0.5).setTint(0x9A5000).setDropShadow(2, 3, 0x693600, 0.7);
@@ -55,6 +55,7 @@ export default class Outro extends Phaser.Scene {
         this.startButton.on('pointerout', () => {
             this.startButton.setTint(0xffffff)
         });
+
         this.tweens.add({
             targets: this.space,
             duration: 300,

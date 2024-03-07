@@ -16,7 +16,7 @@ export default class Wizard extends Phaser.Physics.Matter.Sprite {
     }
 
   /*
-These function inits the wizard. It creates the animations and the update event. Also we create a timer that will be used to shoot the fireballs.
+This function inits the wizard. It creates the animations and the update event. Also, we create a timer that will be used to shoot the fireballs.
   */
     init () {
         this.scene.anims.create({
@@ -53,7 +53,7 @@ This will be called when the bubble hits the wizard. We "load" the wizard inside
     }
 
   /*
-The wizard will try a direct shot to the player. It will shoot a fireball and then turn around.
+The wizard will try to shoot directly at the player. It will shoot a fireball and then turn around.
   */
     directShot() {
       this.scene.playAudio("fireball")

@@ -146,20 +146,20 @@ export default class FoeGenerator {
   }
 
   /*
+  This function adds a foe to the scene, in a random position
+  */
+  add () {
+    const foe = new Foe(this.scene, Phaser.Math.Between(32, this.scene.width - 32), 0);
+    this.scene.foeGroup.add(foe);
+  }
+
+  /*
   This function generates and ordered group of foes.
   */
   addOrder (i, x, y, minus) {
     const offset = minus * 70;
 
     this.scene.foeGroup.add(new Foe(this.scene, x + (i * 70) , (i * y) + offset, "foe0", 0, 300));
-  }
-
-    /*
-
-    */
-  add () {
-    const foe = new Foe(this.scene, Phaser.Math.Between(32, this.scene.width - 32), 0);
-    this.scene.foeGroup.add(foe);
   }
 
   /*
@@ -179,9 +179,9 @@ export default class FoeGenerator {
     this.scene.foeWaveGroup.add(foe);
   }
 
-    /*
+  /*
   This function updates all foes in the scene. This could be done independently in each foe as we will see in other projects.
-    */
+  */
   update () {
    if (this.path) {
       this.path.draw(this.graphics);
