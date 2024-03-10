@@ -16,7 +16,7 @@ class PowerUp extends Phaser.GameObjects.Sprite {
    }
 
     /*
-   The power up also spawns a shadow.
+   The power-up also spawns a shadow.
     */
    spawnShadow (x, y) {
     this.shadow = this.scene.add.image(x + 20, y + 20, "plenny0").setTint(0x000000).setAlpha(0.4)
@@ -25,7 +25,7 @@ class PowerUp extends Phaser.GameObjects.Sprite {
    }
 
     /*
-    This sets the animation and movement of the power up.
+    This sets the animation and movement of the power-up.
     */
     init () {
         this.scene.anims.create({

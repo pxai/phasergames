@@ -21,7 +21,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     /*
-    The background, as the game, is a tileSprite, so we can scroll it to make it look like it's moving.
+    The background, as the game, is a `tileSprite`, so we can scroll it to make it look like it's moving.
     */
     addBackground () {
         this.background = this.add.tileSprite(0, 0, this.width, this.height, "background")
@@ -34,7 +34,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     /*
-    We add this effect to change to another screen
+    We add this effect to change to another screen:
     */
     transitionToChange() {
         new SceneEffect(this).simpleClose(this.startGame.bind(this));

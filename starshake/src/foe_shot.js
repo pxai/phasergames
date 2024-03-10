@@ -51,7 +51,7 @@ class FoeShot extends Phaser.GameObjects.PointLight {
     }
 
     /*
-    This function is called when the shot is destroyed, adding a explosion effect along with a tween and showing the points.
+    This function is called when the shot is destroyed, adding an explosion effect along with a tween and showing the points.
     */
     shot() {
         const explosion = this.scene.add.circle(this.x, this.y, 5).setStrokeStyle(10, 0xffffff);

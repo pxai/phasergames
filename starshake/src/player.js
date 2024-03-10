@@ -24,7 +24,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     /*
-    We add a shadow to the player, and we'll have to update its position with the player. Alternatively, we could have defined a Container with the player and the shadow
+    We add a shadow to the player, and we'll have to update its position with the player. Alternatively, we could have defined a Container with the player and the shadow.
     */
     spawnShadow (x, y) {
         this.shadow = this.scene.add.image(x + 20, y + 20, "player1").setTint(0x000000).setAlpha(0.4)
@@ -119,7 +119,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     /*
-    Everytime the player destroys a foe or a shot we show the points. We'll use a bitmap text for that.
+    Every time the player destroys a foe or a shot we show the points. We'll use a bitmap text for that.
     */
     showPoints (score, color = 0xff0000) {
         let text = this.scene.add.bitmapText(this.x + 20, this.y - 30, "starshipped", score, 20, 0xfffd37).setOrigin(0.5);

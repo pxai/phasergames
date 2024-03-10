@@ -78,7 +78,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-    Load the spritesheets (animated images) we use in the game.
+    Load the sprite sheets (animated images) we use in the game.
     */
     loadSpritesheets () {
         this.load.spritesheet("player1", "assets/images/player1.png", { frameWidth: 64, frameHeight: 64 });

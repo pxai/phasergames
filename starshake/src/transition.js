@@ -10,7 +10,7 @@ export default class Transition extends Phaser.Scene {
     }
 
     /*
-    In the transition we show a message with the current stage and some advice, and then we load the next scene.
+    In the transition, we show a message with the current stage and some advice, and then we load the next scene.
     */
     create () {
         const messages = ["Fire at will", "Beware the tanks", "Shoot down the UFOs", "FINAL BOSS"];

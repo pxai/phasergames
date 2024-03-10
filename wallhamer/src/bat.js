@@ -12,7 +12,7 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
         this.init();
     }
     /*
-    Inits the animations for the bat and starts the movement. We also add a listener for the animationcomplete event.
+    Inits the animations for the bat and starts the movement. We also add a listener for the `animationcomplete` event.
     */
     init () {
         this.scene.anims.create({

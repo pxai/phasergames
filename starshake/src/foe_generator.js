@@ -89,11 +89,11 @@ export default class FoeGenerator {
 
     this.path.lineTo(start, this.scene.height + 50);
     this.graphics = this.scene.add.graphics();
-    this.graphics.lineStyle(0, 0xffffff, 0); // debug
+    this.graphics.lineStyle(0, 0xffffff, 0); // for debug
   }
 
   /*
-  This is the function that generates a wave of foes in amd ordered formation.
+  This is the function that generates a wave of foes in an ordered formation.
   */
   orderedWave (difficulty = 5) {
     const x = Phaser.Math.Between(64, this.scene.width - 200);
@@ -104,7 +104,7 @@ export default class FoeGenerator {
   }
 
   /*
-  This functins just creates a simple wave of foes.
+  This function just creates a simple wave of foes.
   */
   wave (difficulty = 5) {
     this.createPath();
@@ -117,7 +117,7 @@ export default class FoeGenerator {
   }
 
   /*
-  This function generates a tank foe.
+  This function generates a single tank foe.
   */
   tank () {
     this.scene.foeGroup.add(new Foe(this.scene, Phaser.Math.Between(100, 600) , -100, "foe2", 0, 620));
@@ -146,7 +146,7 @@ export default class FoeGenerator {
   }
 
   /*
-  This function adds a foe to the scene, in a random position
+  This function adds a foe to the scene, in a random position.
   */
   add () {
     const foe = new Foe(this.scene, Phaser.Math.Between(32, this.scene.width - 32), 0);
@@ -216,6 +216,5 @@ export default class FoeGenerator {
     const foes = this.scene.foeWaveGroup.children.entries;
 
     return foes.length === foes.filter(foe => !foe.active).length;
-
   }
 }

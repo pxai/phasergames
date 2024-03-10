@@ -30,7 +30,7 @@ class Foe extends Phaser.GameObjects.Sprite {
    }
 
     /*
-    This function sets a tween to the guinxu foe, so it moves in a zig-zag pattern.
+    This function sets a tween to the Guinxu foe, so it moves in a zig-zag pattern.
     */
    setGuinxuShot () {
     this.patternIndex = 0;
@@ -73,7 +73,7 @@ class Foe extends Phaser.GameObjects.Sprite {
     }
 
     /*
-    This function is called from the foe generation. It updates the foe position and checks if it's out of bounds and also updates its shadow.
+    This function is called from the foe generation. It updates the foe position, checks if it's out of bounds and also updates its shadow.
     */
     update () {
         if (this.y > this.scene.height + 64) {
@@ -108,7 +108,7 @@ class Foe extends Phaser.GameObjects.Sprite {
     }
 
     /*
-    This function is called when the foe is destroyed, adding a explosion effect along with a tween and showing the points.
+    This function is called when the foe is destroyed, adding an explosion effect along with a tween and showing the points.
     */
     dead() {
         let radius = 60;

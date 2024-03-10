@@ -11,7 +11,8 @@ export default class Generator {
         this.generateCoin();
     }
 /*
-This is the function that generates the clouds. It creates a new cloud, and then calls itself again after a random amount of time.
+This is the function that generates the clouds. It creates a new cloud and then calls itself again after a random amount of time.
+
 This is done using the Phaser `time.delayedCall` function.
 */
     generateCloud () {
@@ -79,7 +80,8 @@ class Obstacle extends Phaser.GameObjects.Rectangle {
 }
 
 /*
-This is a game object that represents a coin. It's an animated sprite that is part of the coins group that we created in the `game` scene. It moves like the cloud and the obstacle.
+This is a game object that represents a coin. It's an animated sprite that is part of the coins group that we created in the `game` scene. It moves like the previous cloud and the obstacle objects.
+
 It can increase the player's score if it touches it.
 */
 class Coin extends Phaser.GameObjects.Sprite {

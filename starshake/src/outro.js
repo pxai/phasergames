@@ -47,7 +47,7 @@ export default class Outro extends Phaser.Scene {
 
 
     /*
-    This will just show the player sprite.
+    This will just show the "player1" sprite.
     */
     showPlayer() {
         this.player1 = this.add.sprite(this.center_width, this.height - 200, "player1").setOrigin(0.5);

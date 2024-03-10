@@ -82,6 +82,7 @@ We also set the score to 0 in the registry, so we can access it from other scene
 
     /*
       This method is called when the player hits an obstacle. We stop the updateScoreEvent so the score doesn't increase anymore.
+
       And obviously, we finish the scene.
     */
     hitObstacle (player, obstacle) {
@@ -100,6 +101,7 @@ We also set the score to 0 in the registry, so we can access it from other scene
 
       /*
       We use this `loadAudios` method to load all the audio files that we need for the game.
+
       Then we'll play them using the `playAudio` method.
       */
       loadAudios () {
@@ -115,7 +117,7 @@ We also set the score to 0 in the registry, so we can access it from other scene
       }
 
       /*
-      This method is specific for the music. We use it to play the theme music in a loop.
+      This method is specific to the music. We use it to play the theme music in a loop.
       */
       playMusic (theme="theme") {
         this.theme = this.sound.add(theme);
@@ -132,9 +134,9 @@ We also set the score to 0 in the registry, so we can access it from other scene
       }
 
       /*
-      This is the game loop. The function that is called every frame.
-      Here is where we can check if a key was pressed or the situation of the player to act accordingly.
-      We use `update` method to check if the player pressed the space key.
+      This is the game loop. The function is called every frame.
+
+      Here is where we can check if a key was pressed or the situation of the player to act accordingly. We use the `update` method to check if the player pressed the space key.
       */
     update() {
       if (Phaser.Input.Keyboard.JustDown(this.SPACE)) {
@@ -147,7 +149,8 @@ We also set the score to 0 in the registry, so we can access it from other scene
     }
 
       /*
-      This is the method that we use to make the player jump. A jump is just a velocity in the Y axis. Gravity will do the rest.
+      This is the method that we use to make the player jump. A jump is just a velocity in the Y-axis. Gravity will do the rest.
+
       We also play a jumping sound and we add a tween to rotate the player while jumping.
       */
     jump () {
@@ -170,9 +173,9 @@ We also set the score to 0 in the registry, so we can access it from other scene
 
       - Play the dead sound
 
-      - Set the score in the registry to show it in the gameover scene.
+      - Set the score in the registry to show it in the `gameover` scene.
 
-      - Start the gameover scene.
+      - Start the `gameover` scene.
 
       */
     finishScene () {

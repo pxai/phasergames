@@ -12,7 +12,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    We need to initialize the scene with the data we passed from the previous scene, specially the number of the stage to load the correct background. Also we need to get the current power up from the registry, although we are not applying it yet.
+    We need to initialize the scene with the data we passed from the previous scene, especially the number of the stage to load the correct background. Also, we need to get the current power-up from the registry, although we are not applying it yet.
     */
     init (data) {
       this.name = data.name;
@@ -22,7 +22,7 @@ export default class Game extends Phaser.Scene {
   }
 
     /*
-    Here we create and start all the elements of the game. We create the background, the players, the foes, the shots, the power ups, the scores, the audios and the colliders.
+    Here we create and start all the elements of the game. We create the background, the players, the foes, the shots, the power-ups, the scores, the audios and the colliders.
     */
     create () {
       this.duration = this.time * 1000;
@@ -45,14 +45,14 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    This is how we create an infite background. We create a tileSprite with the size of the screen and we set the origin to 0,0. Then we set the scroll factor to 0,1 so it will scroll only in the Y axis.
+    This is how we create an infinite background. We create a tileSprite with the size of the screen and we set the origin to 0,0. Then we set the scroll factor to 0,1 so it will scroll only in the Y axis.
     */
     addBackground () {
       this.background = this.add.tileSprite(0, 0, this.width, this.height, "stage"+ this.number).setOrigin(0).setScrollFactor(0, 1);
     }
 
     /*
-    This is the method that will be called from the foe generator when a wave is destroyed. We create a new power up and we add it to the power up group.
+    This is the method that will be called from the foe generator when a wave is destroyed. We create a new power up and we add it to the power-up group.
     */
     spawnShake() {
       const {x, y} = this.lastDestroyedWaveFoe;
@@ -86,7 +86,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    Next we have some functions to add other groups for the game elements.
+    Next, we have some functions to add other groups for the game elements.
     */
     addShots () {
       this.shotsLayer = this.add.layer();
@@ -151,7 +151,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    This is the callback for the collision between two shots. We destroy both shots and we create an explosion were they met.
+    This is the callback for the collision between two shots. We destroy both shots and we create an explosion where they meet.
     */
     destroyShot (shot, foeShot) {
       const point = this.lights.addPointLight(shot.x, shot.y, 0xffffff, 10, 0.7);
@@ -173,7 +173,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-  This is the callback we called when a shot hits a foe. We destroy the shot and we decrease the lives of the foe. If the foe has no more lives, we destroy it and we create an explosion. We also add the points to the score of the player that shot the foe.
+  This is the callback we call when a shot hits a foe. We destroy the shot and we decrease the lives of the foe. If the foe has no more lives, we destroy it and we create an explosion. We also add the points to the score of the player who shoots the foe.
     */
     destroyFoe (shot, foe) {
       foe.lives--;
@@ -209,7 +209,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    This one is called when a player crashes with a foe. Unless the player is blinking (because it just started), we destroy the player, the foe and also at the end we respawn the player.
+    This one is called when a player crashes with a foe. Unless the player is blinking (because it just started), we destroy the player, and the foe and also at the end we respawn the player.
     */
     crashFoe (player, foe) {
       if (player.blinking) return;
@@ -220,7 +220,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    This is the callback when the player picks a powerup. We update the power up of the player and we destroy the power up. We also create a tween to make the player blink.
+    This is the callback when the player picks a powerup. We update the power-up of the player and we destroy the power-up. We also create a tween to make the player blink.
     */
     pickPowerUp (player, powerUp) {
       this.playAudio("stageclear1")
@@ -252,7 +252,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    Here we load all the audios, and we add them to the audios object. Later we can play them with the playAudio method.
+    Here we load all the audio, and we add them to the `this.audios` object. Later we can play them with the `playAudio` method.
     */
     loadAudios () {
       this.audios = {
@@ -272,7 +272,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    The game loops is as simple as this. We basically update the player and the foes. We also update the background to make it scroll.
+    The game loop is as simple as this. We update the player and the foes. We also update the background to make it scroll.
     */
     update() {
       if (this.player)
@@ -293,7 +293,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    This is the callback for the end of the scene. We stop all the audios, we stop the scene and we start the transition to the next scene.
+    This is the callback for the end of the scene. We stop all the audio, we stop the scene and we start the transition to the next scene.
     */
     finishScene () {
       this.game.sound.stopAll();
@@ -303,7 +303,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    The power up looks the same but the effect is different. We keep increasing its value and so we can apply the effect to the player. In this game it applies another shooting pattern.
+    The power-up looks the same but the effect is different. We keep increasing its value so we can apply the effect to the player. In this game, the power-up applies another shooting pattern.
     */
     updatePowerUp (player, powerUp) {
       player.powerUp = this.available[this.currentPowerUp];

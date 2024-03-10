@@ -37,7 +37,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     /*
-    Inits the animations for the player: init, idle, walk, jump, death, etc... and it adds a listener for the animationcomplete event.
+    Inits the animations for the player: init, idle, walk, jump, death, etc... and it adds a listener for the `animationcomplete` event.
     */
     init () {
         this.scene.anims.create({
@@ -93,7 +93,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
 
     /*
-    In the update is where we set the player movement according to the controls. We check if the player is jumping, falling, walking, etc...
+    In the update function, we set the player movement according to the controls. We check if the player is jumping, falling, walking, etc...
     */
     update () {
         if (this.dead) return;
@@ -149,7 +149,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
 
     /*
-    This is called when the player hits the floor. It creates the smoke particles. It reuses the jumpSmoke method.
+    This is called when the player hits the floor. It creates smoke particles. It reuses the jumpSmoke method.
     */
     landSmoke () {
         this.jumpSmoke(20);
@@ -164,7 +164,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     /*
-    This is called when the player generates a block. It creates the smoke particles.
+    This is called when the player generates a block. It also creates smoke particles.
     */
     buildBlock() {
         this.building = true;
@@ -198,14 +198,14 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     /*
-    This just turns the player to the opposite direction.
+    This just turns the player in the opposite direction.
     */
     turn () {
         this.right = !this.right;
     }
 
     /*
-    This is called when the player finishes an animation. It checks if the animation is the playerground, playerhammer or playerbuild and it plays the idle animation.
+    This is called when the player finishes an animation. It checks if the animation is the `playerground`, `playerhammer` or `playerbuild` and it plays the idle animation.
     */
     animationComplete (animation, frame) {
         if (animation.key === "playerground") {

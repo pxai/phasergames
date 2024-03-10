@@ -13,7 +13,7 @@ export default class Zombie extends Phaser.Physics.Arcade.Sprite {
   }
 
   /*
-  As we did with the Bat. Inits the animations for the zombies and starts the movement. We also add a listener for the animationcomplete event.
+  As we did with the Bat. Inits the animations for the zombies and starts the movement. We also add a listener for the `animationcomplete` event.
   */
   init () {
     this.scene.anims.create({

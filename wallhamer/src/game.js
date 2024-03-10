@@ -61,7 +61,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    This function creates the map of the game. It loads the tilemap and the tilesets and it creates the layers and the objects defined on the tilemap. It also creates the groups for the foes, the platforms, the turns, the exits, the lunchboxes, and the bricks. Finally it calls the function to create the colliders.
+    This function creates the map of the game. It loads the tilemap and the tilesets and it creates the layers and the objects defined on the tilemap. It also creates the groups for the foes, the platforms, the turns, the exits, the lunchboxes, and the bricks. Finally, it calls the function to create the colliders.
     */
     createMap() {
       this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 64, tileHeight: 64 });
@@ -88,7 +88,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    This function adds the objects defined on the objects layer of the tilemap to the game. Yeah, I know, I could have used a switch statement here, but lately I'm trying to avoid them as much as I can.
+    This function adds the objects defined on the objects layer of the tilemap to the game. Yeah, I know, I could have used a switch statement here, but lately, I'm trying to avoid them as much as I can.
     */
     addsObjects () {
       this.objectsLayer.objects.forEach( object => {
@@ -129,7 +129,7 @@ export default class Game extends Phaser.Scene {
 
 
     /*
-    Once we have our objects, foes, and platform in the game, we add the colliders between them.
+    Once we have our objects, foes, and platforms in the game, we add the colliders between them.
     */
     addColliders () {
       this.physics.add.collider(this.batGroup, this.platform, this.turnFoe, ()=>{
@@ -153,9 +153,9 @@ export default class Game extends Phaser.Scene {
       }, this);
     }
 
-      /*
+    /*
     This function is called when a foe touches a turn object. It turns the foe.
-      */
+    */
     turnFoe (foe, platform) {
       foe.turn();
     }
@@ -251,7 +251,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    This function is called when the player hits a foe. If the player is invincible (because of a powerup), then the foe dies. If not, then the player dies.
+    This function is called when the player hits a foe. If the player is invincible (because of a power-up), then the foe dies. If not, then the player dies.
     */
     hitPlayer(player, foe) {
       if (player.invincible) {
@@ -264,7 +264,7 @@ export default class Game extends Phaser.Scene {
     }
 
    /*
-    This is called when the player blows a foe. On the screen the player generated a blow object and when this collides with a foe, the enemy is destroyed. It plays the sound and kills the foe.
+    This is called when the player blows a foe. On the screen, the player generates a blow object and when this collides with a foe, the enemy is destroyed. It plays the sound and kills the foe.
     */
     blowFoe(blow, foe) {
       this.playAudio("kill");
@@ -282,7 +282,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    This is called when the player blows an object of the platform. On the screen the player generated a blow object and when this collides with a brick, if that brick is marked in the map as breakable, the brick is destroyed. It plays the sound and kills the brick, and at the end it calls spawCoin: a function that randomly spawns a coin.
+    This is called when the player blows an object of the platform layer on the tilemap. On the screen, the player generates a blow object and when this collides with a brick, if that brick is marked in the map as breakable, the brick is destroyed. It plays the sound and kills the brick, and at the end, it calls spawCoin: a function that randomly spawns a coin.
     */
     blowPlatform (blow, platform) {
       const tile = this.getTile(platform)
@@ -344,7 +344,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    This will load all the audios used in the game. It is called from the create function, and so we can use this.audios to play the sounds.
+    This will load all the audio files used in the game. It is called from the create function, and so we can use `this.audios` to play the sounds.
     */
       loadAudios () {
         this.audios = {
@@ -410,7 +410,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    This is called when the player dies. It stops the music and it starts the transition scene withouth increasing the stage number.
+    This is called when the player dies. It stops the music and it starts the transition scene without increasing the stage number.
     */
     restartScene () {
       this.time.delayedCall(1000, () => {
@@ -423,7 +423,7 @@ export default class Game extends Phaser.Scene {
     }
 
     /*
-    This is called when the player picks a coin. It updates the score from registry and it adds a little tween effect to the score text.
+    This is called when the player picks a coin. It updates the score from the registry and it adds a little tween effect to the score text.
     */
     updateCoins () {
       const coins = +this.registry.get("coins") + 1;

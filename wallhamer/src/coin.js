@@ -39,7 +39,7 @@ class Coin extends Phaser.GameObjects.Sprite {
 
 
     /*
-    This part adds tween effect to move the coin towards the score text and then it destroys it
+    This part adds a tween effect to move the coin toward the score text and then it destroys it
     */
     pick () {
         const {x, y} = this.scene.cameras.main.getWorldPoint(this.scene.scoreCoinsLogo.x, this.scene.scoreCoinsLogo.y);
