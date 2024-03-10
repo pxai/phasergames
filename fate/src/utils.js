@@ -5,9 +5,6 @@ export default class Utils {
         this.scene = scene;
     }
 
-  /*
-
-  */
     typeText(text, font, x, y = 150, tint = 0x06E18A, size = 40) {
         let characters = [];
         let jump = 0;
@@ -54,7 +51,7 @@ export default class Utils {
     }
 
   /*
-    This simple method will detroy all the characters of the text.
+    This simple method will destroy all the characters of the text.
   */
     removeTyped(texts) {
         texts.flat().forEach( char => char.destroy())

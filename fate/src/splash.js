@@ -22,7 +22,7 @@ This will create the elements of the Splash screen. This screen is a normal scen
     }
 
     /*
-    We use this method to play the music. In this game the music theme starts in the Splash screen and it is played during the game.
+    We use this method to play the music. In this game, the music theme starts in the Splash screen and it is played during the game.
     */
     playMusic (theme="music") {
         this.theme = this.sound.add(theme);
@@ -51,7 +51,7 @@ This is just the "logo" of the game, which is just a text.
     }
 
   /*
-This are the instructions of the game. We use again the Utils class to show the text letter by letter.
+These are the instructions for the game. We use again the Utils class to show the text letter by letter.
   */
     showInstructions () {
         let text1, text2;

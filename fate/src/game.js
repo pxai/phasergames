@@ -23,7 +23,7 @@ export default class Game extends Scene3D {
 
   /*
   This will be called when the scene starts. We create the player, the enemies, the bullets, the score and the controls.ç
-  Everything related with 3d is accessed through this.third.
+  Everything related to 3d is accessed through `this.third`.
   */
     create () {
       this.bulletHell = new BulletHell();
@@ -49,9 +49,6 @@ export default class Game extends Scene3D {
 
       this.loadAudios();
 
-
-      // https://catlikecoding.com/unity/tutorials/basics/mathematical-surfaces/
-      // https://github.com/enable3d/enable3d-website/blob/master/src/examples/first-phaser-game-3d-version.html
       this.prepareShip()
 
       this.setScores();
@@ -73,15 +70,13 @@ export default class Game extends Scene3D {
     }
 
   /*
-    This adds the lights to the scene. This is 3D so we have infinite posibilities to set light sources and types wherever we want. We are using a spotlight and a directional light.
+    This adds the light sources to the scene. This is 3D so we have infinite possibilities to set light sources and types wherever we want. We are using a spotlight and a directional light.
   */
     setLights() {
       this.spot = this.third.lights.spotLight({ color: 'blue', angle: Math.PI / 8 })
-      // this.spotHelper = this.third.lights.helper.spotLightHelper(this.spot)
 
       this.directional = this.third.lights.directionalLight({ intensity: 0.5 })
       this.directional.position.set(5, 5, 5)
-      //this.third.lights.helper.directionalLightHelper(this.directional)
 
        this.third.lights.hemisphereLight({ intensity: 0.7 })
 
@@ -96,7 +91,6 @@ export default class Game extends Scene3D {
     The neutrino star is the main element of the game. It is a sphere that is in the center of the scene. It has a front and a back part. The back part is the one that is used to detect collisions. It tries to imitate a black hole.
   */
     setNeutrinoStar() {
-      // this.addRings();
       this.torus = this.addRing(0);
       this.proximity = 0;
       this.star = this.third.add.sphere({ name: 'neutrinoStarBack', radius: 22, x: 0, y: 14.5, z: -150  },  { lambert: { color: 0xFFFFE0, transparent: true, opacity: 0.5 } })
@@ -118,7 +112,7 @@ export default class Game extends Scene3D {
 
     addRing(i) {
       let torus = this.third.add.cylinder({x: 0, y: 12, z: -120, height: 1, radiusSegments: 200, radiusBottom: 75 * (i+1), radiusTop: 75 * (i+1)}, { lambert: { color: 0xFFFFE0, transparent: true, opacity: 0.8 } })
-      //let torus = this.third.add.torus({ x: 0, y: 12, z: -120, radius: 75 * (i+1), tubularSegments: 200, tube: 0.4 }, { lambert: { color: 0xFFFFE0, transparent: true, opacity: 1 } })
+
       torus.rotation.set(0.1, 0, 0)
       this.third.physics.add.existing(torus, { shape: 'hacd' })
       torus.body.setCollisionFlags(6)
@@ -186,14 +180,13 @@ The scores are just some text that we show on the screen. We use the registry to
     }
 
   /*
-Before we actualy add the ship object to the scene, we need to load it. We use the GLTF loader to load the ship model.
+Before we actually add the ship object to the scene, we need to load it. We use the GLTF loader to load the ship model.
   */
     prepareShip() {
       this.third.load.gltf('./assets/objects/ship.glb').then(gltf => {
 
         this.object = new ExtendedObject3D()
         this.object.add(gltf.scene)
-        //const object3d = gltf.scene.children[0]
 
         const shapes = ['box', 'compound', 'hull', 'hacd', 'convexMesh', 'concaveMesh']
 
@@ -249,7 +242,7 @@ This will detect the collision between the ship and the particles. If the ship c
     }
 
   /*
-Here we load the audios used in the game. Same as usual, we will use playAudio y playRandom to play them.
+Here we load the audio files used in the game. Same as usual, we will use `playAudio` and `playRandom` to play them.
   */
       loadAudios () {
         this.audios = {
@@ -290,10 +283,8 @@ It will also move the neutrino star and the rings, because guess what... the shi
     update(time, delta) {
       this.currentTime = time;
 
-      //this.generateBullet(time, delta)
       if (this.ship && this.ship.body) {
         let {x, y, z} = this.ship.position;
-        //this.ship.body.setAngularVelocityZ(0)
         if (this.cursor.up.isDown && this.ship.position.y < 6/(z/5)) {
           y = y + 0.1;
           this.createWingTrails();
@@ -426,7 +417,7 @@ This is the function that creates a wave to the scene. It will create a wave of 
           let y = waveFunction(x, 16 * i, randomHeight);
 
           let box = this.third.add.sphere({ name: 'particle' + Math.random(), radius: 0.25, x, y, z: start - (zed ? x : 0 )  },  { lambert: { color } })
-          //this.box.set
+
           this.third.physics.add.existing(box);
           this.particles.push(box);
           box.body.setVelocityZ(15)

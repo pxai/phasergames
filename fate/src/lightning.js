@@ -4,7 +4,7 @@ export default class Lightning {
     }
 
   /*
-In this method we create a timeline to show the lightning effect. We use the lightningEffect rectangle to show the lightning and the lightsOut rectangle to darken the screen.
+In this method, we create a timeline to show the lightning effect. We use the `lightningEffect` rectangle to show the lightning and the `lightsOut` rectangle to darken the screen.
   */
     lightning () {
         if (Phaser.Math.Between(1, 11) < 10) return;

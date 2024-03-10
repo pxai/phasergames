@@ -86,7 +86,7 @@ export default class Bootloader extends Scene3D {
 
 
     /*
-    In this game we are using videos! They will be player in the presentation scene that comes before the Splash.
+    In this game, we are using videos! They will be player in the presentation scene that comes before the Splash.
     */
     loadVideos () {
         Array(4).fill(0).forEach((e, i) => {this.load.video(`video${i}`, `./assets/videos/video${i}.mp4`, 'loadeddata', false, true); });

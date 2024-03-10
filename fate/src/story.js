@@ -9,7 +9,7 @@ export default class Story extends Scene3D {
     }
 
   /*
-This creates the scene that shows the Story, which consists in a series of texts and videos. It can be skipped by pressing the space bar.
+This creates the scene that shows the Story, which consists of a series of texts and videos. It can be skipped by pressing the space bar.
   */
     create () {
         this.game.sound.stopAll();
@@ -25,7 +25,7 @@ This creates the scene that shows the Story, which consists in a series of texts
     }
 
   /*
-    If the player presses the space bar, we start the game cutting the typing and the music.
+    If the player presses the space bar, we start the game by cutting the typing and the music.
   */
     startGame () {
         if (this.utils.typeAudio) this.utils.typeAudio.stop();
@@ -34,7 +34,7 @@ This creates the scene that shows the Story, which consists in a series of texts
     }
 
   /*
-With this method we load the music that will be played during the story. The next method loads audios (just the type) and then we have a method to play them.
+With this method, we load the music that will be played during the story. The next method loads audio files (just the type) and then we have a method to play them.
   */
     playMusic (theme="hymn") {
         this.theme = this.sound.add(theme);
@@ -78,7 +78,7 @@ This is a text intro that is shown before the videos. It is typed and then remov
     }
 
   /*
-  This funtion generates the first part of the video. The programmer logo, some text and the first video.
+  This function generates the first part of the video. The programmer logo, some text and the first video.
   */
     aGameBy () {
         let text2;
