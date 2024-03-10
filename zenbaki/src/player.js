@@ -20,7 +20,7 @@ We can use this function to check if the player has spammed the chat. We will us
     }
 
   /*
-We could optionally penalize the user for spamming or whatever we want to do. With this mechanism we just ignore the messages for 10 seconds.
+We could optionally penalize the user for spamming or whatever we want to do. With this mechanism, we just ignore the messages for 10 seconds.
   */
     setPenalty () {
         this.penalties++;

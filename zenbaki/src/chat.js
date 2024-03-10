@@ -98,7 +98,7 @@ We are not using this function either, but this is how you do it in case you wan
     }
 
   /*
-We use these  two functions to validate the number sent by the user. It must be a number within a limit.
+We use these two functions to validate the number sent by the user. It must be a number within a limit.
   */
     isValidNumberWithMax(number, limit = 100) {
         return this.isValidNumber(number) && +number > 0 && +number <= limit;

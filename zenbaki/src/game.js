@@ -33,7 +33,7 @@ We also calculate the first result.
     }
 
   /*
-We create the elements of the game. This one is quite simple. We just create the chat, the UI and load the audios.
+We create the elements of the game. This one is quite simple. We just create the chat, and the UI and load the audio files.
   */
     create () {
         this.width = this.sys.game.config.width;
@@ -49,7 +49,7 @@ We create the elements of the game. This one is quite simple. We just create the
     }
 
   /*
-    This creates and instance of the chat client and allows us to receive messages from the chat.
+    This creates an instance of the chat client and allows us to receive messages from the chat.
   */
     addChat () {
         this.chat = new Chat(this);
@@ -63,7 +63,7 @@ This is called from the chat when the connection is ready. We will create the ne
     }
 
   /*
-The game has a very simple interface. We just show the current number, the next operation and the score. Also we add some clouds to make it look nicer.
+The game has a very simple interface. We just show the current number, the next operation and the score. Also, we add some clouds to make it look nicer.
   */
     addUI () {
         this.circle = this.add.circle(this.center_width, this.center_height - 50, 100, 0xf22c2e);
@@ -123,7 +123,7 @@ This is the function that will show the score. We will show the top 3 players an
 
 
   /*
-When a new player tries to guess or joins the channel, we'll add it to players array. If the player already exists, we'll return the existing player.
+When a new player tries to guess or joins the channel, we'll add it to `allPlayers` array. If the player already exists, we'll return the existing player.
   */
     addPlayer (name) {
         if (this.allPlayers[name]) return this.allPlayers[name];
@@ -166,7 +166,7 @@ This is the function that will be called when a player tries to guess the number
     }
 
   /*
-These are the points that we will add to the player score depending on the operator. We will add 1 point for +, 2 for -, 4 for * and 5 for /.
+These are the points that we will add to the player score depending on the operator. We will add 1 point for `+`, 2 for `-`, 4 for `*` and 5 for `/`.
   */
     calculateScore () {
        const operatorPoints = {'+': 1, '-': 2, '*': 4, '/': 5};
@@ -174,7 +174,7 @@ These are the points that we will add to the player score depending on the opera
     }
 
   /*
-We use the loadAudio/playAudios mechanism again
+We use the `loadAudio`/`playAudios` mechanism again:
   */
     loadAudios () {
         this.audios = {
@@ -285,7 +285,7 @@ To select the next operator to use, we take into account the number, the next op
     }
 
 /*
-If a player guesses correctly the result, we will show a message with the player name and the score.
+If a player guesses correctly the result, we will show a message with the player's name and the score.
   */
     showScore (playerName, score) {
         this.scoreText1.setText(`Great!`).setAlpha(1);

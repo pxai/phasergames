@@ -23,7 +23,7 @@ export default class Game extends Phaser.Scene {
     }
 
 /*
-This is where the connection with server is established and we set listeners for events that we will receive from that server. Through those listeners we will be aware of new players, player movement and player destroys. We need to add that `.bind(this)` to this event callbacks to make the elements of this class reachable. In this case we separate the group of enemies in a hash and their physical group with `this.enemyPlayers` to set the collisions. But we could just use the physical group.
+This is where the connection with the server is established and we set listeners for events that we will receive from that server. Through those listeners, we will be aware of new players, player movement and player destroy events. We need to add that `.bind(this)` to this event callback to make the elements of this class reachable. In this case, we separate the group of enemies in a hash and their physical group with `this.enemyPlayers` to set the collisions. But we could just use the physical group.
 */
     startSockets () {
         this.socket = io()
@@ -60,7 +60,7 @@ This is where the connection with server is established and we set listeners for
     }
 
 /*
-When a new enemy event is received, we'll add this new game object in this player's screen.
+When a new enemy event is received, we'll add this new game object to this player's screen.
 */
     addEnemyPlayers (enemyPlayer) {
         const [name, key] = enemyPlayer.name.split(":");
@@ -102,6 +102,9 @@ This is the only collider in this simplified game. If the player hits any other 
         foe.destroy();
     }
 
+/*
+In the game loop, we check if the player position has changed. If it has, we notify the server about it, so other players can reproduce the movement.
+*/
     update () {
         if (this.player) {
             const currPosition = {
@@ -120,6 +123,9 @@ This is the only collider in this simplified game. If the player hits any other 
         }
     }
 
+/*
+The rest of the game is same as usual.
+*/
     loadAudios () {
         this.audios = {
           "pick": this.sound.add("pick"),
@@ -140,7 +146,6 @@ This is the only collider in this simplified game. If the player hits any other 
     }
 
     destroy() {
-        console.log("Scene Destroyed!!")
         if (this.player)
             this.socket.emit(PLAYER_DISCONNECTED, this.player.key)
         super.destroy();

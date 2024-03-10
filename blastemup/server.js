@@ -4,7 +4,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
 /*
-We set a very basic express server. By default, we will serve the index.html page built by our webpack build on the frontend. Anything below dist will be served automatically, so the game JavaScript and assets will be served statically as well.
+We set up a very basic express server. By default, we will serve the index.html page built by our Webpack build on the front end. Anything below dist will be served automatically, so the game JavaScript and assets will be served statically as well.
 */
 app.get("/", function (request, response) {
   response.sendFile(__dirname + '/dist/index.html');
@@ -19,12 +19,15 @@ http.listen(5000, function(){
 const players = {};
 
 /*
-This is where we set all the events that our server will listen to. Basically it will react like this:
-- New user is connected? Notify it to the rest of the players to generate it as a new Enemy.
-- Player is disconnected? Notify it to the rest of the players to destory this enemy.
-- Player moved? Notify it to the rest of the players so they can update the position of the enemy.
+This is where we set all the events that our server will listen to. It will react like this:
 
-With debug purposes, we left some logs on this events.
+- Is a new user connected? Notify it to the rest of the players to generate it as a new Enemy.
+
+- Is a player disconnected? Notify the rest of the players to destroy this enemy.
+
+Has the player moved? Notify it to the rest of the players so they can update the position of the enemy.
+
+For debugging purposes, we left some logs on these events.
 */
 io.on('connection', function(socket){
 	socket.on('newPlayer',function(newPlayer){
