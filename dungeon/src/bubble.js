@@ -15,7 +15,7 @@ export default class Bubble extends Phaser.Physics.Matter.Sprite {
 	}
 
   /*
-    This method loads the sprite that will be inside the bubble. It also creates a tween to make it rotate.
+    This function loads the sprite that will be inside the bubble. It also creates a tween to make it rotate.
   */
     load(sprite) {
         this.scene.playAudio("trap")

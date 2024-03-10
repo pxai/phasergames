@@ -85,7 +85,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-    This method loads the spritesheets used in the game.
+    This method loads the sprite sheets used in the game.
     */
     loadSpritesheets () {
         this.load.spritesheet("spider", "assets/images/spider.png", { frameWidth: 32, frameHeight: 32 });

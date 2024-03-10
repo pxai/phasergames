@@ -97,7 +97,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-    If the scene has some texts, we show them. This is really helpful to explain to the player what to do in a tutorial scene
+    If the scene has some texts, we show them. This is helpful to explain to the player what to do in a tutorial scene
   */
     showTexts() {
       if (this.number > 0) return;
@@ -175,7 +175,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-    This method is called when the player touches the exit of the scene. It destroys the exit and calls the finishScene method.
+    This method is called when the player touches the exit of the scene. It destroys the exit and calls the `finishScene` method.
     It also adds a text with the number of moves and the time it took to finish the scene.
   */
     finishScene () {

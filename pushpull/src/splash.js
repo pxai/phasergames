@@ -56,7 +56,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     /*
-    These functions show the game title that consists of a couple of bitmap texts that are tweened.
+    These functions show the game title which consists of a couple of bitmap texts that are tweened.
     */
     showTitle() {
       this.gameLogo1 = this.add.bitmapText(this.center_width - 1000, 100, "mario", "Push", 120)
@@ -143,7 +143,7 @@ export default class Splash extends Phaser.Scene {
     }
 
   /*
-    This just show author's information and a space key that blinks.
+    This just shows the author's information and a space key that blinks.
   */
     showInstructions() {
         this.add.sprite(this.center_width - 80, 400, "pello").setOrigin(0.5).setScale(0.5)

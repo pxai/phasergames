@@ -21,7 +21,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-    From this we create the whole thing. We call the methods to add the map, the player, the collisions, the camera and the scores.
+    From this, we create the whole thing. We call the methods to add the map, the player, the collisions, the camera and the scores.
   */
     create () {
       this.width = this.sys.game.config.width;
@@ -60,7 +60,7 @@ export default class Game extends Phaser.Scene {
   }
 
   /*
-    This method adds the scores to the scene. We add the coins, the seconds, the keys and the timer. We'll update them in other methods.
+    This method adds the scores to the scene. We add the coins, the seconds, the keys and the timer. We'll update them with other methods.
   */
   addScores () {
     this.add.sprite(62, 26, "coin", 0).setOrigin(0.5).setScrollFactor(0).setScale(.8)
@@ -180,7 +180,7 @@ export default class Game extends Phaser.Scene {
   }
 
   /*
-  As we did in other games, we add the audio files to the scene along with a method to play them.
+  As we did in other games, here we add the audio files to the scene along with a method to play them.
   */
     loadAudios () {
       this.audios = {

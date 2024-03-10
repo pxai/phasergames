@@ -46,7 +46,7 @@ export default class BlockGroup extends Phaser.GameObjects.Container {
   }
 
   /*
-  This method sets the listeners for the mouse to select blocks. When a block is selected, it becomes the active block. We add some color to it with `setTint`so the player knows which block is active.
+  This method sets the listeners for the mouse to select blocks. When a block is selected, it becomes the active block. We add some color to it with `setTint` so the player knows which block is active.
   */
   setListeners () {
     this.setInteractive(new Phaser.Geom.Rectangle(0,0,64, 96), Phaser.Geom.Rectangle.Contains);

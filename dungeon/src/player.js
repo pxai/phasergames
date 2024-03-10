@@ -103,7 +103,7 @@ export default class Player {
     }
 
   /*
-    When the player is just created, it's invincible for a short period of time. This is done by a flag and changing the alpha of the sprite, so it blinks.
+    When the player is just created, it's invincible for a short time. This is done by a flag and changing the alpha of the sprite, so it blinks.
   */
     initInvincible () {
       this.scene.tweens.add({
@@ -159,7 +159,7 @@ export default class Player {
     }
 
   /*
-    The game loop for the player. This is called on every frame. We check the input and move the player accordingly. We also check if the player is on the ground or not, and if it is, we allow it to jump. We also check if the player is in the air and touching a wall, so we can allow it to climb up.
+    This is the game loop for the player. This is called on every frame. We check the input and move the player accordingly. We also check if the player is on the ground or not, and if it is, we allow it to jump. We also check if the player is in the air and touching a wall, so we can allow it to climb up.
   */
     update() {
         this.isOnGround = this.isTouching.ground;
@@ -193,7 +193,7 @@ export default class Player {
     }
 
   /*
-    Of the player is jumping, we add a cooldown timer so it can't jump again until it touches the ground.
+    If the player is jumping, we add a cooldown timer so it can't jump again until it touches the ground.
   */
     checkJump () {
       if (((this.canJump && this.isOnGround) || this.onWall) && (this.W.isDown || this.cursor.up.isDown))  {
@@ -209,7 +209,7 @@ export default class Player {
     }
 
   /*
-    Same as we did with the jump, we add a cooldown timer to the shooting so the player can't shoot again until the cooldown is over.
+    Same as we did with the jump, here we add a cooldown timer to the shooting so the player can't shoot again until the cooldown is over.
   */
     checkShoot () {
       if (this.canShoot && (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.W))) {
