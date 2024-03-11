@@ -4,7 +4,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    Once again we load all the assets in the preload method, organizing them in the usual order and starting from the progress bar.
     */
     preload () {
         this.createBars();
@@ -18,7 +18,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    This will be the method that will be in charge of updating the progress bar as the assets are loaded. The colors used in the bar are the same that we use in the game and the splash screen.
     */
     setLoadEvents () {
         this.load.on(
@@ -41,14 +41,14 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    In this game there's only one minimalistic, computer-like font, so we only need to load one bitmap font.
     */
     loadFonts () {
         this.load.bitmapFont("pico", "assets/fonts/pico.png", "assets/fonts/pico.xml");
     }
 
     /*
-
+    These are the fixed images of the game. A couple of them are backgrounds used in the game transitions.
     */
     loadImages () {
         this.load.image("body", "assets/images/body.png");
@@ -61,7 +61,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    This game contains different tiled maps. As the game advances, the style with change slightly, with a more complex and darker style at the end.
     */
     loadMaps () {
         Array(7).fill(0).forEach((_,i) => {
@@ -70,7 +70,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    There are many audios in this game, because we need to create a very immersive atmosphere and we require sound recordgs for the diaries and the officer's messages.
     */
     loadAudios () {
         this.load.audio("mars_background", "assets/sounds/mars_background.mp3");
@@ -105,7 +105,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    Theses are the sprites, not many because of the style of the game. Uh-oh, there's a monster!
     */
     loadSpritesheets () {
         this.load.spritesheet("player", "assets/images/player.png", { frameWidth: 64, frameHeight: 64 });
@@ -117,12 +117,15 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-
+    This method will set the initial value of the game's registry. The score will be set to 0. We could use it to measure completion time or the steps required.
     */
     setRegistry () {
         this.registry.set("score", 0);
     }
 
+    /*
+    This is the background of the progress bar. It's a simple rectangle with a border and it also uses one of the game's colors.
+    */
     createBars () {
         this.loadBar = this.add.graphics();
         this.loadBar.fillStyle(0x6b140b, 1);

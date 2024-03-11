@@ -6,7 +6,7 @@ export default class Splash extends Phaser.Scene {
     }
 
   /*
-
+    This creates the elements of the Splash screen.
   */
     create () {
         this.width = this.sys.game.config.width;
@@ -23,7 +23,7 @@ export default class Splash extends Phaser.Scene {
     }
 
   /*
-
+  The title of the game is created with a delay between each letter, and the smoke effect is created simulating footsteps on the red planet.
   */
     showTitle () {
       this.step = this.sound.add("step")
@@ -44,7 +44,7 @@ export default class Splash extends Phaser.Scene {
 
 
   /*
-
+  This method is called when the player presses the space bar to start the game. It stops the music and starts the transition to the game.
   */
     startGame () {
         if (this.theme) this.theme.stop();
@@ -52,27 +52,9 @@ export default class Splash extends Phaser.Scene {
         this.scene.start("transition", {next: "game", name: "STAGE", number: 0, time: 30})
     }
 
-  /*
-
-  */
-    showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
-        this.tweens.add({
-            targets: this.gameLogo,
-            duration: 1000,
-            x: {
-              from: this.center_width * 2,
-              to: this.center_width
-            },
-            y: {
-                from: -200,
-                to: 130
-              },
-          })
-    }
 
   /*
-
+  We add some background sound instead of music, but it's a sound file looped after all.
   */
     playMusic (theme="mars_background") {
         this.theme = this.sound.add(theme);
@@ -86,11 +68,11 @@ export default class Splash extends Phaser.Scene {
           loop: true,
           delay: 0
       })
-      }
+    }
 
 
   /*
-
+  Below the title we show the instructions to start the game and the author name.
   */
     showInstructions() {
         this.add.bitmapText(this.center_width, 450, "pico", "WASD/Arrows", 40)

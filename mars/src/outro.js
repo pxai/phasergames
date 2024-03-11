@@ -6,7 +6,7 @@ export default class Outro extends Phaser.Scene {
     }
 
   /*
-
+The outro is similar to the Splash screen, but it has a different background and a different title. It also has a different music theme.
   */
     create () {
       this.width = this.sys.game.config.width;
@@ -31,7 +31,7 @@ export default class Outro extends Phaser.Scene {
     }
 
   /*
-
+We set again the background sound.
   */
     playMusic (theme="mars_background") {
         this.theme = this.sound.add(theme);
@@ -48,7 +48,7 @@ export default class Outro extends Phaser.Scene {
     }
 
   /*
-
+This function will start the Splash screen.
   */
     startSplash () {
       this.sound.stopAll();

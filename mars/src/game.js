@@ -17,7 +17,7 @@ export default class Game extends Phaser.Scene {
   }
 
   /*
-
+  This creates the elements of the game. The background colors are relevant because they are used to set a darker color as the game progresses.
   */
     create () {
       this.backgroundColors = [
@@ -36,7 +36,7 @@ export default class Game extends Phaser.Scene {
       this.addPlayer();
       this.addOxygen();
 
-      this.input.keyboard.on("keydown-ENTER", () => this.skipThis(), this);
+      // this.input.keyboard.on("keydown-ENTER", () => this.skipThis(), this); // for testing
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 0);
       this.loadAudios();
       this.addEffects();
@@ -44,21 +44,21 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+The oxygen bar is the only UI element in the game. It's a rectangle that changes its width according to the player's oxygen level.
   */
   addOxygen () {
     this.oxygenBar = this.add.rectangle(this.center_width, 40, this.player.oxygen * 1.8, 20, 0x6b140b).setOrigin(0.5).setScrollFactor(0)
   }
 
   /*
-
+This is the method that will add the post-processing effects to the game. The game uses the HorrifiPostFx plugin, which is a custom plugin that adds a horror effect to the game.
   */
   addEffects() {
     this.cameras.main.setPostPipeline(HorrifiPostFx);
   }
 
   /*
-
+This method will add the day text to the game. It is not used in the final version of the game, but maybe it could be useful for a future version.
   */
     addDay() {
       this.dayText = this.add.bitmapText(20, 10, "pico", "Day " + (this.number + 1), 20)
@@ -75,7 +75,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+This game uses also tiled maps: with a main layer, a border layer, and an objects layer. The main layer is the one where the player can walk and it will have some obstacles. The objects layer is used to add the objects to the game, like the oxygen tanks and the holes
   */
     createMap() {
       this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 64, tileHeight: 64 });
@@ -108,7 +108,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+This method will create a grid of 40x40 cells. It will be used by the drones to move around the map.
   */
     createGrid () {
       this.grid = [];
@@ -124,7 +124,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+Here we add the player element to the game. We also add the collisions between the player and the platform, the objects, the foes, and the holes.
   */
     addPlayer () {
       this.trailLayer = this.add.layer();
@@ -152,7 +152,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+This is the method that will be called when the player touches an object. It will call the touch method of the object.
   */
     touchObject (player, object) {
       if (object.type === "hole") this.playTracker()
@@ -163,7 +163,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+If the player is hit by a foe (drone), it will die and the scene will restart.
   */
     playerHitByFoe (player, foe) {
       this.cameras.main.shake(100);
@@ -173,7 +173,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+When the player hits the hole, it will die and the scene will restart.
   */
     playerHitHole(player, hole) {
       if (!player.dead) {
@@ -187,7 +187,7 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+This is the function that loads the audio files. The tracker has a special treatment, because it will be played in a loop when the player is close to a hole.
   */
     loadAudios () {
         this.audios = {
@@ -204,8 +204,12 @@ export default class Game extends Phaser.Scene {
         this.tracker = this.sound.add("tracker");
     }
 
-  /*
+    playTracker () {
+      if (!this.tracker.isPlaying) this.tracker.play();
+    }
 
+  /*
+We will use this function to play static sound files (4 different files) adding some variations to the rate, delay, and volume.
   */
     playRandomStatic () {
       const file = this.number < 6 ? "static" + Phaser.Math.Between(0,3) : "creepy_static"
@@ -216,15 +220,9 @@ export default class Game extends Phaser.Scene {
       });
     }
 
-  /*
-
-  */
-  playTracker () {
-    if (!this.tracker.isPlaying) this.tracker.play();
-  }
 
   /*
-
+These are the functions to play the sounds, normally or with some random variations.
   */
   playAudio(key) {
     this.audios[key].play();
@@ -240,14 +238,14 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+This function will be used to play the officer's messages. It will play a specific sound file according to the number of the scene.
   */
     playOfficer () {
       this.sound.add(`officer${this.number}`).play();
     }
 
   /*
-
+Here we play several sounds at the same time: the background sound, the creepy sound. It also starts the breathing sound.
   */
       playMusic () {
         const theme =  this.number < 6 ? "mars_background" : "cave";
@@ -275,6 +273,9 @@ export default class Game extends Phaser.Scene {
         this.breath(0.2)
       }
 
+  /*
+  This function will be used to play the breathing sound. It will be called with a specific rate and volume. At the end, it will be restarted again.
+    */
     breath(rate = 0.2, volume = 0.4) {
       const duration = Phaser.Math.Between(500, 1000)
       this.tweens.add({
@@ -289,7 +290,7 @@ export default class Game extends Phaser.Scene {
 
 
   /*
-
+If the player dies, the scene will restart. We show a failure message and a black rectangle that will fade in.
   */
     restartScene () {
       const x = this.cameras.main.worldView.centerX;
@@ -310,19 +311,10 @@ export default class Game extends Phaser.Scene {
       }, null, this);
     }
 
-  /*
 
-  */
-    skipThis () {
-      //if (this.number > 3) return;
-      this.player.dead = true;
-      this.player.body.stop();
-      this.theme.stop();
-      this.scene.start("transition", { number: this.number + 1});
-    }
 
   /*
-
+If the player reaches the exit object, we finish the scene. We disable the player, play a sound, and show a black rectangle that will fade in.
   */
     finishScene (mute = true) {
       const x = this.cameras.main.worldView.centerX;
@@ -346,9 +338,19 @@ export default class Game extends Phaser.Scene {
     }
 
   /*
-
+This function will update the oxygen bar as the player moves.
   */
     updateOxygen () {
       this.oxygenBar.width = this.player.oxygen * 1.8;
     }
+
+      /*
+  We have this function to skip the scene. It will be used for testing purposes.
+    */
+  skipThis () {
+    this.player.dead = true;
+    this.player.body.stop();
+    this.theme.stop();
+    this.scene.start("transition", { number: this.number + 1});
+  }
 }

@@ -15,7 +15,7 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
     }
 
   /*
-
+  Here we have to pay attention to the fact that we are using the EasyStar library to calculate the path of the drone: we have to set the grid and the acceptable tiles for the pathfinding algorithm. We also have to set the animation of the drone and the event that will trigger the movement of the drone. When it starts moving it will also reproduce the sound of the drone.
   */
     init () {
       this.easystar.setGrid(this.grid);
@@ -46,7 +46,7 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
     }
 
   /*
-
+    It starts the movenment of the drone.
   */
     launchMove() {
       if (!this.scene) return;
@@ -60,7 +60,7 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
     }
 
   /*
-
+    This functions uses EasyStar to calculate the path and then we will call a function to move the drone.
   */
     move () {
       try {
@@ -81,7 +81,7 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
   }
 
   /*
-
+  And finally this function will move the drone to the calculated path. At the end of the path it will call the launchMove function again, so the drone can recalculate the path even if the player changes her position.
   */
   moveIt (path) {
       if (path === null) {
@@ -112,46 +112,5 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
           });
       }
   }
-
-
-    update () {
-    }
-
-  /*
-
-  */
-    turn () {
-        this.direction = -this.direction;
-        this.flipX = this.direction < 0;
-        this.body.setVelocityX(this.direction * 100);
-    }
-
-  /*
-
-  */
-    death () {
-      //this.delayedMove.stop();
-        this.moveTimeline.destroy();
-        this.dead = true;
-        this.body.enable = false;
-        this.body.rotation = 0;
-        //this.anims.play(this.name + "death")
-        this.destroy();
-      }
-
-  /*
-
-  */
-    freeze () {
-      this.setAlpha(0);
-      this.delayedMove.remove();
-      this.body.enable = false;
-      this.scene.time.delayedCall(5000, () => {
-        this.setAlpha(1);
-        this.body.enable = true;
-        this.delayedMove.paused = false;
-        this.launchMove();
-      }, null, this);
-    }
 }
 

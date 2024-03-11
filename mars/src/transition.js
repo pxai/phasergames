@@ -10,7 +10,7 @@ export default class Transition extends Phaser.Scene {
     }
 
   /*
-
+    We create the elements of the transitions. We have to add the sound of the diary and the creepy sound, and the mission objective.
   */
     create () {
         this.missions = [ "", "Go north, locate containers.",
@@ -39,7 +39,7 @@ export default class Transition extends Phaser.Scene {
     }
 
   /*
-
+    This is the method that will show the instructions of the next scene. It will show the day, the audio record of the captain, and the mission objective.
   */
     showInstructions () {
         const listOfDays = Array(8).fill(0).map((_, i) => `DAY ${i}`)
@@ -56,7 +56,7 @@ export default class Transition extends Phaser.Scene {
     }
 
   /*
-
+    The next methods are used to show the instructions of the next scene. In the case of the first screen, it adds some extra effects.
   */
     showSceneInstructions () {
         this.tweens.add({
@@ -85,7 +85,7 @@ export default class Transition extends Phaser.Scene {
     }
 
   /*
-
+    This is the function that will show the intro of the game. It's a text that will be typed on the screen.
   */
     playIntro () {
         const text =
@@ -100,7 +100,7 @@ export default class Transition extends Phaser.Scene {
     }
 
   /*
-
+    This is the background sound of the transition. It's a looped sound.
   */
     playBackground () {
         const theme =  "mars_background";
@@ -118,7 +118,7 @@ export default class Transition extends Phaser.Scene {
     }
 
   /*
-
+    This is the audio record of the captain. It will be played along with an animation of a sound wave (not tied to the sound itself, but to the time of the animation).
   */
     playDiary () {
         this.wave = this.add.sprite(this.center_width, 200, "wave").setOrigin(0.5)
@@ -139,14 +139,14 @@ export default class Transition extends Phaser.Scene {
       }
 
   /*
-
+      This will be used to play a specific creepy sound at the end. Probably we could reuse the `playBackground` method.
   */
       playCreepy() {
         this.creepy = this.sound.add("creepy")
         this.creepy.play({
             mute: false,
-            volume: 1,
-            rate: 1,
+            volume: 0.9,
+            rate: 0.9,
             detune: 0,
             seek: 0,
             loop: true,
@@ -155,7 +155,7 @@ export default class Transition extends Phaser.Scene {
       }
 
   /*
-
+    This is the mission objective. It will be shown on the screen.
   */
     showMission () {
         this.text3 = this.add.bitmapText(this.center_width, 300, "pico", "MISSION OBJECTIVE:", 30).setOrigin(0.5)
@@ -163,7 +163,7 @@ export default class Transition extends Phaser.Scene {
     }
 
   /*
-
+    When the transition information finishes or the user presses the space bar, we will start the next scene.
   */
     loadNext () {
         this.sound.add("blip").play();

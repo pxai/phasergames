@@ -9,8 +9,6 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
-        //this.body.setSize(45, 45)
-
         this.dead = false;
         this.init();
         this.shells = 0;
@@ -25,27 +23,23 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
   /*
-
+    Here we add the controls to the player and the events to update the player's position and breath.
   */
     init () {
         this.addControls();
         this.scene.events.on("update", this.update, this);
     }
 
-  /*
-
-  */
     addControls() {
         this.cursor = this.scene.input.keyboard.createCursorKeys();
         this.W = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         this.A = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.S = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         this.D = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-
     }
 
   /*
-
+    In the update function we check the player's input and update the player's position and breath as always. But in this particular game, we move the player with a tween, so we have to check if the player is locked to avoid multiple movements at the same time.
   */
     update(time, delta) {
         if (this.dead) return;
@@ -58,40 +52,32 @@ export default class Player extends Phaser.GameObjects.Sprite {
             const {x, y} = this;
             this.locked = true;
             this.scene.tweens.add({ targets: this, y: "-=64", duration: 200, onComplete: () => { this.locked= false; }})
-            //this.y -= 64;
             this.step(x, y);
         } else if ((Phaser.Input.Keyboard.JustDown(this.D) || Phaser.Input.Keyboard.JustDown(this.cursor.right)) && this.canMoveRight()) {
             this.moveDelta = 0;
             const {x, y} = this;
             this.locked = true;
             this.scene.tweens.add({ targets: this, x: "+=64", duration: 200, onComplete: () => { this.locked= false; }})
-            //this.x += 64;
-
             this.step(x, y);
         } else if ((Phaser.Input.Keyboard.JustDown(this.A) || Phaser.Input.Keyboard.JustDown(this.cursor.left)) && this.canMoveLeft()) {
             this.moveDelta = 0;
             const {x, y} = this;
             this.locked = true;
             this.scene.tweens.add({ targets: this, x: "-=64", duration: 200, onComplete: () => { this.locked= false; }})
-            //this.x -= 64;
-
             this.step(x, y);
         } else if ((Phaser.Input.Keyboard.JustDown(this.S) || Phaser.Input.Keyboard.JustDown(this.cursor.down)) && this.canMoveDown())  {
             this.moveDelta = 0;
             const {x, y} = this;
             this.locked = true;
             this.scene.tweens.add({ targets: this, y: "+=64", duration: 200, onComplete: () => { this.locked= false; }})
-            //this.y += 64;
             this.step(x, y);
         }
 
         this.adaptBreath()
-       /* this.scene.playerLight.x = this.x;
-        this.scene.playerLight.y = this.y;*/
     }
 
   /*
-
+The next functions lets us know if the player can move in a certain direction. We check if the tile in front of the player is empty and if the player has waited enough time to move again.
   */
     canMoveUp() {
         return !this.scene.platform.getTileAtWorldXY(this.x, this.y - 1) && this.moveDelta > 200
@@ -110,25 +96,16 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
   /*
-
+    This function adds a step to the player and creates a new step sprite in the scene. It also plays a random sound to simulate the player's steps.
   */
     step (x, y) {
         this.steps++;
         this.scene.smokeLayer.add(new Step(this.scene, x , y))
-        this.scene.playRandom("step", 1)//Phaser.Math.Between(8, 12) / 10);
-        //this.scene.updatePosition(this.x/64, this.y/64)
-        /*const {x, y} = [
-            {x: 0, y: -1},
-            {x: 1, y: 0},
-            {x: 0, y: 1},
-            {x: -1, y: 0},
-        ][this.lastDirection];
-
-        this.scene.smokeLayer.add(new JumpSmoke(this.scene, this.x + (20 * -x) , this.y + 32 + (20 * -y))) */
+        this.scene.playRandom("step", 1);
     }
 
   /*
-
+    This is another important function to add some tension. It adapts the breath of the player depending on the steps he has taken. Depending on the steps rate, the player will breath faster or slower. If the player has not taken any steps, the player will breath normally. The player will also consume oxygen depending on the steps he has taken.
   */
     adaptBreath() {
         if (this.stepDelta > 2000) {
@@ -150,7 +127,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
   /*
-
+    As the player moves, he will consume oxygen. If the player runs out of oxygen, he will die.
   */
     updateOxygen (waste) {
         if (waste >= this.oxygen) {
@@ -164,15 +141,12 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
 
   /*
-
+    This function will be called when the player dies. It will stop the player's body and restart the scene.
   */
     death () {
-        console.log("Player dead")
-       // this.scene.playAudio("dead");
         this.dead = true;
         this.body.stop();
         this.body.enable = false;
         this.scene.restartScene();
-        //this.anims.play("playerdead", true)
     }
 }
