@@ -6,28 +6,22 @@ import Transition from "./transition";
 import Game from "./game";
 
 const config = {
-    width: 1000,
-    height: 800,
-    scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
+  width: 1000,
+  height: 800,
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+  autoRound: false,
+  parent: "contenedor",
+  physics: {
+    default: "arcade",
+    arcade: {
+      gravity: { y: 0 },
+      debug: false,
     },
-    autoRound: false,
-    parent: "contenedor",
-    physics: {
-        default: "arcade",
-        arcade: {
-            gravity: { y: 0 },
-            debug: false
-        }
-    },
-    scene: [
-        Bootloader,
-        Splash,
-        Transition,
-        Game,
-        Outro,
-    ]
+  },
+  scene: [Bootloader, Splash, Transition, Game, Outro],
 };
 
 const game = new Phaser.Game(config);
