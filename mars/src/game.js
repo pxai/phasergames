@@ -66,7 +66,7 @@ This method will add the day text to the game. It is not used in the final versi
     }
 
   /*
-
+We have this method to add the light system to the game. But it's not used in the final version of the game. It could be useful for the last scene though. You can check the Camp Night game to see how it's used.
   */
     addLight() {
         this.lights.disable();
@@ -94,6 +94,9 @@ This game uses also tiled maps: with a main layer, a border layer, and an object
       this.addObjects();
     }
 
+  /*
+This method will add the objects to the game:  we group most of them as "objects" and the drones as "foes". In the `Object` class, we will take care of treating the objects according to their type.
+  */
     addObjects () {
       this.objectsLayer.objects.forEach( object => {
         if (object.name.startsWith("object")) {
@@ -187,7 +190,7 @@ When the player hits the hole, it will die and the scene will restart.
     }
 
   /*
-This is the function that loads the audio files. The tracker has a special treatment, because it will be played in a loop when the player is close to a hole.
+This is the function that loads the audio files. The tracker has a special treatment because it will be played in a loop when the player is close to a hole.
   */
     loadAudios () {
         this.audios = {
@@ -209,7 +212,7 @@ This is the function that loads the audio files. The tracker has a special treat
     }
 
   /*
-We will use this function to play static sound files (4 different files) adding some variations to the rate, delay, and volume.
+We will use this function to play static sound files (4 different files) adding some variations to the rate, delay, and volume:
   */
     playRandomStatic () {
       const file = this.number < 6 ? "static" + Phaser.Math.Between(0,3) : "creepy_static"
@@ -274,7 +277,7 @@ Here we play several sounds at the same time: the background sound, the creepy s
       }
 
   /*
-  This function will be used to play the breathing sound. It will be called with a specific rate and volume. At the end, it will be restarted again.
+  This function will be used to play the breathing sound. It will be called with a specific rate and volume. In the end, it will be restarted again.
     */
     breath(rate = 0.2, volume = 0.4) {
       const duration = Phaser.Math.Between(500, 1000)

@@ -6,7 +6,7 @@ export default class Utils {
     }
 
   /*
-
+This is the typeText method. It will create a bitmap text for each character in the string, and will animate them in a timeline. The text will be typed in the screen, with a typewriter effect.
   */
     typeText(text, font, x, y = 150, tint = 0x06E18A, size = 40) {
         let characters = [];
@@ -56,7 +56,7 @@ export default class Utils {
     }
 
   /*
-
+This removes the typed text from the screen.
   */
     removeTyped(texts) {
         texts.flat().forEach( char => char.destroy())

@@ -46,7 +46,7 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
     }
 
   /*
-    It starts the movenment of the drone.
+    This starts the movement of the drone:
   */
     launchMove() {
       if (!this.scene) return;
@@ -60,7 +60,7 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
     }
 
   /*
-    This functions uses EasyStar to calculate the path and then we will call a function to move the drone.
+    This function uses EasyStar to calculate the path and then we will call a function to move the drone.
   */
     move () {
       try {
@@ -77,11 +77,10 @@ export default class Drone extends Phaser.GameObjects.Sprite  {
       } catch (err) {
           console.log("Cant move yet: ", err)
       }
-
   }
 
   /*
-  And finally this function will move the drone to the calculated path. At the end of the path it will call the launchMove function again, so the drone can recalculate the path even if the player changes her position.
+  And finally, this function will move the drone to the calculated path. At the end of the path, it will call the launchMove function again, so the drone can recalculate the path even if the player changes her position.
   */
   moveIt (path) {
       if (path === null) {

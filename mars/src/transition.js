@@ -10,7 +10,7 @@ export default class Transition extends Phaser.Scene {
     }
 
   /*
-    We create the elements of the transitions. We have to add the sound of the diary and the creepy sound, and the mission objective.
+    We create the elements of the transitions. We have to add the sound of the diary, the creepy sound, and the mission objective.
   */
     create () {
         this.missions = [ "", "Go north, locate containers.",
@@ -39,7 +39,7 @@ export default class Transition extends Phaser.Scene {
     }
 
   /*
-    This is the method that will show the instructions of the next scene. It will show the day, the audio record of the captain, and the mission objective.
+    This is the method that will show the instructions for the next scene. It will show the day, the audio record of the captain, and the mission objective.
   */
     showInstructions () {
         const listOfDays = Array(8).fill(0).map((_, i) => `DAY ${i}`)
@@ -56,7 +56,7 @@ export default class Transition extends Phaser.Scene {
     }
 
   /*
-    The next methods are used to show the instructions of the next scene. In the case of the first screen, it adds some extra effects.
+    The next methods are used to show the instructions for the next scene. In the case of the first screen, it adds some extra effects.
   */
     showSceneInstructions () {
         this.tweens.add({

@@ -41,7 +41,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-    In this game there's only one minimalistic, computer-like font, so we only need to load one bitmap font.
+    In this game, there's only one minimalistic, computer-like font, so we only need to load one bitmap font.
     */
     loadFonts () {
         this.load.bitmapFont("pico", "assets/fonts/pico.png", "assets/fonts/pico.xml");
@@ -61,7 +61,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-    This game contains different tiled maps. As the game advances, the style with change slightly, with a more complex and darker style at the end.
+    This game contains different tiled maps. As the game advances, the style will change slightly, with a more complex and darker style at the end.
     */
     loadMaps () {
         Array(7).fill(0).forEach((_,i) => {
@@ -70,7 +70,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-    There are many audios in this game, because we need to create a very immersive atmosphere and we require sound recordgs for the diaries and the officer's messages.
+    There are many audios in this game because we need to create a very immersive atmosphere and we require sound recordings for the diaries and the officer's messages.
     */
     loadAudios () {
         this.load.audio("mars_background", "assets/sounds/mars_background.mp3");
@@ -105,7 +105,7 @@ export default class Bootloader extends Phaser.Scene {
     }
 
     /*
-    Theses are the sprites, not many because of the style of the game. Uh-oh, there's a monster!
+    These are the sprites, not many because of the style of the game. Uh-oh, there's a monster!
     */
     loadSpritesheets () {
         this.load.spritesheet("player", "assets/images/player.png", { frameWidth: 64, frameHeight: 64 });

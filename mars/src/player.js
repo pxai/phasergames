@@ -39,7 +39,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
   /*
-    In the update function we check the player's input and update the player's position and breath as always. But in this particular game, we move the player with a tween, so we have to check if the player is locked to avoid multiple movements at the same time.
+    In the update function, we check the player's input and update the player's position and breath as always. But in this particular game, we move the player with a tween, so we have to check if the player is locked to avoid multiple movements at the same time.
   */
     update(time, delta) {
         if (this.dead) return;
@@ -77,7 +77,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
   /*
-The next functions lets us know if the player can move in a certain direction. We check if the tile in front of the player is empty and if the player has waited enough time to move again.
+The next functions, lets us know if the player can move in a certain direction. We check if the tile in front of the player is empty and if the player has waited enough time to move again.
   */
     canMoveUp() {
         return !this.scene.platform.getTileAtWorldXY(this.x, this.y - 1) && this.moveDelta > 200
@@ -105,7 +105,7 @@ The next functions lets us know if the player can move in a certain direction. W
     }
 
   /*
-    This is another important function to add some tension. It adapts the breath of the player depending on the steps he has taken. Depending on the steps rate, the player will breath faster or slower. If the player has not taken any steps, the player will breath normally. The player will also consume oxygen depending on the steps he has taken.
+    This is another important function to add some tension. It adapts the breath of the player depending on the steps he has taken. Depending on the step rate, the player will breath faster or slower. If the player has not taken any steps, the player will breath normally. The player will also consume oxygen depending on the steps he has taken.
   */
     adaptBreath() {
         if (this.stepDelta > 2000) {

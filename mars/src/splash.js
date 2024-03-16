@@ -72,7 +72,7 @@ export default class Splash extends Phaser.Scene {
 
 
   /*
-  Below the title we show the instructions to start the game and the author name.
+  Below the title, we show the instructions to start the game and the author's name.
   */
     showInstructions() {
         this.add.bitmapText(this.center_width, 450, "pico", "WASD/Arrows", 40)
