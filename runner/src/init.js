@@ -5,25 +5,22 @@ import GameOver from "./gameover";
 This is the main configuration file for the game.
 */
 const config = {
-    width: 600,
-    height: 300,
-    scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
+  width: 600,
+  height: 300,
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+  autoRound: false,
+  parent: "contenedor",
+  physics: {
+    default: "arcade",
+    arcade: {
+      gravity: { y: 350 },
+      debug: false,
     },
-    autoRound: false,
-    parent: "contenedor",
-    physics: {
-        default: "arcade",
-        arcade: {
-            gravity: { y: 350 },
-            debug: false
-        }
-    },
-    scene: [
-        Game,
-        GameOver
-    ]
+  },
+  scene: [Game, GameOver],
 };
 
 const game = new Phaser.Game(config);
