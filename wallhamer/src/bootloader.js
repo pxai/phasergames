@@ -127,7 +127,6 @@ export default class Bootloader extends Phaser.Scene {
     );
     this.registry.set("score", 0);
     this.registry.set("coins", 0);
-    this.registry.set("hull", 10);
   }
 
   createBars() {

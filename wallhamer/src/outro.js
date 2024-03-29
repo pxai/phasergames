@@ -18,7 +18,10 @@ export default class Outro extends Phaser.Scene {
       "Thanks to your building skills",
       "and your mighty hammer,",
       "you saved the earth.",
-      "Made in 3 days for Minijam\n by Pello\n\n Press SPACE",
+      "Made in 3 days for Minijam",
+      "by Pello",
+      "",
+      "Press SPACE",
     ];
     this.showHistory();
 
@@ -37,7 +40,7 @@ export default class Outro extends Phaser.Scene {
     this.text.forEach((line, i) => {
       this.time.delayedCall(
         (i + 1) * 2000,
-        () => this.showLine(line, (i + 1) * 60),
+        () => this.showLine(line, (i + 1) * 70),
         null,
         this
       );
