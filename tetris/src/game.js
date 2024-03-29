@@ -37,7 +37,7 @@ export default class Game extends Phaser.Scene {
 
 
         // this.playMusic();
-    }   
+    }
 
     addBorders () {
         this.add.rectangle(this.offsetX + 320, 0, 200, this.height, 0x222222).setOrigin(0)
@@ -46,9 +46,9 @@ export default class Game extends Phaser.Scene {
     }
 
     addFigure () {
-         this.board.add(new Tetronimo(4, 0, Phaser.Math.RND.pick(["O"]), Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"])));
+        // this.board.add(new Tetronimo(4, 0, Phaser.Math.RND.pick(["O"]), Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"])));
 
-        //this.board.add(new Tetronimo(4, 0, Phaser.Math.RND.pick(["O", "L", "J", "I", "S", "Z"]), Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"])));
+        this.board.add(new Tetronimo(4, 0, Phaser.Math.RND.pick(["O", "L", "J", "I", "S", "Z"]), Phaser.Math.RND.pick(["red", "green", "blue", "yellow", "grey", "black", "purple", "orange"])));
         this.playAudio("appear")
     }
 

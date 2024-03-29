@@ -45,20 +45,6 @@ export default class Game extends Phaser.Scene {
     this.input.keyboard.on("keydown-ENTER", () => this.finishScene(), this);
   }
 
-  addMap2() {
-    this.map = this.make.tilemap({ key: "scene0" });
-    const tileset = this.map.addTilesetImage("kenney-tileset-64px-extruded");
-    const groundLayer = this.map.createLayer("Ground", tileset, 0, 0);
-    const lavaLayer = this.map.createLayer("Lava", tileset, 0, 0);
-
-    // Set colliding tiles before converting the layer to Matter bodies
-    groundLayer.setCollisionByProperty({ collides: true });
-    lavaLayer.setCollisionByProperty({ collides: true });
-
-    this.matter.world.convertTilemapLayer(groundLayer);
-    this.matter.world.convertTilemapLayer(lavaLayer);
-  }
-
   /*
     This method adds the scores to the scene. We add the coins, the seconds, the keys and the timer. We'll update them with other methods.
   */

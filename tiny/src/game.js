@@ -32,11 +32,11 @@ export default class Game extends Phaser.Scene {
 
       this.addMap();
       this.addPlayer();
-      this.setListeners();  
+      this.setListeners();
       this.addTimer();
       this.addRetry();
 
-      this.loadAudios(); 
+      this.loadAudios();
       this.showTexts();
       this.solved = false;
     }
@@ -56,10 +56,10 @@ export default class Game extends Phaser.Scene {
       this.totalTime--;
       this.updateTimer()
 
-      if (this.totalTime <= 0) { 
+      if (this.totalTime <= 0) {
         this.timer.destroy();
         if (this.number > 2)
-         this.failScene() 
+         this.failScene()
       }
 
     }
@@ -67,8 +67,8 @@ export default class Game extends Phaser.Scene {
     addMap() {
       this.tileMap = this.make.tilemap({ key: `scene${this.number}` , tileWidth: 32, tileHeight: 32 });
       this.tileSetBg = this.tileMap.addTilesetImage("tileset_fg");
-      this.tileMap.createStaticLayer('background', this.tileSetBg)
-  
+      this.tileMap.createLayer('background', this.tileSetBg)
+
       this.tileSet = this.tileMap.addTilesetImage("tileset_fg");
       this.platform = this.tileMap.createLayer(`scene${this.number}`, this.tileSet);
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
