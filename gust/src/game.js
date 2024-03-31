@@ -215,7 +215,7 @@ export default class Game extends Phaser.Scene {
     update() {
       if (this.player && Phaser.Math.Between(1, 5) > 4) {
 
-        this.trailLayer.add(new Particle(this, this.player.x, this.player.y, 0xb95e00));
+        //this.trailLayer.add(new Dust(this, this.player.x + 16, this.player.y + 64, 0xb95e00));
       }
 
       if (this.finished) {

@@ -12,13 +12,13 @@ export default class Sky {
         this.clouds = [];
         this.stopped = false;
         this.scene.events.on("update", this.update, this);
-        Array(Phaser.Math.Between(10, 15)).fill(0).forEach(i => {
+        Array(Phaser.Math.Between(1, 5)).fill(0).forEach(i => {
             this.addCloud(800, Phaser.Math.Between(10, 700))
         })
     }
 
     generate () {
-        this.timer = this.scene.time.addEvent({ delay: 400, callback: this.addCloud, callbackScope: this, loop: true });
+        this.timer = this.scene.time.addEvent({ delay: 1000, callback: this.addCloud, callbackScope: this, loop: true });
     }
 
     stop () {
