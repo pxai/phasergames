@@ -2,6 +2,8 @@ import { Particle, Debris, Dust } from "./particle2";
 import Coin from "./coin";
 import Player from "./player";
 import Exit from "./exit";
+import Sky from "./sky";
+import GustGenerator from "./gust_generator";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -35,10 +37,12 @@ export default class Game extends Phaser.Scene {
       this.trailLayer = this.add.layer();
 
       this.addMap();
-
       this.addPlayer();
+
+      this.addSky();
       this.showStage();
       this.addScore();
+      this.addGusts();
       this.finished = false;
        this.ready = true;
      //  this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this); // TODO REMOVE
@@ -49,7 +53,9 @@ export default class Game extends Phaser.Scene {
     addSky() {
       this.sky = new Sky(this);
   }
-
+    addGusts () {
+      this.gustsGenerator = new GustGenerator(this);
+    }
 
     addMap () {
       this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 32, tileHeight: 32 });
@@ -62,6 +68,7 @@ export default class Game extends Phaser.Scene {
       this.foesGroup = this.add.group();
       this.coins= this.add.group();
       this.exits = this.add.group();
+      this.gusts = this.add.group();
 
       this.playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
 
@@ -95,6 +102,10 @@ export default class Game extends Phaser.Scene {
           return true;
         }, this)
 
+        this.physics.add.collider(this.players, this.gusts, this.pushPlayer, ()=>{
+          return true;
+        }, this)
+
         this.physics.add.overlap(this.players, this.coins, this.pickCoin, ()=>{
           return true;
         }, this);
@@ -112,6 +123,9 @@ export default class Game extends Phaser.Scene {
 
     hitPlatform (player, platform) {
 
+    }
+
+    pushPlayer (player, gust) {
     }
 
     hitFloor (ball, platform) {
@@ -228,7 +242,7 @@ export default class Game extends Phaser.Scene {
     }
 
     pickRandomMessage () {
-      return Phaser.Math.RND.pick(["F* YEAH!", "YUSS!", "YES!!", "COME ON!!"])
+      return Phaser.Math.RND.pick(["COMPLETED!", "WELL DONE!", "NICE!", "GREAT!", "AWESOME!", "AMAZING!", "FANTASTIC!", "INCREDIBLE!"])
     }
 
     hitExit () {

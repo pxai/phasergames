@@ -23,7 +23,7 @@ export default class Bootloader extends Phaser.Scene {
             this.scene.start("splash", {number: 0});
         },this);
 
-        this.load.bitmapFont("demon", "assets/fonts/demon.png", "assets/fonts/demon.xml");
+        this.load.bitmapFont("demon", "assets/fonts/mario.png", "assets/fonts/mario.xml");
         this.load.bitmapFont("pico", "assets/fonts/pico.png", "assets/fonts/pico.xml");
         this.load.spritesheet("dust", "assets/images/dust.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("ball", "assets/images/ball.png", { frameWidth: 32, frameHeight: 32 });
@@ -53,10 +53,10 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image('cloud', 'assets/images/cloud.png');
         Array(8).fill(0).forEach((_,i) => {
             this.load.spritesheet(`cloud${i}`, `assets/images/cloud${i}.png`, { frameWidth: 64, frameHeight: 32 });
-        });   
+        });
         Array(4).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`);
-        });  
+        });
 
         this.registry.set("score", 0);
         this.registry.set("coins", 0);

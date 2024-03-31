@@ -35,8 +35,8 @@ export default class Sky {
     update () {
        this.clouds.forEach( cloud => {
            if (cloud.x < 0) cloud.destroy();
-           if (cloud.active && !this.stopped) cloud.x -= cloud.scale * 30;
-       }) 
+           if (cloud.active && !this.stopped) cloud.x -= cloud.scale * 2;
+       })
        this.clouds = this.clouds.filter(cloud => cloud.active);
     }
 }

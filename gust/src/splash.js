@@ -19,10 +19,10 @@ export default class Splash extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.cameras.main.setBackgroundColor(0x4eadf5) //0xfef1ca
         this.cloudLayer = this.add.layer();
-        this.text1 = this.add.bitmapText(this.center_width, this.center_height -200, "demon", "GUST", 100, Phaser.GameObjects.BitmapText.ALIGN_CENTER).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.text1 = this.add.bitmapText(this.center_width, this.center_height -200, "demon", "GUST", 200, Phaser.GameObjects.BitmapText.ALIGN_CENTER).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
         this.add.sprite(this.center_width - 118, 450, "pello").setOrigin(0.5).setScale(0.8)
-        this.add.bitmapText(this.center_width + 32, 340, "demon", "WS move AD split", 25).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0x222222, 0.9);
-        this.add.bitmapText(this.center_width + 32, 380, "demon", "UP/DOWN move LEFT/RIGHT split", 25).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0x222222, 0.9);
+        this.add.bitmapText(this.center_width + 32, 340, "demon", "ARROWS", 25).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0x222222, 0.9);
+        this.add.bitmapText(this.center_width + 32, 380, "demon", "WASD", 25).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0x222222, 0.9);
 
         this.text2 = this.add.bitmapText(this.center_width + 32, 450, "demon", "by Pello", 25).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0x222222, 0.9);
         this.text3 = this.add.bitmapText(this.center_width, 500, "demon", "Click to Start", 15).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0x222222, 0.9);
@@ -30,15 +30,19 @@ export default class Splash extends Phaser.Scene {
         this.loadScores();
         this.playMusic();
 
+        this.moveLetters();
+        this.addSky();
+    }
+
+    moveLetters () {
         this.tweens.add({
             targets: this.text1,
-            x: {from: this.text1.x, to: this.text1.x + Phaser.Math.Between(-10, 10) },
+            x: {from: this.text1.x, to: this.text1.x + Phaser.Math.Between(-200, 200) },
             y: {from: 150, to: Phaser.Math.Between(150, 220) },
             duration: 1000,
-            repeat: -1,
             yoyo: true,
+            onComplete: () => this.moveLetters()
         })
-        this.addSky();
     }
 
     async loadScores () {
@@ -62,7 +66,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     update () {
-        new Ball(this, 200, 128, Phaser.Math.Between(10, 1)/10)
+
         //new Ball(this, Phaser.Math.Between(0, this.width), 128, Phaser.Math.Between(10, 1)/10);
     }
 
