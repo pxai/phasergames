@@ -19,13 +19,13 @@ export default class Splash extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.cameras.main.setBackgroundColor(0x4eadf5) //0xfef1ca
         this.cloudLayer = this.add.layer();
-        this.text1 = this.add.bitmapText(this.center_width, this.center_height -200, "demon", "GUST", 200, Phaser.GameObjects.BitmapText.ALIGN_CENTER).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
-        this.add.sprite(this.center_width - 118, 450, "pello").setOrigin(0.5).setScale(0.8)
-        this.add.bitmapText(this.center_width + 32, 340, "demon", "ARROWS", 25).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0x222222, 0.9);
-        this.add.bitmapText(this.center_width + 32, 380, "demon", "WASD", 25).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0x222222, 0.9);
+        this.text1 = this.add.bitmapText(this.center_width, this.center_height -200, "demon", "GUST", 200, Phaser.GameObjects.BitmapText.ALIGN_CENTER).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 8, 0xcae9f7, 0.9);
+        this.add.sprite(this.center_width - 140, 450, "pello").setOrigin(0.5).setScale(0.7)
+        this.add.bitmapText(this.center_width + 32, 340, "demon", "ARROWS", 25).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0xcae9f7, 0.9);
+        this.add.bitmapText(this.center_width + 32, 380, "demon", "WASD", 25).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0xcae9f7, 0.9);
 
-        this.text2 = this.add.bitmapText(this.center_width + 32, 450, "demon", "by Pello", 25).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0x222222, 0.9);
-        this.text3 = this.add.bitmapText(this.center_width, 500, "demon", "Click to Start", 15).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0x222222, 0.9);
+        this.text2 = this.add.bitmapText(this.center_width + 32, 450, "demon", "by Pello", 25).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0xcae9f7, 0.9);
+        this.text3 = this.add.bitmapText(this.center_width, 500, "demon", "Click to Start", 15).setTint(0xffffff).setOrigin(0.5).setDropShadow(0, 2, 0xcae9f7, 0.9);
         this.input.on('pointerdown', (pointer) => this.startGame(), this);
         this.loadScores();
         this.playMusic();
@@ -53,7 +53,7 @@ export default class Splash extends Phaser.Scene {
         ballBreakerScores.sort((a, b) => b.score - a.score);
 
         let amongFirst10 = false;
-        this.scoreboard = this.add.bitmapText(this.center_width, 550, "demon", "SCOREBOARD", 40).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
+        this.scoreboard = this.add.bitmapText(this.center_width, 550, "demon", "SCOREBOARD", 40).setOrigin(0.5).setDropShadow(0, 6, 0xcae9f7, 0.9);
         ballBreakerScores.splice(0, 10).forEach( (score, i) => {
             this.time.delayedCall(1000 + (1000 * i), () => {
                 this.scoreboard.setText(`${i+1} ${score.player.substring(0, 10).padEnd(11, ' ')} ${String(score.score).padStart(10, '0')}`)

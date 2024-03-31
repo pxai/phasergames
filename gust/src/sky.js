@@ -1,8 +1,9 @@
 import Cloud from "./cloud";
 
 export default class Sky {
-    constructor(scene){
+    constructor(scene, player = null){
         this.scene = scene;
+        this.player = player;
         this.pregenerate();
         this.generate();
     }
@@ -12,12 +13,11 @@ export default class Sky {
         this.stopped = false;
         this.scene.events.on("update", this.update, this);
         Array(Phaser.Math.Between(10, 15)).fill(0).forEach(i => {
-            this.addCloud(Phaser.Math.Between(10, 700))
+            this.addCloud(800, Phaser.Math.Between(10, 700))
         })
     }
 
     generate () {
-        this.addCloud();
         this.timer = this.scene.time.addEvent({ delay: 400, callback: this.addCloud, callbackScope: this, loop: true });
     }
 
@@ -27,7 +27,13 @@ export default class Sky {
     }
 
     addCloud (x = 800, y) {
-        const cloud = new Cloud(this.scene, x, Phaser.Math.Between(10, 700));
+        if (this.player) {
+            console.log("generate  ", this.player.y)
+
+            x = 800
+            y = this.player.y + Phaser.Math.Between(-300, 300)
+        }
+        const cloud = new Cloud(this.scene, x, y);
         this.scene.cloudLayer.add(cloud);
         this.clouds.push(cloud);
     }
@@ -35,7 +41,7 @@ export default class Sky {
     update () {
        this.clouds.forEach( cloud => {
            if (cloud.x < 0) cloud.destroy();
-           if (cloud.active && !this.stopped) cloud.x -= cloud.scale * 2;
+           if (cloud.active && !this.stopped) cloud.x -= cloud.scale * 0.2;
        })
        this.clouds = this.clouds.filter(cloud => cloud.active);
     }

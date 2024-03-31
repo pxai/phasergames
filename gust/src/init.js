@@ -7,8 +7,8 @@ import GameOver from "./gameover";
 import Outro from "./outro";
 
 const config = {
-    width: 1200,
-    height: 600,
+    width: 800,
+    height: 800,
     scale: {
         autoCenter: Phaser.Scale.CENTER_BOTH
     },

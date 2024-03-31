@@ -26,8 +26,8 @@ export default class Outro extends Phaser.Scene {
         this.cloudLayer = this.add.layer();
         await this.saveScore();
         //
-        this.add.bitmapText(this.center_width,70, "demon", "SCOREBOARD", 60).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
-        this.restartText = this.add.bitmapText(this.center_width, 760, "demon", "Click HERE to Restart", 20).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.add.bitmapText(this.center_width,70, "demon", "SCOREBOARD", 60).setOrigin(0.5).setDropShadow(0, 8, 0xcae9f7, 0.9);
+        this.restartText = this.add.bitmapText(this.center_width, 760, "demon", "Click HERE to Restart", 20).setOrigin(0.5).setDropShadow(0, 8, 0xcae9f7, 0.9);
         this.restartText.setInteractive();
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
         this.restartText.on('pointerdown', (pointer) => this.loadNext(), this);
@@ -64,7 +64,7 @@ export default class Outro extends Phaser.Scene {
     showPrompt () {
         this.prompt = this.add.layer();
         this.userName = "";
-        this.userNameText = this.add.bitmapText(this.center_width, this.center_height - 150, "demon", this.userName.padEnd(9, '-'), 50).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.userNameText = this.add.bitmapText(this.center_width, this.center_height - 150, "demon", this.userName.padEnd(9, '-'), 50).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0xcae9f7, 0.9);
         this.prompt.add(this.userNameText)
         this.addLetters()
     }
@@ -102,9 +102,9 @@ export default class Outro extends Phaser.Scene {
         let amongFirst10 = false;
 
         ballBreakerScores.splice(0, 10).forEach( (score, i) => {
-            const text0 = this.add.bitmapText(this.center_width - 350, 170 + (i * 60), "demon", `${i+1}`, 30).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
-            const text1 = this.add.bitmapText(this.center_width - 150, 170 + (i * 60), "demon", `${score.player.substring(0, 10).padEnd(11, ' ')}`, 30).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
-            const text2 = this.add.bitmapText(this.center_width + 200, 170 + (i * 60), "demon", `${String(score.score).padStart(10, '0')}`, 30).setOrigin(0.5).setDropShadow(0, 6, 0x222222, 0.9);
+            const text0 = this.add.bitmapText(this.center_width - 350, 170 + (i * 60), "demon", `${i+1}`, 30).setOrigin(0.5).setDropShadow(0, 6, 0xcae9f7, 0.9);
+            const text1 = this.add.bitmapText(this.center_width - 150, 170 + (i * 60), "demon", `${score.player.substring(0, 10).padEnd(11, ' ')}`, 30).setOrigin(0.5).setDropShadow(0, 6, 0xcae9f7, 0.9);
+            const text2 = this.add.bitmapText(this.center_width + 200, 170 + (i * 60), "demon", `${String(score.score).padStart(10, '0')}`, 30).setOrigin(0.5).setDropShadow(0, 6, 0xcae9f7, 0.9);
 
             if (score.id === this.currentId) {
 

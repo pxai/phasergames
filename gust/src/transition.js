@@ -38,7 +38,7 @@ export default class Transition extends Phaser.Scene {
     addScenario() {
 
         let positions = [
-            {x: 350, y: 200}, {x: 500, y: 200}, {x: 650, y: 200}, {x: 800, y: 200},
+            {x: 150, y: 350}, {x: 300, y: 350}, {x: 450, y: 350}, {x: 600, y: 350},
         ]
 
         this.lines = this.add.layer();
@@ -48,10 +48,10 @@ export default class Transition extends Phaser.Scene {
             this.add.bitmapText(x, y - 32, "demon", "Stage " + (i+1), 10).setOrigin(0.5).setDropShadow(0, 3, 0x222222, 0.9);
             this.add.sprite(x, y, "points", index).setScale(1.2)
             if (i !== 3 && i !== 4)
-                this.lines.add(this.add.rectangle(x, y, 150, 10, 0xffffff).setOrigin(0, 0.5))            
+                this.lines.add(this.add.rectangle(x, y, 150, 10, 0xffffff).setOrigin(0, 0.5))
         })
 
-        const character = this.add.sprite(350, 200, "player").setOrigin(0.5)
+        const character = this.add.sprite(150, 350, "player").setOrigin(0.5)
 
 
         if (this.number > 0) {

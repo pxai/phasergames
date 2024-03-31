@@ -45,13 +45,13 @@ export default class Game extends Phaser.Scene {
       this.addGusts();
       this.finished = false;
        this.ready = true;
-     //  this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this); // TODO REMOVE
+       this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this); // TODO REMOVE
        //this.playAudio("start", 0.5)
        this.pickedCoins = 0;
     }
 
     addSky() {
-      this.sky = new Sky(this);
+      this.sky = new Sky(this, this.player);
   }
     addGusts () {
       this.gustsGenerator = new GustGenerator(this);
@@ -115,7 +115,7 @@ export default class Game extends Phaser.Scene {
           return true;
         }, this);
 
-        //this.cameras.main.startFollow(this.player, false, 1, 0);
+        this.cameras.main.startFollow(this.player, false, 0, 1);
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setFollowOffset( 0, -100);
         this.player.dead = false;
