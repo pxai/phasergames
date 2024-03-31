@@ -26,7 +26,7 @@ const readData =  async function () {
     }
 }
 
-const saveData = async function (score, player = "Anonymous", game = "Need4Split") {  
+const saveData = async function (score, player = "Anonymous", game = "Gust") {
     try {
         const doc = await addDoc(collection(db, "games"), {score, player, game});
         return doc.id;

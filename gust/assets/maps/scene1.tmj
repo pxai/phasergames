@@ -516,7 +516,7 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":250,
          "id":1,
-         "name":"scene3",
+         "name":"scene1",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,

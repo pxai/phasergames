@@ -56,7 +56,7 @@ export default class Splash extends Phaser.Scene {
         this.scoreboard = this.add.bitmapText(this.center_width, 550, "demon", "SCOREBOARD", 40).setOrigin(0.5).setDropShadow(0, 6, 0xcae9f7, 0.9);
         ballBreakerScores.splice(0, 10).forEach( (score, i) => {
             this.time.delayedCall(1000 + (1000 * i), () => {
-                this.scoreboard.setText(`${i+1} ${score.player.substring(0, 10).padEnd(11, ' ')} ${String(score.score).padStart(10, '0')}`)
+                this.scoreboard.setText(`${i+1} ${score.player.substring(0, 10).padEnd(6, ' ')} ${String(score.score).padStart(10, '0')}`)
             })
         })
     }

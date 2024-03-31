@@ -28,8 +28,6 @@ export default class Sky {
 
     addCloud (x = 800, y) {
         if (this.player) {
-            console.log("generate  ", this.player.y)
-
             x = 800
             y = this.player.y + Phaser.Math.Between(-300, 300)
         }

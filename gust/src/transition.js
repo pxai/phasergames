@@ -51,7 +51,7 @@ export default class Transition extends Phaser.Scene {
                 this.lines.add(this.add.rectangle(x, y, 150, 10, 0xffffff).setOrigin(0, 0.5))
         })
 
-        const character = this.add.sprite(150, 350, "balloon").setOrigin(0.5)
+        const character = this.add.sprite(150, 350, "balloon").setOrigin(0.5, 1).setScale(1.2)
 
 
         if (this.number > 0) {

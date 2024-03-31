@@ -269,8 +269,8 @@ export default class Game extends Phaser.Scene {
 
         const x = this.cameras.main.worldView.centerX;
         const y = this.cameras.main.worldView.centerY;
-        this.text3 = this.add.bitmapText(x, y + 50, "demon", "Coins: " + this.registry.get("coins"), 45).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9).setScrollFactor(0);;
-        this.text4 = this.add.bitmapText(x, y - 50, "demon", "CONGRATULATIONS!", 35).setOrigin(0.5).setDropShadow(0, 5, 0x222222, 0.9).setScrollFactor(0);;
+        this.text3 = this.add.bitmapText(x, y + 50, "demon", "Coins: " + this.registry.get("coins"), 45).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.text4 = this.add.bitmapText(x, y - 50, "demon", "CONGRATULATIONS!", 35).setOrigin(0.5).setDropShadow(0, 5, 0x222222, 0.9);
         this.time.delayedCall(4000, () => {
           this.text3.destroy()
           this.text4.destroy()

@@ -64,7 +64,7 @@ export default class Outro extends Phaser.Scene {
     showPrompt () {
         this.prompt = this.add.layer();
         this.userName = "";
-        this.userNameText = this.add.bitmapText(this.center_width, this.center_height - 150, "demon", this.userName.padEnd(9, '-'), 50).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0xcae9f7, 0.9);
+        this.userNameText = this.add.bitmapText(this.center_width, this.center_height - 150, "demon", this.userName.padEnd(9, '-'), 50).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
         this.prompt.add(this.userNameText)
         this.addLetters()
     }
@@ -96,6 +96,7 @@ export default class Outro extends Phaser.Scene {
 
     async loadScores () {
         const scores = await readData();
+        console.log("scores loaded: ", scores)
         const ballBreakerScores = scores.filter(score => score.game === "Gust")
         ballBreakerScores.sort((a, b) => b.score - a.score);
 
@@ -142,7 +143,7 @@ export default class Outro extends Phaser.Scene {
         const alphabet = "qwertyuiop-asdfghjklñ-zxcvbnm";
         this.keyboard = {};
         let stepY = 0;
-        let stepX = 264;
+        let stepX = 128;
         let x = -32;
         let y = 0;
        // this.add.rectangle(250, 740, 500, 200, 0x4d4d4d).setOrigin(0.5);
@@ -150,8 +151,8 @@ export default class Outro extends Phaser.Scene {
           const isDash = letter === "-";
           x = stepX ;
           stepY += isDash ? 64 : 0
-          stepX = isDash ? 264 : stepX + 64;
-          y = 240 + stepY;
+          stepX = isDash ? 128 : stepX + 64;
+          y = 280 + stepY;
 
           if (isDash) return;
 
