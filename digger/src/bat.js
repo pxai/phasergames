@@ -31,10 +31,17 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
           this.body.setVelocityX(this.direction * 150);
           this.flipX = this.direction > 0;
           this.on('animationcomplete', this.animationComplete, this);
+          this.scene.events.on("update", this.update, this);
     }
 
 
     update () {
+      if (this.shouldTurn()) { this.turn() }
+    }
+
+    shouldTurn () { 
+      const tile = this.scene.dungeon.groundLayer.getTileAtWorldXY(this.x + (this.direction * 16), this.y + (this.direction * 16))
+      return [4].includes(tile?.index)
     }
 
     turn () {

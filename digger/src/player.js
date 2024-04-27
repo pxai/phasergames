@@ -15,31 +15,29 @@ class Player extends Phaser.GameObjects.Sprite {
       this.cursor = this.scene.input.keyboard.createCursorKeys();
 
       this.init();
-      this.visible = false;
-      this.drilling = true;
+      this.drilling = false; // TODO
       this.drillTime = 0;
       this.health = 10;
       this.attack = attack;
       this.velocity = velocity;
       this.shield = shield;
       this.life = life;
-      this.death = true;
+      this.death = false;
       this.setMouse()
     }
 
     activate () {
-        this.visible = true;
         this.death = false;
     }
 
     setMouse () {
         this.scene.input.mouse.disableContextMenu();
-        //this.scene.input.on('pointerdown', (pointer) => this.handleMouseDown(pointer), this);
+        this.scene.input.on('pointerdown', (pointer) => this.handleMouseDown(pointer), this);
         //this.scene.input.on('pointerup', (pointer) => this.handleMouseUp(pointer), this);
     }
 
     handleMouseDown () {
-        this.drilling = true;
+        this.drilling = !this.drilling;
     }
 
     handleMouseUp () {
@@ -123,13 +121,13 @@ class Player extends Phaser.GameObjects.Sprite {
     }
   
     update (time, delta) {
+       if (this.drilling && this.scene.canMove()) {
         const point = this.scene.cameras.main.getWorldPoint(this.scene.input.mousePointer.x, this.scene.input.mousePointer.y)
-        console.log("The point: ", point)
         this.body.x = point.x;
         this.body.y = point.y;
         if (Phaser.Math.Between(0, 3) > 2) new Smoke(this.scene, this.x, this.y - 32)
+       }
      }
-
 
     animationComplete (animation, frame) {
         if (animation.key === "playercast" + this.number) {

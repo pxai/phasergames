@@ -2,8 +2,6 @@ import Player from "./player";
 import DungeonGenerator from "./dungeon_generator";
 import { RockSmoke, Debris, elements } from "./particle";
 import Element from "./element";
-import Foe from "./foe";
-
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -28,7 +26,7 @@ export default class Game extends Phaser.Scene {
       this.center_height = this.height / 2;
       this.cameras.main.setBackgroundColor(0x222222);
       
-      this.createMap();
+      this.addMap();
 
       this.cameras.main.setBounds(0, 0, 20920 * 2, 20080 * 2);
       this.physics.world.setBounds(0, 0, 20920 * 2, 20080 * 2);
@@ -67,61 +65,8 @@ export default class Game extends Phaser.Scene {
     addMap() {
       this.dungeon = new DungeonGenerator(this);
     }
-  
-
-    createMap() {
-      this.addMap()
-      return
-      this.tileMap = this.make.tilemap({ key: "dungeon" + this.number , tileWidth: 32, tileHeight: 32 });
-      this.tileSetBg = this.tileMap.addTilesetImage("brick");
-      this.tileMap.createLayer('background', this.tileSetBg)
-  
-      this.tileSet = this.tileMap.addTilesetImage("brick");
-      this.platform = this.tileMap.createLayer('dungeon' + this.number, this.tileSet);
-      this.rockLayer = this.tileMap.createLayer('rock', this.tileSet);
-      this.objectsLayer = this.tileMap.getObjectLayer('objects');
-
-      this.platform.setCollisionByExclusion([-1]);
-      this.rockLayer.setCollisionByExclusion([-1]);
-
-      this.rocks = {};
-      for(let y = 0; y < this.rockLayer.height; ++y){   
-        for(let x = 0; x < this.rockLayer.width; ++x){
-          let rock = this.rockLayer.getTileAt(x, y);
-          if (rock) {
-            this.rocks[`${rock.x}:${rock.y}`] = elements[rock.properties.element].hits;
-          }
-        }
-        //
-      };
-
-      this.foeActivators = this.add.group();
-
-      this.objectsLayer.objects.forEach( object => {
-        if (object.name.startsWith("foe")){
-          let foeActivator = this.add.rectangle(object.x, object.y, 32, 32, 0xffffff).setAlpha(0).setOrigin(0);
-          this.physics.add.existing(foeActivator);
-          foeActivator.body.setAllowGravity(false);
-          this.foeActivators.add(foeActivator)
-        }
-          
-        if (object.name.startsWith("text")){
-          this.addText(object)
-        }
-      })
-
-      this.addExit();
-    }
 
     setScore() {
-      this.drillImage = this.add.image(this.width - 400, 40, "drill").setScale(0.5).setOrigin(0.5).setScrollFactor(0)
-      this.drillText = this.add.bitmapText(this.width - 360, 40, "pusab", String(this.registry.get("drill")), 40).setOrigin(0.5).setScrollFactor(0)
-      this.speedImage = this.add.image(this.width - 320, 40, "lightning").setScale(0.5).setOrigin(0.5).setScrollFactor(0)
-      this.speedText = this.add.bitmapText(this.width - 270, 40, "pusab", String(this.registry.get("speed")), 40).setOrigin(0.5).setScrollFactor(0)
-      this.shieldImage = this.add.image(this.width - 200, 40, "shield").setScale(0.5).setOrigin(0.5).setScrollFactor(0)
-      this.shieldText = this.add.bitmapText(this.width - 150, 40, "pusab", String(this.registry.get("shield")), 40).setOrigin(0.5).setScrollFactor(0)
-      this.lifeBarShadow = this.add.rectangle(this.center_width - 101, 40, 208, 34, 0x444444).setOrigin(0.5).setScrollFactor(0)
-      this.lifeBar = this.add.rectangle(this.center_width - 100, 40, +this.registry.get("life") * 2 , 30, 0xb06f00).setOrigin(0.5).setScrollFactor(0)
       this.scoreText = this.add.bitmapText(100, 40, "pusab", String(this.registry.get("score")).padStart(6, '0'), 60).setOrigin(0.5).setScrollFactor(0)
     }
 
@@ -129,25 +74,43 @@ export default class Game extends Phaser.Scene {
 
     }
 
-    drill (player, rock) {
-      console.log("Lets drill! ", rock)
-      if (player.drilling && elements[rock.properties.element]) {
+    drill (player, tile) {
+      if (player.drilling && tile && (tile.index > -1 && tile.index < 4)) {
 
-        const {color, hits, points, rate} = elements[rock.properties.element];
-        if (!this.drillAudio?.isPlaying) this.drillAudio.play({volume: 0.2, rate });
-        this.rocks[`${rock.x}:${rock.y}`] -= this.player.attack;
-        new RockSmoke(this, rock.pixelX, rock.pixelY + Phaser.Math.Between(-5, 5))
-        if (this.rocks[`${rock.x}:${rock.y}`] < 1) {
-          let stone = this.sound.add("stone");
-          stone.play({volume: 0.2, rate, forceRestart: false });
-          this.showPoints(rock.pixelX, rock.pixelY, points, color);
-          this.updateScore(points)
-          new Debris(this, rock.pixelX, rock.pixelY, color)
-          this.rockLayer.removeTileAt(rock.x, rock.y);
-          this.spawnElement(rock.pixelX, rock.pixelY, rock.properties.element)
+        this.reduceTile(tile)
+
+        if (!this.drillAudio?.isPlaying) this.drillAudio.play({volume: 0.2, rate: 1 });
+        const color = 0xffffff;
+        const points = 10;
+        new RockSmoke(this, tile.pixelX, tile.pixelY + Phaser.Math.Between(-5, 5))
+        let stone = this.sound.add("stone");
+        stone.play({volume: 0.2, rate: 1, forceRestart: false });
+        this.showPoints(tile.pixelX, tile.pixelY, points, color);
+        this.updateScore(points)
+        new Debris(this, tile.pixelX, tile.pixelY, color)
+        //this.spawnElement(tile.pixelX, tile.pixelY, tile.properties.element)
+        if (this.isFinished()) {
+          this.finishScene()
         }
       }
+    }
 
+    reduceTile (tile) {
+      if (tile.index === 0) {
+        this.dungeon.stuffLayer.removeTileAt(tile.x, tile.y);
+      } else {
+        this.dungeon.stuffLayer.putTileAt(tile.index - 1, tile.x, tile.y);
+      }
+    }
+
+    canMove () {
+      const point = this.cameras.main.getWorldPoint(this.input.mousePointer.x, this.input.mousePointer.y)
+      const tile = this.dungeon.groundLayer.getTileAtWorldXY(point.x, point.y)
+      return [0, 1, 2, 3, 7, 8, 9, 10].includes(tile?.index)
+    }
+
+    isFinished () {
+     return this.dungeon.stuffLayer.getTilesWithin().filter(tile => [0, 1, 2, 3].includes(tile.index)).length === 0
     }
 
     spawnElement(x, y, name) {
@@ -196,14 +159,14 @@ export default class Game extends Phaser.Scene {
 
     addPlayer() {
       this.elements = this.add.group();
-      const playerPosition = this.objectsLayer.objects.find( object => object.name === "player")
+      const playerPosition =  this.dungeon.playerPosition;//this.objectsLayer.objects.find( object => object.name === "player")
       this.player = new Player(this, playerPosition.x, playerPosition.y, 0, +this.registry.get("drill"), +this.registry.get("speed"),+this.registry.get("shield"), +this.registry.get("life"));
 
       this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
         return true;
       }, this);
   
-      this.physics.add.overlap(this.player, this.rockLayer, this.drill, ()=>{
+      this.physics.add.overlap(this.player, this.dungeon.stuffLayer, this.drill, ()=>{
         return true;
       }, this);
 
@@ -227,40 +190,11 @@ export default class Game extends Phaser.Scene {
       this.physics.add.overlap(this.player, this.foes, this.killFoe, ()=>{
         return true;
       }, this);
-
-      this.physics.add.overlap(this.player, this.foeShots, this.hitPlayer, ()=>{
-        return true;
-      }, this);
-      
-
-     /* this.physics.add.overlap(this.foeShots, this.platform, this.destroyShotWall, ()=>{
-        return true;
-      }, this);*/
-  
-      this.physics.add.overlap(this.foeShots, this.rockLayer, this.destroyShot, ()=>{
-        return true;
-      }, this);
     }
 
     addText (object) {
       this.add.bitmapText(object.x, object.y, "pusab", object.properties[0].value, 40).setTint(0xFF8700).setDropShadow(3, 4, 0x222222, 0.7).setOrigin(0.5)
 
-    }
-
-    destroyShotWall(shot, tile) {
-        this.addExplosion(shot.x, shot.y, 20)
-        this.playAudio("hitwall");
-        shot.destroy()
-    }
-
-    destroyShot(shot, rock) {
-      if (rock.properties.element) {
-        this.playAudio("hitwall");
-        this.addExplosion(shot.x, shot.y, 20)
-        new RockSmoke(this, rock.pixelX, rock.pixelY + Phaser.Math.Between(-5, 5))
-        this.rockLayer.removeTileAt(rock.x, rock.y);
-        shot.destroy()
-      }
     }
 
     hitPlayer (player, shot) {
@@ -303,12 +237,9 @@ export default class Game extends Phaser.Scene {
     pickElement (player, element) {
       const updateItem = {
         "gold": this.updateShield.bind(this),
-        "silver": this.updateDrill.bind(this),
-        "ruby": this.updateLife.bind(this),
-        "oil": this.updateSpeed.bind(this)
       }
       this.playAudio("stageclear2");
-      const improved = {"gold": "1 shield", "silver": "1 drill", "ruby": "LIFE", "oil":  "100 speed" }
+      const improved = {"gold": "1 shield"}
       const {color, hits, points} = elements[element.name];
       if (element.name === "oil") this.playAudio("yee-haw", {volume: 0.8});
       this.showPoints(this.player.x, this.player.y, improved[element.name], color);
@@ -363,10 +294,7 @@ export default class Game extends Phaser.Scene {
     }
 
     gameOver () {
-      this.registry.set("speed", 100);
-      this.registry.set("drill", 1);
       this.registry.set("shield", 0);
-      this.registry.set("life", 100);
       this.sound.stopAll();
       this.scene.start("transition", { number: this.number});
     }
@@ -382,60 +310,5 @@ export default class Game extends Phaser.Scene {
         const score = +this.registry.get("score") + points;
         this.registry.set("score", score);
         this.scoreText.setText(String(score).padStart(6, '0'));
-    }
-
-    updateDrill (points = 0) {
-      const score = +this.registry.get("drill") + points;
-      this.registry.set("drill", score);
-      this.player.attack = score;
-      this.drillText.setText(score);
-      this.textUpdateEffect(this.drillText, 0x4d4d4d)
-    }
-
-    updateSpeed (points = 100) {
-      if (+this.registry.get("speed") >= 300) return;
-      const score = +this.registry.get("speed") + 100;
-      this.registry.set("speed", score);
-      this.player.velocity = score;
-      this.speedText.setText(score);
-      this.textUpdateEffect(this.speedText, 0x4d4d4d)
-    }
-
-    updateShield (points = 0) {
-      const score = +this.registry.get("shield") + points;
-      this.registry.set("shield", score);
-      this.player.shield = score;
-      this.shieldText.setText(score);
-      this.textUpdateEffect(this.shieldText, 0xb06f00)
-    }
-
-    decreaseLife (points = 0) {
-      const score = +this.registry.get("life") - points;
-      if (score < 0) {
-        this.playAudio("explosion");
-        this.player.dead();
-        this.time.delayedCall(1000, () => this.gameOver(), null, this);
-      } else {
-        this.cameras.main.shake(50);
-        this.registry.set("life", score);
-        this.player.life = score;
-        this.lifeBar.width = score * 2;
-        //this.lifeBar.setOrigin(0.5)
-        this.tweens.add({
-          targets: this.lifeBar,
-          duration: 50,
-          alpha: {from: 0.7, to: 1},
-          scale: { from: 1.2, to: 1},
-          repeat: 5
-        })
-      }
-    }
-
-    updateLife (points = 0) {
-      const score = 100;
-      this.registry.set("life", String(score));
-      this.player.life = score;
-      this.lifeBar.width = score * 2;
-      this.lifeBar.setOrigin(0.5)
     }
 }

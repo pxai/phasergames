@@ -47,21 +47,10 @@ export default class Bootloader extends Phaser.Scene {
         this.load.bitmapFont("pusab", "assets/fonts/pusab.png", "assets/fonts/pusab.xml");
         this.load.spritesheet("player", "assets/images/player.png", { frameWidth: 128, frameHeight: 128 });
         this.load.spritesheet("gold", "assets/images/gold.png", { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet("silver", "assets/images/silver.png", { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet("ruby", "assets/images/ruby.png", { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet("oil", "assets/images/oil.png", { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet("foe0", "assets/images/foe0.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("bat", "assets/images/bat.png", { frameWidth: 32, frameHeight: 32 });
         this.load.image('pello', 'assets/images/pello.png');
         this.load.image('logo1', 'assets/images/logo1.png');
         this.load.image('logo2', 'assets/images/logo2.png');
-        this.load.image('shield', 'assets/images/shield.png');
-        this.load.image('drill', 'assets/images/drill.png');
-        this.load.image('lightning', 'assets/images/lightning.png');
-
-        Array(4).fill(0).forEach((_,i) => {
-            this.load.tilemapTiledJSON(`dungeon${i}`, `assets/maps/dungeon${i}.json`);
-        });
         this.load.image('brick', 'assets/maps/brick.png');
         //this.load.image('background', 'assets/maps/background.png');
 

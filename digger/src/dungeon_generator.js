@@ -36,8 +36,12 @@ export default class DungeonGenerator {
 
       const doors = room.getDoorLocations(); // Returns an array of {x, y} objects
       this.addDoors(room, doors, x, y);
-      this.addFoes(room);
+      const foes = Phaser.Math.Between(1, 3)
+      for (let i = 0;i<foes;i++)
+        this.addFoes(room)
     });
+
+    this.placePlayer(this.dungeon.rooms[0])
   }
 
   /*
@@ -69,6 +73,7 @@ export default class DungeonGenerator {
     const tileset = this.map.addTilesetImage("brick", null, 64, 64, 0, 0); // 1px margin, 2px spacing
     this.groundLayer = this.map.createBlankLayer("Layer 1", tileset);
     this.stuffLayer = this.map.createBlankLayer("Stuff", tileset);
+    this.groundLayer.setCollisionByExclusion([-1]);
 
     // Get a 2D array of tile indices (using -1 to not render empty tiles) and place them into the
     // blank layer
@@ -84,6 +89,12 @@ export default class DungeonGenerator {
    // this.scene.physics.world.convertTilemapLayer(this.groundLayer);
   }
 
+  placePlayer(room) {
+    const keyX = Phaser.Math.Between(room.left + 2, room.right - 2);
+    const keyY = Phaser.Math.Between(room.top + 2, room.bottom - 2);
+    const worldPosition = this.groundLayer.tileToWorldXY(keyX, keyY);
+    this.playerPosition = new Phaser.Geom.Point(worldPosition.x + 32, worldPosition.y + 32);
+  }
 
   placeCorners(room) {
     const { left, right, top, bottom } = room;
@@ -96,6 +107,18 @@ export default class DungeonGenerator {
 
   placeWalls(room) {
     const { width, height, left, right, top, bottom } = room;
+    this.stuffLayer.weightedRandomize(
+      [
+        { index: [0], weight: 4 },
+        { index: [1], weight: 3 },
+        { index: [2], weight: 2 },
+        { index: [3], weight: 1 },
+      ],
+      left + 1,
+      top + 1,
+      width - 2,
+      height - 2
+    );
     this.groundLayer.weightedRandomize(
       [
         { index: 4, weight: 4 },
