@@ -8,7 +8,7 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
         this.body.setAllowGravity(false);
         this.scene.add.existing(this);
         this.direction = type === "right" ? 1 : -1;
-
+        this.dead = false;
         this.init();
     }
 
@@ -36,6 +36,7 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
 
 
     update () {
+      if (this.dead) return
       if (this.shouldTurn()) { this.turn() }
     }
 

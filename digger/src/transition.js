@@ -11,24 +11,19 @@ export default class Transition extends Phaser.Scene {
     }
 
     create () {
-        const messages = {
-            "game": "ARROWS/WASD + SPACE",
-            "underwater": "You lost your engine!",
-            "depth": "Time to go down!",
-            "escape": "Go up and escape!",
-            "outro": "You did it!!"
-        }
+        console.log("Here we are, in transition")
+        const message = "Click to start moving"
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.cameras.main.setBackgroundColor(0x222222);
-        this.add.bitmapText(this.center_width, this.center_height - 20, "pusab", messages[this.next], 40).setOrigin(0.5)
-        this.add.bitmapText(this.center_width, this.center_height, "pusab", "Ready?", 100).setOrigin(0.5).setTint(0xFF8700).setDropShadow(3, 4, 0x222222, 0.7);
+        this.cameras.main.setBackgroundColor(0x000000);
+        this.add.bitmapText(this.center_width, this.center_height - 120, "pusab", message, 80).setOrigin(0.5).setTint(0xFF8700)
+        this.add.bitmapText(this.center_width, this.center_height , "pusab", "Ready?", 70).setOrigin(0.5).setTint(0xFF8700)
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
         this.sound.add("yee-haw").play({volume: 0.8})
 
-        setTimeout(() => this.loadNext(), 2);
+        setTimeout(() => this.loadNext(), 1000);
         this.playMusic();
     }
 

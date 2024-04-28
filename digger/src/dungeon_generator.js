@@ -1,5 +1,6 @@
 import Dungeon from "@mikewesthad/dungeon";
 import Bat from "./bat";
+import { TntActivator } from "./tnt";
 
 export default class DungeonGenerator {
   constructor(scene) {
@@ -36,6 +37,7 @@ export default class DungeonGenerator {
 
       const doors = room.getDoorLocations(); // Returns an array of {x, y} objects
       this.addDoors(room, doors, x, y);
+      this.addTntActivators(room)
       const foes = Phaser.Math.Between(1, 3)
       for (let i = 0;i<foes;i++)
         this.addFoes(room)
@@ -180,18 +182,28 @@ export default class DungeonGenerator {
     }
   }
 
+  addTntActivators(room) {
+    const keyX = Phaser.Math.Between(room.left + 2, room.right - 2);
+    const keyY = Phaser.Math.Between(room.top + 2, room.bottom - 2);
 
+    const worldPosition = this.groundLayer.tileToWorldXY(keyX, keyY);
+    this.scene.tntActivators.add(new TntActivator(
+      this.scene,
+      worldPosition.x + 22,
+      worldPosition.y + 22
+    ));
+  }
 
   addFoes(room) {
     const keyX = Phaser.Math.Between(room.left + 2, room.right - 2);
     const keyY = Phaser.Math.Between(room.top + 2, room.bottom - 2);
 
     const worldPosition = this.groundLayer.tileToWorldXY(keyX, keyY);
-      new Bat(
-        this.scene,
-        worldPosition.x + 22,
-        worldPosition.y + 22,
-        this.groundLayer
-      );
+    this.scene.foes.add(new Bat(
+      this.scene,
+      worldPosition.x + 22,
+      worldPosition.y + 22,
+      this.groundLayer
+    ));
   }
 }

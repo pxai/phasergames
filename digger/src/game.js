@@ -2,6 +2,8 @@ import Player from "./player";
 import DungeonGenerator from "./dungeon_generator";
 import { RockSmoke, Debris, elements } from "./particle";
 import Element from "./element";
+import { Tnt } from "./tnt";
+import Blow from "./blow";
 
 export default class Game extends Phaser.Scene {
     constructor () {
@@ -63,6 +65,11 @@ export default class Game extends Phaser.Scene {
     }
 
     addMap() {
+      this.elements = this.add.group();
+      this.foes = this.add.group();
+      this.tntActivators = this.add.group();
+      this.tnts = this.add.group();
+      this.blows  = this.add.group();
       this.dungeon = new DungeonGenerator(this);
     }
 
@@ -76,26 +83,31 @@ export default class Game extends Phaser.Scene {
 
     drill (player, tile) {
       if (player.drilling && tile && (tile.index > -1 && tile.index < 4)) {
+        this.destroyTile(tile)
+      }
+    }
 
-        this.reduceTile(tile)
+    destroyTile (tile) {
+      console.log("Destroy Tile! ",tile)
+      this.reduceTile(tile)
 
-        if (!this.drillAudio?.isPlaying) this.drillAudio.play({volume: 0.2, rate: 1 });
-        const color = 0xffffff;
-        const points = 10;
-        new RockSmoke(this, tile.pixelX, tile.pixelY + Phaser.Math.Between(-5, 5))
-        let stone = this.sound.add("stone");
-        stone.play({volume: 0.2, rate: 1, forceRestart: false });
-        this.showPoints(tile.pixelX, tile.pixelY, points, color);
-        this.updateScore(points)
-        new Debris(this, tile.pixelX, tile.pixelY, color)
-        //this.spawnElement(tile.pixelX, tile.pixelY, tile.properties.element)
-        if (this.isFinished()) {
-          this.finishScene()
-        }
+      if (!this.drillAudio?.isPlaying) this.drillAudio.play({volume: 0.2, rate: 1 });
+      const color = 0xffffff;
+      const points = 10;
+      new RockSmoke(this, tile.pixelX, tile.pixelY + Phaser.Math.Between(-5, 5))
+      let stone = this.sound.add("stone");
+      stone.play({volume: 0.2, rate: 1, forceRestart: false });
+      this.showPoints(tile.pixelX, tile.pixelY, points, color);
+      this.updateScore(points)
+      new Debris(this, tile.pixelX, tile.pixelY, color)
+      //this.spawnElement(tile.pixelX, tile.pixelY, tile.properties.element)
+      if (this.isFinished()) {
+        this.finishScene()
       }
     }
 
     reduceTile (tile) {
+      if (tile.index < 0) return;
       if (tile.index === 0) {
         this.dungeon.stuffLayer.removeTileAt(tile.x, tile.y);
       } else {
@@ -158,7 +170,6 @@ export default class Game extends Phaser.Scene {
    }
 
     addPlayer() {
-      this.elements = this.add.group();
       const playerPosition =  this.dungeon.playerPosition;//this.objectsLayer.objects.find( object => object.name === "player")
       this.player = new Player(this, playerPosition.x, playerPosition.y, 0, +this.registry.get("drill"), +this.registry.get("speed"),+this.registry.get("shield"), +this.registry.get("life"));
 
@@ -173,37 +184,41 @@ export default class Game extends Phaser.Scene {
       this.physics.add.overlap(this.player, this.elements, this.pickElement, ()=>{
         return true;
       }, this);
-  
-      this.physics.add.overlap(this.player, this.exit, () => { 
-        this.time.delayedCall(1000, () => this.finishScene(), null, this);
-      }, ()=>{
+
+      this.physics.add.overlap(this.player, this.foes, this.hitPlayer, ()=>{
         return true;
       }, this);
 
-
-      this.physics.add.overlap(this.player, this.foeActivators, this.spawnFoe, ()=>{
+      this.physics.add.overlap(this.player, this.tntActivators, this.spawnTnt, ()=>{
         return true;
       }, this);
 
-      this.foes = this.add.group();
-      this.foeShots = this.add.group();
-      this.physics.add.overlap(this.player, this.foes, this.killFoe, ()=>{
+      this.physics.add.overlap(this.player, this.tnts, this.blowTnt, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.blows, this.foes, this.blowHitFoe, ()=>{
+        return true;
+      }, this);
+
+      this.physics.add.overlap(this.blows, this.dungeon.stuffLayer, this.blowHitPlatform, ()=>{
         return true;
       }, this);
     }
+
 
     addText (object) {
       this.add.bitmapText(object.x, object.y, "pusab", object.properties[0].value, 40).setTint(0xFF8700).setDropShadow(3, 4, 0x222222, 0.7).setOrigin(0.5)
 
     }
 
-    hitPlayer (player, shot) {
-      const life = Phaser.Math.Between(10, 20) - this.player.shield;
+    hitPlayer (player, foe) {
       this.playAudio("hitplayer");
-      shot.showPoints(life)
-      this.decreaseLife(life)
-      this.addExplosion(shot.x, shot.y, 30)
-      shot.destroy()
+      this.addExplosion(foe.x, foe.y, 30)
+      this.playAudio("foedestroy");
+      foe.death();
+      player.dead();
+      this.finishScene()
     }
 
     addExplosion (x, y, radius = 30) {
@@ -217,21 +232,30 @@ export default class Game extends Phaser.Scene {
       })
     }
 
-    killFoe(player, foe) {
+    spawnTnt(player, tntActivator) {
+      const {x, y} = tntActivator;
+      tntActivator.destroy();
+      this.time.delayedCall(1000, () => { this.addTnt(x, y) }, null, this);
+    }
+
+    addTnt(x, y) {
+      const tnt = new Tnt(this, x, y);
+      this.tnts.add(tnt); 
+    }
+
+    blowHitFoe (blow, foe) {
+      const explosion = this.add.circle(foe.x, foe.y, 5).setStrokeStyle(20, 0xffffff);
       this.playAudio("foedestroy");
-      foe.dead();
+      foe.death();
     }
 
-    spawnFoe(player, foeActivator) {
-      const {x, y} = foeActivator;
-      foeActivator.destroy();
-      if (Phaser.Math.Between(0, 3)>2)
-        this.time.delayedCall(3000, () => { this.addFoe(x, y) }, null, this);
+    blowTnt (player, tnt) {
+      this.blows.add(new Blow(this, tnt.x, tnt.y));
+      tnt.destroy();
     }
 
-    addFoe(x, y) {
-      const foe = new Foe(this, x, y);
-      this.foes.add(foe); 
+    blowHitPlatform (blow, tile) {
+      this.destroyTile(tile)
     }
 
     pickElement (player, element) {
@@ -290,13 +314,12 @@ export default class Game extends Phaser.Scene {
     update(time, delta) {
       this.input.mousePointer.updateWorldPoint(this.cameras.main)
       if (!this.player.death) this.player.update(time, delta);
-      this.foes.children.entries.forEach(foe => foe.update());
     }
 
     gameOver () {
       this.registry.set("shield", 0);
       this.sound.stopAll();
-      this.scene.start("transition", { number: this.number});
+      this.scene.start("outro", { number: this.number});
     }
 
     finishScene () {

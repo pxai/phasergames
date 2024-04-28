@@ -27,21 +27,11 @@ export default class Splash extends Phaser.Scene {
     startGame () {
         if (this.theme) this.theme.stop();
         this.startSound.stop();
-        this.scene.start("transition", {next: "game", number: 0 })
+        this.scene.start("transition")
     }
 
     showLogo() {
         this.gameLogo2 = this.add.bitmapText(this.center_width, 200, "pusab", "DIGGER", 240).setOrigin(0.5).setTint(0xFF8700).setDropShadow(3, 4, 0x222222, 0.7);
-        this.gameLogo1 = this.add.bitmapText(this.center_width, 200, "pusab", "DIGGER", 240).setOrigin(0.5).setTint(0xFF8700).setDropShadow(3, 4, 0x222222, 0.8);
-/* 
-        this.tweens.add({
-            targets: this.gameLogo1,
-            duration: 100,
-            x: { from: this.gameLogo1.x, to: this.gameLogo1.x + Phaser.Math.Between(-5, 5)},
-            y: { from: this.gameLogo1.y, to: this.gameLogo1.y + Phaser.Math.Between(-5, 5)},
-            scale: {from: 1, to: 0.9 },
-            repeat: -1
-          }) */
     }
 
     showPlayer () {
