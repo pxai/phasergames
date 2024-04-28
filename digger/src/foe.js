@@ -1,3 +1,5 @@
+import { Smoke } from "./particle";
+
 export default class Foe extends Phaser.Physics.Arcade.Sprite {
     constructor (scene, x, y, type="right") {
         super(scene, x, y, "foe");
@@ -30,6 +32,7 @@ export default class Foe extends Phaser.Physics.Arcade.Sprite {
 
     update () {
       if (this.dead || !this.scene?.mapReady) return
+      if (Phaser.Math.Between(0, 101)  > 80) new Smoke(this.scene, this.x, this.y, 0xffffff)
       if (this.shouldTurn()) { this.turn() }
     }
 

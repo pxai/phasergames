@@ -31,7 +31,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     showLogo() {
-        this.gameLogo2 = this.add.bitmapText(this.center_width, 200, "pusab", "DIGGER", 240).setOrigin(0.5).setTint(0xFF8700).setDropShadow(3, 4, 0x222222, 0.7);
+        this.gameLogo2 = this.add.bitmapText(this.center_width, 200, "pusab", "DIGGER", 240).setOrigin(0.5).setTint(0xFF8700);
     }
 
     showPlayer () {
@@ -54,11 +54,11 @@ export default class Splash extends Phaser.Scene {
   
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pusab", "Use Mouse", 80).setOrigin(0.5).setTint(0xFF8700).setDropShadow(3, 4, 0x222222, 0.7);;
+        this.add.bitmapText(this.center_width, 450, "pusab", "Use Mouse", 80).setOrigin(0.5).setTint(0xFF8700);
         this.add.sprite(this.center_width - 95, 570, "pello").setOrigin(0.5).setScale(0.5);
-
-        this.add.bitmapText(this.center_width + 60, 570, "pusab", "By PELLO", 40).setOrigin(0.5).setTint(0xFF8700).setDropShadow(3, 4, 0x222222, 0.7);;
-        this.startButton  = this.add.bitmapText(this.center_width, 670, "pusab", "Click to start", 60).setOrigin(0.5).setTint(0xFF8700).setDropShadow(3, 4, 0x222222, 0.7);;
+        this.addPlayer()
+        this.add.bitmapText(this.center_width + 60, 570, "pusab", "By PELLO", 40).setOrigin(0.5).setTint(0xFF8700);
+        this.startButton  = this.add.bitmapText(this.center_width, 670, "pusab", "Click to start", 60).setOrigin(0.5).setTint(0xFF8700);
         this.tweens.add({
             targets: this.startButton,
             duration: 300,
@@ -67,5 +67,25 @@ export default class Splash extends Phaser.Scene {
             yoyo: true
         });
         this.input.on('pointerdown', (pointer) => this.startGame(), this);
+    }
+
+    addPlayer () {
+        this.player = this.add.sprite(this.center_width, this.center_height - 80, "player").setScale(4)
+        this.anims.create({
+            key: "playeridle",
+            frames: this.anims.generateFrameNumbers("player", { start: 0, end:6 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.tweens.add({
+            targets: this.player,
+            duration: 200,
+            y: "+=10",
+            repeat: -1,
+            yoyo: true
+        });
+
+        this.player.anims.play("playeridle", true);
     }
 }
