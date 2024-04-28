@@ -8,6 +8,7 @@ class Blow extends Phaser.GameObjects.Sprite {
     scene.physics.add.existing(this);
     this.body.setAllowGravity(false);
     this.body.setCircle(radius);
+    this.setAlpha(0)
     this.scene.tweens.add({
       targets: this,
       duration: 300,

@@ -1,7 +1,7 @@
 export default class Bat extends Phaser.Physics.Arcade.Sprite {
     constructor (scene, x, y, type="right") {
-        super(scene, x, y, "bat");
-        this.name = "bat";
+        super(scene, x, y, "foe");
+        this.name = "foe";
         this.scene = scene;
         this.scene.physics.add.existing(this);
         this.scene.physics.world.enable(this);
@@ -19,30 +19,23 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
             frameRate: 5,
             repeat: -1
           });
-
-          this.scene.anims.create({
-            key: this.name + "death",
-            frames: this.scene.anims.generateFrameNumbers(this.name, { start: 2, end: 5 }),
-            frameRate: 5,
-            repeat: -1
-          });
   
           this.anims.play(this.name, true)
           this.body.setVelocityX(this.direction * 150);
           this.flipX = this.direction > 0;
-          this.on('animationcomplete', this.animationComplete, this);
+
           this.scene.events.on("update", this.update, this);
     }
 
 
     update () {
-      if (this.dead) return
+      if (this.dead || !this.scene?.mapReady) return
       if (this.shouldTurn()) { this.turn() }
     }
 
     shouldTurn () { 
       const tile = this.scene.dungeon.groundLayer.getTileAtWorldXY(this.x + (this.direction * 16), this.y + (this.direction * 16))
-      return [4].includes(tile?.index)
+      return [16].includes(tile?.index)
     }
 
     turn () {
@@ -55,13 +48,8 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
         this.dead = true;
         this.body.enable = false;
         this.body.rotation = 0;
-        this.anims.play(this.name + "death")
+        this.destroy()
       }
 
-      animationComplete(animation, frame) {
-        if (animation.key === "death") {
-          this.destroy()
-        }
-    }
 }
 

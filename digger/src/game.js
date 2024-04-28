@@ -26,8 +26,7 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      this.cameras.main.setBackgroundColor(0x222222);
-      
+      this.cameras.main.setBackgroundColor(0x222222);      
       this.addMap();
 
       this.cameras.main.setBounds(0, 0, 20920 * 2, 20080 * 2);
@@ -65,12 +64,14 @@ export default class Game extends Phaser.Scene {
     }
 
     addMap() {
+      this.mapReady = false;
       this.elements = this.add.group();
       this.foes = this.add.group();
       this.tntActivators = this.add.group();
       this.tnts = this.add.group();
       this.blows  = this.add.group();
       this.dungeon = new DungeonGenerator(this);
+      this.mapReady = true;
     }
 
     setScore() {
@@ -82,7 +83,7 @@ export default class Game extends Phaser.Scene {
     }
 
     drill (player, tile) {
-      if (player.drilling && tile && (tile.index > -1 && tile.index < 4)) {
+      if (player.drilling && tile && (tile.index > -1 && tile.index < 16)) {
         this.destroyTile(tile)
       }
     }
@@ -118,11 +119,11 @@ export default class Game extends Phaser.Scene {
     canMove () {
       const point = this.cameras.main.getWorldPoint(this.input.mousePointer.x, this.input.mousePointer.y)
       const tile = this.dungeon.groundLayer.getTileAtWorldXY(point.x, point.y)
-      return [0, 1, 2, 3, 7, 8, 9, 10].includes(tile?.index)
+      return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20].includes(tile?.index)
     }
 
     isFinished () {
-     return this.dungeon.stuffLayer.getTilesWithin().filter(tile => [0, 1, 2, 3].includes(tile.index)).length === 0
+     return this.dungeon.stuffLayer.getTilesWithin().filter(tile => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].includes(tile.index)).length === 0
     }
 
     spawnElement(x, y, name) {
