@@ -72,7 +72,7 @@ class Player extends Phaser.GameObjects.Sprite {
         const point = this.scene.cameras.main.getWorldPoint(this.scene.input.mousePointer.x, this.scene.input.mousePointer.y)
         this.body.x = point.x;
         this.body.y = point.y;
-        if (Phaser.Math.Between(0, 3) > 2) new Smoke(this.scene, this.x, this.y - 32)
+        if (Phaser.Math.Between(0, 3) > 2) new Smoke(this.scene, this.x, this.y)
        }
      }
 

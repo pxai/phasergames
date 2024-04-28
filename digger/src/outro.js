@@ -11,7 +11,7 @@ export default class Outro extends Phaser.Scene {
         this.splashLayer = this.add.layer();
         this.cameras.main.setBackgroundColor(0x000000);
 
-        this.showPlayer();
+        this.addPlayer();
         this.setScore();
         this.add.bitmapText(this.center_width, this.center_height - 50, "pusab", "GAME OVER", 80).setOrigin(0.5).setTint(0xFF8700);
         this.startButton  = this.add.bitmapText(this.center_width, 670, "pusab", "Click to restart", 60).setOrigin(0.5).setTint(0xFF8700).setDropShadow(3, 4, 0x222222, 0.7);;
@@ -45,12 +45,29 @@ export default class Outro extends Phaser.Scene {
       })
       }
 
-    showPlayer() {
-        this.player1 = this.add.sprite(this.center_width, this.center_height + 100, "player").setOrigin(0.5);
-
-    }
     startSplash () {
         // this.theme.stop();
         this.scene.start("splash");
+    }
+
+
+    addPlayer () {
+        this.player = this.add.sprite(this.center_width, this.center_height + 100, "player").setScale(3)
+        this.anims.create({
+            key: "playeridle",
+            frames: this.anims.generateFrameNumbers("player", { start: 0, end:6 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.tweens.add({
+            targets: this.player,
+            duration: 200,
+            y: "+=10",
+            repeat: -1,
+            yoyo: true
+        });
+
+        this.player.anims.play("playeridle", true);
     }
 }

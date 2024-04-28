@@ -39,7 +39,7 @@ export default class Game extends Phaser.Scene {
       this.setScore();
       this.addStartGame();
       this.loadAudios(); 
-      this.playMusic();
+      //this.playMusic();
     }
 
     addStartGame () {

@@ -22,7 +22,7 @@ export default class Transition extends Phaser.Scene {
         this.add.bitmapText(this.center_width, this.center_height , "pusab", "Ready?", 70).setOrigin(0.5).setTint(0xFF8700)
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
         this.sound.add("yee-haw").play({volume: 0.8})
-
+        this.input.on('pointerdown', (pointer) => this.loadNext(), this);
         setTimeout(() => this.loadNext(), 1000);
         this.playMusic();
     }
