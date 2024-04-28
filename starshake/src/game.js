@@ -363,8 +363,8 @@ export default class Game extends Phaser.Scene {
     When the player finishes the stage, we destroy all the elements and we start the transition to the next scene.
     */
   endScene() {
-    this.foeWaveGroup.children.entries.forEach((foe) => foe.shadow.destroy());
-    this.foeGroup.children.entries.forEach((foe) => foe.shadow.destroy());
+    this.foeWaveGroup.children.entries.forEach((foe) => foe && foe.shadow && foe.shadow.destroy());
+    this.foeGroup.children.entries.forEach((foe) => foe && foe.shadow && foe.shadow.destroy());
     this.shots.children.entries.forEach((shot) => shot.shadow.destroy());
     this.foeShots.children.entries.forEach((shot) => shot.shadow.destroy());
     this.time.delayedCall(

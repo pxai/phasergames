@@ -31,8 +31,6 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("basket", "assets/images/basket.png", { frameWidth: 32, frameHeight: 64 });
         this.load.spritesheet("ghost", "assets/images/ghost.png", { frameWidth: 64, frameHeight: 32 });
         this.load.spritesheet("bat", "assets/images/bat.png", { frameWidth: 64, frameHeight: 32 });
-
-        this.load.audio("theme", "assets/sounds/theme.mp3");
         this.load.audio("splash", "assets/sounds/splash.mp3");
         this.load.audio("gotcha", "assets/sounds/gotcha.mp3");
         this.load.audio("start", "assets/sounds/start.mp3");
@@ -56,6 +54,10 @@ export default class Bootloader extends Phaser.Scene {
         });
         Array(4).fill(0).forEach((_,i) => {
             this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`);
+        });
+
+        Array(4).fill(0).forEach((_,i) => {
+            this.load.audio(`stage${i}`, `assets/sounds/stage${i}.mp3`);
         });
 
         this.registry.set("score", 0);

@@ -5,7 +5,7 @@ class Player extends Phaser.GameObjects.Sprite {
     constructor (scene, x, y, number, attack, velocity, shield, life) {
       super(scene, x, y, "player")
       this.setOrigin(0.5)
-      //this.setScale(0.7)
+
       this.setTint(0xffffff)
       this.scene = scene;
       this.scene.add.existing(this);
@@ -13,7 +13,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.body.setAllowGravity(false);
       this.body.collideWorldBounds = true;
       this.cursor = this.scene.input.keyboard.createCursorKeys();
-
+      this.body.setSize(32 + (number * 8) , 32 + (number * 8));
       this.init();
       this.drilling = false; // TODO
       this.drillTime = 0;
@@ -65,8 +65,8 @@ class Player extends Phaser.GameObjects.Sprite {
 
         this.last = "down";
         this.anims.play("player", true);
-    }   
-  
+    }
+
     update () {
        if (this.drilling && this.scene.canMove()) {
         const point = this.scene.cameras.main.getWorldPoint(this.scene.input.mousePointer.x, this.scene.input.mousePointer.y)
@@ -89,9 +89,8 @@ class Player extends Phaser.GameObjects.Sprite {
         this.death = true;
         new Explosion(this.scene, this.x, this.y, 40)
         super.destroy();
-    }     
+    }
 
   }
 
 export default Player;
-  

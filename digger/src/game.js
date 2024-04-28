@@ -25,7 +25,7 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      this.cameras.main.setBackgroundColor(0x222222);      
+      this.cameras.main.setBackgroundColor(0x222222);
       this.addMap();
 
       this.cameras.main.setBounds(0, 0, 20920 * 2, 20080 * 2);
@@ -38,8 +38,9 @@ export default class Game extends Phaser.Scene {
       this.physics.world.enable([ this.player ]);
       this.setScore();
       this.addStartGame();
-      this.loadAudios(); 
+      this.loadAudios();
       //this.playMusic();
+      this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);
     }
 
     addStartGame () {
@@ -147,12 +148,12 @@ export default class Game extends Phaser.Scene {
 
     addPlayer() {
       const playerPosition =  this.dungeon.playerPosition;//this.objectsLayer.objects.find( object => object.name === "player")
-      this.player = new Player(this, playerPosition.x, playerPosition.y, 0, +this.registry.get("drill"), +this.registry.get("speed"),+this.registry.get("shield"), +this.registry.get("life"));
+      this.player = new Player(this, playerPosition.x, playerPosition.y, this.number, +this.registry.get("drill"), +this.registry.get("speed"),+this.registry.get("shield"), +this.registry.get("life"));
 
       this.physics.add.collider(this.player, this.platform, this.hitFloor, ()=>{
         return true;
       }, this);
-  
+
       this.physics.add.overlap(this.player, this.dungeon.stuffLayer, this.drill, ()=>{
         return true;
       }, this);
@@ -191,7 +192,7 @@ export default class Game extends Phaser.Scene {
       this.playAudio("foedestroy");
       foe.death();
       player.dead();
-      this.finishScene()
+      this.gameOver()
     }
 
     addExplosion (x, y, radius = 30) {
@@ -213,7 +214,7 @@ export default class Game extends Phaser.Scene {
 
     addTnt(x, y) {
       const tnt = new Tnt(this, x, y);
-      this.tnts.add(tnt); 
+      this.tnts.add(tnt);
     }
 
     blowHitFoe (blow, foe) {
@@ -248,12 +249,10 @@ export default class Game extends Phaser.Scene {
         this.audios = {
           "explosion": this.sound.add("explosion"),
           "foedestroy": this.sound.add("foedestroy"),
-          "foeshot": this.sound.add("foeshot"),
           "stageclear1": this.sound.add("stageclear1"),
           "stageclear2": this.sound.add("stageclear2"),
           "hitplayer": this.sound.add("hitplayer"),
           "hitwall": this.sound.add("hitwall"),
-          "yee-haw": this.sound.add("yee-haw"),
         };
         this.drillAudio = this.sound.add("drill");
       }
@@ -269,7 +268,6 @@ export default class Game extends Phaser.Scene {
     }
 
     gameOver () {
-      this.registry.set("shield", 0);
       this.sound.stopAll();
       this.scene.start("outro", { number: this.number});
     }
@@ -277,8 +275,8 @@ export default class Game extends Phaser.Scene {
     finishScene () {
       this.sound.stopAll();
       this.playAudio("stageclear1");
-      const nextScene = (this.number < 3) ? "transition" : "outro";
-      this.scene.start(nextScene, {number: this.number + 1});
+
+      this.scene.start("transition", {number: this.number + 1});
     }
 
     updateScore (points = 0) {

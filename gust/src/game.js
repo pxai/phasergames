@@ -45,7 +45,7 @@ export default class Game extends Phaser.Scene {
       this.addGusts();
       this.finished = false;
        this.ready = true;
-       this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this); // TODO REMOVE
+       //this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this); // TODO REMOVE
        //this.playAudio("start", 0.5)
        this.pickedCoins = 0;
     }
@@ -168,11 +168,11 @@ export default class Game extends Phaser.Scene {
     }
 
     showStage() {
-      this.text1 = this.add.bitmapText(this.width - 128, 50, "demon", "STAGE " + this.number, 20).setOrigin(0.5).setDropShadow(0, 4, 0x222222, 0.9).setScrollFactor(0);
+      this.text1 = this.add.bitmapText(this.width - 128, 50, "demon", "STAGE " + this.number, 20).setOrigin(0.5).setDropShadow(0, 4, 0xcae9f7, 0.9).setScrollFactor(0);
     }
 
     addScore() {
-      this.scoreCoins = this.add.bitmapText(75, 10, "demon", "x0", 30).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0)
+      this.scoreCoins = this.add.bitmapText(75, 10, "demon", "x0", 30).setDropShadow(0, 4, 0xcae9f7, 0.9).setOrigin(0).setScrollFactor(0)
       this.scoreCoinsLogo = this.add.sprite(50, 25, "coin").setScale(0.6).setOrigin(0.5).setScrollFactor(0)
       const coinAnimation = this.anims.create({
         key: "coinscore",
@@ -194,23 +194,11 @@ export default class Game extends Phaser.Scene {
         };
       }
 
-      playAudio(key, volume = 1) {
+      playAudio(key, volume = 0.4) {
         this.audios[key].play({volume});
       }
 
-      playMusic (theme="theme") {
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
-        this.theme.play({
-          mute: false,
-          volume: 1,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-      })
-      }
+
 
     update() {
       if (this.player && Phaser.Math.Between(1, 5) > 4) {
@@ -250,7 +238,7 @@ export default class Game extends Phaser.Scene {
       this.player.destroy();
       const x = this.cameras.main.worldView.centerX;
       const y = this.cameras.main.worldView.centerY;
-      this.textYAY = this.add.bitmapText(x, y, "demon", this.pickRandomMessage(), 80).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+      this.textYAY = this.add.bitmapText(x, y, "demon", this.pickRandomMessage(), 80).setOrigin(0.5).setDropShadow(0, 8, 0xcae9f7, 0.9);
       this.time.delayedCall(2000, () => { this.finishScene();}, null, this);
     }
 
@@ -269,8 +257,8 @@ export default class Game extends Phaser.Scene {
 
         const x = this.cameras.main.worldView.centerX;
         const y = this.cameras.main.worldView.centerY;
-        this.text3 = this.add.bitmapText(x, y + 50, "demon", "Coins: " + this.registry.get("coins"), 45).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
-        this.text4 = this.add.bitmapText(x, y - 50, "demon", "CONGRATULATIONS!", 35).setOrigin(0.5).setDropShadow(0, 5, 0x222222, 0.9);
+        this.text3 = this.add.bitmapText(x, y + 50, "demon", "Coins: " + this.registry.get("coins"), 45).setOrigin(0.5).setDropShadow(0, 8, 0xcae9f7, 0.9);
+        this.text4 = this.add.bitmapText(x, y - 50, "demon", "CONGRATULATIONS!", 35).setOrigin(0.5).setDropShadow(0, 5, 0xcae9f7, 0.9);
         this.time.delayedCall(4000, () => {
           this.text3.destroy()
           this.text4.destroy()
@@ -289,7 +277,7 @@ export default class Game extends Phaser.Scene {
     death() {
       this.player.destroy()
       this.cameras.main.shake(100);
-      this.textBOO = this.add.bitmapText(this.center_width, this.center_height, "demon", "FAIL", 80).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+      this.textBOO = this.add.bitmapText(this.center_width, this.center_height, "demon", "FAIL", 80).setOrigin(0.5).setDropShadow(0, 8, 0xcae9f7, 0.9);
 
       this.time.delayedCall(1000, () => {
         this.textBOO.destroy();

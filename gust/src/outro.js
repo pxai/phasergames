@@ -27,7 +27,8 @@ export default class Outro extends Phaser.Scene {
         await this.saveScore();
         //
         this.add.bitmapText(this.center_width,70, "demon", "SCOREBOARD", 60).setOrigin(0.5).setDropShadow(0, 8, 0xcae9f7, 0.9);
-        this.restartText = this.add.bitmapText(this.center_width, 760, "demon", "Click HERE to Restart", 20).setOrigin(0.5).setDropShadow(0, 8, 0xcae9f7, 0.9);
+        this.instructions = this.add.bitmapText(this.center_width, 660, "demon", "Click on letters and click OK to save", 30).setOrigin(0.5).setDropShadow(0, 8, 0xcae9f7, 0.9);
+        this.restartText = this.add.bitmapText(this.center_width, 760, "demon", "Then, click HERE to Restart", 20).setOrigin(0.5).setDropShadow(0, 8, 0xcae9f7, 0.9);
         this.restartText.setInteractive();
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
         this.restartText.on('pointerdown', (pointer) => this.loadNext(), this);
@@ -64,7 +65,7 @@ export default class Outro extends Phaser.Scene {
     showPrompt () {
         this.prompt = this.add.layer();
         this.userName = "";
-        this.userNameText = this.add.bitmapText(this.center_width, this.center_height - 150, "demon", this.userName.padEnd(9, '-'), 50).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
+        this.userNameText = this.add.bitmapText(this.center_width, this.center_height - 150, "demon", this.userName.padEnd(9, '-'), 50).setTint(0xb95e00).setOrigin(0.5).setDropShadow(0, 8, 0xcae9f7, 0.9);
         this.prompt.add(this.userNameText)
         this.addLetters()
     }

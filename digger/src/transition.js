@@ -19,9 +19,10 @@ export default class Transition extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.cameras.main.setBackgroundColor(0x000000);
         this.add.bitmapText(this.center_width, this.center_height - 120, "pusab", message, 80).setOrigin(0.5).setTint(0xFF8700)
-        this.add.bitmapText(this.center_width, this.center_height , "pusab", "Ready?", 70).setOrigin(0.5).setTint(0xFF8700)
+        this.add.bitmapText(this.center_width, this.center_height , "pusab", "Dungeon " + this.number, 70).setOrigin(0.5).setTint(0xFF8700)
+        this.add.bitmapText(this.center_width, this.center_height + 120, "pusab", "Ready?", 70).setOrigin(0.5).setTint(0xFF8700)
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
-        this.sound.add("yee-haw").play({volume: 0.8})
+
         this.input.on('pointerdown', (pointer) => this.loadNext(), this);
         setTimeout(() => this.loadNext(), 1000);
         this.playMusic();

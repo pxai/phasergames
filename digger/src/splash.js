@@ -24,7 +24,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     startGame () {
-        this.scene.start("transition")
+        this.scene.start("transition", { number: 0 })
     }
 
     showLogo() {
@@ -48,7 +48,7 @@ export default class Splash extends Phaser.Scene {
           delay: 0
       })
       }
-  
+
 
     showInstructions() {
         this.add.bitmapText(this.center_width, 450, "pusab", "Use Mouse", 80).setOrigin(0.5).setTint(0xFF8700);
@@ -67,7 +67,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     addPlayer () {
-        this.player = this.add.sprite(this.center_width, this.center_height - 80, "player").setScale(4)
+        this.player = this.add.sprite(this.center_width, this.center_height - 80, "player").setScale(3)
         this.anims.create({
             key: "playeridle",
             frames: this.anims.generateFrameNumbers("player", { start: 0, end:6 }),

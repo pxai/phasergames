@@ -2,7 +2,7 @@ import { JumpSmoke, RockSmoke } from "./particle";
 import { Dust } from "./dust";
 
 export default class Player extends Phaser.GameObjects.Sprite {
-  constructor(scene, x, y, name = "balloon", velocity = 50) {
+  constructor(scene, x, y, name = "balloon", velocity = 80) {
     super(scene, x, y, name);
     this.setOrigin(0, 0);
     this.scene = scene;
@@ -12,7 +12,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     this.setScale(1.5);
     this.name = name;
     this.velocity = velocity;
-    this.sideVelocity = velocity/4;
+    this.sideVelocity = (this.scene.number < 3 ) ? velocity/2 : velocity;
     this.init();
   }
 
@@ -43,6 +43,13 @@ export default class Player extends Phaser.GameObjects.Sprite {
         //this.anims.play("playerjump", true);
         //this.scene.playAudio("jump")
         this.burstSmoke();
+    } else if (Phaser.Input.Keyboard.JustDown(this.cursor.down) || Phaser.Input.Keyboard.JustDown(this.S)) {
+
+          this.body.setVelocityY(this.velocity/4);
+          //this.body.setGravityY(300)
+          //this.anims.play("playerjump", true);
+          //this.scene.playAudio("jump")
+          this.burstSmoke();
     } else if (this.cursor.right.isDown || this.D.isDown) {
         if (Phaser.Math.Between(1,21) > 20)  new Dust(this.scene, this.x, this.y + 96)
         this.flipX = (this.body.velocity.x < 0);

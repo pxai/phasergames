@@ -102,7 +102,7 @@ export default class FoeGenerator {
   */
   createPath() {
     this.waves++;
-    if (this.waves === 3) this.finishScene();
+    if (this.waves === 1) this.finishScene();
     const start = Phaser.Math.Between(100, 600);
     this.path = new Phaser.Curves.Path(start, 0);
 
