@@ -25,7 +25,7 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      this.cameras.main.setBackgroundColor(0x222222);
+      this.cameras.main.setBackgroundColor(0x000000);
       this.addMap();
 
       this.cameras.main.setBounds(0, 0, 20920 * 2, 20080 * 2);
@@ -188,7 +188,6 @@ export default class Game extends Phaser.Scene {
 
     hitPlayer (player, foe) {
       if (player.death) return
-      this.playAudio("hitplayer");
       this.addExplosion(foe.x, foe.y, 30)
       this.playAudio("foedestroy");
       foe.death();
@@ -255,7 +254,7 @@ export default class Game extends Phaser.Scene {
           "stageclear1": this.sound.add("stageclear1"),
           "stageclear2": this.sound.add("stageclear2"),
           "hitplayer": this.sound.add("hitplayer"),
-          "hitwall": this.sound.add("hitwall"),
+          "hitwall": this.sound.add("hitwall")
         };
         this.drillAudio = this.sound.add("drill");
       }

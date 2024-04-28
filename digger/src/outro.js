@@ -13,6 +13,7 @@ export default class Outro extends Phaser.Scene {
 
         this.addPlayer();
         this.setScore();
+        this.sound.add("death").play();
         this.add.bitmapText(this.center_width, this.center_height - 50, "pusab", "GAME OVER", 80).setOrigin(0.5).setTint(0xFF8700);
         this.startButton  = this.add.bitmapText(this.center_width, 670, "pusab", "Click to restart", 60).setOrigin(0.5).setTint(0xFF8700).setDropShadow(3, 4, 0x222222, 0.7);;
         this.tweens.add({
