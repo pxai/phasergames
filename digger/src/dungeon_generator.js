@@ -1,5 +1,5 @@
 import Dungeon from "@mikewesthad/dungeon";
-import Bat from "./bat";
+import Foe from "./foe";
 import { TntActivator } from "./tnt";
 
 const WALL_TILE = 16;
@@ -200,7 +200,7 @@ export default class DungeonGenerator {
     const keyY = Phaser.Math.Between(room.top + 2, room.bottom - 2);
 
     const worldPosition = this.groundLayer.tileToWorldXY(keyX, keyY);
-    this.scene.foes.add(new Bat(
+    this.scene.foes.add(new Foe(
       this.scene,
       worldPosition.x + 22,
       worldPosition.y + 22,

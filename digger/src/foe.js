@@ -1,4 +1,4 @@
-export default class Bat extends Phaser.Physics.Arcade.Sprite {
+export default class Foe extends Phaser.Physics.Arcade.Sprite {
     constructor (scene, x, y, type="right") {
         super(scene, x, y, "foe");
         this.name = "foe";
@@ -47,7 +47,7 @@ export default class Bat extends Phaser.Physics.Arcade.Sprite {
     death () {
         this.dead = true;
         this.body.enable = false;
-        this.body.rotation = 0;
+        this.setAlpha(0)
         this.destroy()
       }
 

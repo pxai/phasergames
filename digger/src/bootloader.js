@@ -49,11 +49,8 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet("tnt", "assets/images/tnt.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("foe", "assets/images/foe.png", { frameWidth: 32, frameHeight: 32 });
         this.load.image('pello', 'assets/images/pello.png');
-        this.load.image('logo1', 'assets/images/logo1.png');
-        this.load.image('logo2', 'assets/images/logo2.png');
         this.load.image('brick', 'assets/maps/brick.png');
         this.load.image('bricks', 'assets/maps/bricks.png');
-        //this.load.image('background', 'assets/maps/background.png');
 
         this.registry.set("score", 0);
         this.registry.set("drill", 1);

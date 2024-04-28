@@ -1,7 +1,6 @@
 import Player from "./player";
 import DungeonGenerator from "./dungeon_generator";
-import { RockSmoke, Debris, elements } from "./particle";
-import Element from "./element";
+import { RockSmoke, Debris } from "./particle";
 import { Tnt } from "./tnt";
 import Blow from "./blow";
 
@@ -44,28 +43,19 @@ export default class Game extends Phaser.Scene {
     }
 
     addStartGame () {
-      this.startButton  = this.add.bitmapText(this.center_width,64, "pusab", "Click here to START", 60).setOrigin(0.5).setTint(0xFF8700).setDropShadow(3, 4, 0x222222, 0.7);;
-
-      this.startButton.setInteractive();
-
+      this.startButton  = this.add.bitmapText(this.center_width, this.center_height, "pusab", "Click to START", 60).setOrigin(0.5).setTint(0x000000)
         this.tweens.add({
           targets: this.startButton,
-          duration: 300,
+          duration: 100,
           alpha: {from: 0, to: 1},
-          repeat: -1,
-          yoyo: true
+          repeat: 10,
+          yoyo: true,
+          onComplete: () => { this.startButton.destroy() }
       });
-
-      this.startButton.on('pointerdown', () => {
-          //this.sound.add("change").play();
-          this.player.activate();
-          console.log("Click to start")
-      })
     }
 
     addMap() {
       this.mapReady = false;
-      this.elements = this.add.group();
       this.foes = this.add.group();
       this.tntActivators = this.add.group();
       this.tnts = this.add.group();
@@ -75,7 +65,7 @@ export default class Game extends Phaser.Scene {
     }
 
     setScore() {
-      this.scoreText = this.add.bitmapText(100, 40, "pusab", String(this.registry.get("score")).padStart(6, '0'), 60).setOrigin(0.5).setScrollFactor(0)
+      this.scoreText = this.add.bitmapText(this.center_width, 40, "pusab", String(this.registry.get("score")).padStart(6, '0'), 60).setOrigin(0.5).setScrollFactor(0)
     }
 
     hitFloor(player, platform) {
@@ -89,7 +79,6 @@ export default class Game extends Phaser.Scene {
     }
 
     destroyTile (tile) {
-      console.log("Destroy Tile! ",tile)
       this.reduceTile(tile)
 
       if (!this.drillAudio?.isPlaying) this.drillAudio.play({volume: 0.2, rate: 1 });
@@ -101,7 +90,7 @@ export default class Game extends Phaser.Scene {
       this.showPoints(tile.pixelX, tile.pixelY, points, color);
       this.updateScore(points)
       new Debris(this, tile.pixelX, tile.pixelY, color)
-      //this.spawnElement(tile.pixelX, tile.pixelY, tile.properties.element)
+
       if (this.isFinished()) {
         this.finishScene()
       }
@@ -126,24 +115,11 @@ export default class Game extends Phaser.Scene {
      return this.dungeon.stuffLayer.getTilesWithin().filter(tile => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].includes(tile.index)).length === 0
     }
 
-    spawnElement(x, y, name) {
-      if (name === "orange") return;
-
-      if (Phaser.Math.Between(0, 31) > 30) {
-        this.time.delayedCall(2000, () => { this.elements.add(new Element(this, x, y, name));}, null, this);
-      }
-
-      if (Phaser.Math.Between(0, 51) > 50 && +this.registry.get("speed") < 300) {
-        this.time.delayedCall(2000, () => { this.elements.add(new Element(this, x, y, "oil"));}, null, this);
-      }
-    }
-
-    showPoints (x, y, score, color = 0xff0000) {
-      let text = this.add.bitmapText(x + 20, y - 80, "pusab", "+"+score, 40).setDropShadow(2, 3, color, 0.7).setOrigin(0.5);
+    showPoints (x, y, score, color = 0xFF8700) {
+      let text = this.add.bitmapText(x + 20, y - 80, "pusab", "+"+score, 20).setOrigin(0.5);
       this.tweens.add({
           targets: text,
           duration: 1000,
-          alpha: {from: 1, to: 0},
           x: {from: text.x + Phaser.Math.Between(-10, 10), to: text.x + Phaser.Math.Between(-40, 40)},
           y: {from: text.y - 10, to: text.y - 60},
           onComplete: () => {
@@ -151,7 +127,7 @@ export default class Game extends Phaser.Scene {
           }
       });
 
-      this.textUpdateEffect(this.scoreText, color)
+      this.textUpdateEffect(this.scoreText, 0xffffff)
   }
 
    textUpdateEffect (textElement, color) {
@@ -161,7 +137,6 @@ export default class Game extends Phaser.Scene {
       targets: textElement,
       duration: 100,
       alpha: {from: 1, to: 0.8},
-      scale: {from: 1.4, to: 1},
       repeat: 5,
       onComplete: () => {
         textElement.setTint(0xffffff);
@@ -179,10 +154,6 @@ export default class Game extends Phaser.Scene {
       }, this);
   
       this.physics.add.overlap(this.player, this.dungeon.stuffLayer, this.drill, ()=>{
-        return true;
-      }, this);
-
-      this.physics.add.overlap(this.player, this.elements, this.pickElement, ()=>{
         return true;
       }, this);
 
@@ -214,6 +185,7 @@ export default class Game extends Phaser.Scene {
     }
 
     hitPlayer (player, foe) {
+      if (player.death) return
       this.playAudio("hitplayer");
       this.addExplosion(foe.x, foe.y, 30)
       this.playAudio("foedestroy");
@@ -245,7 +217,6 @@ export default class Game extends Phaser.Scene {
     }
 
     blowHitFoe (blow, foe) {
-      const explosion = this.add.circle(foe.x, foe.y, 5).setStrokeStyle(20, 0xffffff);
       this.playAudio("foedestroy");
       foe.death();
     }
@@ -257,26 +228,6 @@ export default class Game extends Phaser.Scene {
 
     blowHitPlatform (blow, tile) {
       this.destroyTile(tile)
-    }
-
-    pickElement (player, element) {
-      const updateItem = {
-        "gold": this.updateShield.bind(this),
-      }
-      this.playAudio("stageclear2");
-      const improved = {"gold": "1 shield"}
-      const {color, hits, points} = elements[element.name];
-      if (element.name === "oil") this.playAudio("yee-haw", {volume: 0.8});
-      this.showPoints(this.player.x, this.player.y, improved[element.name], color);
-      updateItem[element.name](1);
-      element.destroy();
-    }
-
-    addExit() {
-      const exitPosition = this.objectsLayer.objects.find( object => object.name === "exit")
-      this.exit = this.add.rectangle(exitPosition.x, exitPosition.y, 32, 32, 0xffffff).setAlpha(0).setOrigin(0);
-      this.physics.add.existing(this.exit);
-      this.exit.body.setAllowGravity(false);
     }
 
     playMusic (theme="engine") {

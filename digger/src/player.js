@@ -22,12 +22,14 @@ class Player extends Phaser.GameObjects.Sprite {
       this.velocity = velocity;
       this.shield = shield;
       this.life = life;
-      this.death = false;
+      this.death = true;
       this.setMouse()
     }
 
     activate () {
         this.death = false;
+        this.setAlpha(1);
+        this.startTween.stop()
     }
 
     setMouse () {
@@ -37,6 +39,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     handleMouseDown () {
+        if (this.death) this.activate()
         this.drilling = !this.drilling;
     }
 
@@ -52,24 +55,19 @@ class Player extends Phaser.GameObjects.Sprite {
             repeat: -1
         });
 
+        this.startTween = this.scene.tweens.add({
+            targets: this,
+            duration: 100,
+            alpha: {from: 0, to: 1},
+            repeat: -1,
+            yoyo: true
+        });
 
         this.last = "down";
         this.anims.play("player", true);
-    }    
-
-    getSpeeds () {
-        let dx = (this.scene.input.mousePointer.x + this.scene.cameras.main.worldView.x) - this.x;
-        let dy = (this.scene.input.mousePointer.y + this.scene.cameras.main.worldView.y) - this.y;
-        let angle = Math.atan2(dy, dx) - Math.PI/2;
-        let dir = (angle - this.rotation) / (Math.PI * 2);
-        dir -= Math.round(dir);
-        dir = dir * Math.PI * 2;
-
-        this.newSpeed = (Math.abs(dx) + Math.abs(dy)/2)/100
-        this.body.rotation += dir * 100
-    }
+    }   
   
-    update (time, delta) {
+    update () {
        if (this.drilling && this.scene.canMove()) {
         const point = this.scene.cameras.main.getWorldPoint(this.scene.input.mousePointer.x, this.scene.input.mousePointer.y)
         this.body.x = point.x;

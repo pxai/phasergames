@@ -1,7 +1,7 @@
 class Blow extends Phaser.GameObjects.Sprite {
   constructor(scene, x, y) {
     super(scene, x, y, "tnt");
-    const radius = Phaser.Math.Between(150, 200);
+    const radius = Phaser.Math.Between(75, 150);
     this.setOrigin(0.5)
     this.scene = scene;
     scene.add.existing(this);
