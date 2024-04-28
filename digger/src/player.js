@@ -13,7 +13,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.body.setAllowGravity(false);
       this.body.collideWorldBounds = true;
       this.cursor = this.scene.input.keyboard.createCursorKeys();
-      this.body.setSize(32 + (number * 8) , 32 + (number * 8));
+      // this.body.setSize(32 + (number * 8) , 32 + (number * 8));
       this.init();
       this.drilling = false; // TODO
       this.drillTime = 0;

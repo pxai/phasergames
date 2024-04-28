@@ -11,7 +11,6 @@ export default class Transition extends Phaser.Scene {
     }
 
     create () {
-        console.log("Here we are, in transition")
         const message = "Click to start moving"
         this.width = this.sys.game.config.width;
         this.height = this.sys.game.config.height;

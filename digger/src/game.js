@@ -44,7 +44,7 @@ export default class Game extends Phaser.Scene {
     }
 
     addStartGame () {
-      this.startButton  = this.add.bitmapText(this.center_width, this.center_height, "pusab", "Click to START", 60).setOrigin(0.5).setTint(0x000000)
+      this.startButton  = this.add.bitmapText(this.center_width, this.center_height, "pusab", "Click to START", 60).setOrigin(0.5).setTint(0xffffff)
         this.tweens.add({
           targets: this.startButton,
           duration: 100,
@@ -87,7 +87,7 @@ export default class Game extends Phaser.Scene {
       const points = 10;
       new RockSmoke(this, tile.pixelX, tile.pixelY + Phaser.Math.Between(-5, 5))
       let stone = this.sound.add("stone");
-      stone.play({volume: 0.2, rate: 1, forceRestart: false });
+      //stone.play({volume: 0.2, rate: 1, forceRestart: false });
       this.showPoints(tile.pixelX, tile.pixelY, points, color);
       this.updateScore(points)
       new Debris(this, tile.pixelX, tile.pixelY, color)
@@ -141,6 +141,7 @@ export default class Game extends Phaser.Scene {
       repeat: 5,
       onComplete: () => {
         textElement.setTint(0xffffff);
+        textElement.alpha = 1;
         textElement.y = prev;
       }
     });
@@ -224,6 +225,8 @@ export default class Game extends Phaser.Scene {
 
     blowTnt (player, tnt) {
       this.blows.add(new Blow(this, tnt.x, tnt.y));
+      this.playAudio("explosion");
+      this.cameras.main.shake(100, 0.01);
       tnt.destroy();
     }
 
