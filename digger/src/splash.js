@@ -19,6 +19,7 @@ export default class Splash extends Phaser.Scene {
         this.time.delayedCall(10, () => this.showInstructions(), null, this);
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
+        this.registry.set("score", 0);
         //this.playMusic();
         //this.showPlayer();
     }

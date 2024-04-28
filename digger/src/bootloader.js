@@ -46,10 +46,6 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image('bricks', 'assets/maps/bricks.png');
 
         this.registry.set("score", 0);
-        this.registry.set("drill", 1);
-        this.registry.set("speed", 100);
-        this.registry.set("shield", 0);
-        this.registry.set("life", 100);
     }
 
     create () {
