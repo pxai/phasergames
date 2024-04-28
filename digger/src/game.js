@@ -39,8 +39,22 @@ export default class Game extends Phaser.Scene {
       this.setScore();
       this.addStartGame();
       this.loadAudios();
-      //this.playMusic();
-      this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);
+
+      this.startTimer();
+    }
+
+    startTimer () {
+      this.seconds = 120;
+      this.timer = this.time.addEvent({ delay: 1000, callback: this.decreaseTime, callbackScope: this, loop: true });
+      this.secondsText = this.add.bitmapText(40, 40, "pusab", this.seconds, 40).setOrigin(0.5).setScrollFactor(0)
+    }
+
+    decreaseTime () {
+      this.secondsText.setText(String(this.seconds).padStart(2, '0'));
+      this.seconds--;
+      if (this.seconds === 0) {
+        this.gameOver();
+      }
     }
 
     addStartGame () {

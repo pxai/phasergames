@@ -1,6 +1,6 @@
 class Blow extends Phaser.GameObjects.Rectangle {
   constructor(scene, x, y) {
-    const width = Phaser.Math.Between(150, 250);
+    const width = Phaser.Math.Between(180, 300);
     super(scene, x, y, width, width, 0xffffff);
     this.setOrigin(0.5)
     this.scene = scene;
