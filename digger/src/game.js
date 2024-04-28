@@ -239,7 +239,7 @@ export default class Game extends Phaser.Scene {
     blowTnt (player, tnt) {
       this.blows.add(new Blow(this, tnt.x, tnt.y));
       this.playAudio("explosion");
-      this.cameras.main.shake(100, 0.01);
+      this.cameras.main.shake(100);
       tnt.destroy();
     }
 
@@ -248,8 +248,8 @@ export default class Game extends Phaser.Scene {
     }
 
     playMusic (theme="engine") {
-      this.theme = this.sound.add(theme);
-      this.theme.stop();
+      //this.theme = this.sound.add(theme);
+      //this.theme.stop();
       this.theme.play({
         mute: false,
         volume: 0.7,
@@ -284,8 +284,10 @@ export default class Game extends Phaser.Scene {
     }
 
     gameOver () {
+      this.cameras.main.shake(100);
       this.sound.stopAll();
-      this.scene.start("outro", { number: this.number});
+      this.time.delayedCall(500, () => { this.scene.start("outro", { number: this.number}) }, null, this);
+      ;
     }
 
     finishScene () {
