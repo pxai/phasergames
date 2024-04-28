@@ -48,6 +48,9 @@ export default class Outro extends Phaser.Scene {
 
     startSplash () {
         // this.theme.stop();
+        this.input.manager.pointers.forEach(pointer => {
+            pointer.reset();
+        });
         this.scene.start("splash");
     }
 

@@ -284,13 +284,14 @@ export default class Game extends Phaser.Scene {
     }
 
     gameOver () {
+      this.timer.remove();
       this.cameras.main.shake(100);
-      this.sound.stopAll();
-      this.time.delayedCall(500, () => { this.scene.start("outro", { number: this.number}) }, null, this);
+      this.time.delayedCall(500, () => {       this.sound.stopAll();this.scene.start("outro", { number: this.number}) }, null, this);
       ;
     }
 
     finishScene () {
+      this.timer.remove();
       this.sound.stopAll();
       this.playAudio("stageclear1");
 

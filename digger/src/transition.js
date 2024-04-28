@@ -46,5 +46,8 @@ export default class Transition extends Phaser.Scene {
 
     loadNext () {
         this.scene.start("game", { number: this.number });
+        this.input.manager.pointers.forEach(pointer => {
+            pointer.reset();
+        });
     }
 }

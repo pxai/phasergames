@@ -15,7 +15,7 @@ export default class DungeonGenerator {
   generate() {
     this.generateDungeon();
     this.generateMap();
-
+    console.log("Generated Dungeon!!")
 
     this.dungeon.rooms.forEach((room) => {
       // These room properties are all in grid units (not pixels units)
@@ -39,7 +39,7 @@ export default class DungeonGenerator {
       const doors = room.getDoorLocations(); // Returns an array of {x, y} objects
       this.addDoors(room, doors, x, y);
       this.addTntActivators(room)
-      const foes = Phaser.Math.Between(1, 3)
+      const foes = Phaser.Math.RND.pick([1, 1, 1, 2, 2, 3])
       for (let i = 0;i<foes;i++)
         this.addFoes(room)
     });

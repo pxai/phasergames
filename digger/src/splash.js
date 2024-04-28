@@ -25,6 +25,9 @@ export default class Splash extends Phaser.Scene {
     }
 
     startGame () {
+        this.input.manager.pointers.forEach(pointer => {
+            pointer.reset();
+        });
         this.scene.start("transition", { number: 0 })
     }
 
