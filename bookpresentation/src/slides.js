@@ -7,14 +7,16 @@ export default [
   },
   {
     title: "1. Video Games",
-    layout: "text and image",
+    layout: "text and video",
     image: "image0",
+    video: "video0",
     paragraphs: ["PhaserJS based games", "Game Jams"]
   },
   {
     title: "2. Books",
-    layout: "image",
+    layout: "text and video",
     image: "image0",
+    video: "video1",
     paragraphs: ["Like tears in the rain...",]
   },
   {
@@ -25,7 +27,7 @@ export default [
   },
   {
     title: "4. Nevermore",
-    layout: "text and image",
+    layout: "text",
     image: "image0",
     paragraphs: ["* Pending challenges...", "* Missing books", "* Lots of projects"]
   },
@@ -55,36 +57,56 @@ export default [
   },
   {
     title: "9. Writing ON the code",
-    layout: "text & image",
-    image: "",
+    layout: "text and video",
+    image: "image0",
+    video: "video2",
     paragraphs: ["* Function comments", "* Copilot", "* Build process"]
   },
   {
     title: "10. First Draft: a shot in the dark",
-    layout: "text & image",
-    image: "",
+    layout: "text and video",
+    image: "image0",
+    video: "video3",
     paragraphs: ["* Discord announcement", "* Feedback"]
   },
   {
     title: "12. Richard Davey",
-    layout: "text & image",
-    image: "",
+    layout: "text and image",
+    image: "image0",
     paragraphs: ["* The \"Maker\"", "* Extra content!"]
   },
   {
-    title: "13. Moving to LibreOffice",
+    title: "13. Cover art!",
+    layout: "text and image",
+    image: "image1",
+    paragraphs: ["* Phaser cover art!", "* Extra content!"]
+  },
+  {
+    title: "14. Moving to LibreOffice",
     layout: "text & image",
     image: "",
     paragraphs: ["* Great with large documents", "-", "* Great code format"]
   },
   {
-    title: "14. Review process",
+    title: "15. Review process",
     layout: "text",
     image: "",
     paragraphs: ["* Easter", "* 3 alone + 1 pair"]
   },
   {
-    title: "15. Releases",
+    title: "16. Releases",
+    layout: "text & image",
+    image: "",
+    paragraphs: ["* Downloadable", "* Amazon"]
+  },
+  {
+    title: "17. Never Again!!",
+    layout: "text & image",
+    image: "",
+    paragraphs: ["* This is the last book", "* Not really..."]
+  },
+  {
+    title: "18. Thank you!",
     layout: "text & image",
     image: "",
     paragraphs: ["* Downloadable", "* Amazon"]

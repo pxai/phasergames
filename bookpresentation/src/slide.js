@@ -31,6 +31,7 @@ export default class Slide {
       case "text" : this.layoutText(); break;
       case "text and image" : this.layoutTextImage();break;
       case "image" : this.layoutImage();break;
+      case "text and video" : this.layoutTextVideo();break;
       default: this.layoutText(); break;
     }
   }
@@ -55,10 +56,28 @@ export default class Slide {
     this.image = this.scene.add.sprite(this.x + 100, this.y + 220 + offset, this.elements.image).setOrigin(0)
   }
 
+  layoutTextVideo () {
+    let lastPosition = 0;
+    this.elements.paragraphs.forEach((paragraph, i) => {
+      this.paragraphs.add(this.scene.add.bitmapText(this.x + 100, this.y + 220 + (i * 50), "pixelFont", paragraph, 32))
+      lastPosition = this.y + 220 + (i * 50);
+    })
+    this.video = this.scene.add.video(this.x + 100, lastPosition + 50, this.elements.video).setOrigin(0)
+    this.video.play(true);
+  }
+
+  destroyVideo () {
+    if (this.video) {
+      this.video.stop();
+      this.video.destroy();
+    }
+  }
+
   destroy () {
     this.next.destroy();
     this.paragraphs.destroy(true);
     this.image?.destroy();
+    this.destroyVideo();
     this.title.destroy();
     this.background.destroy();
   }
