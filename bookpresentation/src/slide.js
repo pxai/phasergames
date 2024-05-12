@@ -20,16 +20,45 @@ export default class Slide {
 
   addElements () {
     this.next = new Ember(this.scene, this.x + 900, this.y + 32).setScale(1.2)
-    this.title = this.scene.add.bitmapText(this.x + 100, this.y + 120, "pixelFont", this.elements['title'], 32).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0)
+    this.title = this.scene.add.bitmapText(this.x + 100, this.y + 120, "pixelFont", this.elements['title'], 52).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0)
     this.next.setInteractive();
     this.next.on('pointerdown', () => {
         this.scene.sound.add("ember").play()
         this.scene.closeSlide()
     })
+    this.paragraphs = this.scene.add.group();
+    switch (this.elements.layout) {
+      case "text" : this.layoutText(); break;
+      case "text and image" : this.layoutTextImage();break;
+      case "image" : this.layoutImage();break;
+      default: this.layoutText(); break;
+    }
+  }
+
+  layoutText () {
+    this.paragraphs = this.scene.add.group();
+    this.elements.paragraphs.forEach((paragraph, i) => {
+      this.paragraphs.add(this.scene.add.bitmapText(this.x + 100, this.y + 220 + (i * 50), "pixelFont", paragraph, 32))
+    })
+  }
+
+  layoutTextImage () {
+    let lastPosition = 0;
+    this.elements.paragraphs.forEach((paragraph, i) => {
+      this.paragraphs.add(this.scene.add.bitmapText(this.x + 100, this.y + 220 + (i * 50), "pixelFont", paragraph, 32))
+      lastPosition = this.y + 220 + (i * 50);
+    })
+    this.layoutImage(lastPosition + 50)
+  }
+
+  layoutImage (offset = 0) {
+    this.image = this.scene.add.sprite(this.x + 100, this.y + 220 + offset, this.elements.image).setOrigin(0)
   }
 
   destroy () {
     this.next.destroy();
+    this.paragraphs.destroy(true);
+    this.image?.destroy();
     this.title.destroy();
     this.background.destroy();
   }

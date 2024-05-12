@@ -44,6 +44,18 @@ export default class Game extends Phaser.Scene {
       this.addArrows();
 
       this.loadAudios();
+      this.addTitle();
+    }
+
+    addTitle () {
+      this.title = this.add.bitmapText(this.center_width, 200, "pixelFont", "FROM GAMES \n2 BOOK", 100).setTint(0x0777b7).setDropShadow(1, 2, 0xffffff, 0.7).setOrigin(0.5).setScrollFactor(0)
+
+      this.title.setInteractive();
+      this.title.on('pointerdown', () => {
+          this.sound.add("ember").play()
+          this.player.unFreeze();
+          this.title.destroy();
+      })
     }
 
     addScore() {
@@ -65,6 +77,7 @@ export default class Game extends Phaser.Scene {
         this.playAudio("ember")
           this.previousSlide()
       })
+      this.counterText = this.add.bitmapText(this.width - 150, this.height - 64,"pixelFont", this.currentSlideIndex, 20).setOrigin(0.5).setScrollFactor(0).setTint(0xffffff)
       this.rightArrow = this.add.sprite(this.width - 100, this.height - 64, "arrow_right").setScale(0.3).setOrigin(0.5).setScrollFactor(0)
       this.rightArrow.setInteractive();
       this.rightArrow.on('pointerdown', () => {
@@ -76,6 +89,7 @@ export default class Game extends Phaser.Scene {
     previousSlide () {
       if (this.currentSlideIndex === 0) return;
       this.currentSlideIndex--;
+      this.counterText.setText(this.currentSlideIndex)
       this.getSlide(this.currentSlideIndex)
       this.closeSlide()
       console.log("Moving to: ", this.currentSlideIndex)
@@ -85,6 +99,7 @@ export default class Game extends Phaser.Scene {
       const TOTAL_SLIDES = SLIDES.length;
       if (this.currentSlideIndex >= TOTAL_SLIDES) return;
       this.currentSlideIndex++;
+      this.counterText.setText(this.currentSlideIndex)
       this.getSlide(this.currentSlideIndex)
       console.log("Moving to: ", this.currentSlideIndex)
     }
@@ -349,6 +364,7 @@ export default class Game extends Phaser.Scene {
       this.currentSlideSensor = slideSensor;
       this.currentSlide = new Slide(this, slideSensor.number, SLIDES[slideSensor.number])
       this.currentSlideIndex = slideSensor.number;
+      this.counterText.setText(this.currentSlideIndex)
 
     }
 

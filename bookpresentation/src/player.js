@@ -24,6 +24,8 @@ class Player extends Phaser.GameObjects.Sprite {
         this.latestX = 0;
         this.latestY = 0;
 
+        this.freeze()
+
         this.init();
         this.setKeys()
     }
