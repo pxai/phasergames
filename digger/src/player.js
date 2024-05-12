@@ -68,7 +68,7 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     update () {
-       if (this.drilling && this.scene.canMove()) {
+       if (this.drilling) { //  && this.scene.canMove()) {
         const point = this.scene.cameras.main.getWorldPoint(this.scene.input.mousePointer.x, this.scene.input.mousePointer.y)
         this.body.x = point.x;
         this.body.y = point.y;

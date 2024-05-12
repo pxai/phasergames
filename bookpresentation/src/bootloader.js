@@ -20,7 +20,7 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("splash", { name: "tutorial", number: 0 });
+            this.scene.start("transition", { name: "tutorial", number: 1 });
         },this);
 
 

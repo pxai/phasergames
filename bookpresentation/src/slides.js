@@ -33,36 +33,60 @@ export default [
     title: "5. Plan",
     layout: "text",
     image: "",
-    paragraphs: ["- Select some games", "- Polish them", "- Explain them", "- Add extra content"]
+    paragraphs: ["* Select some games", "* Polish them", "* Explain them", "* Add extra content"]
   },
   {
     title: "6. Writing book == Coding",
     layout: "text",
     image: "",
-    paragraphs: ["- Project: Markdown, JS", "- Git", "- Tasks", "- Add extra content"]
+    paragraphs: ["* Project: Markdown, JS", "* Git", "* Tasks", "* Add extra content"]
   },
   {
     title: "7. Anatomy of a chapter",
     layout: "text",
     image: "",
-    paragraphs: ["- General explanation", "- Each class explained", "- Each method explained"]
+    paragraphs: ["* General explanation", "* Each class explained", "* Each method explained"]
   },
   {
     title: "8. Writing with VSCode",
     layout: "text & image",
     image: "",
-    paragraphs: ["- Pretty code", "- Markdown preview" ]
+    paragraphs: ["* Pretty code", "* Markdown preview" ]
   },
   {
     title: "9. Writing ON the code",
     layout: "text & image",
     image: "",
-    paragraphs: ["- Function comments", "- Copilot", "- Build process"]
+    paragraphs: ["* Function comments", "* Copilot", "* Build process"]
   },
   {
     title: "10. First Draft: a shot in the dark",
     layout: "text & image",
     image: "",
-    paragraphs: ["- Discord announcement", "- Feedback"]
+    paragraphs: ["* Discord announcement", "* Feedback"]
+  },
+  {
+    title: "12. Richard Davey",
+    layout: "text & image",
+    image: "",
+    paragraphs: ["* The \"Maker\"", "* Extra content!"]
+  },
+  {
+    title: "13. Moving to LibreOffice",
+    layout: "text & image",
+    image: "",
+    paragraphs: ["* Great with large documents", "-", "* Great code format"]
+  },
+  {
+    title: "14. Review process",
+    layout: "text",
+    image: "",
+    paragraphs: ["* Easter", "* 3 alone + 1 pair"]
+  },
+  {
+    title: "15. Releases",
+    layout: "text & image",
+    image: "",
+    paragraphs: ["* Downloadable", "* Amazon"]
   },
 ]
