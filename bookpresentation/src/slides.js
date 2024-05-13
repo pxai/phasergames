@@ -27,8 +27,8 @@ export default [
   },
   {
     title: "4. Nevermore",
-    layout: "text",
-    image: "image0",
+    layout: "text and image",
+    image: "image3",
     paragraphs: ["* Pending challenges...", "* Missing books", "* Lots of projects"]
   },
   {
@@ -51,7 +51,7 @@ export default [
   },
   {
     title: "8. Writing with VSCode",
-    layout: "text and videp",
+    layout: "text and video",
     image: "",
     video: "video4",
     paragraphs: ["* Pretty code + Markdown preview" ]
@@ -64,7 +64,7 @@ export default [
     paragraphs: ["* Function comments", "* Copilot", "* Build process"]
   },
   {
-    title: "10. First Draft: a shot in the dark",
+    title: "10. First Draft",
     layout: "text and video",
     image: "image0",
     video: "video3",
@@ -74,7 +74,7 @@ export default [
     title: "12. Richard Davey",
     layout: "text and image",
     image: "image0",
-    paragraphs: ["* The \"Maker\"", "* Extra content!"]
+    paragraphs: ["* The Maker", "* Extra content!"]
   },
   {
     title: "13. Cover art!",

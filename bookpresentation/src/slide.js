@@ -54,6 +54,7 @@ export default class Slide {
 
   layoutImage (offset = 0) {
     this.image = this.scene.add.sprite(this.x + 100, this.y + 220 + offset, this.elements.image).setOrigin(0)
+    console.log("IMAGE added! ", this.image)
   }
 
   layoutTextVideo () {
