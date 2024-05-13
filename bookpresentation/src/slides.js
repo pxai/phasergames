@@ -80,7 +80,7 @@ export default [
     title: "13. Cover art!",
     layout: "text and image",
     image: "image2",
-    paragraphs: ["* Phaser cover art!", "* Extra content!"]
+    paragraphs: ["* Phaser cover art", "* No drafts available" ]
   },
   {
     title: "14. Moving to LibreOffice",
@@ -108,8 +108,8 @@ export default [
   },
   {
     title: "18. Thank you!",
-    layout: "text & image",
+    layout: "text and image",
     image: "",
-    paragraphs: ["* Downloadable", "* Amazon"]
+    paragraphs: ["That's all folks!"]
   },
 ]
