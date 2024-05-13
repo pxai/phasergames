@@ -23,7 +23,7 @@ export default class Slide {
     this.title = this.scene.add.bitmapText(this.x + 100, this.y + 120, "pixelFont", this.elements['title'], 52).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0)
     this.next.setInteractive();
     this.next.on('pointerdown', () => {
-        this.scene.sound.add("ember").play()
+        this.scene.playAudio("pick")
         this.scene.closeSlide()
     })
     this.paragraphs = this.scene.add.group();

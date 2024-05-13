@@ -344,6 +344,9 @@ export default class Game extends Phaser.Scene {
       ember.body.setImmovable(false);
       ember.body.setAllowGravity(true)
       ember.tween.stop();
+      this.updateEmbers();
+      this.player.pickEmber();
+      player.showPoints("+1")
     }
 
     hitCheckpoint(player, checkpoint) {
@@ -357,6 +360,7 @@ export default class Game extends Phaser.Scene {
     hitSlide(player, slideSensor) {
       if (!slideSensor.active) return;
       slideSensor.active = false;
+      this.playAudio("ember")
       const position = {x: slideSensor.x, y: player.y };
       this.bubbleExplosion(player)
       player.showPoints("Slide " + slideSensor.number)

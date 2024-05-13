@@ -29,24 +29,24 @@ export default [
     title: "4. Nevermore",
     layout: "text and image",
     image: "image3",
-    paragraphs: ["* Pending challenges...", "* Missing books", "* Lots of projects"]
+    paragraphs: ["* Pending challenges...", "* Missing books", "* Lots of projects done."]
   },
   {
     title: "5. Plan",
-    layout: "text",
-    image: "",
+    layout: "text and image",
+    image: "image6",
     paragraphs: ["* Select some games", "* Polish them", "* Explain them", "* Add extra content"]
   },
   {
     title: "6. Writing book == Coding",
-    layout: "text",
-    image: "",
+    layout: "text and image",
+    image: "image7",
     paragraphs: ["* Project: Markdown, JS", "* Git", "* Tasks", "* Add extra content"]
   },
   {
     title: "7. Anatomy of a chapter",
-    layout: "text",
-    image: "",
+    layout: "text and image",
+    image: "image8",
     paragraphs: ["* General explanation", "* Each class explained", "* Each method explained"]
   },
   {
@@ -84,31 +84,32 @@ export default [
   },
   {
     title: "14. Moving to LibreOffice",
-    layout: "text & image",
+    layout: "text and video",
     image: "",
-    paragraphs: ["* Great with large documents", "-", "* Great code format"]
+    video: "video5",
+    paragraphs: ["* Great with large documents", "* Great code format"]
   },
   {
     title: "15. Review process",
-    layout: "text",
-    image: "",
+    layout: "text and image",
+    image: "image9",
     paragraphs: ["* Easter", "* 3 alone + 1 pair"]
   },
   {
     title: "16. Releases",
-    layout: "text & image",
-    image: "",
+    layout: "text and image",
+    image: "image4",
     paragraphs: ["* Downloadable", "* Amazon"]
   },
   {
     title: "17. Never Again!!",
-    layout: "text & image",
-    image: "",
+    layout: "text and image",
+    image: "image5",
     paragraphs: ["* This is the last book", "* Not really..."]
   },
   {
     title: "18. Thank you!",
-    layout: "text and image",
+    layout: "text",
     image: "",
     paragraphs: ["That's all folks!"]
   },
