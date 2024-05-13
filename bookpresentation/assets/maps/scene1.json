@@ -1264,6 +1264,28 @@
                  "width":0,
                  "x":2624,
                  "y":1152
+                }, 
+                {
+                 "class":"",
+                 "height":0,
+                 "id":83,
+                 "name":"slide:18",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":2112,
+                 "y":1120
+                }, 
+                {
+                 "class":"",
+                 "height":0,
+                 "id":84,
+                 "name":"slide:19",
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":1632,
+                 "y":1120
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1272,7 +1294,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":83,
+ "nextobjectid":85,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.9.2",

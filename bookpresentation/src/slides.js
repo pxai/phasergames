@@ -21,8 +21,8 @@ export default [
   },
   {
     title: "3. How to teach something right",
-    layout: "text",
-    image: "",
+    layout: "text and image",
+    image: "image1",
     paragraphs: ["Triggers", "Good examples"]
   },
   {
@@ -51,9 +51,10 @@ export default [
   },
   {
     title: "8. Writing with VSCode",
-    layout: "text & image",
+    layout: "text and videp",
     image: "",
-    paragraphs: ["* Pretty code", "* Markdown preview" ]
+    video: "video4",
+    paragraphs: ["* Pretty code + Markdown preview" ]
   },
   {
     title: "9. Writing ON the code",
@@ -78,7 +79,7 @@ export default [
   {
     title: "13. Cover art!",
     layout: "text and image",
-    image: "image1",
+    image: "image2",
     paragraphs: ["* Phaser cover art!", "* Extra content!"]
   },
   {
