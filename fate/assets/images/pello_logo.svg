@@ -25,13 +25,13 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.49497474"
-     inkscape:cx="3357.7471"
-     inkscape:cy="45.456865"
+     inkscape:cx="3352.6963"
+     inkscape:cy="3329.4628"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1728"
-     inkscape:window-height="1051"
+     inkscape:window-height="964"
      inkscape:window-x="0"
      inkscape:window-y="38"
      inkscape:window-maximized="1"
@@ -3352,6 +3352,66 @@
              id="rect4178-5-0-2-3-3-7-1-5-9-7-8-27-3-0-5-3-6-1" /></flowRegion><flowPara
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#bb3e03;fill-opacity:1"
            id="flowPara4180-9-9-6-7-1-7-7-7-9-9-6-09-0-4-7-9-0-2">P</flowPara></flowRoot>
+    </g>
+    <g
+       id="g2400"
+       inkscape:export-filename="../../../otto/assets/images/pello_ok.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         inkscape:randomized="0"
+         inkscape:rounded="0"
+         inkscape:flatsided="true"
+         sodipodi:arg2="2.0943951"
+         sodipodi:arg1="1.5707963"
+         sodipodi:r2="165.9481"
+         sodipodi:r1="191.62038"
+         sodipodi:cy="3323.1853"
+         sodipodi:cx="3111.3071"
+         sodipodi:sides="6"
+         id="path3355-4-6-7-2-9-3-4-8-4-7-2-6-8-1-6-4-7-6-9"
+         style="fill:#518ade;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         sodipodi:type="star"
+         d="m 3111.3071,3514.8057 -165.9481,-95.8102 0,-191.6204 165.9481,-95.8102 165.9481,95.8102 0,191.6204 z"
+         transform="translate(438.15373,0.8479668)" />
+      <flowRoot
+         transform="matrix(4.8171734,2.788993,0,4.8171734,3629.0737,-252.12673)"
+         style="font-style:normal;font-weight:normal;line-height:0.01%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#dea551;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="flowRoot4174-4-6-7-0-4-7-4-3-0-8-4-4-75-8-4-0-0-8-7-38"
+         xml:space="preserve"><flowRegion
+           id="flowRegion4176-3-5-5-3-0-9-5-5-6-0-0-6-3-8-9-4-2-0-5-02"
+           style="fill:#dea551;fill-opacity:1"><rect
+             style="fill:#dea551;fill-opacity:1"
+             y="706.89001"
+             x="-14.142136"
+             height="189.90868"
+             width="177.78685"
+             id="rect4178-4-7-2-7-4-2-5-5-5-7-5-34-5-9-1-3-2-4-3-4" /></flowRegion><flowPara
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#dea551;fill-opacity:1"
+           id="flowPara4180-3-3-7-5-1-2-7-1-7-4-5-3-6-7-0-8-5-5-5-83">X</flowPara></flowRoot>
+      <rect
+         transform="matrix(0.86866238,-0.49540455,0,1,0,0)"
+         y="5156.6924"
+         x="3894.9978"
+         height="192.62155"
+         width="190.65714"
+         id="rect4157-7-1-0-5-6-1-3-3-8-8-5-3-5-2-7-7-2-4-7-6-90"
+         style="fill:#dea551;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <flowRoot
+         transform="matrix(4.9125379,-2.8362552,0,4.9125379,3457.3127,-307.44438)"
+         style="font-style:normal;font-weight:normal;line-height:0.01%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#518ade;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="flowRoot4174-9-9-6-0-5-7-3-4-56-0-8-9-6-5-0-4-1-2-5"
+         xml:space="preserve"><flowRegion
+           id="flowRegion4176-5-3-7-6-8-6-1-3-1-3-9-1-4-87-6-6-0-9-2"
+           style="fill:#518ade;fill-opacity:1"><rect
+             style="fill:#518ade;fill-opacity:1"
+             y="706.89001"
+             x="-14.142136"
+             height="189.90868"
+             width="177.78685"
+             id="rect4178-5-0-2-3-3-7-1-5-9-7-8-27-3-0-5-3-6-1-2" /></flowRegion><flowPara
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#518ade;fill-opacity:1"
+           id="flowPara4180-9-9-6-7-1-7-7-7-9-9-6-09-0-4-7-9-0-2-73">P</flowPara></flowRoot>
     </g>
     <g
        id="g4837"

@@ -13,7 +13,7 @@ export default class Slide {
 
   addBackground () {
     console.log("Showing SLIDE ", this.number, this.elements)
-    this.scene.add.sprite(this.x + 30, this.y + 64, "shot").setOrigin(0).setScrollFactor(0)
+    //this.scene.add.sprite(this.x + 30, this.y + 64, "shot").setOrigin(0).setScrollFactor(0)
     this.background = this.scene.add.rectangle(this.x, this.y, 900, 800, 0x000000).setAlpha(0.8).setOrigin(0)
     //this.shot = this.scene.add.sprite(this.x + 30, this.y + 64, "shot").setOrigin(0).setScrollFactor(0)
   }

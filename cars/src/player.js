@@ -72,10 +72,10 @@ class Player extends Phaser.GameObjects.Sprite {
         if (this.death) return;
 
         if (this.jumping) {
-            this.shadow.x = this.x; 
+            this.shadow.x = this.x;
             if (this.y >= this.jumpPoint) this.land();
             if (this.body.velocity.y > 0) this.rotation = 0.3;
-        } else {                
+        } else {
             if (this.cursor.left.isDown || this.A.isDown) {
                 this.body.setVelocityX(-100);
                 this.body.setDrag(300)
@@ -94,7 +94,7 @@ class Player extends Phaser.GameObjects.Sprite {
                  this.body.setAngularVelocity(0);
                  this.accelerating = false;
              }
-     
+
              if (this.cursor.up.isDown || this.W.isDown) {
                  this.rotation = -0.2;
                  this.body.setVelocityY(-100);
@@ -121,7 +121,7 @@ class Player extends Phaser.GameObjects.Sprite {
                 this.shoot();
             }
         }
-    
+
     }
 
     jump () {
@@ -136,6 +136,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.rotation = -0.3;
     }
 
+
     land () {
         this.scene.playAudio("land")
         this.jumping = false;
@@ -143,7 +144,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.shadow.destroy();
         this.jumpPoint = -1;
         this.body.setAllowGravity(false)
-    } 
+    }
 
     addBullets(bullets) {
         this.bullets = this.bullets + bullets;
@@ -166,7 +167,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.death = true;
         this.scene.restartScene();
         super.destroy();
-    }      
+    }
 }
 
 export default Player;

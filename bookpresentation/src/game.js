@@ -45,6 +45,7 @@ export default class Game extends Phaser.Scene {
 
       this.loadAudios();
       this.addTitle();
+      this.playMusic();
     }
 
     addTitle () {
@@ -428,7 +429,7 @@ export default class Game extends Phaser.Scene {
       this.theme.stop();
       this.theme.play({
         mute: false,
-        volume: 1,
+        volume: .025,
         rate: 1,
         detune: 0,
         seek: 0,
