@@ -25,9 +25,12 @@ export default class Transition extends Phaser.Scene {
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
 
-        this.add.bitmapText(this.center_width, this.center_height - 20, "pixelFont", messages[this.next], 40).setOrigin(0.5)
-        this.add.bitmapText(this.center_width, this.center_height + 20, "pixelFont", "Ready?", 30).setOrigin(0.5)
+        this.add.bitmapText(this.center_width, this.center_height - 30, "pixelFont", `Stage ${this.number}/10`, 50).setOrigin(0.5).setTint(0xDEA551)
+        this.add.bitmapText(this.center_width, this.center_height + 30, "pixelFont", "Ready?", 30).setOrigin(0.5).setTint(0x518ADE)
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
+        this.time.delayedCall(2000, () => {
+            this.loadNext()
+        }, null, this)
     }
 
     update () {

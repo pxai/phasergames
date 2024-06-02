@@ -24,9 +24,9 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
+      this.stageClear = false;
 
-
-      //this.loadAudios();
+      this.loadAudios();
       // this.playMusic();
       this.addMap();
       this.addPlayers();
@@ -91,6 +91,7 @@ export default class Game extends Phaser.Scene {
     }
 
     hitExit(player, exit) {
+      if (this.stageClear) return;
       if (player.name === "player1" && exit.name === "exit1") {
         console.log("Player1 touched!")
         this.player1.touchingExit = true
@@ -102,13 +103,16 @@ export default class Game extends Phaser.Scene {
       }
 
       if (this.player1.touchingExit && this.player2.touchingExit) {
+        this.stageClear = true;
         this.finishScene()
       }
     }
 
     addTitle() {
       this.car1 = this.add.sprite(this.center_width + 256, 140, "player2").setOrigin(1, 0).setRotation(Math.PI/2).setScale(2)
+      this.car1Position = {x: this.car1.x, y: this.car1.y};
       this.car2 = this.add.sprite(this.center_width - 256, 140, "player1").setOrigin(0, 0).setRotation(-Math.PI/2).setScale(2)
+      this.car2Position = {x: this.car2.x, y: this.car2.y};
       this.titleText1 = this.add.bitmapText(this.center_width, 64, "pixelFont", "OT", 80).setOrigin(1,0).setTint(0xDEA551)
       this.titleText2 = this.add.bitmapText(this.center_width, 64, "pixelFont", "TO", 80).setOrigin(0, 0).setTint(0x518ADE)
     }
@@ -117,29 +121,16 @@ export default class Game extends Phaser.Scene {
       this.movesText = this.add.bitmapText(this.center_width, 164, "pixelFont", this.registry.get("moves"), 40).setOrigin(0.5)
     }
 
-      loadAudios () {
-        this.audios = {
-          "beam": this.sound.add("beam"),
-        };
-      }
+    loadAudios () {
+      this.audios = {
+        "win": this.sound.add("win"),
+        "move": this.sound.add("move"),
+      };
+    }
 
-      playAudio(key) {
-        this.audios[key].play();
-      }
-
-      playMusic (theme="game") {
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
-        this.theme.play({
-          mute: false,
-          volume: 1,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-      })
-      }
+    playAudio(key) {
+      this.audios[key].play();
+    }
 
     update() {
         if (
@@ -172,11 +163,11 @@ export default class Game extends Phaser.Scene {
       this.updateMoves()
       if (this.canMove(this.player1.x, this.player1.y + STEP)) {
         this.player1.down();
-      }
+      } else this.shakeIt(this.car2, this.car2Position)
 
       if (this.canMove(this.player2.x, this.player2.y - STEP, "red")) {
         this.player2.up();
-      }
+      } else this.shakeIt(this.car1, this.car1Position)
 
     }
 
@@ -184,11 +175,11 @@ export default class Game extends Phaser.Scene {
       this.updateMoves()
       if (this.canMove(this.player1.x, this.player1.y - STEP)) {
         this.player1.up();
-      }
+      } else this.shakeIt(this.car2, this.car2Position)
 
       if (this.canMove(this.player2.x, this.player2.y + STEP, "red")) {
         this.player2.down();
-      }
+      } else this.shakeIt(this.car1, this.car1Position)
 
     }
 
@@ -196,21 +187,21 @@ export default class Game extends Phaser.Scene {
       this.updateMoves()
       if (this.canMove(this.player1.x + STEP, this.player1.y)) {
         this.player1.right();
-      }
+      } else this.shakeIt(this.car2, this.car2Position)
 
       if (this.canMove(this.player2.x - STEP, this.player2.y, "red")) {
         this.player2.left();
-      }
+      } else this.shakeIt(this.car1, this.car1Position)
     }
 
     moveLeft() {
       this.updateMoves()
       if (this.canMove(this.player1.x - STEP, this.player1.y)) {
         this.player1.left();
-      }
+      } else this.shakeIt(this.car2, this.car2Position)
       if (this.canMove(this.player2.x + STEP, this.player2.y, "red")) {
         this.player2.right();
-      }
+      } else this.shakeIt(this.car1, this.car1Position)
     }
 
     canMove (x, y, color = "blue") {
@@ -221,13 +212,58 @@ export default class Game extends Phaser.Scene {
       return !tile;
     }
 
+    shakeIt (element, original) {
+      const {x, y} = element;
+      this.tweens.add({
+        targets: element,
+        duration: 30,
+        x: `+=${Phaser.Math.Between(2,10)}`,
+        y: `+=${Phaser.Math.Between(2,10)}`,
+        repeat: 10,
+        yoyo: true,
+        onComplete: () => {
+          element.x = original.x;
+          element.y = original.y;
+        }
+      })
+    }
+
     finishScene () {
-      this.theme.stop();
-      this.scene.start("transition", {number: this.number + 1});
+      this.playAudio("win")
+      this.showWin()
+      this.celebrate()
+     // this.theme.stop();
+     this.time.delayedCall(2000, ()=> {this.scene.start("transition", {number: this.number + 1});}, null, this)
+
+    }
+
+    showWin() {
+      this.winText1 = this.add.bitmapText(this.center_width, - 100, "pixelFont", "Stage", 120).setOrigin(0.5).setTint(0xDEA551).setDropShadow(2, 2, 0x518ADE, 0.7);
+      this.winText2 = this.add.bitmapText(this.center_width,  1000, "pixelFont", "Cleared", 120).setOrigin(0.5).setTint(0x518ADE).setDropShadow(2, 2, 0xDEA551, 0.7);
+      this.tweenThis(this.winText1, 500, -80)
+      this.tweenThis(this.winText2, 500, 80)
+    }
+
+    tweenThis(element, duration = 1000, offset = 0) {
+      this.tweens.add({
+          targets: element,
+          duration,
+          y: {
+            from: element.y,
+            to: this.center_height + offset
+          },
+        })
+      this.tweens.add({
+        targets: element,
+        scale: {from: 0.9, to: 1},
+        duration: 50,
+        repeat: 10,
+        yoyo: true
+      })
     }
 
     restartScene () {
-      this.theme.stop();
+      //this.theme.stop();
       this.scene.start("transition", {number: this.number});
     }
 
@@ -237,5 +273,20 @@ export default class Game extends Phaser.Scene {
         const moves = +this.registry.get("moves") + 1;
         this.registry.set("moves", moves);
         this.movesText.setText(moves);
+    }
+
+    celebrate () {
+      Array(Phaser.Math.Between(200, 300)).fill().forEach(i => {
+        const star = this.add.sprite(Phaser.Math.Between(32, 900), Phaser.Math.Between(32, 800), "star").setTint(Phaser.Math.RND.pick([0xDEA551, 0x518ADE]))
+        this.tweens.add({
+          targets: star,
+          duration: 400,
+          scale: {from: 0, to: 1},
+          yoyo: true,
+          onComplete: () => {
+            star.destroy()
+          }
+        })
+      })
     }
 }
