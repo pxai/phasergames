@@ -37,7 +37,6 @@ export default class Game extends Phaser.Scene {
 
     addControls () {
       this.cursor = this.input.keyboard.createCursorKeys();
-      this.B = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
       this.R = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
       this.W = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
       this.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -94,12 +93,10 @@ export default class Game extends Phaser.Scene {
     hitExit(player, exit) {
       if (this.stageClear) return;
       if (player.name === "player1" && exit.name === "exit1") {
-        console.log("Player1 touched!")
         this.player1.touchingExit = true
       }
 
       if (player.name === "player2" && exit.name === "exit2") {
-        console.log("Player2 touched!")
         this.player2.touchingExit = true
       }
 
@@ -160,10 +157,6 @@ export default class Game extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustUp(this.R))  {
           this.restartScene();
         }
-        // TODO REMOVE
-        if (Phaser.Input.Keyboard.JustUp(this.B))  {
-          this.finishScene();
-        }
     }
 
     moveDown() {
@@ -214,7 +207,6 @@ export default class Game extends Phaser.Scene {
     canMove (x, y, color = "blue") {
       const point = this.cameras.main.getWorldPoint(x, y)
       const tile = this.platform.getTileAtWorldXY(point.x, point.y)
-      console.log("Is there a tile: ", color,  !tile, tile)
 
       return !tile;
     }
