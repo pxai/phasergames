@@ -24,7 +24,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     init () {
         this.scene.tweens.add({
             targets: this,
-            scaleX: {from: 1, to: 0.9},
+            scaleX: {from: 1, to: 0.95},
             repeat: -1,
             duration: 100,
             yoyo: true,
@@ -38,7 +38,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     up () {
         this.scene.playAudio("move")
         this.move()
-        new Trail(this.scene, this.x, this.y, 1, 1, this.color, false)
+        new Trail(this.scene, this.x, this.y, this.color, "trail")
         this.y -= STEP;
         this.direction = "up";
         this.rotation = this.initialRotation;
@@ -48,7 +48,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     down () {
         this.scene.playAudio("move")
         this.move()
-        new Trail(this.scene, this.x, this.y, 1, 1, this.color, false)
+        new Trail(this.scene, this.x, this.y, this.color, "trail")
         this.y += STEP;
         this.direction = "down";
         this.rotation = this.initialRotation;
@@ -58,7 +58,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     left () {
         this.scene.playAudio("move")
         this.move()
-        new Trail(this.scene, this.x, this.y, 1, 1, this.color)
+        new Trail(this.scene, this.x, this.y, this.color)
         this.x -= STEP;
         this.direction = "left";
         this.rotation = this.initialRotation;
@@ -68,7 +68,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     right () {
         this.scene.playAudio("move")
         this.move()
-        new Trail(this.scene, this.x, this.y, 1, 1, this.color)
+        new Trail(this.scene, this.x, this.y, this.color)
         this.x += STEP;
         this.direction = "right";
         this.rotation = this.initialRotation;
@@ -86,18 +86,12 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
 
     move () {
-        let x = Phaser.Math.Between(-10, 10);
-        let y = Phaser.Math.Between(-10, 10);
-        new Dust(this.scene, this.x +  y, this.y - 8 + y, 1, 1, this.color);
-        x = Phaser.Math.Between(-10, 10);
-        y = Phaser.Math.Between(-10, 10);
-        new Dust(this.scene, this.x + 16 +y, this.y + y, 1, 1, this.color);
-        x = Phaser.Math.Between(-10, 10);
-        y = Phaser.Math.Between(-10, 10);
-        new Dust(this.scene, this.x + y, this.y + 8 + y,  1, 1, this.color);
-        x = Phaser.Math.Between(-10, 10);
-        y = Phaser.Math.Between(-10, 10);
-        new Dust(this.scene, this.x - 16 +y, this.y + y, 1, 1, this.color);
+        let x = Phaser.Math.Between(-8, 8);
+        let y = Phaser.Math.Between(-8, 8);
+        new Dust(this.scene, this.x +  y, this.y + y, 1, 1, this.color);
+        x = Phaser.Math.Between(-8, 8);
+        y = Phaser.Math.Between(-8, 8);
+        new Dust(this.scene, this.x + x, this.y + y, 1, 1, this.color);
       }
 
 }

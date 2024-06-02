@@ -37,6 +37,7 @@ export default class Game extends Phaser.Scene {
 
     addControls () {
       this.cursor = this.input.keyboard.createCursorKeys();
+      this.B = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
       this.R = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
       this.W = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
       this.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -83,10 +84,10 @@ export default class Game extends Phaser.Scene {
     addExits () {
       this.exits = this.add.group();
       const exit1Position = this.objectsLayer.objects.find( object => object.name === "exit1")
-      this.exit1 = new Exit(this, exit1Position.x + OFFSET, exit1Position.y + OFFSET, "exit1");
+      this.exit1 = new Exit(this, exit1Position.x + OFFSET, exit1Position.y + OFFSET, "exit1", 0x518ADE);
       this.exits.add(this.exit1);
       const exit2Position = this.objectsLayer.objects.find( object => object.name === "exit2")
-      this.exit2 = new Exit(this, exit2Position.x + OFFSET, exit2Position.y + OFFSET, "exit2");
+      this.exit2 = new Exit(this, exit2Position.x + OFFSET, exit2Position.y + OFFSET, "exit2", 0xDEA551);
       this.exits.add(this.exit2);
     }
 
@@ -122,14 +123,16 @@ export default class Game extends Phaser.Scene {
     }
 
     loadAudios () {
+      this.engine = this.sound.add("engine")
       this.audios = {
         "win": this.sound.add("win"),
         "move": this.sound.add("move"),
+        "engine": this.sound.add("engine"),
       };
     }
 
-    playAudio(key) {
-      this.audios[key].play();
+    playAudio(key, volume=.3) {
+      this.audios[key].play({volume});
     }
 
     update() {
@@ -156,6 +159,10 @@ export default class Game extends Phaser.Scene {
         }
         if (Phaser.Input.Keyboard.JustUp(this.R))  {
           this.restartScene();
+        }
+        // TODO REMOVE
+        if (Phaser.Input.Keyboard.JustUp(this.B))  {
+          this.finishScene();
         }
     }
 
@@ -210,6 +217,15 @@ export default class Game extends Phaser.Scene {
       console.log("Is there a tile: ", color,  !tile, tile)
 
       return !tile;
+    }
+
+    playEngine(rate = 0.5, volume = 0.5) {
+      if (!this.engine.isPlaying) {
+        this.engine.play({
+          rate: Phaser.Math.Between(8, 12)/10,
+          volume: Phaser.Math.Between(1, 5)/10
+        });
+      }
     }
 
     shakeIt (element, original) {

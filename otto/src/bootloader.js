@@ -25,10 +25,8 @@ export default class Bootloader extends Phaser.Scene {
 
 
         this.load.image("player1", "assets/images/player1.png");
-        this.load.image("exit1", "assets/images/exit1.png");
         this.load.image("trophy1", "assets/images/trophy1.png");
         this.load.image("player2", "assets/images/player2.png");
-        this.load.image("exit2", "assets/images/exit2.png");
         this.load.image("trophy2", "assets/images/trophy2.png");
         this.load.image("star", "assets/images/star.png");
 
@@ -43,11 +41,14 @@ export default class Bootloader extends Phaser.Scene {
 
         this.load.audio("win", "assets/sounds/win.mp3");
         this.load.audio("move", "assets/sounds/move.mp3");
+        this.load.audio("engine", "assets/sounds/engine.mp3");
 
 
         this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
         this.load.spritesheet("dust", "assets/images/dust.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("trail", "assets/images/trail.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("trail2", "assets/images/trail2.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("exit", "assets/images/exit.png", { frameWidth: 32, frameHeight: 32 });
 
         this.load.image('otto', 'assets/maps/otto.png');
 
