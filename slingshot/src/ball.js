@@ -69,8 +69,8 @@ export default class Ball extends Phaser.GameObjects.Container {
 
     this.scene.input.on('drag', function (pointer, gameObject, dragX, dragY) {
       this.dragging = true;
-      const length = this.addLine(this.body.x + dragX + 16, this.body.y + dragY + 16, this.body.x + 16, this.body.y + 16, 0xf22c2e)
       if (length > 100) return;
+      const length = this.addLine(this.body.x + dragX + 16, this.body.y + dragY + 16, this.body.x + 16, this.body.y + 16, 0xf22c2e)
       gameObject.x = dragX;
       gameObject.y = dragY;
 
@@ -109,6 +109,7 @@ addLine (x1, y1, x2, y2, color) {
   const graphics = this.scene.add.graphics();
   graphics.lineStyle(4, color);
   this.line = graphics.lineBetween(x1, y1, x2, y2);
+  this.scene.lineLayer.add(this.line)
     // Calculate the length of the line
     let dx = x2 - x1;
     let dy = y2 - y1;
@@ -125,6 +126,16 @@ addLine (x1, y1, x2, y2, color) {
       this.body.setDrag(1000, 0);
     } else {
       this.body.setDrag(0, 0);
+    }
+    if (Phaser.Math.Between(0,10) > 9) {
+      const bubble = this.scene.add.circle(this.x + 16, this.y + 16, 8, 0xf22c2e)
+      this.scene.lineLayer.add(bubble)
+      this.scene.tweens.add({
+        targets: bubble,
+        duration: 200,
+        scale: {from: 1, to: 0},
+        onComplete: () => { bubble.destroy()}
+      })
     }
   }
 }

@@ -30,16 +30,16 @@ export default class Game extends Phaser.Scene {
     this.add.tileSprite(0, 1000, 1024 * 10, 512, "landscape").setOrigin(0.5);
 
     this.createMap();
+    this.lineLayer = this.add.layer()
     this.addBall();
     this.cameras.main.setBounds(0, 0, 20920 * 2, 20080 * 2);
     this.physics.world.setBounds(0, 0, 20920 * 2, 20080 * 2);
 
 
-    this.cameras.main.startFollow(this.ball, true, 0.0, 0.10, 0, 240);
+    this.cameras.main.startFollow(this.ball, true, 0.0, 0.10, 0, 220);
     this.physics.world.enable([this.ball]);
     this.addScore();
     this.loadAudios();
-    //this.playMusic()
   }
 
   /*
