@@ -12,14 +12,14 @@ class Player extends Phaser.GameObjects.Sprite {
       this.spaceBar = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
       this.down = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
       this.right = true;
-      this.body.setGravityY(100)
+      this.body.setGravityY(200)
       this.body.setSize(48, 60)
       this.init();
       this.jumping = false;
       this.building = false;
       this.falling = false;
       this.walkVelocity = 200;
-      this.jumpVelocity = -500;
+      this.jumpVelocity = -400;
       this.invincible = false;
       this.currentBlock = null;
       this.health = health;
@@ -72,8 +72,8 @@ class Player extends Phaser.GameObjects.Sprite {
 
         this.on('animationcomplete', this.animationComplete, this);
         this.scene.events.on("update", this.update, this);
-    }    
-  
+    }
+
 
     update () {
         if (this.dead || this.scene?.paused) return;
@@ -96,8 +96,8 @@ class Player extends Phaser.GameObjects.Sprite {
             this.jumping = true;
             this.jumpSmoke();
 
-        } 
-        
+        }
+
         if (this.cursor.right.isDown || this.D.isDown) {
             this.building = false;
             if (this.body.blocked.down || !this.jumping) { this.anims.play("playerwalk", true); }
@@ -110,7 +110,7 @@ class Player extends Phaser.GameObjects.Sprite {
             if (this.body.blocked.down || !this.jumping) { this.anims.play("playerwalk", true); }
             this.right = false;
             this.flipX = true;
-            this.body.setVelocityX(-this.walkVelocity);  
+            this.body.setVelocityX(-this.walkVelocity);
         } else if (this.body?.velocity.y !== 0)  {
             console.log("Not blocked")
             this.currentBlock = false;
@@ -165,6 +165,12 @@ class Player extends Phaser.GameObjects.Sprite {
 
     }
 
+    stop () {
+        this.anims.play("startidle", true);
+        this.dead = true;
+        this.body.setVelocity(0);
+    }
+
     die () {
         this.dead = true;
         this.anims.play("playerdead", true);
@@ -185,4 +191,3 @@ class Player extends Phaser.GameObjects.Sprite {
 }
 
 export default Player;
-  

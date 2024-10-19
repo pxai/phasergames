@@ -14,8 +14,8 @@ export default class Splash extends Phaser.Scene {
 
 
         this.cameras.main.setBackgroundColor(0x000000);
-        //this.showLogo();        ;
-        this.time.delayedCall(1000, () => this.showInstructions(), null, this);
+        this.showLogo();
+        this.showInstructions()
 
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
         this.input.keyboard.on("keydown-ENTER", () => this.startGame(), this);
@@ -29,18 +29,28 @@ export default class Splash extends Phaser.Scene {
     }
 
     showLogo() {
-        this.gameLogo = this.add.image(this.center_width*2, -200, "logo").setScale(0.5).setOrigin(0.5)
+        this.letters = []
+        const positions = [-150, -50, 50, 150];
+        "itsu".split("").forEach((letter, i) => {
+            this.letters.push(this.add.bitmapText(this.center_width + positions[i], 80, "pixelFont", letter, 140).setTint(0xf26419).setOrigin(0.5));
+        })
+
         this.tweens.add({
-            targets: this.gameLogo,
-            duration: 1000,
-            x: {
-              from: this.center_width * 2,
-              to: this.center_width
-            },
-            y: {
-                from: -200,
-                to: 130
-              },
+            targets: this.letters,
+            duration: 100,
+            alpha: {from: 0, to: 1},
+            repeat: 5,
+            onComplete: () => {
+                this.randomRemove([(Phaser.Math.RND.pick(this.letters), Phaser.Math.RND.pick(this.letters))])
+            }
+          })
+    }
+
+    randomRemove (letters) {
+        this.tweens.add({
+            targets: letters,
+            duration: 300,
+            alpha: {from: 1, to: 0},
           })
     }
 
@@ -61,13 +71,13 @@ export default class Splash extends Phaser.Scene {
           delay: 0
       })
       }
-  
+
 
     showInstructions() {
-        this.add.bitmapText(this.center_width, 450, "pixelFont", "WASD/geziak: mugitzeko", 30).setOrigin(0.5);
-        this.add.sprite(this.center_width - 120, 620, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 620, "pixelFont", "By PELLO", 15).setOrigin(0.5);
-        this.space = this.add.bitmapText(this.center_width, 670, "pixelFont", "SPACE Sakatu", 30).setOrigin(0.5);
+        this.add.bitmapText(this.center_width, 200, "pixelFont", "WASD/geziak: mugitzeko", 50).setOrigin(0.5).setTint(0xf6ae2d);
+        this.add.sprite(this.center_width - 55, 250, "pello").setOrigin(0.5).setScale(0.3)
+        this.add.bitmapText(this.center_width + 40, 250, "pixelFont", "By PELLO", 35).setOrigin(0.5).setTint(0xf6ae2d);
+        this.space = this.add.bitmapText(this.center_width, 300, "pixelFont", "ENTER Sakatu", 50).setOrigin(0.5).setTint(0xf6ae2d);
         this.tweens.add({
             targets: this.space,
             duration: 300,

@@ -23,6 +23,7 @@
     "itchio": "cd dist && rm -f assets/html/index.html && butler push . pello/itsu:html --userversion 0.0.4 && cd .. && butler status pello/itsu:html"
   },
   "dependencies": {
+    "firebase": "^10.14.1",
     "phaser": "^3.52.0"
   },
   "devDependencies": {

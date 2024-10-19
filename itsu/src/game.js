@@ -25,9 +25,9 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
-      
 
-      //this.loadAudios(); 
+
+      //this.loadAudios();
       // this.playMusic();
 
       this.createMap();
@@ -41,7 +41,7 @@ export default class Game extends Phaser.Scene {
       this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 64, tileHeight: 64 });
       this.tileSetBg = this.tileMap.addTilesetImage("background");
       this.tileMap.createLayer('background', this.tileSetBg)
-  
+
       this.tileSet = this.tileMap.addTilesetImage("bricks");
       this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet);
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
@@ -66,7 +66,7 @@ export default class Game extends Phaser.Scene {
         // }
 
         if (object.name === "text") {
-          this.add.bitmapText(object.x, object.y, "mario", object.text.text, 30).setDropShadow(2, 4, 0x222222, 0.9).setOrigin(0)
+          this.add.bitmapText(object.x, object.y, "mario", object.text.text, 20).setDropShadow(2, 4, 0x222222, 0.9).setOrigin(0)
         }
 
         if (object.name === "brick") {
@@ -100,15 +100,12 @@ export default class Game extends Phaser.Scene {
       this.physics.add.collider(this.player, this.platformGroup, this.hitFloor, ()=>{
         return true;
       }, this);
-  
+
       this.physics.add.collider(this.player, this.bricks, this.hitFloor, ()=>{
         return true;
       }, this);
 
-      this.physics.add.overlap(this.player, this.exitGroup, () => { 
-        this.playAudio("stage");
-        this.time.delayedCall(500, () => this.showCongrats(), null, this);
-      }, ()=>{
+      this.physics.add.overlap(this.player, this.exitGroup, this.hitExit, ()=>{
         return true;
       }, this);
 
@@ -122,19 +119,32 @@ export default class Game extends Phaser.Scene {
     }
 
     addPause() {
-      this.pauseText1 = this.add.bitmapText(this.center_width, this.center_height - 80, "pixelFont", "PREST?", 80).setOrigin(0.5)
-      this.pauseText2 = this.add.bitmapText(this.center_width, this.center_height + 20, "pixelFont", "Sakatu ENTER hasteko", 30).setOrigin(0.5)
-      this.input.keyboard.on("keydown-ENTER", () => this.unPause(), this);    
+      this.pauseText1 = this.add.bitmapText(this.center_width, this.center_height - 80, "pixelFont", "PREST?", 100).setOrigin(0.5).setTint(0xf6ae2d)
+      this.pauseText2 = this.add.bitmapText(this.center_width, this.center_height + 20, "pixelFont", "Sakatu ENTER hasteko", 50).setOrigin(0.5).setTint(0xf6ae2d)
+      this.input.keyboard.on("keydown-ENTER", () => this.unPause(), this);
       this.input.keyboard.on("keydown-SPACE", () => this.unPause(), this);
     }
 
     unPause() {
       this.paused = false;
+      this.seconds = 0;
       this.hideBlocks();
-      this.input.keyboard.removeListener("keydown-ENTER");      
+      this.input.keyboard.removeListener("keydown-ENTER");
       this.input.keyboard.removeListener("keydown-SPACE");
       this.pauseText1.destroy();
       this.pauseText2.destroy();
+      this.showTimer()
+    }
+
+    showTimer() {
+        this.seconds = 0;
+        this.scoreText = this.add.bitmapText(this.center_width, 10, "pixelFont", this.seconds, 50).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0).setTint(0xf6ae2d)
+        this.timer = this.time.addEvent({ delay: 1000, callback: this.updateTimer, callbackScope: this, loop: true });
+  }
+
+    updateTimer() {
+      this.seconds++;
+      this.scoreText.setText(this.seconds);
     }
 
     hideBlocks() {
@@ -150,6 +160,14 @@ export default class Game extends Phaser.Scene {
       }
     }
 
+    hitExit(player, exit) {
+      if (player.dead) return;
+      this.player.stop()
+      this.timer.remove();
+      this.playAudio("stage");
+      this.updateScore(this.seconds);
+      this.time.delayedCall(500, () => this.showCongrats(), null, this);
+    }
 
     turnFoe (foe, platform) {
       foe.turn();
@@ -185,17 +203,15 @@ export default class Game extends Phaser.Scene {
     }
 
     showCongrats () {
-      this.congratText1 = this.add.bitmapText(this.center_width, this.center_height - 80, "pixelFont", "ONA!!!", 80).setOrigin(0.5)
-      this.congratText2 = this.add.bitmapText(this.center_width, this.center_height + 20, "pixelFont", "Sakatu ENTER jarraitzeko!", 30).setOrigin(0.5)
-      this.input.keyboard.on("keydown-ENTER", () => this.finishScene(), this);    
+      this.congratText1 = this.add.bitmapText(this.center_width, this.center_height - 80, "pixelFont", "ONA!!!", 100).setOrigin(0.5).setTint(0xf6ae2d)
+      this.congratText2 = this.add.bitmapText(this.center_width, this.center_height + 20, "pixelFont", "Sakatu ENTER jarraitzeko!", 50).setOrigin(0.5).setTint(0xf6ae2d)
+      this.input.keyboard.on("keydown-ENTER", () => this.finishScene(), this);
       this.input.keyboard.on("keydown-SPACE", () => this.finishScene(), this);
-      this.player.dead = true;
     }
 
     finishScene () {
       //this.sky.stop();
      // this.theme.stop();
-
       this.scene.start("transition", {number: this.number + 1});
     }
 
@@ -210,8 +226,8 @@ export default class Game extends Phaser.Scene {
     }
 
     updateScore (points = 0) {
-        const score = +this.registry.get("score") + points;
-        this.registry.set("score", score);
-        this.scoreText.setText(Number(score).toLocaleString());
+        const score = +this.registry.get("seconds") + points;
+        this.registry.set("seconds", score);
+        console.log("Saving score: ", score)
     }
 }

@@ -9,7 +9,7 @@ export default class Bootloader extends Phaser.Scene {
             "progress",
             function (value) {
                 this.progressBar.clear();
-                this.progressBar.fillStyle(0x88d24c, 1);
+                this.progressBar.fillStyle(0xf26419, 1);
                 this.progressBar.fillRect(
                     this.cameras.main.width / 4,
                     this.cameras.main.height / 2 - 16,
@@ -20,7 +20,7 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("game", {number: 0});
+            this.scene.start("splash", {number: 0});
         },this);
 
        /* Array(7).fill(0).forEach((_,i) => {
@@ -30,6 +30,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image("exit", "assets/images/exit.png");
         this.load.image("brick", "assets/images/brick.png");
         this.load.image("spike", "assets/images/spike.png");
+        this.load.image("pello", "assets/images/pello.png");
         // this.load.audio("beam", "assets/sounds/beam.mp3");
 
 
@@ -44,11 +45,11 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image("bricks", "assets/maps/bricks.png");
         this.load.image("background", "assets/maps/background.png");
 
-        this.load.bitmapFont("pixelFont", "assets/fonts/mario.png", "assets/fonts/mario.xml");
+        this.load.bitmapFont("pixelFont", "assets/fonts/grapesoda.png", "assets/fonts/grapesoda.xml");
 
         //this.load.tilemapTiledJSON("underwater", "assets/maps/underwater.json");
 
-        this.registry.set("score", 0);
+        this.registry.set("seconds", 0);
         this.registry.set("coins", 0);
         this.registry.set("hull", 10);
     }
@@ -58,7 +59,7 @@ export default class Bootloader extends Phaser.Scene {
 
     createBars () {
         this.loadBar = this.add.graphics();
-        this.loadBar.fillStyle(0x008483, 1);
+        this.loadBar.fillStyle(0xf6ae2d, 1);
         this.loadBar.fillRect(
             this.cameras.main.width / 4 - 2,
             this.cameras.main.height / 2 - 18,
