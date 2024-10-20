@@ -261,9 +261,10 @@ export default class Game extends Phaser.Scene {
              const winnerText = `${i+1}. ${player.name}: ${player.score}.`;
              const x = !previousName ? 8 : previousPosition + (previousName.width * 8) + 16;
              const size = i === 0 ? 20 : 15;
-             this.scores.add(this.add.bitmapText(x, 2, "mainFont", winnerText, size).setOrigin(0).setTint(0x000000).setTint(this.foregroundColor).setDropShadow(1, 1, 0xffffff, 0.7));
+             this.scores.add(this.add.bitmapText(x, 80, "mainFont", winnerText, size).setOrigin(0).setTint(0x000000).setTint(this.foregroundColor).setDropShadow(1, 1, 0xffffff, 0.7));
              previousName = winnerText;
              previousPosition = x;
+             console.log("Showing result for  ", scoreBoard)
         })
 
 
