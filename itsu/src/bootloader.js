@@ -20,7 +20,7 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("game", {number: 0});
+            this.scene.start("splash", {number: 0});
         },this);
 
        /* Array(7).fill(0).forEach((_,i) => {
@@ -33,6 +33,7 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image("pello", "assets/images/pello.png");
 
         this.load.audio("music", "assets/sounds/music.mp3");
+        this.load.audio("outro", "assets/sounds/outro.mp3");
         this.load.audio("death", "assets/sounds/death.mp3");
         this.load.audio("win", "assets/sounds/win.mp3");
         this.load.audio("start", "assets/sounds/start.mp3");

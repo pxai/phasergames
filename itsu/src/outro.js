@@ -23,6 +23,7 @@ export default class Outro extends Phaser.Scene {
         this.center_height = this.height / 2;
         this.cameras.main.setBackgroundColor(0x006fb1)
         this.cloudLayer = this.add.layer();
+        this.playMusic();
         await this.saveScore();
 
         this.add.bitmapText(this.center_width,70, "pixelFont", "Azkarrenak", 80).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
@@ -42,13 +43,28 @@ export default class Outro extends Phaser.Scene {
         });
     }
 
+    playMusic (theme="outro") {
+        this.game.sound.stopAll();
+        this.theme = this.sound.add(theme);
+        this.theme.stop();
+        this.theme.play({
+          mute: false,
+          volume: 1,
+          rate: 1,
+          detune: 0,
+          seek: 0,
+          loop: true,
+          delay: 0
+      })
+    }
+
     update () {
     }
 
     async saveScore () {
         this.currentId = 0;
         const hits = +this.registry.get("seconds");
-       // if (hits === 0) return;
+        if (hits === 0) return;
         const notBigger = await this.notBigger(hits)
         if (notBigger) {
             await this.loadScores();

@@ -67,6 +67,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     playMusic (theme="music") {
+        this.game.sound.stopAll();
         this.theme = this.sound.add(theme);
         this.theme.stop();
         this.theme.play({
@@ -78,13 +79,14 @@ export default class Splash extends Phaser.Scene {
           loop: true,
           delay: 0
       })
-      }
+    }
 
 
     showInstructions() {
         this.add.bitmapText(this.center_width, 250, "pixelFont", "WASD/geziak: mugitzeko", 50).setOrigin(0.5).setTint(0xf6ae2d);
-        this.add.sprite(this.center_width - 55, 300, "pello").setOrigin(0.5).setScale(0.3)
-        this.add.bitmapText(this.center_width + 40, 300, "pixelFont", "By PELLO", 35).setOrigin(0.5).setTint(0xf6ae2d);
+        this.add.sprite(this.center_width - 215, 300, "pello").setOrigin(0.5).setScale(0.3)
+        this.add.bitmapText(this.center_width - 120, 300, "pixelFont", " by PELLO", 35).setOrigin(0.5).setTint(0xf6ae2d);
+        this.add.bitmapText(this.center_width + 85, 300, "pixelFont", "- Audio: aumeta", 35).setOrigin(0.5).setTint(0xf6ae2d);
         this.space = this.add.bitmapText(this.center_width, 350, "pixelFont", "ENTER Sakatu", 50).setOrigin(0.5).setTint(0xf6ae2d);
         this.tweens.add({
             targets: this.space,
