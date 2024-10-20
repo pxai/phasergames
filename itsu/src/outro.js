@@ -24,12 +24,13 @@ export default class Outro extends Phaser.Scene {
         this.cameras.main.setBackgroundColor(0x006fb1)
         this.cloudLayer = this.add.layer();
         await this.saveScore();
-        //
+
         this.add.bitmapText(this.center_width,70, "pixelFont", "Azkarrenak", 80).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
         this.add.bitmapText(this.center_width,120, "pixelFont", "Izenak idatzi eta OK", 60).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
         this.restartText = this.add.bitmapText(this.center_width, 760, "pixelFont", "Klik hemen berriz hasteko", 40).setOrigin(0.5).setDropShadow(0, 8, 0x222222, 0.9);
         this.restartText.setInteractive();
-        this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
+
+        //this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
         this.restartText.on('pointerdown', (pointer) => this.loadNext(), this);
 
         this.tweens.add({
@@ -47,7 +48,7 @@ export default class Outro extends Phaser.Scene {
     async saveScore () {
         this.currentId = 0;
         const hits = +this.registry.get("seconds");
-        if (hits === 0) return;
+       // if (hits === 0) return;
         const notBigger = await this.notBigger(hits)
         if (notBigger) {
             await this.loadScores();
@@ -123,7 +124,6 @@ export default class Outro extends Phaser.Scene {
     }
 
     clickedLetter(letter) {
-        console.log(letter, this.userName)
         if (this.userName.length < 9) {
             this.userName += letter;
             this.userNameText.setText(this.userName.padEnd(9, '-'));

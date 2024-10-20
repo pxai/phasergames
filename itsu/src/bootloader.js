@@ -20,7 +20,7 @@ export default class Bootloader extends Phaser.Scene {
             this
         );
         this.load.on("complete", () => {
-            this.scene.start("splash", {number: 0});
+            this.scene.start("game", {number: 0});
         },this);
 
        /* Array(7).fill(0).forEach((_,i) => {
@@ -31,13 +31,20 @@ export default class Bootloader extends Phaser.Scene {
         this.load.image("brick", "assets/images/brick.png");
         this.load.image("spike", "assets/images/spike.png");
         this.load.image("pello", "assets/images/pello.png");
-        // this.load.audio("beam", "assets/sounds/beam.mp3");
+
+        this.load.audio("music", "assets/sounds/music.mp3");
+        this.load.audio("death", "assets/sounds/death.mp3");
+        this.load.audio("win", "assets/sounds/win.mp3");
+        this.load.audio("start", "assets/sounds/start.mp3");
+        this.load.audio("jump", "assets/sounds/jump.mp3");
+        this.load.audio("land", "assets/sounds/land.mp3");
+        this.load.audio("step", "assets/sounds/step.mp3");
 
 
         this.load.spritesheet("walt", "assets/images/walt.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("bat", "assets/images/bat.png", { frameWidth: 32, frameHeight: 32 });
 
-        Array(3)
+        Array(9)
         .fill(0)
         .forEach((_, i) => {
             this.load.tilemapTiledJSON(`scene${i}`, `assets/maps/scene${i}.json`);

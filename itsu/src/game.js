@@ -25,9 +25,9 @@ export default class Game extends Phaser.Scene {
       this.height = this.sys.game.config.height;
       this.center_width = this.width / 2;
       this.center_height = this.height / 2;
+      this.showingHints = false;
 
-
-      //this.loadAudios();
+      this.loadAudios();
       // this.playMusic();
 
       this.createMap();
@@ -37,7 +37,6 @@ export default class Game extends Phaser.Scene {
 
     createMap() {
       this.paused = true;
-      console.log("Paused: ", this.paused, " scene" + this.number)
       this.tileMap = this.make.tilemap({ key: "scene" + this.number , tileWidth: 64, tileHeight: 64 });
       this.tileSetBg = this.tileMap.addTilesetImage("background");
       this.tileMap.createLayer('background', this.tileSetBg)
@@ -69,8 +68,9 @@ export default class Game extends Phaser.Scene {
           this.add.bitmapText(object.x, object.y, "mario", object.text.text, 20).setDropShadow(2, 4, 0x222222, 0.9).setOrigin(0)
         }
 
-        if (object.name === "brick") {
-          this.bricks.add(new Brick(this, object.x, object.y))
+        if (object.name.startsWith("brick")) {
+          const [name, type, steps] = object.name.split(":");
+          this.bricks.add(new Brick(this, object.x, object.y, "brick", type, steps))
         }
 
         if (object.name === "exit") {
@@ -101,7 +101,7 @@ export default class Game extends Phaser.Scene {
         return true;
       }, this);
 
-      this.physics.add.collider(this.player, this.bricks, this.hitFloor, ()=>{
+      this.physics.add.collider(this.player, this.bricks, this.hitPlatform, ()=>{
         return true;
       }, this);
 
@@ -125,9 +125,21 @@ export default class Game extends Phaser.Scene {
       this.input.keyboard.on("keydown-SPACE", () => this.unPause(), this);
     }
 
+    hitPlatform(player, brick) {
+      if (brick.type) {
+        this.player.currentBlock = brick;
+      }
+      if (!this.showingHints) {
+        this.showingHints = true;
+        this.showHints()
+      }
+
+    }
+
     unPause() {
       this.paused = false;
       this.seconds = 0;
+      this.playAudio("start");
       this.hideBlocks();
       this.input.keyboard.removeListener("keydown-ENTER");
       this.input.keyboard.removeListener("keydown-SPACE");
@@ -140,7 +152,7 @@ export default class Game extends Phaser.Scene {
         this.seconds = 0;
         this.scoreText = this.add.bitmapText(this.center_width, 10, "pixelFont", this.seconds, 50).setDropShadow(0, 4, 0x222222, 0.9).setOrigin(0).setScrollFactor(0).setTint(0xf6ae2d)
         this.timer = this.time.addEvent({ delay: 1000, callback: this.updateTimer, callbackScope: this, loop: true });
-  }
+    }
 
     updateTimer() {
       this.seconds++;
@@ -150,6 +162,17 @@ export default class Game extends Phaser.Scene {
     hideBlocks() {
       this.bricks.children.iterate( brick => {
         brick.setAlpha(0);
+      })
+    }
+
+
+    showHints() {
+      this.tweens.add({
+        targets: this.bricks.children.entries,
+        alpha: {from: 0, to: .2},
+        duration: 100,
+        yoyo: true,
+        repeat: 2
       })
     }
 
@@ -164,8 +187,8 @@ export default class Game extends Phaser.Scene {
       if (player.dead) return;
       this.player.stop()
       this.timer.remove();
-      this.playAudio("stage");
       this.updateScore(this.seconds);
+      this.playAudio("win");
       this.time.delayedCall(500, () => this.showCongrats(), null, this);
     }
 
@@ -173,14 +196,18 @@ export default class Game extends Phaser.Scene {
       foe.turn();
     }
 
-      loadAudios () {
-        this.audios = {
-          "beam": this.sound.add("beam"),
-        };
-      }
+    loadAudios () {
+      this.audios = {
+        "start": this.sound.add("start"),
+        "jump": this.sound.add("jump"),
+        "land": this.sound.add("land"),
+        "death": this.sound.add("death"),
+        "win": this.sound.add("win"),
+        "step": this.sound.add("step"),
+      };
+    }
 
       playAudio(key) {
-        return
         this.audios[key].play();
       }
 
@@ -196,7 +223,7 @@ export default class Game extends Phaser.Scene {
           loop: true,
           delay: 0
       })
-      }
+    }
 
     update() {
 
@@ -210,8 +237,6 @@ export default class Game extends Phaser.Scene {
     }
 
     finishScene () {
-      //this.sky.stop();
-     // this.theme.stop();
       this.scene.start("transition", {number: this.number + 1});
     }
 
@@ -228,6 +253,5 @@ export default class Game extends Phaser.Scene {
     updateScore (points = 0) {
         const score = +this.registry.get("seconds") + points;
         this.registry.set("seconds", score);
-        console.log("Saving score: ", score)
     }
 }

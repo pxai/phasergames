@@ -78,7 +78,6 @@ class Player extends Phaser.GameObjects.Sprite {
     update () {
         if (this.dead || this.scene?.paused) return;
         if (this.jumping ) {
-            this.currentBlock = null;
            // if (Phaser.Math.Between(1,101) > 100) new Star(this.scene, this.x, this.y + 5)
             if (this.body?.velocity.y >= 0) {
                 this.body.setGravityY(700)
@@ -95,7 +94,12 @@ class Player extends Phaser.GameObjects.Sprite {
             this.scene.playAudio("jump")
             this.jumping = true;
             this.jumpSmoke();
-
+            this.currentBlock = null
+            this.scene.showingHints = false;
+        } else if (this.body.blocked.down && this.jumping) {
+            if (this.jumping) {this.scene.playAudio("land");this.landSmoke();}
+            this.jumping = false;
+            this.falling = false;
         }
 
         if (this.cursor.right.isDown || this.D.isDown) {
@@ -104,6 +108,7 @@ class Player extends Phaser.GameObjects.Sprite {
             this.right = true;
             this.flipX = (this.body.velocity.x < 0);
             this.body.setVelocityX(this.walkVelocity);
+            this.walkSmoke(-1);
 
         } else if (this.cursor.left.isDown || this.A.isDown) {
             this.building = false;
@@ -111,21 +116,32 @@ class Player extends Phaser.GameObjects.Sprite {
             this.right = false;
             this.flipX = true;
             this.body.setVelocityX(-this.walkVelocity);
-        } else if (this.body?.velocity.y !== 0)  {
-            console.log("Not blocked")
-            this.currentBlock = false;
-        } else if (this.currentBlock) {
-            console.log('blocked: ', this.currentBlock)
-            this.x = this.currentBlock.x;
-            this.y = this.currentBlock.y;
+            this.walkSmoke(1);
         } else {
-            this.body.setVelocityX(0)
-            this.anims.play("playeridle", true);
+            this.body?.setVelocityX(0)
+            this.anims?.play("playeridle", true);
+        }
+
+        if (this.R.isDown) {
+            this.scene?.finishScene();
+        }
+
+        if (this.currentBlock && this.body.blocked.down) {
+            this.body.setVelocityX(this.currentBlock.body.velocity.x)
+            this.body.setVelocityY(this.currentBlock.body.velocity.y)
+            this.currentBlock = null;
+        } else if (!this.body?.blocked.down) {
+           this.currentBlock = false;
         }
     }
 
     landSmoke () {
         this.jumpSmoke(20);
+    }
+
+    walkSmoke (direction) {
+        if (Phaser.Math.Between(1,41) > 40)
+        this.jumpSmoke(20,  direction * 32);
     }
 
     jumpSmoke (offsetY = 10, varX) {

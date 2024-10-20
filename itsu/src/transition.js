@@ -18,9 +18,19 @@ export default class Transition extends Phaser.Scene {
 
         this.add.bitmapText(this.center_width, this.center_height - 20, "pixelFont", this.number, 60).setOrigin(0.5).setTint(0xf6ae2d)
         this.add.bitmapText(this.center_width, this.center_height + 20, "pixelFont", "Prest?", 50).setOrigin(0.5).setTint(0xf6ae2d)
-       // this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
-       // this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
-       this.time.delayedCall(2000, () => this.loadNext(), null, this);
+
+
+        if (this.number === 9) {
+            this.scene.start("outro", { number: this.number });
+            return
+        }
+
+        this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
+        this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
+
+
+
+        this.time.delayedCall(2000, () => this.loadNext(), null, this);
 
        this.addScenario();
 
@@ -45,7 +55,7 @@ export default class Transition extends Phaser.Scene {
 
         })
 
-        const character = this.add.sprite(positions[0].x, positions[0].y, "player").setOrigin(0.5)
+        const character = this.add.sprite(positions[0].x, positions[0].y, "walt").setOrigin(0.5)
 
 
         if (this.number > 0) {
@@ -74,7 +84,6 @@ export default class Transition extends Phaser.Scene {
     }
 
     loadNext () {
-        console.log("Loading next scene: ", this.number)
         this.scene.start("game", { number: this.number });
     }
 }
