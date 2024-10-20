@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-VBJ2S2DDKK"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-VBJ2S2DDKK');
+        </script>
+        <meta charset="UTF-8" />
+        <title>Hitz & Twitch!</title>
+        <meta name="keywords" content="title, game, phaser, platform, Pello">
+        <meta name="description" content="Hitz jokua game built with phaser">
+        <meta name="author" content="Pello Altadill">
+        <style>
+            body { background-color: #ddd; }
+        </style>
+    </head>
+    <body>
+    </body>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const background = urlParams.get('background') || '#000000';
+        document.body.style.backgroundColor = background;
+    </script>
+</html>
