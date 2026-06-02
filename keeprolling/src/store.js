@@ -3,12 +3,12 @@ import { getFirestore, collection, getDocs, addDoc, doc } from 'firebase/firesto
 
 
 const firebaseApp = initializeApp({
-    apiKey: "AIzaSyA3OMGAeWL9qG3tviU1beMQtYYwoVtOoIk",
-    authDomain: "greedywillie.firebaseapp.com",
-    projectId: "greedywillie",
-    storageBucket: "greedywillie.appspot.com",
-    messagingSenderId: "74983734582",
-    appId: "1:74983734582:web:76a2a929b5d9647a744797"
+    apiKey: "sadf",
+    authDomain: "ddd.firebaseapp.com",
+    projectId: "ddd",
+    storageBucket: "ddd.appspot.com",
+    messagingSenderId: "222",
+    appId: "1:222:web:3333"
 });
 const db = getFirestore(firebaseApp);
 
@@ -24,7 +24,7 @@ const readData =  async function () {
     }
 }
 
-const saveData = async function (score, player = "Anonymous", game = "KeepRolling") {  
+const saveData = async function (score, player = "Anonymous", game = "KeepRolling") {
     try {
         const doc = await addDoc(collection(db, "games"), {score, player, game});
         return doc.id;

@@ -24,6 +24,51 @@ export default class Ball {
        this.showSpring = false;
        this.scene.time.delayedCall(100, () => {this.showSpring = true}, null, this)
         this.init();
+        this.setDrag()
+    }
+
+    setDrag() {
+        this.scene.input.mouse.disableContextMenu();
+
+
+        this.fireball.setInteractive();
+        this.scene.input.setDraggable(this.fireball);
+
+        this.dragging = false;
+
+        this.fire = false;
+
+        this.fireball.on('pointerdown', function (pointer) {
+            console.log("Pointer down")
+        }, this);
+
+        this.scene.input.on('pointermove', function (pointer) {
+            console.log("Pointer move")
+        }, this);
+
+        this.scene.input.on('pointerup', function (pointer) {
+            console.log("Pointer up")
+        }, this);
+
+        this.fireball.on('pointerout', function () {
+            console.log("Pointer out")
+        }, this);
+
+        this.scene.input.on('dragstart', function (pointer, gameObject) {
+            console.log("Drag start")
+        });
+
+        this.scene.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+            this.dragging = true;
+            console.log("Drag")
+
+        }.bind(this));
+
+        this.scene.input.on('dragend', function (pointer, gameObject) {
+            this.dragging = false;
+            this.fire = true
+            console.log("Drag end: FIRE!!")
+        }.bind(this));
     }
 
     init () {
@@ -33,10 +78,11 @@ export default class Ball {
     update () {
         if (this.dead || this.scene?.gameOver) return;
         if (this.scene.pointer.isDown) {
-            if (this.scene.pointer.leftButtonDown()) {
+            if (this.scene.pointer.leftButtonDown() && this.isDragging) {
                 this.readyToFire = true;
             }
-        } else if (this.readyToFire && !this.scene.pointer.isDown) {
+        } else if (this.fire) {
+            this.fire = false;
             this.readyToFire = false;
             console.log("Filre! : ", this.fireball?.position, this.fireball)
             //this.fireball.setScale(1)

@@ -5,8 +5,6 @@ export default class Dictionary {
     this.language = language;
     this.lengths = {
       "en": words["en"].length,
-      "es": words["es"].length,
-      "eu": words["eu"].length
     };
   }
 

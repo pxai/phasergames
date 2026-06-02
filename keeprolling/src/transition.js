@@ -30,6 +30,6 @@ export default class Transition extends Phaser.Scene {
         if (this.number < 9)
             this.scene.start("game", {  number: this.number });
         else
-            this.scene.start("outro");
+            this.scene.start("splash");
     }
 }

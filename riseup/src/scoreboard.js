@@ -21,7 +21,7 @@ export default class Scoreboard extends Phaser.Scene {
         this.height = this.sys.game.config.height;
         this.center_width = this.width / 2;
         this.center_height = this.height / 2;
-        this.cloudLayer = this.add.layer();    
+        this.cloudLayer = this.add.layer();
 
         if (+this.registry.get("time") > 0)
             await this.saveScore();
@@ -40,6 +40,15 @@ export default class Scoreboard extends Phaser.Scene {
             repeat: -1,
             yoyo: true
         });
+        this.addScanlines();
+    }
+
+    addScanlines() {
+        for (let y = 0; y < this.height; y += 4) {
+            let line = this.add.rectangle(this.center_width, y, this.width, 2, 0x000000)
+            line.alpha = 1;
+            line.depth = 1000;
+        }
     }
 
     update () {
@@ -103,7 +112,7 @@ export default class Scoreboard extends Phaser.Scene {
             const text0 = this.add.bitmapText(this.center_width - 250, 170 + (i * 30), "mario", `${i+1}`, 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7);
             const text1 = this.add.bitmapText(this.center_width - 50, 170 + (i * 30), "mario", `${score.player.substring(0, 10).padEnd(11, ' ')}`, 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7)
             const text2 = this.add.bitmapText(this.center_width + 200, 170 + (i * 30), "mario", `${String(score.score).padStart(4, '0')}`, 20).setOrigin(0.5).setTint(0xb95e00).setDropShadow(1, 2, 0xfffd00, 0.7)
-            
+
             if (score.id === this.currentId) {
 
                 amongFirst10 = true;
@@ -163,17 +172,17 @@ export default class Scoreboard extends Phaser.Scene {
         alphabet.split("").forEach((letter, i) => {
           const isDash = letter === "-";
           x = stepX ;
-          stepY += isDash ? 48 : 0 
+          stepY += isDash ? 48 : 0
           stepX = isDash ? 48 : stepX + 48;
           y = 380 + stepY;
-  
+
           if (isDash) return;
-  
+
           const key = new Key(this, x, y, letter, this.clickedLetter.bind(this))
           this.prompt.add(key)
           this.keyboard[letter] = key;
         })
-  
+
         this.keyboard["ok"] = new Key(this, x + 96, y, "ok", this.saveScoreWithName.bind(this));
         this.prompt.add(this.keyboard["ok"])
         this.keyboard["--"] = new Key(this, x + 192, y, "--", this.deleteName.bind(this));

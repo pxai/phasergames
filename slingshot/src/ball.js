@@ -50,18 +50,33 @@ export default class Ball extends Phaser.GameObjects.Container {
     this.dragging = false;
 
 
-    this.on('pointerover', function () {
-        this.velocityX = this.body.velocity.x;
-        this.velocityY = this.body.velocity.y;
-    });
-
-    this.on('pointerout', function () {
-      this.circle.setAlpha(1)
-    });
+    this.setInteractive();
 
     this.on('pointerdown', function (pointer) {
-      this.circle.setAlpha(1)
-    });
+        this.isDragging = true;
+        this.velocityX = this.body.velocity.x;
+        this.velocityY = this.body.velocity.y;
+        this.circle.setAlpha(1);
+    }, this);
+
+    this.scene.input.on('pointermove', function (pointer) {
+        if (this.isDragging) {
+            this.x = pointer.x;
+            this.y = pointer.y;
+        }
+    }, this);
+
+    this.scene.input.on('pointerup', function (pointer) {
+        if (this.isDragging) {
+            this.isDragging = false;
+            // Apply the stored velocity or any other logic you need
+            this.body.setVelocity(this.velocityX, this.velocityY);
+        }
+    }, this);
+
+    this.on('pointerout', function () {
+        this.circle.setAlpha(1);
+    }, this);
 
     this.scene.input.on('dragstart', function (pointer, gameObject) {
 

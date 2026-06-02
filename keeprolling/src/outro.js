@@ -16,7 +16,7 @@ export default class Outro extends Phaser.Scene {
         this.introLayer = this.add.layer();
         this.splashLayer = this.add.layer();
         this.helpText = this.add.bitmapText(this.center_width, 32, "default", "SCOREBOARD", 50).setTint(0x618fc0).setOrigin(0.5)
-        await this.saveScore();
+        // await this.saveScore();
         //this.showPlayer();
         //this.playMusic();
         this.input.keyboard.on("keydown-SPACE", this.startSplash, this);

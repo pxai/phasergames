@@ -38,9 +38,18 @@ export default class Game extends Phaser.Scene {
 
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05, 0, 0);
       this.physics.world.enable([ this.player ]);
-      this.loadAudios(); 
+      this.loadAudios();
       this.addTimer();
+      this.addScanlines();
     }
+
+    addScanlines() {
+      for (let y = 0; y < this.height; y += 4) {
+          let line = this.add.rectangle(this.center_width, y, this.width, 2, 0x000000)
+          line.alpha = 1;
+          line.depth = 1000;
+      }
+  }
 
     addTimer() {
       this.registry.set("time", 0);
@@ -59,8 +68,8 @@ export default class Game extends Phaser.Scene {
     createMap() {
       this.tileMap = this.make.tilemap({ key: "scene0" , tileWidth: 64, tileHeight: 64 });
       this.tileSetBg = this.tileMap.addTilesetImage("background");
-      this.tileMap.createStaticLayer('background', this.tileSetBg)
-  
+      this.tileMap.createLayer('background', this.tileSetBg)
+
       this.tileSet = this.tileMap.addTilesetImage("softbricks");
       this.platform = this.tileMap.createLayer('scene' + this.number, this.tileSet);
       this.objectsLayer = this.tileMap.getObjectLayer('objects');
@@ -137,12 +146,12 @@ export default class Game extends Phaser.Scene {
       this.physics.add.collider(this.player, this.platformGroup, this.hitFloor, ()=>{
         return true;
       }, this);
-  
+
       this.physics.add.collider(this.player, this.bricks, this.hitFloor, ()=>{
         return true;
       }, this);
 
-      this.physics.add.overlap(this.player, this.exitGroup, () => { 
+      this.physics.add.overlap(this.player, this.exitGroup, () => {
         this.playAudio("stage");
         this.time.delayedCall(500, () => this.finishScene(), null, this);
       }, ()=>{
@@ -179,14 +188,14 @@ export default class Game extends Phaser.Scene {
         Array(Phaser.Math.Between(4,6)).fill(0).forEach( i => new Debris(this, tile.pixelX, tile.pixelY))
         this.platform.removeTileAt(tile.x, tile.y);
 
-      } 
+      }
     }
 
 
 
     hitFloor(player, platform) {
       if (this.player.jumping && this.player.falling && platform.name === "question" && this.player.body.velocity.y === 0) {
-        if (!platform.activated) { 
+        if (!platform.activated) {
           player.landSmoke();
           this.playAudio("land");
           platform.activate();

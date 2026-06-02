@@ -25,8 +25,16 @@ export default class Transition extends Phaser.Scene {
         this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
         this.input.keyboard.on("keydown-SPACE", () => this.loadNext(), this);
         this.time.delayedCall(3000, () => { this.loadNext() }, null, this)
+        this.addScanlines();
     }
 
+    addScanlines() {
+        for (let y = 0; y < this.height; y += 4) {
+            let line = this.add.rectangle(this.center_width, y, this.width, 2, 0x000000)
+            line.alpha = 1;
+            line.depth = 1000;
+        }
+    }
 
     update () {
     }

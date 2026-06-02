@@ -17,13 +17,14 @@ export default class Splash extends Phaser.Scene {
         this.sound.stopAll();
         this.cameras.main.setBackgroundColor(0x000000);
         this.time.delayedCall(1000, () => this.showInstructions(), null, this);
-        this.registry.set('time', 0); 
+        this.registry.set('time', 0);
         this.input.keyboard.on("keydown-SPACE", () => this.startGame(), this);
         this.input.keyboard.on("keydown-ENTER", () => this.startGame(), this);
         this.playMusic();
         //this.showPlayer();
         this.showTitle();
         this.playAudioRandomly("stone")
+        this.addScanlines();
     }
 
     showTitle () {
@@ -53,6 +54,14 @@ export default class Splash extends Phaser.Scene {
 
     }
 
+    addScanlines() {
+        for (let y = 0; y < this.height; y += 4) {
+            let line = this.add.rectangle(this.center_width, y, this.width, 2, 0x000000)
+            line.alpha = 1;
+            line.depth = 1000;
+        }
+    }
+
     playMusic (theme="splash") {
         this.theme = this.sound.add(theme);
         this.theme.stop();
@@ -66,7 +75,7 @@ export default class Splash extends Phaser.Scene {
           delay: 0
       })
       }
-  
+
 
     showInstructions() {
         this.add.bitmapText(this.center_width, 500, "mario", "WASD/Arrows: move", 30).setOrigin(0.5);
@@ -79,7 +88,7 @@ export default class Splash extends Phaser.Scene {
             duration: 300,
             alpha: {from: 0, to: 1},
             repeat: -1,
-            yoyo: true
+            yoyo: true,
         });
     }
 }

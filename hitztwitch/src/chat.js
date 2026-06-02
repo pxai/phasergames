@@ -44,6 +44,7 @@ export default class Chat {
             }
 
             const messageParts = message.toLowerCase().split(" ");
+
             console.log("Received chat: ", channel, tags.username, messageParts);
 
             if (this.isValidWord(message)) {

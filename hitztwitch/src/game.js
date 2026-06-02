@@ -91,7 +91,7 @@ export default class Game extends Phaser.Scene {
             this.letter = new Letter(this, 32, 48, { letter: "", points: "?"})
 
         this.currentWord.substring(1).split("").forEach((letter, i) => {
-            if (positions[i])
+            if (positions[i + 1])
                 this.letter.addLetters([{ letter, points: this.getPointsForLetter(letter)}])
             else
                 this.letter.addLetters([{ letter: "", points: "?"}])
@@ -103,7 +103,7 @@ export default class Game extends Phaser.Scene {
         const booleans = new Array(length);
 
         // Calculate the number of false and true values
-        const halfLength = Math.floor(length / 2);
+        const halfLength = Math.floor(length / 2)
 
         // Fill half of the array with false and the other half with true
         for (let i = 0; i < length; i++) {
@@ -283,7 +283,7 @@ export default class Game extends Phaser.Scene {
     generateNextOperation (playerWord) {
         this.seconds = this.timeout;
         this.counter++;
-        this.currentWord = "abuelo" //this.dictionary.randomWord();
+        this.currentWord = this.dictionary.randomWord();
         this.showNextWord(this.currentWord);
         this.playAudio("drip");
     }
