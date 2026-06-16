@@ -1,6 +1,8 @@
 import Word from './word';
 import LETTERS from './letters.js';
 import Dictionary from './dictionary';
+import Foe from './foe';
+import Chest from './chest';
 
 const MAX_LENGTH = 6;
 
@@ -24,7 +26,10 @@ export default class Dungeon {
     for (let i=0; i< this.height; i++) {
       this.tiles[i] = [];
       for (let j=0; j < this.width; j ++) {
-        this.tiles[i][j] = new Tile(i, j, this.letters[i * this.width + j]);
+        const letter = this.letters[i * this.width + j]
+        const chest = this.generateChest(letter);
+        const foe = this.generateFoe(letter);
+        this.tiles[i][j] = new Tile(i, j, letter, foe, chest);
       }
     }
 
@@ -160,29 +165,50 @@ export default class Dungeon {
     tile.userSetsLetter(letter);
     console.log(this.paintTiles());
   }
+
+  generateFoe (letter, difficulty) {
+    return this.couldGenerateFoe(letter, difficulty)
+  }
+
+  generateChest (letter, difficulty) {
+    return this.couldGenerateChest(letter, difficulty)
+  }
+
+  couldGenerateFoe (letter, difficulty = 0) {
+    if (!['f', 'h', 'x', 'v','k'].includes(letter)) return false
+
+    return Phaser.Math.Between(1, 10 - difficulty)
+  }
+
+  couldGenerateChest (letter, difficulty = 0) {
+    if (!['q', 'z', 'x', 'j'].includes(letter)) return false
+
+    return Phaser.Math.Between(1, 5 + difficulty)
+  }
 }
 
 class Tile {
-  constructor(x, y, letter, user = false, item = null) {
+  constructor(x, y, letter, foe = null, chest = null) {
     this.x = x;
     this.y = y;
     this.letter = letter;
-    this.user = user;
-    this.item = item;
+    if (foe) { console.log("Foe generated ", x, y)}
+    this.foe = foe;
+    if (chest) { console.log("Chest generated ", x, y)}
+    this.chest = chest;
     this.selected = false;
   }
 
-  setItem(item) {
-    this.item = item;
+  setChest(chest) {
+    this.chest = chest;
+  }
+
+  setFoe(foe) {
+    this.foe = foe;
   }
 
   setLetter(letter) {
     this.letter = letter;
-  }
-
-  userSetsLetter(letter) {
-    this.letter = letter;
-    this.user = true;
   }
 
   toggle () {

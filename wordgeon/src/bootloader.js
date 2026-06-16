@@ -27,6 +27,8 @@ export default class Bootloader extends Phaser.Scene {
         this.load.spritesheet('elf', 'assets/images/elf.png', { frameWidth: 16, frameHeight: 28});
         this.load.spritesheet('wizard', 'assets/images/wizard.png', { frameWidth: 16, frameHeight: 28});
         this.load.spritesheet('knight', 'assets/images/knight.png', { frameWidth: 16, frameHeight: 28});
+        this.load.spritesheet('chest', 'assets/images/chest.png', { frameWidth: 16, frameHeight: 16});
+        this.load.spritesheet('skeleton', 'assets/images/skeleton.png', { frameWidth: 16, frameHeight: 16});
 
        /* Array(7).fill(0).forEach((_,i) => {
             this.load.audio(`bubble${i}`,`assets/sounds/bubble/bubble${i}.mp3`)

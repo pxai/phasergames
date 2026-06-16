@@ -1,13 +1,14 @@
 import LETTERS from './letters';
 
 export class Tile extends Phaser.GameObjects.Container {
-  constructor (scene, x, y, letter = "") {
+  constructor (scene, x, y, tile) {
       super(scene, x, y);
       this.x = x;
       this.y = y;
       this.scene = scene;
-      this.letter = letter;
-      this.points = LETTERS[this.scene.lang || 'en'][letter]
+      this.letter = tile.letter;
+      this.dungeonTile = tile;
+      this.points = LETTERS[this.scene.lang || 'en'][this.letter]
       this.selected = false
 
       this.scene.add.existing(this);
@@ -33,8 +34,12 @@ export class Tile extends Phaser.GameObjects.Container {
     this.singleLetter.setLetter(text)
   }
 
- setText(text) {
-    this.singleLetter.setLetter(text)
+  setFoe (foe) {
+    this.foe = foe;
+  }
+
+  setChest(chest) {
+    this.chest = chest;
   }
 
   toggle () {
@@ -45,11 +50,21 @@ export class Tile extends Phaser.GameObjects.Container {
   show () {
     return `[${this.x},${this.y}: ${this.letter}] ${this.selected ? 'SELECTED' : 'unselected'}`;
   }
+
+  destroy() {
+    if (this.foe) this.killFoe();
+    super.destroy();
+  }
+
+  killFoe () {
+
+    this.foe.destroy();
+  }
 }
 
 export class PlayerCard extends Tile {
     constructor (scene, x, y, card, index) {
-        super(scene, x, y, card.letter);
+        super(scene, x, y, card);
         this.type = "playerCard";
         this.index = index;
     }
@@ -74,14 +89,6 @@ export class SingleLetter extends Phaser.GameObjects.Container {
       this.letter = letter;
       this.points = points;
       this.name = "SingleLetter";
-
-    //   this.square = new Phaser.GameObjects.Sprite(this.scene, 0, 0, "letter").setOrigin(0.5);
-    //   this.add(this.square);
-        console.log("Adding: ", this.letter, " points: ", this.points)
-     // this.letterText = new Phaser.GameObjects.BitmapText(this.scene, 0, -10, font, this.letter.toUpperCase(), 52).setTint(0x88d24c).setOrigin(0.5)
-      //this.pointsText = new Phaser.GameObjects.BitmapText(this.scene, 0, 16, font, this.points, 32).setTint(0x88d24c).setOrigin(0.5)
-      //this.add(this.letterText);
-      //this.add(this.pointsText)
       this.createCarvedText(this.letter.toUpperCase(), font)
       this.createCarvedPoints(this.points, font)
   }

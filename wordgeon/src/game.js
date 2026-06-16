@@ -2,6 +2,8 @@ import Dungeon from './dungeon';
 import { Tile, PlayerCard } from './tile';
 import Word from './word';
 import words from './words';
+import Chest from './chest';
+import Foe from './foe';
 
 
 export default class Game extends Phaser.Scene {
@@ -65,8 +67,14 @@ export default class Game extends Phaser.Scene {
         row.forEach((tile, j) => {
           const x = initialX + (j * 64) + 32;
           const y = initialY + (i * 64 + 128);
-          const tileSprite = new Tile(this, x, y, tile.letter);
+          const tileSprite = new Tile(this, x, y, tile);
+          if (tile.chest) {
+            tileSprite.setChest(new Chest(this, x, y));
+          }
 
+          if (tile.foe) {
+            tileSprite.setFoe(new Foe(this, x, y));
+          }
           tileSprite.setInteractive();
           tileSprite.on("pointerup", () => {
             if (!tileSprite.selected) {
@@ -173,6 +181,7 @@ export default class Game extends Phaser.Scene {
       });
       this.playedLetters = []
       this.playerCards.children.each((card) => {
+        console.log("Destroyed!! ", card.dungeonTile)
         card.destroy();
       });
       console.log("Solving!!", word)
