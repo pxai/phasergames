@@ -7,6 +7,7 @@ export default class Transition extends Phaser.Scene {
         this.name = data.name;
         this.number = data.number;
         this.next = data.next;
+        this.playerClass = data.playerClass;
     }
 
     preload () {
@@ -27,13 +28,15 @@ export default class Transition extends Phaser.Scene {
 
         this.add.bitmapText(this.center_width, this.center_height - 20, "pixelFont", messages[this.next], 40).setOrigin(0.5)
         this.add.bitmapText(this.center_width, this.center_height + 20, "pixelFont", "Ready?", 30).setOrigin(0.5)
-        this.input.keyboard.on("keydown-ENTER", () => this.loadNext(), this);
+        this.input.keyboard.on("keydown-ENTER", () => this.loadGame(), this);
+        this.input.keyboard.on("keydown-SPACE", () => this.loadGame(), this);
+                this.input.on("pointerup", () => this.loadGame(), this);
     }
 
     update () {
     }
 
-    loadNext () {
-        this.scene.start(this.next, { name: this.name, number: this.number });
+    loadGame () {
+        this.time.delayedCall(500, () => this.scene.start("game", { playerClass: this.playerClass }), null, this);
     }
 }

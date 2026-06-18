@@ -55,6 +55,7 @@ export default class Game extends Phaser.Scene {
     generateDungeon () {
       this.dungeon = new Dungeon();
       this.paintDungeon();
+      this.addRunAwayButton();
       this.playedLetters = [] //this.dungeon.generatePlayerCards();
       this.paintUserCards();
     }
@@ -105,7 +106,7 @@ export default class Game extends Phaser.Scene {
       const initialX = this.center_width - (this.playedLetters.length * 64) / 2;
       const initialY = 312
       this.selectedPoints = 0;
-      if (this.playerCards) { this.playerCards.children.each((card) => {
+      if (this.playerCards ) { this.playerCards.children?.each((card) => {
         card.destroy();
       }); }
       if (this.solveButton) {
@@ -189,38 +190,62 @@ export default class Game extends Phaser.Scene {
       this.pointsText.destroy()
     }
 
-      loadAudios () {
-        this.audios = {
-          "beam": this.sound.add("beam"),
-        };
-      }
+    addRunAwayButton () {
+      const x = this.center_width;
+      const y = 128;
+      this.runAwayButton = this.add.bitmapText(this.center_width, y, "pixelFont", "Run!", 96)
+        .setOrigin(0.5)
 
-      playAudio(key) {
-        this.audios[key].play();
-      }
+      this.runAwayButton.setInteractive();
+       this.runAwayButton.on("pointerup", () => {
+          this.runAway()
+        });
+        this.runAwayButton.on("pointerover", () => {
+          this.runAwayButton.setTint(0xFF00FF);
+        });
+        this.runAwayButton.on("pointerout", () => {
+          this.runAwayButton.setTint(0x88d24c);
+        });
+    }
 
-      playMusic (theme="game") {
-        this.theme = this.sound.add(theme);
-        this.theme.stop();
-        this.theme.play({
-          mute: false,
-          volume: 1,
-          rate: 1,
-          detune: 0,
-          seek: 0,
-          loop: true,
-          delay: 0
-      })
-      }
+    runAway() {
+      let word = "";
+      console.log("Run Away!!!")
+      this.runAwayButton.destroy()
+
+      this.finishScene()
+    }
+
+    loadAudios () {
+      this.audios = {
+        "beam": this.sound.add("beam"),
+      };
+    }
+
+    playAudio(key) {
+      this.audios[key].play();
+    }
+
+    playMusic (theme="game") {
+      this.theme = this.sound.add(theme);
+      this.theme.stop();
+      this.theme.play({
+        mute: false,
+        volume: 1,
+        rate: 1,
+        detune: 0,
+        seek: 0,
+        loop: true,
+        delay: 0
+    })
+    }
 
     update() {
 
     }
 
     finishScene () {
-      this.sky.stop();
-      this.theme.stop();
-      this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1});
+      this.scene.start("transition", {next: "underwater", name: "STAGE", number: this.number + 1, playerClass: this.playerClass });
     }
 
     updateScore (points = 0) {
