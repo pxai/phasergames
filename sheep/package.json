@@ -19,7 +19,7 @@
     "dev-nolog": "vite --config vite/config.dev.mjs",
     "build-nolog": "vite build --config vite/config.prod.mjs",
     "publish": "npm run-script build && npm run-script itchio",
-    "itchio": "cd dist && rm -f assets/html/index.html && butler push . pello/sheep:html --userversion 0.0.1 && cd .. && butler status pello/sheep:html"
+    "itchio": "cd dist && butler push . pello/sheep:html --userversion 0.0.3 && cd .. && butler status pello/sheep:html"
   },
   "devDependencies": {
     "typescript": "~5.7.2",

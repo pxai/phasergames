@@ -28,8 +28,8 @@ export default class Bootloader extends Scene {
 
         this.load.audio("music", "sounds/music.mp3");
         this.load.audio("bark", "sounds/bark.mp3");
-        this.load.image('doge', 'images/doge.png');
-        this.load.image('sheep', 'images/sheep.png');
+        this.load.spritesheet('doge', 'images/doge.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('sheep', 'images/sheep.png', { frameWidth: 64, frameHeight: 64 });
         this.load.image('blackblock', 'images/blackblock.png');
         this.load.image('pello', 'images/pello.png');
         this.load.spritesheet("flag", "images/flag.png", { frameWidth: 32, frameHeight: 32 });

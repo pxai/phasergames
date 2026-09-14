@@ -8,7 +8,7 @@ export default class Doge extends Physics.Arcade.Sprite {
     constructor(scene: Scene, x: number, y: number) {
 
         super(scene, x, y, "doge");
-        this.scene = scene;
+        this.name = "doge";
         scene.add.existing(this);
 
         //(scene as any).physics.add.existing(this);
@@ -24,6 +24,16 @@ export default class Doge extends Physics.Arcade.Sprite {
         this.setMouse();
         this.scene.events.on('update', this.update, this);
         this.on('destroy', this.onDestroy, this);
+        this.init();
+    }
+
+    init() {
+        this.scene.anims.create({
+            key: this.name,
+            frames: this.scene.anims.generateFrameNumbers(this.name, { start: 0, end: 1 }),
+            frameRate: 5,
+            repeat: -1
+        });
     }
 
     setMouse() {
@@ -35,6 +45,7 @@ export default class Doge extends Physics.Arcade.Sprite {
     handleMouseDown() {
         this.activate()
         this.barking = !this.barking;
+        this.anims.play(this.name, true);
     }
 
     handleMouseUp() {
@@ -50,6 +61,7 @@ export default class Doge extends Physics.Arcade.Sprite {
         if (!this.scene || !this.scene.cameras) return;
         if (this.barking) { //  && this.scene.canMove()) {
             const point = this.scene.cameras.main.getWorldPoint(this.scene.input.mousePointer.x, this.scene.input.mousePointer.y);
+            if (point.x !== this.x) this.setFlipX(point.x < this.x);
             this.x = point.x;
             this.y = point.y;
             //if (Phaser.Math.Between(0, 3) > 2) new Smoke(this.scene, this.x, this.y)
@@ -63,6 +75,7 @@ export default class Doge extends Physics.Arcade.Sprite {
     block() {
         // 1. Remove the mouse click event completely
         this.scene.input.off('pointerdown', this.handleMouseDown, this);
+        this.anims.play(this.name, true);
         // 2. Stop movement right away by stopping the bark state
         this.barking = false;
     }
